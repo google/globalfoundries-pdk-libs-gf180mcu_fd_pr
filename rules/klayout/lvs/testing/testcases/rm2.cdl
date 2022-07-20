@@ -1,0 +1,62 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: rm2
+* View Name:     schematic
+* Netlisted on:  Nov 24 10:16:47 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    rm2
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT rm2 I1_0_0_R0_MINUS I1_0_0_R0_PLUS I1_0_1_R0_MINUS I1_0_1_R0_PLUS 
++ I1_0_2_R0_MINUS I1_0_2_R0_PLUS I1_1_0_R0_MINUS I1_1_0_R0_PLUS 
++ I1_1_1_R0_MINUS I1_1_1_R0_PLUS I1_1_2_R0_MINUS I1_1_2_R0_PLUS 
++ I1_2_0_R0_MINUS I1_2_0_R0_PLUS I1_2_1_R0_MINUS I1_2_1_R0_PLUS 
++ I1_2_2_R0_MINUS I1_2_2_R0_PLUS I1_default_MINUS I1_default_PLUS
+*.PININFO I1_0_0_R0_MINUS:I I1_0_0_R0_PLUS:I I1_0_1_R0_MINUS:I 
+*.PININFO I1_0_1_R0_PLUS:I I1_0_2_R0_MINUS:I I1_0_2_R0_PLUS:I 
+*.PININFO I1_1_0_R0_MINUS:I I1_1_0_R0_PLUS:I I1_1_1_R0_MINUS:I 
+*.PININFO I1_1_1_R0_PLUS:I I1_1_2_R0_MINUS:I I1_1_2_R0_PLUS:I 
+*.PININFO I1_2_0_R0_MINUS:I I1_2_0_R0_PLUS:I I1_2_1_R0_MINUS:I 
+*.PININFO I1_2_1_R0_PLUS:I I1_2_2_R0_MINUS:I I1_2_2_R0_PLUS:I 
+*.PININFO I1_default_MINUS:I I1_default_PLUS:I
+RI1_2_2_R0 I1_2_2_R0_PLUS I1_2_2_R0_MINUS $[rm2] $W=50u $L=50u m=1 r=90m 
++ dtemp=0
+RI1_2_1_R0 I1_2_1_R0_PLUS I1_2_1_R0_MINUS $[rm2] $W=50u $L=13.5u m=1 r=24.3m 
++ dtemp=0
+RI1_2_0_R0 I1_2_0_R0_PLUS I1_2_0_R0_MINUS $[rm2] $W=50u $L=280n m=1 r=504u 
++ dtemp=0
+RI1_1_2_R0 I1_1_2_R0_PLUS I1_1_2_R0_MINUS $[rm2] $W=13.5u $L=50u m=1 
++ r=333.333m dtemp=0
+RI1_1_1_R0 I1_1_1_R0_PLUS I1_1_1_R0_MINUS $[rm2] $W=13.5u $L=13.5u m=1 r=90m 
++ dtemp=0
+RI1_1_0_R0 I1_1_0_R0_PLUS I1_1_0_R0_MINUS $[rm2] $W=13.5u $L=280n m=1 
++ r=1.86667m dtemp=0
+RI1_0_2_R0 I1_0_2_R0_PLUS I1_0_2_R0_MINUS $[rm2] $W=280n $L=50u m=1 r=16.0714 
++ dtemp=0
+RI1_0_1_R0 I1_0_1_R0_PLUS I1_0_1_R0_MINUS $[rm2] $W=280n $L=13.5u m=1 
++ r=4.33929 dtemp=0
+RI1_0_0_R0 I1_0_0_R0_PLUS I1_0_0_R0_MINUS $[rm2] $W=280n $L=280n m=1 r=90m 
++ dtemp=0
+RI1_default I1_default_PLUS I1_default_MINUS $[rm2] $W=280.00n $L=280.00n m=1 
++ r=90.00m dtemp=0
+.ENDS
+

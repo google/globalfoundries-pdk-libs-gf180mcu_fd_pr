@@ -1,0 +1,42 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: tm11k
+* View Name:     schematic
+* Netlisted on:  Nov 24 10:19:48 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    tm11k
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT tm11k
+*.PININFO
+RI1_2_2_R0 net1 net2 tm11k W=50u L=50u m=1 r=40m dtemp=0
+RI1_2_1_R0 net3 net4 tm11k W=50u L=13.5u m=1 r=10.8m dtemp=0
+RI1_2_0_R0 net5 net6 tm11k W=50u L=440n m=1 r=352u dtemp=0
+RI1_1_2_R0 net7 net8 tm11k W=13.5u L=50u m=1 r=148.148m dtemp=0
+RI1_1_1_R0 net9 net10 tm11k W=13.5u L=13.5u m=1 r=40m dtemp=0
+RI1_1_0_R0 net11 net12 tm11k W=13.5u L=440n m=1 r=1.3037m dtemp=0
+RI1_0_2_R0 net13 net14 tm11k W=440n L=50u m=1 r=4.54545 dtemp=0
+RI1_0_1_R0 net15 net16 tm11k W=440n L=13.5u m=1 r=1.22727 dtemp=0
+RI1_0_0_R0 net17 net18 tm11k W=440n L=440n m=1 r=40m dtemp=0
+RI1_default net19 net20 tm11k W=440.00n L=440.00n m=1 r=40.00m dtemp=0
+.ENDS
+

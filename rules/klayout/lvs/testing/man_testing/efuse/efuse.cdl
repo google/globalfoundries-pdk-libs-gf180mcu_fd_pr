@@ -1,0 +1,33 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  GF180MCU
+* Top Cell Name: efuse
+* View Name:     schematic
+* Netlisted on:  May 16 10:16:24 2022
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+
+
+************************************************************************
+* Library Name  GF180MCU
+* Cell Name:    efuse
+* View Name:    schematic
+************************************************************************
+
+.subckt efuse  in out
+*
+rfuse  in out  efuse r=200
+*
+.ends efuse

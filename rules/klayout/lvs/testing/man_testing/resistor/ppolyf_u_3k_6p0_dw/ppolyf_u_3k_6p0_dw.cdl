@@ -1,0 +1,234 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: ppolyf_u_3k_6p0_dw
+* View Name:     schematic
+* Netlisted on:  Nov 24 12:12:32 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+*.GLOBAL gnd!
+
+*.PIN gnd!
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    ppolyf_u_3k_6p0_dw
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT ppolyf_u_3k_6p0_dw I1_0_0_0_0_0_0_R0_MINUS I1_0_0_0_0_0_0_R0_PLUS 
++ I1_0_0_0_1_0_0_R0_MINUS I1_0_0_0_1_0_0_R0_PLUS I1_0_0_1_0_0_0_R0_MINUS 
++ I1_0_0_1_0_0_0_R0_PLUS I1_0_0_1_1_0_0_R0_MINUS I1_0_0_1_1_0_0_R0_PLUS 
++ I1_0_0_2_0_0_0_R0_MINUS I1_0_0_2_0_0_0_R0_PLUS I1_0_0_2_1_0_0_R0_MINUS 
++ I1_0_0_2_1_0_0_R0_PLUS I1_0_1_0_0_0_0_R0_MINUS I1_0_1_0_0_0_0_R0_PLUS 
++ I1_0_1_0_1_0_0_R0_MINUS I1_0_1_0_1_0_0_R0_PLUS I1_0_1_1_0_0_0_R0_MINUS 
++ I1_0_1_1_0_0_0_R0_PLUS I1_0_1_1_1_0_0_R0_MINUS I1_0_1_1_1_0_0_R0_PLUS 
++ I1_0_1_2_0_0_0_R0_MINUS I1_0_1_2_0_0_0_R0_PLUS I1_0_1_2_1_0_0_R0_MINUS 
++ I1_0_1_2_1_0_0_R0_PLUS I1_0_2_0_0_0_0_R0_MINUS I1_0_2_0_0_0_0_R0_PLUS 
++ I1_0_2_0_1_0_0_R0_MINUS I1_0_2_0_1_0_0_R0_PLUS I1_0_2_1_0_0_0_R0_MINUS 
++ I1_0_2_1_0_0_0_R0_PLUS I1_0_2_1_1_0_0_R0_MINUS I1_0_2_1_1_0_0_R0_PLUS 
++ I1_0_2_2_0_0_0_R0_MINUS I1_0_2_2_0_0_0_R0_PLUS I1_0_2_2_1_0_0_R0_MINUS 
++ I1_0_2_2_1_0_0_R0_PLUS I1_1_0_0_0_0_0_R0_MINUS I1_1_0_0_0_0_0_R0_PLUS 
++ I1_1_0_0_1_0_0_R0_MINUS I1_1_0_0_1_0_0_R0_PLUS I1_1_0_1_0_0_0_R0_MINUS 
++ I1_1_0_1_0_0_0_R0_PLUS I1_1_0_1_1_0_0_R0_MINUS I1_1_0_1_1_0_0_R0_PLUS 
++ I1_1_0_2_0_0_0_R0_MINUS I1_1_0_2_0_0_0_R0_PLUS I1_1_0_2_1_0_0_R0_MINUS 
++ I1_1_0_2_1_0_0_R0_PLUS I1_1_1_0_0_0_0_R0_MINUS I1_1_1_0_0_0_0_R0_PLUS 
++ I1_1_1_0_1_0_0_R0_MINUS I1_1_1_0_1_0_0_R0_PLUS I1_1_1_1_0_0_0_R0_MINUS 
++ I1_1_1_1_0_0_0_R0_PLUS I1_1_1_1_1_0_0_R0_MINUS I1_1_1_1_1_0_0_R0_PLUS 
++ I1_1_1_2_0_0_0_R0_MINUS I1_1_1_2_0_0_0_R0_PLUS I1_1_1_2_1_0_0_R0_MINUS 
++ I1_1_1_2_1_0_0_R0_PLUS I1_1_2_0_0_0_0_R0_MINUS I1_1_2_0_0_0_0_R0_PLUS 
++ I1_1_2_0_1_0_0_R0_MINUS I1_1_2_0_1_0_0_R0_PLUS I1_1_2_1_0_0_0_R0_MINUS 
++ I1_1_2_1_0_0_0_R0_PLUS I1_1_2_1_1_0_0_R0_MINUS I1_1_2_1_1_0_0_R0_PLUS 
++ I1_1_2_2_0_0_0_R0_MINUS I1_1_2_2_0_0_0_R0_PLUS I1_1_2_2_1_0_0_R0_MINUS 
++ I1_1_2_2_1_0_0_R0_PLUS I1_2_0_0_0_0_0_R0_MINUS I1_2_0_0_0_0_0_R0_PLUS 
++ I1_2_0_0_1_0_0_R0_MINUS I1_2_0_0_1_0_0_R0_PLUS I1_2_0_1_0_0_0_R0_MINUS 
++ I1_2_0_1_0_0_0_R0_PLUS I1_2_0_1_1_0_0_R0_MINUS I1_2_0_1_1_0_0_R0_PLUS 
++ I1_2_0_2_0_0_0_R0_MINUS I1_2_0_2_0_0_0_R0_PLUS I1_2_0_2_1_0_0_R0_MINUS 
++ I1_2_0_2_1_0_0_R0_PLUS I1_2_1_0_0_0_0_R0_MINUS I1_2_1_0_0_0_0_R0_PLUS 
++ I1_2_1_0_1_0_0_R0_MINUS I1_2_1_0_1_0_0_R0_PLUS I1_2_1_1_0_0_0_R0_MINUS 
++ I1_2_1_1_0_0_0_R0_PLUS I1_2_1_1_1_0_0_R0_MINUS I1_2_1_1_1_0_0_R0_PLUS 
++ I1_2_1_2_0_0_0_R0_MINUS I1_2_1_2_0_0_0_R0_PLUS I1_2_1_2_1_0_0_R0_MINUS 
++ I1_2_1_2_1_0_0_R0_PLUS I1_2_2_0_0_0_0_R0_MINUS I1_2_2_0_0_0_0_R0_PLUS 
++ I1_2_2_0_1_0_0_R0_MINUS I1_2_2_0_1_0_0_R0_PLUS I1_2_2_1_0_0_0_R0_MINUS 
++ I1_2_2_1_0_0_0_R0_PLUS I1_2_2_1_1_0_0_R0_MINUS I1_2_2_1_1_0_0_R0_PLUS 
++ I1_2_2_2_0_0_0_R0_MINUS I1_2_2_2_0_0_0_R0_PLUS I1_2_2_2_1_0_0_R0_MINUS 
++ I1_2_2_2_1_0_0_R0_PLUS I1_default_MINUS I1_default_PLUS gnd!
+*.PININFO I1_0_0_0_0_0_0_R0_MINUS:I I1_0_0_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_0_0_1_0_0_R0_MINUS:I I1_0_0_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_0_0_1_0_0_0_R0_MINUS:I I1_0_0_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_0_1_1_0_0_R0_MINUS:I I1_0_0_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_0_0_2_0_0_0_R0_MINUS:I I1_0_0_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_0_2_1_0_0_R0_MINUS:I I1_0_0_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_0_1_0_0_0_0_R0_MINUS:I I1_0_1_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_1_0_1_0_0_R0_MINUS:I I1_0_1_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_0_1_1_0_0_0_R0_MINUS:I I1_0_1_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_1_1_1_0_0_R0_MINUS:I I1_0_1_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_0_1_2_0_0_0_R0_MINUS:I I1_0_1_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_1_2_1_0_0_R0_MINUS:I I1_0_1_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_0_2_0_0_0_0_R0_MINUS:I I1_0_2_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_2_0_1_0_0_R0_MINUS:I I1_0_2_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_0_2_1_0_0_0_R0_MINUS:I I1_0_2_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_2_1_1_0_0_R0_MINUS:I I1_0_2_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_0_2_2_0_0_0_R0_MINUS:I I1_0_2_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_0_2_2_1_0_0_R0_MINUS:I I1_0_2_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_0_0_0_0_0_R0_MINUS:I I1_1_0_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_0_0_1_0_0_R0_MINUS:I I1_1_0_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_0_1_0_0_0_R0_MINUS:I I1_1_0_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_0_1_1_0_0_R0_MINUS:I I1_1_0_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_0_2_0_0_0_R0_MINUS:I I1_1_0_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_0_2_1_0_0_R0_MINUS:I I1_1_0_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_1_0_0_0_0_R0_MINUS:I I1_1_1_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_1_0_1_0_0_R0_MINUS:I I1_1_1_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_1_1_0_0_0_R0_MINUS:I I1_1_1_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_1_1_1_0_0_R0_MINUS:I I1_1_1_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_1_2_0_0_0_R0_MINUS:I I1_1_1_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_1_2_1_0_0_R0_MINUS:I I1_1_1_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_2_0_0_0_0_R0_MINUS:I I1_1_2_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_2_0_1_0_0_R0_MINUS:I I1_1_2_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_2_1_0_0_0_R0_MINUS:I I1_1_2_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_2_1_1_0_0_R0_MINUS:I I1_1_2_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_1_2_2_0_0_0_R0_MINUS:I I1_1_2_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_1_2_2_1_0_0_R0_MINUS:I I1_1_2_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_0_0_0_0_0_R0_MINUS:I I1_2_0_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_0_0_1_0_0_R0_MINUS:I I1_2_0_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_0_1_0_0_0_R0_MINUS:I I1_2_0_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_0_1_1_0_0_R0_MINUS:I I1_2_0_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_0_2_0_0_0_R0_MINUS:I I1_2_0_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_0_2_1_0_0_R0_MINUS:I I1_2_0_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_1_0_0_0_0_R0_MINUS:I I1_2_1_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_1_0_1_0_0_R0_MINUS:I I1_2_1_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_1_1_0_0_0_R0_MINUS:I I1_2_1_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_1_1_1_0_0_R0_MINUS:I I1_2_1_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_1_2_0_0_0_R0_MINUS:I I1_2_1_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_1_2_1_0_0_R0_MINUS:I I1_2_1_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_2_0_0_0_0_R0_MINUS:I I1_2_2_0_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_2_0_1_0_0_R0_MINUS:I I1_2_2_0_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_2_1_0_0_0_R0_MINUS:I I1_2_2_1_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_2_1_1_0_0_R0_MINUS:I I1_2_2_1_1_0_0_R0_PLUS:I 
+*.PININFO I1_2_2_2_0_0_0_R0_MINUS:I I1_2_2_2_0_0_0_R0_PLUS:I 
+*.PININFO I1_2_2_2_1_0_0_R0_MINUS:I I1_2_2_2_1_0_0_R0_PLUS:I 
+*.PININFO I1_default_MINUS:I I1_default_PLUS:I gnd!:I
+RI1_2_2_2_1_0_0_R0 I1_2_2_2_1_0_0_R0_PLUS I1_2_2_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=100u w=50u r=6.01794K par=8.0 s=1
+RI1_2_2_2_0_0_0_R0 I1_2_2_2_0_0_0_R0_PLUS I1_2_2_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=8
+RI1_2_2_1_1_0_0_R0 I1_2_2_1_1_0_0_R0_PLUS I1_2_2_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=100u w=50u r=6.01794K par=3.0 s=1
+RI1_2_2_1_0_0_0_R0 I1_2_2_1_0_0_0_R0_PLUS I1_2_2_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=3
+RI1_2_2_0_1_0_0_R0 I1_2_2_0_1_0_0_R0_PLUS I1_2_2_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=1
+RI1_2_2_0_0_0_0_R0 I1_2_2_0_0_0_0_R0_PLUS I1_2_2_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=1
+RI1_2_1_2_1_0_0_R0 I1_2_1_2_1_0_0_R0_PLUS I1_2_1_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=100u w=50u r=6.01794K par=8.0 s=1
+RI1_2_1_2_0_0_0_R0 I1_2_1_2_0_0_0_R0_PLUS I1_2_1_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=8
+RI1_2_1_1_1_0_0_R0 I1_2_1_1_1_0_0_R0_PLUS I1_2_1_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=100u w=50u r=6.01794K par=3.0 s=1
+RI1_2_1_1_0_0_0_R0 I1_2_1_1_0_0_0_R0_PLUS I1_2_1_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=3
+RI1_2_1_0_1_0_0_R0 I1_2_1_0_1_0_0_R0_PLUS I1_2_1_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=1
+RI1_2_1_0_0_0_0_R0 I1_2_1_0_0_0_0_R0_PLUS I1_2_1_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=1
+RI1_2_0_2_1_0_0_R0 I1_2_0_2_1_0_0_R0_PLUS I1_2_0_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=100u w=50u r=6.01794K par=8.0 s=1
+RI1_2_0_2_0_0_0_R0 I1_2_0_2_0_0_0_R0_PLUS I1_2_0_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=8
+RI1_2_0_1_1_0_0_R0 I1_2_0_1_1_0_0_R0_PLUS I1_2_0_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=100u w=50u r=6.01794K par=3.0 s=1
+RI1_2_0_1_0_0_0_R0 I1_2_0_1_0_0_0_R0_PLUS I1_2_0_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=3
+RI1_2_0_0_1_0_0_R0 I1_2_0_0_1_0_0_R0_PLUS I1_2_0_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=1
+RI1_2_0_0_0_0_0_R0 I1_2_0_0_0_0_0_R0_PLUS I1_2_0_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=100u w=50u r=6.01794K par=1.0 s=1
+RI1_1_2_2_1_0_0_R0 I1_1_2_2_1_0_0_R0_PLUS I1_1_2_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=50u w=3.62u r=42.1344K par=8.0 s=1
+RI1_1_2_2_0_0_0_R0 I1_1_2_2_0_0_0_R0_PLUS I1_1_2_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=50u w=3.62u r=42.1344K par=1.0 s=8
+RI1_1_2_1_1_0_0_R0 I1_1_2_1_1_0_0_R0_PLUS I1_1_2_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=50u w=3.62u r=42.1344K par=3.0 s=1
+RI1_1_2_1_0_0_0_R0 I1_1_2_1_0_0_0_R0_PLUS I1_1_2_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=50u w=3.62u r=42.1344K par=1.0 s=3
+RI1_1_2_0_1_0_0_R0 I1_1_2_0_1_0_0_R0_PLUS I1_1_2_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=50u w=3.62u r=42.1344K par=1.0 s=1
+RI1_1_2_0_0_0_0_R0 I1_1_2_0_0_0_0_R0_PLUS I1_1_2_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=50u w=3.62u r=42.1344K par=1.0 s=1
+RI1_1_1_2_1_0_0_R0 I1_1_1_2_1_0_0_R0_PLUS I1_1_1_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=7.6u w=3.62u r=6.55281K par=8.0 s=1
+RI1_1_1_2_0_0_0_R0 I1_1_1_2_0_0_0_R0_PLUS I1_1_1_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.6u w=3.62u r=6.55281K par=1.0 s=8
+RI1_1_1_1_1_0_0_R0 I1_1_1_1_1_0_0_R0_PLUS I1_1_1_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=7.6u w=3.62u r=6.55281K par=3.0 s=1
+RI1_1_1_1_0_0_0_R0 I1_1_1_1_0_0_0_R0_PLUS I1_1_1_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.6u w=3.62u r=6.55281K par=1.0 s=3
+RI1_1_1_0_1_0_0_R0 I1_1_1_0_1_0_0_R0_PLUS I1_1_1_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.6u w=3.62u r=6.55281K par=1.0 s=1
+RI1_1_1_0_0_0_0_R0 I1_1_1_0_0_0_0_R0_PLUS I1_1_1_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.6u w=3.62u r=6.55281K par=1.0 s=1
+RI1_1_0_2_1_0_0_R0 I1_1_0_2_1_0_0_R0_PLUS I1_1_0_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=7.24u w=3.62u r=6.2507K par=8.0 s=1
+RI1_1_0_2_0_0_0_R0 I1_1_0_2_0_0_0_R0_PLUS I1_1_0_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.24u w=3.62u r=6.2507K par=1.0 s=8
+RI1_1_0_1_1_0_0_R0 I1_1_0_1_1_0_0_R0_PLUS I1_1_0_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=7.24u w=3.62u r=6.2507K par=3.0 s=1
+RI1_1_0_1_0_0_0_R0 I1_1_0_1_0_0_0_R0_PLUS I1_1_0_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.24u w=3.62u r=6.2507K par=1.0 s=3
+RI1_1_0_0_1_0_0_R0 I1_1_0_0_1_0_0_R0_PLUS I1_1_0_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.24u w=3.62u r=6.2507K par=1.0 s=1
+RI1_1_0_0_0_0_0_R0 I1_1_0_0_0_0_0_R0_PLUS I1_1_0_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.24u w=3.62u r=6.2507K par=1.0 s=1
+RI1_0_2_2_1_0_0_R0 I1_0_2_2_1_0_0_R0_PLUS I1_0_2_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=50u w=1u r=157.743K par=8.0 s=1
+RI1_0_2_2_0_0_0_R0 I1_0_2_2_0_0_0_R0_PLUS I1_0_2_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=50u w=1u r=157.743K par=1.0 s=8
+RI1_0_2_1_1_0_0_R0 I1_0_2_1_1_0_0_R0_PLUS I1_0_2_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=50u w=1u r=157.743K par=3.0 s=1
+RI1_0_2_1_0_0_0_R0 I1_0_2_1_0_0_0_R0_PLUS I1_0_2_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=50u w=1u r=157.743K par=1.0 s=3
+RI1_0_2_0_1_0_0_R0 I1_0_2_0_1_0_0_R0_PLUS I1_0_2_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=50u w=1u r=157.743K par=1.0 s=1
+RI1_0_2_0_0_0_0_R0 I1_0_2_0_0_0_0_R0_PLUS I1_0_2_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=50u w=1u r=157.743K par=1.0 s=1
+RI1_0_1_2_1_0_0_R0 I1_0_1_2_1_0_0_R0_PLUS I1_0_1_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=7.6u w=1u r=24.5324K par=8.0 s=1
+RI1_0_1_2_0_0_0_R0 I1_0_1_2_0_0_0_R0_PLUS I1_0_1_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.6u w=1u r=24.5324K par=1.0 s=8
+RI1_0_1_1_1_0_0_R0 I1_0_1_1_1_0_0_R0_PLUS I1_0_1_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=7.6u w=1u r=24.5324K par=3.0 s=1
+RI1_0_1_1_0_0_0_R0 I1_0_1_1_0_0_0_R0_PLUS I1_0_1_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.6u w=1u r=24.5324K par=1.0 s=3
+RI1_0_1_0_1_0_0_R0 I1_0_1_0_1_0_0_R0_PLUS I1_0_1_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.6u w=1u r=24.5324K par=1.0 s=1
+RI1_0_1_0_0_0_0_R0 I1_0_1_0_0_0_0_R0_PLUS I1_0_1_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=7.6u w=1u r=24.5324K par=1.0 s=1
+RI1_0_0_2_1_0_0_R0 I1_0_0_2_1_0_0_R0_PLUS I1_0_0_2_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=8.0 l=2u w=1u r=6.93859K par=8.0 s=1
+RI1_0_0_2_0_0_0_R0 I1_0_0_2_0_0_0_R0_PLUS I1_0_0_2_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=2u w=1u r=6.93859K par=1.0 s=8
+RI1_0_0_1_1_0_0_R0 I1_0_0_1_1_0_0_R0_PLUS I1_0_0_1_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=3.0 l=2u w=1u r=6.93859K par=3.0 s=1
+RI1_0_0_1_0_0_0_R0 I1_0_0_1_0_0_0_R0_PLUS I1_0_0_1_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=2u w=1u r=6.93859K par=1.0 s=3
+RI1_0_0_0_1_0_0_R0 I1_0_0_0_1_0_0_R0_PLUS I1_0_0_0_1_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=2u w=1u r=6.93859K par=1.0 s=1
+RI1_0_0_0_0_0_0_R0 I1_0_0_0_0_0_0_R0_PLUS I1_0_0_0_0_0_0_R0_MINUS gnd! 
++ ppolyf_u_3k_6p0_dw m=1.0 l=2u w=1u r=6.93859K par=1.0 s=1
+RI1_default I1_default_PLUS I1_default_MINUS gnd! ppolyf_u_3k_6p0_dw 
++ m=1.0 l=2u w=1u r=6.9385891K par=1.0 s=1
+.ENDS
+

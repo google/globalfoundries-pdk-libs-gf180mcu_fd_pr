@@ -1,0 +1,49 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: sc_diode
+* View Name:     schematic
+* Netlisted on:  Nov 24 10:18:05 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    sc_diode
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT sc_diode I1_0_0_R0_n I1_0_0_R0_p I1_0_1_R0_n I1_0_1_R0_p I1_0_2_R0_n 
++ I1_0_2_R0_p I1_1_0_R0_n I1_1_0_R0_p I1_1_1_R0_n I1_1_1_R0_p I1_1_2_R0_n 
++ I1_1_2_R0_p I1_2_0_R0_n I1_2_0_R0_p I1_2_1_R0_n I1_2_1_R0_p I1_2_2_R0_n 
++ I1_2_2_R0_p I1_default_n I1_default_p
+*.PININFO I1_0_0_R0_n:I I1_0_0_R0_p:I I1_0_1_R0_n:I I1_0_1_R0_p:I 
+*.PININFO I1_0_2_R0_n:I I1_0_2_R0_p:I I1_1_0_R0_n:I I1_1_0_R0_p:I 
+*.PININFO I1_1_1_R0_n:I I1_1_1_R0_p:I I1_1_2_R0_n:I I1_1_2_R0_p:I 
+*.PININFO I1_2_0_R0_n:I I1_2_0_R0_p:I I1_2_1_R0_n:I I1_2_1_R0_p:I 
+*.PININFO I1_2_2_R0_n:I I1_2_2_R0_p:I I1_default_n:I I1_default_p:I
+DI1_2_2_R0 I1_2_2_R0_p I1_2_2_R0_n sc_diode m=9.0 l=100u w=620.00n
+DI1_2_1_R0 I1_2_1_R0_p I1_2_1_R0_n sc_diode m=6.0 l=100u w=620.00n
+DI1_2_0_R0 I1_2_0_R0_p I1_2_0_R0_n sc_diode m=1.0 l=100u w=620.00n
+DI1_1_2_R0 I1_1_2_R0_p I1_1_2_R0_n sc_diode m=9.0 l=12.3u w=620.00n
+DI1_1_1_R0 I1_1_1_R0_p I1_1_1_R0_n sc_diode m=6.0 l=12.3u w=620.00n
+DI1_1_0_R0 I1_1_0_R0_p I1_1_0_R0_n sc_diode m=1.0 l=12.3u w=620.00n
+DI1_0_2_R0 I1_0_2_R0_p I1_0_2_R0_n sc_diode m=9.0 l=1u w=620.00n
+DI1_0_1_R0 I1_0_1_R0_p I1_0_1_R0_n sc_diode m=6.0 l=1u w=620.00n
+DI1_0_0_R0 I1_0_0_R0_p I1_0_0_R0_n sc_diode m=1.0 l=1u w=620.00n
+DI1_default I1_default_p I1_default_n sc_diode m=4.0 l=20u w=620.00n
+.ENDS
+

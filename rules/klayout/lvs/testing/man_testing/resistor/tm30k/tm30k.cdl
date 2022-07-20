@@ -1,0 +1,42 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: tm30k
+* View Name:     schematic
+* Netlisted on:  Nov 24 12:23:05 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    tm30k
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT tm30k
+*.PININFO
+RI1_2_2_R0 net1 net2 tm30k W=50u L=50u m=1 r=9.5m dtemp=0
+RI1_2_1_R0 net3 net4 tm30k W=50u L=13.5u m=1 r=2.565m dtemp=0
+RI1_2_0_R0 net5 net6 tm30k W=50u L=1.8u m=1 r=342u dtemp=0
+RI1_1_2_R0 net7 net8 tm30k W=13.5u L=50u m=1 r=35.1852m dtemp=0
+RI1_1_1_R0 net9 net10 tm30k W=13.5u L=13.5u m=1 r=9.5m dtemp=0
+RI1_1_0_R0 net11 net12 tm30k W=13.5u L=1.8u m=1 r=1.26667m dtemp=0
+RI1_0_2_R0 net13 net14 tm30k W=1.8u L=50u m=1 r=263.889m dtemp=0
+RI1_0_1_R0 net15 net16 tm30k W=1.8u L=13.5u m=1 r=71.25m dtemp=0
+RI1_0_0_R0 net17 net18 tm30k W=1.8u L=1.8u m=1 r=9.5m dtemp=0
+RI1_default net19 net20 tm30k W=1.8u L=1.8u m=1 r=9.5m dtemp=0
+.ENDS
+

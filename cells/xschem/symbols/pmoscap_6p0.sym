@@ -1,0 +1,40 @@
+v {xschem version=3.0.0 file_version=1.2
+
+* Copyright 2022 GlobalFoundries PDK Authors
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+}
+G {}
+K {type=moscap
+format="@spiceprefix@name @pinlist @model c_width=@W c_length=@L m=@m"
+template="name=C1
+W=1e-6
+L=1e-6
+model=pmoscap_6p0
+spiceprefix=X
+m=1"
+}
+V {}
+S {}
+E {}
+L 4 0 -30 0 -12.5 {}
+L 4 -15 7.5 15 7.5 {}
+L 4 0 17.5 0 30 {}
+B 4 -15 -12.5 15 -7.5 {}
+B 5 -2.5 27.5 2.5 32.5 {name=G dir=inout propag=1 pinnumber=2}
+B 5 -2.5 -32.5 2.5 -27.5 {name=B dir=inout propag=0 pinnumber=1}
+A 4 0 12.5 5 90 360 {}
+T {@name} 20 -28.75 0 0 0.2 0.2 {}
+T {@m * @W / @L} 20 6.25 0 0 0.2 0.2 {layer=13}
+T {@model} 20 -11.25 0 0 0.2 0.2 {}
