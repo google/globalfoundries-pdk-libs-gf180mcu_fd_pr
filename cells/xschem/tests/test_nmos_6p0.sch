@@ -51,24 +51,24 @@ dc vd 0 6 0.01 vg 0 6 1
 write test_nmos_6p0.raw
 .endc
 "}
-C {devices/title.sym} 160 -30 0 0 {name=l5 author="Stefan Schippers"}
+C {devices/title.sym} 160 -30 0 0 {name=l5 author="GlobalFoundries PDK Authors"}
 C {symbols/nmos_6p0.sym} 110 -410 0 0 {name=M1
 L=0.70u
 W=0.30u
-nf=1 
+nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
 model=nmos_6p0
 spiceprefix=X
 }
-C {devices/launcher.sym} 185 -635 0 0 {name=h1 
+C {devices/launcher.sym} 185 -635 0 0 {name=h1
 descr="Click left mouse button here with control key
-pressed to load/unload waveforms in graph." 
+pressed to load/unload waveforms in graph."
 tclcommand="
 xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
 "

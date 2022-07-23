@@ -39,16 +39,16 @@ C {tests/test_nmos_3p3.sym} 190 -310 0 0 {name=x1}
 C {tests/test_nmos_3p3_sab.sym} 190 -460 0 0 {name=x2}
 C {tests/test_pmos_3p3.sym} 190 -260 0 0 {name=x3}
 C {tests/test_pmos_3p3_sab.sym} 190 -510 0 0 {name=x4}
-C {devices/title.sym} 160 -30 0 0 {name=l5 author="Stefan Schippers"}
+C {devices/title.sym} 160 -30 0 0 {name=l5 author="GlobalFoundries PDK Authors"}
 C {devices/launcher.sym} 90 -1440 0 0 {name=h1
-descr="List of devices (Google docs)" 
+descr="List of devices (Google docs)"
 url="https://docs.google.com/spreadsheets/d/1xxxg_VzZWJ1NNysSMcOVzyUin7M2dvtb_E7X-5WQKJ0/edit#gid=1056368354"}
 C {tests/test_nmos_6p0.sym} 190 -210 0 0 {name=x5}
 C {tests/test_pmos_6p0.sym} 190 -160 0 0 {name=x6}
 C {tests/test_nmos_6p0_nat.sym} 190 -110 0 0 {name=x7}
 C {tests/test_nplus_u.sym} 1550 -1060 0 0 {name=x8}
 C {devices/launcher.sym} 90 -1390 0 0 {name=h2
-descr="Github" 
+descr="Github"
 url="https://github.com/google/gf180mcu-pdk"}
 C {tests/test_pmoscap_3p3.sym} 530 -210 0 0 {name=x10}
 C {tests/test_pplus_u.sym} 1550 -1010 0 0 {name=x11}
@@ -176,11 +176,11 @@ m=1}
 C {symbols/nmos_3p3_sab.sym} 2200 -590 0 0 {name=M1
 L=0.28u
 W=0.22u
-nf=1 
+nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
@@ -190,11 +190,11 @@ spiceprefix=X
 C {symbols/nmos_3p3.sym} 2200 -830 0 0 {name=M2
 L=0.28u
 W=0.22u
-nf=1 
+nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
@@ -204,11 +204,11 @@ spiceprefix=X
 C {symbols/nmos_6p0_nat.sym} 2480 -830 0 0 {name=M3
 L=1.80u
 W=0.80u
-nf=1 
+nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
@@ -218,11 +218,11 @@ spiceprefix=X
 C {symbols/nmos_6p0_sab.sym} 2340 -590 0 0 {name=M4
 L=0.70u
 W=0.30u
-nf=1 
+nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
@@ -232,11 +232,11 @@ spiceprefix=X
 C {symbols/nmos_6p0.sym} 2340 -830 0 0 {name=M5
 L=0.70u
 W=0.30u
-nf=1 
+nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
@@ -248,9 +248,9 @@ L=0.28u
 W=0.22u
 nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
@@ -262,9 +262,9 @@ L=0.28u
 W=0.22u
 nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
@@ -276,9 +276,9 @@ L=0.50u
 W=0.30u
 nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0
@@ -290,9 +290,9 @@ L=0.50u
 W=0.30u
 nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0

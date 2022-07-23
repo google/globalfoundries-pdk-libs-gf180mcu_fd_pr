@@ -69,10 +69,10 @@ dc vp 0 3.3 0.01
 write test_npolyf_s.raw
 .endc
 "}
-C {devices/title.sym} 160 -30 0 0 {name=l5 author="Stefan Schippers"}
-C {devices/launcher.sym} 65 -625 0 0 {name=h1 
+C {devices/title.sym} 160 -30 0 0 {name=l5 author="GlobalFoundries PDK Authors"}
+C {devices/launcher.sym} 65 -625 0 0 {name=h1
 descr="Click left mouse button here with control key
-pressed to load/unload waveforms in graph." 
+pressed to load/unload waveforms in graph."
 tclcommand="
 xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
 "

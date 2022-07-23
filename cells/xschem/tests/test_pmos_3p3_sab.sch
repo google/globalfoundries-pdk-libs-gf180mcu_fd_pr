@@ -45,10 +45,10 @@ dc vd 0 3.3 0.01 vg 0 3.3 0.3
 write test_pmos_3p3_sab.raw
 .endc
 "}
-C {devices/title.sym} 160 -30 0 0 {name=l5 author="Stefan Schippers"}
-C {devices/launcher.sym} 185 -635 0 0 {name=h1 
+C {devices/title.sym} 160 -30 0 0 {name=l5 author="GlobalFoundries PDK Authors"}
+C {devices/launcher.sym} 185 -635 0 0 {name=h1
 descr="Click left mouse button here with control key
-pressed to load/unload waveforms in graph." 
+pressed to load/unload waveforms in graph."
 tclcommand="
 xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
 "
@@ -58,9 +58,9 @@ L=0.28u
 W=0.22u
 nf=1
 mult=1
-ad="'int((nf+1)/2) * W/nf * 0.18u'" 
+ad="'int((nf+1)/2) * W/nf * 0.18u'"
 pd="'2*int((nf+1)/2) * (W/nf + 0.18u)'"
-as="'int((nf+2)/2) * W/nf * 0.18u'" 
+as="'int((nf+2)/2) * W/nf * 0.18u'"
 ps="'2*int((nf+2)/2) * (W/nf + 0.18u)'"
 nrd="'0.18u / W'" nrs="'0.18u / W'"
 sa=0 sb=0 sd=0

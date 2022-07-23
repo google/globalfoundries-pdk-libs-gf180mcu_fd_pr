@@ -71,10 +71,10 @@ save all
 write test_vnpn_0p54x8.raw
 .endc
 "}
-C {devices/title.sym} 160 -30 0 0 {name=l5 author="Stefan Schippers"}
-C {devices/launcher.sym} 185 -635 0 0 {name=h1 
+C {devices/title.sym} 160 -30 0 0 {name=l5 author="GlobalFoundries PDK Authors"}
+C {devices/launcher.sym} 185 -635 0 0 {name=h1
 descr="Click left mouse button here with control key
-pressed to load/unload waveforms in graph." 
+pressed to load/unload waveforms in graph."
 tclcommand="
 xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
 "
