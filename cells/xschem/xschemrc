@@ -317,11 +317,14 @@ if { [info exists env(PDK_ROOT)] && $env(PDK_ROOT) ne {} } {
 } else {
   ## not existing or empty. 
   puts stderr "Warning: PDK_ROOT env. var. not found or empty, trying to find a pdk install"
-  if {[file isdir [pwd]/../..]} {
+  if {[regexp {/cells/xschem} [pwd]]} {
     set PDK_ROOT [file normalize [pwd]/../..]
     set 180MCU_MODELS ${PDK_ROOT}/models/ngspice
     puts stderr "pdk installation: using $PDK_ROOT"
     puts stderr "180MCU_MODELS: $180MCU_MODELS"
+  ##
+  ## do some elseif trying to find an installed pdk on the system, typically in ~/ and /usr/local
+  ##
   } else {
     puts stderr {No pdk installation found, set PDK_ROOT env. var. and restart xschem}
   }
