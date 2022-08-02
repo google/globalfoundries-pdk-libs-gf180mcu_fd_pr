@@ -100,7 +100,7 @@ def call_regression(rule_deck_path, path):
             if 'logger.info("Starting GF180MCU DENSITY DRC rules.")' in line:
                 remove_if = True
             if remove_if == True:
-                if 'CHIP.area' in line or 'end ' in line and 'end #' not in line:
+                if 'CHIP.area' in line or 'end\n' in line and 'end #' not in line:
                     line = ''
             if 'GEOMETRY RULES' in line:
                 break
