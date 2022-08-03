@@ -139,8 +139,9 @@ if __name__ == "__main__":
             os.system(f"klayout -b -r split_gds.rb -rd input={path}")
             print(f"File {path} was splitted into multiple gds files")
 
-    other_files = os.listdir('sc')
-    args["--path"] = args["--path"] + other_files
+    if os.path.exists("sc"):
+        other_files = os.listdir('sc')
+        args["--path"] = args["--path"] + other_files
 
     # Get input data for simulator
     for path in args["--path"]:
