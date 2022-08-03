@@ -74,7 +74,7 @@ def run_switches():
         os.system('mkdir -p {0}'.format(run_directory))
 
         log_file = run_directory + "/" + test_case + ".log"
-        os.system('python3 ../run_drc.py --path=switch_checking/switch_checking.gds {0} >> {1}'.format(switches, log_file))
+        os.system('python3 ../run_drc.py --path=switch_checking/simple_por.gds.gz {0} >> {1}'.format(switches, log_file))
 
         check_output_log(log_file, expected_result)
 
