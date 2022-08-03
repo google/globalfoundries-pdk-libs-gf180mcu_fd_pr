@@ -83,7 +83,7 @@ def lvs_check(table,files):
             with open(f'testcases/{layout}_generated.cdl', 'w') as file:
                 file.write(spice_netlist)
 
-        result = os.popen(f"klayout -b -r ../gf180mcu.lvs -rd input=testcases/{layout}.gds -rd report={layout}.lvsdb -rd schematic={layout}_generated.cdl -rd target_netlist={layout}_extracted.cir -rd thr={workers_count} {switches}").read()
+        result = os.popen(f"klayout -b -r ../gf180mcu.lvs -rd input=testcases/{layout}.gds -rd report={layout}.lvsdb -rd schematic={layout}_generated.cdl -rd target_netlist={layout}_extracted.cir -rd thr={workers_count} {switches} -rd lvs_sub='vdd!'").read()
 
         # moving all reports to run dir
         out_dir = arguments["--run_dir"]
@@ -100,7 +100,7 @@ def lvs_check(table,files):
             for file in man_testing:
                 file_clean = file.split("/")[-1].replace(".gds","")
                 if layout == file_clean:
-                    result = os.popen(f"klayout -b -r ../gf180mcu.lvs -rd input={file} -rd report={layout}.lvsdb -rd schematic={layout}.cdl -rd target_netlist={layout}_extracted.cir -rd thr={workers_count} {switches}").read()
+                    result = os.popen(f"klayout -b -r ../gf180mcu.lvs -rd input={file} -rd report={layout}.lvsdb -rd schematic={layout}.cdl -rd target_netlist={layout}_extracted.cir -rd thr={workers_count} {switches} -rd lvs_sub='vdd!'").read()
 
                     dir_clean = file.replace(".gds","")
                     os.system(f"mv -f {dir_clean}.lvsdb {dir_clean}_extracted.cir {out_dir}/LVS_{device_dir}/")

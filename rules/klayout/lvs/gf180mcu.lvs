@@ -72,8 +72,8 @@ end
 #=== NET NAMES OPTION ===
 # true: use net names instead of numbers
 # false: use numbers for nets
-if $spice_net_names
-  spice_with_net_names = $spice_net_names
+if $spice_net_names == "true"
+  spice_with_net_names = true
   logger.info("Extracted netlist with net names: #{$spice_net_names}")
 else
   spice_with_net_names = true
@@ -83,8 +83,8 @@ end
 #=== COMMENTS OPTION ===
 # true: put in comments with details
 # false: no comments
-if $spice_comments
-  spice_with_comments = $spice_comments
+if $spice_comments == "true"
+  spice_with_comments = true
   logger.info("Extracted netlist with comments in details: #{$spice_comments}")
 else
   spice_with_comments = false
@@ -100,9 +100,11 @@ else
 end
 
 #=== EXTRACTION SCALE ===
-if $scale
+if $scale  == "true"
   device_scaling(1000000)
   logger.info("device_scaling: true")
+else
+  logger.info("device_scaling: false")
 end
 
 #=== PRINT DETAILS ===

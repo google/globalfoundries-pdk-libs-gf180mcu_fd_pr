@@ -1,0 +1,66 @@
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This is a Github Actions for testing LVS rule deck of GF180MCU
+name: Standard Cells gf180mcu_fd_sc_mcu9t5v0 LVS testing
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Defines environment variables
+env:
+  PDK_ROOT: $GITHUB_WORKSPACE/rules/klayout
+  PDK: lvs
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "LVS_gf180mcu_fd_sc_mcu9t5v0_testing"
+  LVS_gf180mcu_fd_sc_mcu9t5v0_testing:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Gets python version with list of needed requirements
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+          cache-dependency-path: '**/requirements.test.txt'
+
+      # Installs requirements
+      - run: pip install -r ./rules/klayout/requirements.test.txt
+
+      # Installs Klayout verison 0.27.8
+      - name: Installing Klayout 0.27.8
+        run: |
+          wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.8-1_amd64.deb
+          sudo apt-get install qt5-default qttools5-dev libqt5xmlpatterns5-dev qtmultimedia5-dev libqt5multimediawidgets5 libqt5svg5-dev
+          sudo dpkg -i ./klayout_0.27.8-1_amd64.deb
+          sudo apt-get install -f -y
+
+      # Runs a set of commands using the runners shell
+      - name: Testing LVS for Standard Cells gf180mcu_fd_sc_mcu9t5v0
+        run: |
+          cd ./rules/klayout/lvs/testing
+          make test-LVS-gf180mcu_fd_sc_mcu9t5v0 -j$(nproc)

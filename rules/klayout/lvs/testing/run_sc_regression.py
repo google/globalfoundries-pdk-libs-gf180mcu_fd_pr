@@ -16,12 +16,13 @@
 
 Usage: 
     run_sc_regression.py (--help| -h)
-    run_sc_regression.py (--run_dir=<run_dir>) [--num_cores=<num>]
+    run_sc_regression.py (--cell_lib=<cells>) (--run_dir=<run_dir>) [--num_cores=<num>]
 
 Options:
-    --help -h              Print this help message.
-    --run_dir=<run_dir>    Selecting your output path.    
-    --num_cores=<num>      Number of cores to be used by LVS checker 
+    --help -h               Print this help message.
+    --cell_lib=<cells>      Select the cell library to run LVS against (gf180mcu_fd_sc_mcu7t5v0, gf180mcu_fd_sc_mcu9t5v0)
+    --run_dir=<run_dir>     Selecting your output path.    
+    --num_cores=<num>       Number of cores to be used by LVS checker 
 """
 
 from docopt import docopt
@@ -54,7 +55,7 @@ def lvs_check(sc_input):
         cdl_input = f"sc_netlists/{sc_input_clean}"
 
     # Cleaning netlist [Remove unnecessary chars] and writing it again
-    unnecessary_chars = ["$SUB=" ,"$[" , "]"]
+    unnecessary_chars = ["$SUB=" ,"$[" , "]", "$"]
          
     if "sc" in sc_input and "io" not in sc_input:
         
@@ -107,8 +108,12 @@ def main():
     #            "GF018green_ipio_5p0c_75_3lm"     , "GF018green_ipio_5p0c_75_4lm"      , "GF018green_ipio_5p0c_75_5lm"      ,
     #            "GF018hv5v_mcu_sc7"               , "GF018hv5v_green_sc9" ] 
     
-    cell_list = [ "gf180mcu_fd_io_3lm"     , "gf180mcu_fd_io_4lm"  , "gf180mcu_fd_io_5lm",
-                  "GF018hv5v_mcu_sc7"      , "GF018hv5v_green_sc9" ] 
+    # cell_list = [ "gf180mcu_fd_io_3lm"     , "gf180mcu_fd_io_4lm"  , "gf180mcu_fd_io_5lm",
+    #               "GF018hv5v_mcu_sc7"      , "GF018hv5v_green_sc9" ] 
+
+    # [ "gf180mcu_fd_sc_mcu7t5v0"      , "gf180mcu_fd_sc_mcu9t5v0" ]
+
+    cell_list = [arguments["--cell_lib"]]
     
     # Create GDS splitter script
     if os.path.exists("sc_testcases/sc_split") and os.path.isdir("sc_testcases/sc_split"):
@@ -134,7 +139,8 @@ def main():
     os.system(f"rm -rf sc_testcases/split_gds.rb")
             
     # Create cdl splitter script
-    sc_cdl = ["GF018hv5v_mcu_sc7" , "GF018hv5v_green_sc9"]
+    # ["gf180mcu_fd_sc_mcu7t5v0" , "gf180mcu_fd_sc_mcu9t5v0"]
+    sc_cdl = [arguments["--cell_lib"]]
     sc_result = []
     get_line = False
     os.makedirs(f"sc_testcases/sc_split/sc_netlists/",exist_ok=False)
