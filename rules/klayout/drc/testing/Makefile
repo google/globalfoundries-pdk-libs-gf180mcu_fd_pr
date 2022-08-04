@@ -39,19 +39,19 @@ test-DRC-gf180mcu_fd_ip_sram:
 	@cd $(Testing_DIR)
 	@echo "========== DRC-gf180mcu_fd_ip_sram testing =========="
 	@ python3 run_sc_regression.py 									\
-		--path=sc_testcases/gf180mcu_fd_ip_sram__sram64x8m8wm1.gds 	\
-		--path=sc_testcases/gf180mcu_fd_ip_sram__sram128x8m8wm1.gds	\
-		--path=sc_testcases/gf180mcu_fd_ip_sram__sram256x8m8wm1.gds	\
-		--path=sc_testcases/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds	
+		--path=ip_testcases/gf180mcu_fd_ip_sram__sram64x8m8wm1.gds 	\
+		--path=ip_testcases/gf180mcu_fd_ip_sram__sram128x8m8wm1.gds	\
+		--path=ip_testcases/gf180mcu_fd_ip_sram__sram256x8m8wm1.gds	\
+		--path=ip_testcases/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds	
 
 .ONESHELL:
 test-DRC-gf180mcu_fd_io:
 	@cd $(Testing_DIR)
 	@echo "========== DRC-gf180mcu_fd_io testing =========="
 	@ python3 run_sc_regression.py 					\
-		--path=sc_testcases/gf180mcu_fd_io_3lm.gds	\
-		--path=sc_testcases/gf180mcu_fd_io_4lm.gds	\
-		--path=sc_testcases/gf180mcu_fd_io_5lm.gds
+		--path=ip_testcases/gf180mcu_fd_io_3lm.gds	\
+		--path=ip_testcases/gf180mcu_fd_io_4lm.gds	\
+		--path=ip_testcases/gf180mcu_fd_io_5lm.gds
 
 .ONESHELL:
 test-DRC-gf180mcu_fd_sc_mcu7t5v0:
