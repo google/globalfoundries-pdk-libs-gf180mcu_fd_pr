@@ -146,8 +146,7 @@ test-DRC-Option-C:
 test-DRC-switch:
 	@cd $(Testing_DIR)
 	@echo "========== DRC-Switch testing =========="
-	@python3 run_switch_checking.py
-	@rm -rf pattern.csv
+	python3 run_switch_checking.py && rm -rf pattern.csv
 
 #===============================
 # --------- Clean ALL ----------
