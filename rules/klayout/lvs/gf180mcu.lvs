@@ -153,6 +153,8 @@ class SubcircuitModelsReader < RBA::NetlistSpiceReaderDelegate
   def parse_element(s, element)
     if element == "C"
       super(s + " C=2e-16", element)
+    elsif element == "R"
+      super(s + " R=0", element)
     else
       super
     end
