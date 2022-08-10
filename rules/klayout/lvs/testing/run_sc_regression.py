@@ -92,12 +92,12 @@ def lvs_check(sc_input):
     # os.system(f"mv -f sc_testcases/{sc_input}.lvsdb sc_testcases/*/{cdl_input_clean}_extracted.cir sc_testcases/*/{cdl_input_clean}_modified.cdl {out_dir}/{sc_input_clean}/")
 
     if "INFO : Congratulations! Netlists match." in result:
-        logging.info(f"Extraction of {sc_input_clean} is passed")
+        logging.info("Extraction of {:<25s} is passed".format(sc_input_clean))
 
         with open (f"{dir}_testcases/{dir}_report.csv","a+") as rep:
             rep.write(f"{sc_input_clean},passed\n")
     else:
-        logging.info(f"Extraction of {sc_input_clean} is failed")
+        logging.info("Extraction of {:<25s} is failed".format(sc_input_clean))
 
         with open (f"{dir}_testcases/{dir}_report.csv","a+") as rep:
             rep.write(f"{sc_input_clean},failed\n")
@@ -135,7 +135,7 @@ def main():
                             end''')
             os.system(f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds")
             os.system(f"rm -rf sc_testcases/split_gds.rb")
-            
+
             # Create cdl splitter script
             cdl = cell.split("/")[-1]
             os.makedirs(f"sc_testcases/sc_split/sc_netlists/",exist_ok=False)
@@ -165,13 +165,51 @@ def main():
                 else:
                     cell_clean = cell.replace("ip_testcases/","")
                     executor.submit(lvs_check, cell_clean)
-            
+
             # Running LVS on SC
             else:
                 sc_list = glob.glob("sc_testcases/sc_split/*")
                 for sc in sc_list:
                     sc_clean = sc.split('.gds')[0].split ('sc_testcases/')[-1]    
                     executor.submit(lvs_check, sc_clean)
+
+    if os.path.isfile("sc_testcases/sc_report.csv"):
+        df = pd.read_csv("sc_testcases/sc_report.csv")
+        df.columns = ["CELL NAME","RESULT"]
+        df.to_csv("sc_testcases/sc_report.csv", index = False)
+        df = pd.read_csv("sc_testcases/sc_report.csv")
+        pass_count = df["RESULT"].str.count("passed").sum()
+        fail_count = df["RESULT"].str.count("failed").sum()
+        
+        logging.info("\n==================================")
+        logging.info(f"NO. OF PASSED SC CELLS : {pass_count}")
+        logging.info(f"NO. OF FAILED SC CELLS : {fail_count}")
+        logging.info("==================================\n")
+        
+        # Move split files into run dir
+        shutil.move("sc_testcases/sc_report.csv", out_dir)
+        shutil.move("sc_testcases/sc_split/", out_dir)
+
+    elif os.path.isfile("ip_testcases/ip_report.csv"):
+        df = pd.read_csv("ip_testcases/ip_report.csv")
+        df.columns = ["CELL NAME","RESULT"]
+        df.to_csv("ip_testcases/ip_report.csv", index = False)
+        df = pd.read_csv("ip_testcases/ip_report.csv")
+        pass_count = df["RESULT"].str.count("passed").sum()
+        fail_count = df["RESULT"].str.count("failed").sum()
+        
+        logging.info("\n==================================")
+        logging.info(f"NO. OF PASSED IP CELLS : {pass_count}")
+        logging.info(f"NO. OF FAILED IP CELLS : {fail_count}")
+        logging.info("==================================\n")
+        
+        # Move files into run dir
+        shutil.move("ip_testcases/ip_report.csv", out_dir)
+
+    else:
+        logging.info("\n==================================")
+        logging.info("Regression Test is failed")
+        logging.info("==================================\n")
 
 
 if __name__ == "__main__":
@@ -196,42 +234,3 @@ if __name__ == "__main__":
         
     # Calling main function 
     main()
-    
-    time.sleep(10)
-
-    if os.path.isfile("sc_testcases/sc_report.csv"):
-        df = pd.read_csv("sc_testcases/sc_report.csv")
-        df.columns = ["CELL NAME","RESULT"]
-        df.to_csv("sc_testcases/sc_report.csv", index = False)
-        df = pd.read_csv("sc_testcases/sc_report.csv")
-        pass_count = df["RESULT"].str.count("passed").sum()
-        fail_count = df["RESULT"].str.count("failed").sum()
-        
-        logging.info("\n==================================")
-        logging.info(f"NO. OF PASSED SC CELLS : {pass_count}")
-        logging.info(f"NO. OF FAILED SC CELLS : {fail_count}")
-        logging.info("==================================\n")
-        
-        # Move split files into run dir 
-        os.system (f"mv -f sc_testcases/sc_report.csv  sc_testcases/sc_split/  {out_dir}")
-
-    elif os.path.isfile("ip_testcases/ip_report.csv"):
-        df = pd.read_csv("ip_testcases/ip_report.csv")
-        df.columns = ["CELL NAME","RESULT"]
-        df.to_csv("ip_testcases/ip_report.csv", index = False)
-        df = pd.read_csv("ip_testcases/ip_report.csv")
-        pass_count = df["RESULT"].str.count("passed").sum()
-        fail_count = df["RESULT"].str.count("failed").sum()
-        
-        logging.info("\n==================================")
-        logging.info(f"NO. OF PASSED IP CELLS : {pass_count}")
-        logging.info(f"NO. OF FAILED IP CELLS : {fail_count}")
-        logging.info("==================================\n")
-        
-        # Move split files into run dir 
-        os.system (f"mv -f ip_testcases/ip_report.csv  {out_dir}")
-
-    else:
-        logging.info("\n==================================")
-        logging.info("Regression Test is failed")
-        logging.info("==================================\n")
