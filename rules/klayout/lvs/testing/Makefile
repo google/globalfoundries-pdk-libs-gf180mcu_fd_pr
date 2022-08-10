@@ -24,7 +24,7 @@ run_folder   := $(shell date +'run_%Y_%m_%d_%H_%M')
 
 all: test-LVS
 
-test-LVS: Add_run-dir  test-LVS_switch  test-LVS-gf180mcu_fd_sc  test-LVS_main
+test-LVS: Add_run-dir  test-LVS-switch  test-LVS-gf180mcu_fd_sc  test-LVS-main
 
 #=================================
 # --------- RUN FOLDER ----------
@@ -36,7 +36,7 @@ Add_run-dir:
 	@ mkdir -p $(run_folder)/switch_checking  $(run_folder)/main $(run_folder)/gf180mcu_fd_sc_mcu7t5v0 $(run_folder)/gf180mcu_fd_sc_mcu9t5v0 $(run_folder)/gf180mcu_fd_io $(run_folder)/gf180mcu_fd_ip_sram
 
 #=================================
-# --------- test-LVS_SC ----------
+# --------- test-LVS-SC ----------
 #=================================
 
 .ONESHELL:
@@ -67,7 +67,7 @@ test-LVS-gf180mcu_fd_sc_mcu9t5v0: Add_run-dir
 #=================================
 
 .ONESHELL:
-test-LVS_main: test-LVS_MOS  test-LVS_BJT  test-LVS_DIODE  test-LVS_RES  test-LVS_MIMCAP  test-LVS_MOSCAP  test-LVS_MOS-SAB
+test-LVS-main: test-LVS_MOS  test-LVS_BJT  test-LVS_DIODE  test-LVS_RES  test-LVS_MIMCAP  test-LVS_MOSCAP  test-LVS_MOS-SAB
 
 .ONESHELL:
 test-LVS_MOS: Add_run-dir
@@ -112,11 +112,11 @@ test-LVS_MOS-SAB: Add_run-dir
 	@ python3 run_regression.py  --run_dir=$(run_folder)/main --device=MOS-SAB |& tee $(run_folder)/main/LVS_MOS-SAB/results.log
 
 #=================================
-# -------- test-LVS_switch -------
+# -------- test-LVS-switch -------
 #=================================
 
 .ONESHELL:
-test-LVS_switch: Add_run-dir	
+test-LVS-switch: Add_run-dir
 	@cd $(Testing_DIR)
 	@cd ..
 	@echo "========== LVS-Switch testing =========="
@@ -135,9 +135,9 @@ help:
 	@echo "... all                  	(the default if no target is provided          )"
 	@echo "... Add_run-dir          	(Create output directory of all runs           )"
 	@echo "... test-LVS             	(To run LVS full regression                    )"
-	@echo "... test-LVS_switch      	(To run switch checking regression             )"
+	@echo "... test-LVS-switch      	(To run switch checking regression             )"
 	@echo "... test-LVS-gf180mcu_fd_sc	(To run standard cells LVS regression          )"
-	@echo "... test-LVS_main        	(To run main LVS regression for all devices    )"
+	@echo "... test-LVS-main        	(To run main LVS regression for all devices    )"
 	@echo "... test-LVS_MOS         	(To run main LVS regression for MOS devices    )"
 	@echo "... test-LVS_BJT         	(To run main LVS regression for BJT devices    )"
 	@echo "... test-LVS_DIODE       	(To run main LVS regression for diode devices  )"

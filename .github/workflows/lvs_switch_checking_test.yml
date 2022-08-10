@@ -65,4 +65,4 @@ jobs:
       - name: Testing LVS for Switch Checking
         run: |
           cd ./rules/klayout/lvs/testing
-          make test-LVS_switch -j$(nproc)
+          make test-LVS-switch -j$(nproc)

@@ -65,4 +65,4 @@ jobs:
       - name: Testing LVS for Regression
         run: |
           cd ./rules/klayout/lvs/testing
-          make test-LVS_main -j$(nproc)
+          make test-LVS-main -j$(nproc)

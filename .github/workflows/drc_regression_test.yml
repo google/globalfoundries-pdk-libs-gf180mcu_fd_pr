@@ -65,4 +65,4 @@ jobs:
       - name: Testing DRC for Regression
         run: |
           cd ./rules/klayout/drc/testing
-          make test-DRC_main -j$(nproc)
+          make test-DRC-main -j$(nproc)

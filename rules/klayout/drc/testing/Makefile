@@ -23,16 +23,16 @@ Testing_DIR ?= $(shell pwd)
 
 all : clean test-DRC
 
-test-DRC: test-DRC_switch  test-DRC_SC  test-DRC_main
+test-DRC: test-DRC-switch  test-DRC-SC  test-DRC-main
 
 
 #=================================
-# --------- test-DRC_SC ----------
+# --------- test-DRC-SC ----------
 #=================================
 
 .ONESHELL:
-test-DRC_SC : test-DRC-gf180mcu_fd_ip_sram test-DRC-gf180mcu_fd_io test-DRC-gf180mcu_fd_sc_mcu7t5v0 test-DRC-gf180mcu_fd_sc_mcu9t5v0
-	@echo "========== DRC-DRC_SC is done =========="
+test-DRC-SC : test-DRC-gf180mcu_fd_ip_sram test-DRC-gf180mcu_fd_io test-DRC-gf180mcu_fd_sc_mcu7t5v0 test-DRC-gf180mcu_fd_sc_mcu9t5v0
+	@echo "========== DRC-DRC-SC is done =========="
 
 .ONESHELL:
 test-DRC-gf180mcu_fd_ip_sram:
@@ -42,7 +42,7 @@ test-DRC-gf180mcu_fd_ip_sram:
 		--path=ip_testcases/gf180mcu_fd_ip_sram__sram64x8m8wm1.gds 	\
 		--path=ip_testcases/gf180mcu_fd_ip_sram__sram128x8m8wm1.gds	\
 		--path=ip_testcases/gf180mcu_fd_ip_sram__sram256x8m8wm1.gds	\
-		--path=ip_testcases/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds	
+		--path=ip_testcases/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds
 
 .ONESHELL:
 test-DRC-gf180mcu_fd_io:
@@ -70,7 +70,7 @@ test-DRC-gf180mcu_fd_sc_mcu9t5v0:
 #=================================
 
 .ONESHELL:
-test-DRC_main : test-DRC-foundry-Option-1 test-DRC-foundry-Option-2 test-DRC-foundry-Option-3 test-DRC-foundry-Option-4 test-DRC-Option-A test-DRC-Option-B test-DRC-Option-C
+test-DRC-main : test-DRC-foundry-Option-1 test-DRC-foundry-Option-2 test-DRC-foundry-Option-3 test-DRC-foundry-Option-4 test-DRC-Option-A test-DRC-Option-B test-DRC-Option-C
 	@echo "========== DRC-Regression is done =========="
 
 .ONESHELL:
@@ -79,7 +79,7 @@ test-DRC-foundry-Option-1:
 	@echo "========== DRC-Regression foundry-Option-1 =========="
 	@python3 run_regression.py 																\
 		--path=testcases/0.0.DM000013_13_1P6M_6kA_MIMA_SOLDER_BUMP.gds.gz					\
-		--metal_top="6K" --mim_option="A"  --metal_level=6 --run_name="DRC-foundry-Option-1"										
+		--metal_top="6K" --mim_option="A"  --metal_level=6 --run_name="DRC-foundry-Option-1"
 
 .ONESHELL:
 test-DRC-foundry-Option-2:
@@ -87,7 +87,7 @@ test-DRC-foundry-Option-2:
 	@echo "========== DRC-Regression foundry-Option-2 =========="
 	@python3 run_regression.py 																\
 		--path=testcases/0.0.DM000013_13_1P6M_9kA_MIMB_WEDGE.gds.gz							\
-		--metal_top="9K" --mim_option="B"  --metal_level=6  --run_name="DRC-foundry-Option-2"										
+		--metal_top="9K" --mim_option="B"  --metal_level=6  --run_name="DRC-foundry-Option-2"
 
 .ONESHELL:
 test-DRC-foundry-Option-3:
@@ -95,7 +95,7 @@ test-DRC-foundry-Option-3:
 	@echo "========== DRC-Regression foundry-Option-3 =========="
 	@python3 run_regression.py 																\
 		--path=testcases/0.0.DM000013_13_1P6M_11kA_MIMA_Gold_Bump.gds.gz					\
-		--metal_top="11K" --mim_option="A"  --metal_level=6	--run_name="DRC-foundry-Option-3"										
+		--metal_top="11K" --mim_option="A"  --metal_level=6	--run_name="DRC-foundry-Option-3"
 
 .ONESHELL:
 test-DRC-foundry-Option-4:
@@ -103,7 +103,7 @@ test-DRC-foundry-Option-4:
 	@echo "========== DRC-Regression foundry-Option-4 =========="
 	@python3 run_regression.py 																\
 		--path=testcases/0.0.DM000013_13_1P6M_30kA_MIMB_BALL.gds.gz							\
-		--metal_top="30K" --mim_option="B"  --metal_level=6	--run_name="DRC-foundry-Option-4"									
+		--metal_top="30K" --mim_option="B"  --metal_level=6	--run_name="DRC-foundry-Option-4"
 
 .ONESHELL:
 test-DRC-Option-A:
@@ -111,7 +111,7 @@ test-DRC-Option-A:
 	@echo "========== DRC-Regression Option-A =========="
 	@python3 run_regression.py 														\
 		--path=testcases/0.0.DM000013_13_1P6M_11kA_MIMA_Gold_Bump.gds.gz			\
-		--metal_top="30K" --mim_option="A"  --metal_level=3	--run_name="DRC-Option-A"										
+		--metal_top="30K" --mim_option="A"  --metal_level=3	--run_name="DRC-Option-A"
 
 .ONESHELL:
 test-DRC-Option-B:
@@ -119,7 +119,7 @@ test-DRC-Option-B:
 	@echo "========== DRC-Regression Option-B =========="
 	@python3 run_regression.py 														\
 		--path=testcases/0.0.DM000013_13_1P6M_11kA_MIMA_Gold_Bump.gds.gz			\
-		--metal_top="11K" --mim_option="B"  --metal_level=4	--run_name="DRC-Option-B"			
+		--metal_top="11K" --mim_option="B"  --metal_level=4	--run_name="DRC-Option-B"
 
 .ONESHELL:
 test-DRC-Option-C:
@@ -136,14 +136,14 @@ test-DRC-Option-C:
 		--path=testcases/density_testcases/MT_3_pass.gds				 			\
 		--path=testcases/density_testcases/PL_8_fail.gds				 			\
 		--path=testcases/density_testcases/PL_8_pass.gds				 			\
-		--metal_top="9K" --mim_option="B"  --metal_level=5	--run_name="DRC-Option-C"		
+		--metal_top="9K" --mim_option="B"  --metal_level=5	--run_name="DRC-Option-C"
 
 #=================================
-# -------- test-DRC_switch -------
+# -------- test-DRC-switch -------
 #=================================
 
 .ONESHELL:
-test-DRC_switch: 	
+test-DRC-switch:
 	@cd $(Testing_DIR)
 	@echo "========== DRC-Switch testing =========="
 	@python3 run_switch_checking.py
@@ -168,13 +168,13 @@ help:
 	@echo "\n ==== The following are some of the valid targets for this Makefile ====\n"
 	@echo "... all                        			(the default if no target is provided             )"
 	@echo "... clean                      			(To clean all old runs                            )"
-	@echo "... test-DRC_switch            			(To run switch checking regression                )"
-	@echo "... test-DRC_SC                			(To run standard cells DRC regression             )"
+	@echo "... test-DRC-switch            			(To run switch checking regression                )"
+	@echo "... test-DRC-SC                			(To run standard cells DRC regression             )"
 	@echo "... test-DRC-gf180mcu_fd_ip_sram			(To run SRAM IP cells DRC regression 	          )"
 	@echo "... test-DRC-gf180mcu_fd_io				(To run I/O cells DRC regression             	  )"
 	@echo "... test-DRC-gf180mcu_fd_sc_mcu7t5v0		(To run standard cells 7 tracks DRC regression    )"
 	@echo "... test-DRC-gf180mcu_fd_sc_mcu9t5v0		(To run standard cells 9 tracks DRC regression    )"
-	@echo "... test-DRC_main              			(To run main DRC full regression                  )"
+	@echo "... test-DRC-main              			(To run main DRC full regression                  )"
 	@echo "... test-DRC-foundry-Option-1  			(To run main DRC regression using foundry-Option-1)"
 	@echo "... test-DRC-foundry-Option-2  			(To run main DRC regression using foundry-Option-2)"
 	@echo "... test-DRC-foundry-Option-3  			(To run main DRC regression using foundry-Option-3)"
