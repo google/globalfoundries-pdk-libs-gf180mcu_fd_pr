@@ -31,6 +31,7 @@ import xml.etree.ElementTree as ET
 import csv
 import time
 import concurrent.futures
+import subprocess
 
 
 def get_results(rule_deck_path, iname, file, x):
@@ -76,7 +77,7 @@ def call_simulator(arg):
     :param path: The path to the GDS file you want to simulate
     :param thrCount: number of threads to use
     """
-    os.system(arg)
+    subprocess.Popen(["klayout"] + arg.split(" ")).wait()
 
 if __name__ == "__main__":
 
@@ -84,7 +85,7 @@ if __name__ == "__main__":
     args = docopt(__doc__)
 
     if os.path.exists("sc"):
-        os.system("rm -rf sc")
+        subprocess.run(["rm", "-rf", "sc"])
 
     report = [["File_Name", "Rule Deck", "Rules", "Status"]]
 
@@ -94,7 +95,7 @@ if __name__ == "__main__":
     else:
         thrCount = os.cpu_count() * 2
 
-    os.system("klayout -v")
+    subprocess.run(["klayout", "-v"])
 
     rule_deck_path = []
     rules = []
@@ -136,7 +137,7 @@ if __name__ == "__main__":
         iname = path.split('.gds')
         file = iname[0].split('/')
         if "sc" in file[-1]:
-            os.system(f"klayout -b -r split_gds.rb -rd input={path}")
+            subprocess.Popen(["klayout", f"-b", f"-r", f"split_gds.rb", f"-rd", f"input={path}"]).wait()
             print(f"File {path} was splitted into multiple gds files")
 
     if os.path.exists("sc"):
@@ -155,7 +156,7 @@ if __name__ == "__main__":
         iname = path.split('.gds')
         file = iname[0].split('/')
         for runset in rule_deck_path:
-            arg = f"klayout -b -r {runset} -rd input={path} -rd report={file[-1]}_{x}.lyrdb -rd thr={thrCount} -rd conn_drc=true"
+            arg = f"-b -r {runset} -rd input={path} -rd report={file[-1]}_{x}.lyrdb -rd thr={thrCount} -rd conn_drc=true"
             runs.append(arg)
             x += 1
 
@@ -189,7 +190,7 @@ if __name__ == "__main__":
         os.remove("split_gds.rb")
 
     if os.path.exists("sc"):
-        os.system("rm -rf sc")
+        subprocess.run(["rm", "-rf", "sc"])
 
     t1 = time.time()
     print(f'Total execution time {t1 - t0} s')

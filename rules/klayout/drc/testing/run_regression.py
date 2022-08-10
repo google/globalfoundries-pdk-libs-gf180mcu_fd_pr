@@ -39,6 +39,7 @@ import xml.etree.ElementTree as ET
 import csv
 import time
 import re
+import subprocess
 
 from sympy import arg
 
@@ -53,7 +54,7 @@ def call_regression(rule_deck_path, path):
     x = x.replace(" ", "_")
 
     name_ext = str(rule_deck_path).replace(".drc","").split("/")[-1]
-    os.system(f"mkdir run_{x}_{name_ext}")
+    subprocess.run(["mkdir", f"run_{x}_{name_ext}"])
 
     # Get the same rule deck with gds output
     with open(rule_deck_path, 'r') as f:
@@ -86,9 +87,9 @@ def call_regression(rule_deck_path, path):
     iname = path.split('.gds')
     if '/' in iname[0]:
         file = iname[0].split('/')
-        os.system(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={file[-1]}.lyrdb -rd thr={thrCount} {switches} ")
+        subprocess.Popen(["klayout", "-b", "-r", f"run_{x}_{name_ext}/markers.drc", f"-rd", f"input={path}", f"-rd", f"report={file[-1]}.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
     else:
-        os.system(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={iname[0]}.lyrdb -rd thr={thrCount} {switches} ")
+        subprocess.Popen(["klayout", "-b", "-r", f"run_{x}_{name_ext}/markers.drc", f"-rd", f"input={path}", f"-rd", f"report={iname[0]}.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
 
     marker_gen = []
     ly = 0
@@ -132,10 +133,7 @@ def call_regression(rule_deck_path, path):
     marker_file.close()
 
     # Generate databases
-    os.system(f"klayout -b -r run_{x}_{name_ext}/regression.drc -rd input=run_{x}_{name_ext}/merged_output.gds -rd report=database.lyrdb -rd thr={thrCount} {switches}")
-
-    # Cleaning directories
-    # os.system(f"rm -rf regression.drc markers.drc merged_output.gds")
+    subprocess.Popen(["klayout", "-b", f"-r", f"run_{x}_{name_ext}/regression.drc", f"-rd", f"input=run_{x}_{name_ext}/merged_output.gds", f"-rd", f"report=database.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
 
     mytree = ET.parse(f'run_{x}_{name_ext}/database.lyrdb')
     myroot = mytree.getroot()
@@ -255,7 +253,7 @@ if __name__ == "__main__":
         exit()
 
 
-    os.system("klayout -v")
+    subprocess.run(["klayout", "-v"])
 
     rule_deck_path = []
 

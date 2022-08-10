@@ -183,33 +183,33 @@ def main():
             switches = switches + f'-rd topcell={topcell_name}'
 
             # Removing old db
-            os.system(f"rm -rf {name_clean_}_main_drc_gf{arguments['--gf180mcu']}.lyrdb {name_clean_}_antenna_gf{arguments['--gf180mcu']}.lyrdb {name_clean_}_density_gf{arguments['--gf180mcu']}.lyrdb")
+            subprocess.run(["rm", "-rf", f"{name_clean_}_main_drc_gf{arguments['--gf180mcu']}.lyrdb", f"{name_clean_}_antenna_gf{arguments['--gf180mcu']}.lyrdb", f"{name_clean_}_density_gf{arguments['--gf180mcu']}.lyrdb"])
 
             # Running DRC using klayout
             if (arguments["--antenna_only"]) and not (arguments["--density_only"]):
                 logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                subprocess.Popen(["klayout", f"-b", f"-r", f"{os.environ['PDK_ROOT']}/{os.environ['PDK']}/gf180mcu_antenna.drc", f"-rd", f"input={path}", f"-rd", f"report={name_clean}_antenna_gf{arguments['--gf180mcu']}", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
 
             elif (arguments["--density_only"]) and not (arguments["--antenna_only"]):
                 logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                subprocess.Popen(["klayout", f"-b", f"-r {os.environ['PDK_ROOT']}/{os.environ['PDK']}/gf180mcu_density.drc", f"-rd", f"input={path}", f"-rd", f"report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
 
             elif arguments["--antenna_only"] and arguments["--density_only"]:
                 logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                subprocess.Popen(["klayout", f"-b", f"-r", f"{os.environ['PDK_ROOT']}/{os.environ['PDK']}/gf180mcu_antenna.drc", f"-rd", f"input={path}", f"-rd", f"report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
 
                 logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                subprocess.Popen(["klayout", f"-b", f"-r", f"{os.environ['PDK_ROOT']}/{os.environ['PDK']}/gf180mcu_density.drc", f"-rd", f"input={path}", f"-rd", f"report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
 
             else:
                 logging.info(f"Running main Global Foundries 180nm MCU runset on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu.drc -rd input={path} -rd report={name_clean}_main_drc_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                subprocess.Popen(["klayout", f"-b", f"-r", f"{os.environ['PDK_ROOT']}/{os.environ['PDK']}/gf180mcu.drc", f"-rd", f"input={path}", f"-rd", f"report={name_clean}_main_drc_gf{arguments['--gf180mcu']}.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
                 if arguments["--antenna"]:
                     logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                    os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                    subprocess.Popen(["klayout", f"-b", f"-r", f"{os.environ['PDK_ROOT']}/{os.environ['PDK']}/gf180mcu_antenna.drc", f"-rd", f"input={path}", f"-rd", f"report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
                 if arguments["--density"]:
                     logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                    os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                    subprocess.Popen(["klayout", f"-b", f"-r", f"{os.environ['PDK_ROOT']}/{os.environ['PDK']}/gf180mcu_density.drc", f"-rd", f"input={path}", f"-rd", f"report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb", f"-rd", f"thr={thrCount}"] + switches.split(" ")).wait()
         else:
             logging.error("Script only support gds files, please select one")
             exit()

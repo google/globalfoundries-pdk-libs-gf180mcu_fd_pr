@@ -31,18 +31,15 @@ import concurrent.futures
 import glob
 import shutil
 import re
-import pandas as pd 
+import pandas as pd
 import numpy as np
 import time
 import logging
+import subprocess
 
 def lvs_check(sc_input):
 
-    # print(f"================================================")
-    # print ('{:-^48}'.format(sc_input.upper()))
-    # print(f"================================================ \n")
-
-    # Selecting correct netlist 
+    # Selecting correct netlist
     if "gf180mcu_fd_io_" in sc_input:
         cdl_input = sc_input[:-4]
         cdl_input_clean = cdl_input.split("/")[-1]
@@ -62,7 +59,7 @@ def lvs_check(sc_input):
 
     if "sc" in sc_input and "io" not in sc_input:
 
-        with open(f'sc_testcases/sc_split/{cdl_input}.cdl', 'r') as file :
+        with open(f'sc_testcases/sc_split/{cdl_input}.cdl', 'r') as file:
             spice_netlist = file.read()
         for char in unnecessary_chars:
             spice_netlist = spice_netlist.replace(char, '')
@@ -85,12 +82,6 @@ def lvs_check(sc_input):
     # Running LVS
     result = os.popen(f"klayout -b -r ../gf180mcu.lvs -rd input={dir}_testcases/{sc_input}.gds -rd report={sc_input_clean}.lvsdb -rd schematic={cdl_input_clean}_modified.cdl -rd thr={workers_count} -rd schematic_simplify=true").read()
 
-
-    # moving all reports to run dir
-    out_dir = arguments["--run_dir"]
-    # os.system(f"cd {out_dir} && mkdir {sc_input_clean}")
-    # os.system(f"mv -f sc_testcases/{sc_input}.lvsdb sc_testcases/*/{cdl_input_clean}_extracted.cir sc_testcases/*/{cdl_input_clean}_modified.cdl {out_dir}/{sc_input_clean}/")
-
     if "INFO : Congratulations! Netlists match." in result:
         logging.info(f"Extraction of {sc_input_clean} is passed")
 
@@ -105,8 +96,8 @@ def lvs_check(sc_input):
 def main():
 
     # Remove old reports
-    os.system(f"rm -rf sc_testcases/sc_report.csv")
-    os.system(f"rm -rf ip_testcases/ip_report.csv")
+    subprocess.run(["rm", "sc_testcases/sc_report.csv"])
+    subprocess.run(["rm", "ip_testcases/ip_report.csv"])
 
     cell_list = arguments["--path"]
     if isinstance(cell_list, str): cell_list = [cell_list]
@@ -133,9 +124,9 @@ def main():
                                 ly2.cell(new_top).copy_tree(layout.cell("#{cell.name}"))
                                 ly2.write("sc_testcases/sc_split/#{cell.name}.gds")
                             end''')
-            os.system(f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds")
-            os.system(f"rm -rf sc_testcases/split_gds.rb")
-            
+            subprocess.Popen(["klayout", "-b", "-r", "sc_testcases/split_gds.rb", "-rd", "input={cell}.gds"]).wait()
+            subprocess.run(["rm", "sc_testcases/split_gds.rb"])
+
             # Create cdl splitter script
             cdl = cell.split("/")[-1]
             os.makedirs(f"sc_testcases/sc_split/sc_netlists/",exist_ok=False)
@@ -165,7 +156,7 @@ def main():
                 else:
                     cell_clean = cell.replace("ip_testcases/","")
                     executor.submit(lvs_check, cell_clean)
-            
+
             # Running LVS on SC
             else:
                 sc_list = glob.glob("sc_testcases/sc_split/*")
@@ -178,11 +169,11 @@ if __name__ == "__main__":
 
     # logs format 
     logging.basicConfig(level=logging.DEBUG, format=f"%(asctime)s | %(levelname)-7s | %(message)s", datefmt='%d-%b-%Y %H:%M:%S')
-    
+
     # Args 
     arguments     = docopt(__doc__, version='SC LVS REGRESSION: 0.1')
     workers_count = os.cpu_count()*2 if arguments["--num_cores"] == None else int(arguments["--num_cores"])
-    
+
     out_dir = arguments["--run_dir"]
     # Check out_dir existance 
     if os.path.exists(out_dir) and os.path.isdir(out_dir):
@@ -190,13 +181,13 @@ if __name__ == "__main__":
     else:
         logging.error("This run directory doesn't exist. Please recheck.")
         exit ()
-        
+
     pass_count = 0
     fail_count = 0
-        
+
     # Calling main function 
     main()
-    
+
     time.sleep(10)
 
     if os.path.isfile("sc_testcases/sc_report.csv"):
@@ -206,14 +197,14 @@ if __name__ == "__main__":
         df = pd.read_csv("sc_testcases/sc_report.csv")
         pass_count = df["RESULT"].str.count("passed").sum()
         fail_count = df["RESULT"].str.count("failed").sum()
-        
+
         logging.info("\n==================================")
         logging.info(f"NO. OF PASSED SC CELLS : {pass_count}")
         logging.info(f"NO. OF FAILED SC CELLS : {fail_count}")
         logging.info("==================================\n")
-        
+
         # Move split files into run dir 
-        os.system (f"mv -f sc_testcases/sc_report.csv  sc_testcases/sc_split/  {out_dir}")
+        subprocess.run(["mv", "-f", "sc_testcases/sc_report.csv",  "sc_testcases/sc_split/",  out_dir])
 
     elif os.path.isfile("ip_testcases/ip_report.csv"):
         df = pd.read_csv("ip_testcases/ip_report.csv")
@@ -222,14 +213,14 @@ if __name__ == "__main__":
         df = pd.read_csv("ip_testcases/ip_report.csv")
         pass_count = df["RESULT"].str.count("passed").sum()
         fail_count = df["RESULT"].str.count("failed").sum()
-        
+
         logging.info("\n==================================")
         logging.info(f"NO. OF PASSED IP CELLS : {pass_count}")
         logging.info(f"NO. OF FAILED IP CELLS : {fail_count}")
         logging.info("==================================\n")
-        
+
         # Move split files into run dir 
-        os.system (f"mv -f ip_testcases/ip_report.csv  {out_dir}")
+        subprocess.run(["mv", "-f", "ip_testcases/ip_report.csv",  out_dir])
 
     else:
         logging.info("\n==================================")
