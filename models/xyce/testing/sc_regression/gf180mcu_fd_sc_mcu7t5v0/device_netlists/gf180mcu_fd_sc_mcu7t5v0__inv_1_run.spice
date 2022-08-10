@@ -1,0 +1,42 @@
+* Copyright 2022 GlobalFoundries PDK Authors
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+* Sources
+Vin I 0 dc pulse(0 5 100p 1p 1p 100p 200p)
+Vdd VDD 0 dc 5
+
+* Main circuit
+X1 I ZN VDD VDD 0 0 gf180mcu_fd_sc_mcu7t5v0__inv_1
+
+* Temperature set
+.STEP TEMP 25 -60 200
+
+* Analyses
+.tran 1p 200p
+.meas tran high_in FIND V(ZN) AT=100p
+.meas tran low_in  FIND V(ZN) AT=200p
+.print TRAN FORMAT=CSV file=inv_simulated.csv {high_in} {low_in}
+
+
+* Libraries calling
+.include "../../../../design.xyce"
+.lib "../../../../sm141064.xyce" typical
+
+.SUBCKT gf180mcu_fd_sc_mcu7t5v0__inv_1 I ZN VDD VNW VPW VSS
+xM_i_0 ZN I VSS VPW nmos_6p0 W=8.2e-07 L=6e-07
+xM_i_1 ZN I VDD VNW pmos_6p0 W=1.22e-06 L=5e-07
+.ENDS
+
+
+.end

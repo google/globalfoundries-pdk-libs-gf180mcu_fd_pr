@@ -1,0 +1,26 @@
+** INV_tb
+Vdd Vdd 0 3.3
+Vin Vin 0 dc pulse(0 3.3 0 50p 50p 150p 300p)
+X1 Vdd Vout Vin 0 INV
+
+.measure tran tphl TRIG v(Vin) VAL={0.5*3.3} RISE=2 TARG v(Vout) VAL={0.5*3.3} FALL=2
+.measure tran tplh TRIG v(Vin) VAL={0.5*3.3} FALL=1 TARG v(Vout) VAL={0.5*3.3} RISE=1
+.measure tran tpd param = {(tplh+tphl)/2}
+
+.STEP TEMP {{temp}} -60 200
+.tran 5p 800p
+.print tran FORMAT=CSV file={{run_path}}/simulation/inv_W{{width}}_L{{length}}_T{{temp}}_{{corner}}.csv {tpd}
+
+
+.include "../../design.xyce"
+.lib "../../sm141064.xyce" {{corner}}
+
+
+.subckt INV  VDD Vout Vin GND
+XM1 Vout Vin GND GND nmos_3p3 W={{width}}u L={{length}}u 
+*ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+XM2 Vout Vin VDD VDD pmos_3p3 W={{width_p}}u L={{length}}u 
+*ad={{AD_p}}u pd={{PD_p}}u as={{AD_p}}u ps={{PD_p}}u
+.ends
+
+.end

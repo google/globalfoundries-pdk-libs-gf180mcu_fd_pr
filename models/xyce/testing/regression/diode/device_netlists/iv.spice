@@ -1,0 +1,28 @@
+*Xyce Common Source Circuit
+** library calling
+
+
+*****************
+** main netlist
+*****************
+Vn n 0 dc 1
+
+
+dn1 n 0 {{device}} AREA={{area}}p
+* PJ=40u
+
+
+*****************
+** Analysis
+*****************
+.DC Vn -12.13 1.13 0.13
+.STEP TEMP {{temp}} -60 200
+.print DC FORMAT=CSV file={{device}}_{{Id_sim}}_{{corner}}/simulated_{{Id_sim}}/{{i}}_simulated_A{{area}}_P{{pj}}.csv {abs(I(dn1))}
+* .print DC FORMAT=CSV file=result.csv {N(dn1:is)}
+
+
+
+.include "../../../../../design.xyce"
+.lib "../../../../../sm141064.xyce" diode_{{corner}}
+
+.end

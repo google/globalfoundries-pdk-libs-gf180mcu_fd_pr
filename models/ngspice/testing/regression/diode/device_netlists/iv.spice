@@ -1,0 +1,47 @@
+***************************
+** IV netlist generation **
+***************************
+* Copyright 2022 Efabless Corporation
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+Vn n 0 dc 1
+
+.temp {{temp}}
+.options tnom={{temp}}
+
+ 
+
+dn1 n 0 {{device}} AREA = {{area}}p PJ = {{pj}}u 
+
+**** begin architecture code
+
+
+.control
+set filetype=ascii
+
+dc Vn -12.13 1.13 0.13
+print abs(i(Vn))
+wrdata {{device}}_{{Id_sim}}_{{corner}}/simulated_{{Id_sim}}/{{i}}_simulated_A{{area}}_P{{pj}}.csv abs(i(Vn))
+.endc
+
+
+
+** library calling
+
+.include "../../../design.ngspice"
+.lib "../../../sm141064.ngspice" diode_{{corner}}
+
+**** end architecture code
+
+
+.end
