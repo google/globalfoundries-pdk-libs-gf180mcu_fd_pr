@@ -1,4 +1,4 @@
-GlobalFoundries 180um MCU primitive libraries
+GlobalFoundries 180nm MCU primitive libraries
 =============================================
 
 This repository contains the "primitive cells" implementation as part of

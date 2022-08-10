@@ -20,9 +20,9 @@ Usage:
     run_sc_regression.py (--path=<file_path>)... [--thr=<thr>]
 
 Options:
-    --help -h                           Print this help message
-    --path=<file_path>                  The input GDS file path.
-    --thr=<thr>                         The number of threads used in run.
+    --help -h           Print this help message
+    --path=<file_path>  The input GDS file path.
+    --thr=<thr>         The number of threads used in run.
 
 """
 from docopt import docopt
