@@ -1,0 +1,29 @@
+*****************
+** main netlist
+*****************
+
+Vcp c 0 dc 6
+Ib 0 b 9u
+
+.temp {{temp}}
+.options tnom={{temp}}
+
+xq1 c b 0 0 {{device}}
+
+
+*****************
+** Analysis
+*****************
+
+.control
+set filetype=ascii
+
+dc Vcp 0 6 0.1 Ib 1u 9u 2u
+print -i(Vcp)
+wrdata npn/simulated_IcVc/{{i}}_simulated_{{device}}.csv -i(Vcp)
+.endc
+
+.include "../../../design.ngspice"
+.lib "../../../sm141064.ngspice" bjt_typical
+
+.end

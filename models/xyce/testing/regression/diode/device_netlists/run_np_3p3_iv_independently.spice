@@ -1,0 +1,28 @@
+*Xyce Common Source Circuit
+** library calling
+
+
+*****************
+** main netlist
+*****************
+Vn n 0 dc 1
+
+
+dn1 n 0 sc_diode AREA={10u*10u}
+* PJ=40u
+
+
+*****************
+** Analysis
+*****************
+.DC Vn -12.13 1.13 0.13
+.STEP TEMP LIST -40 25 125 175
+.print DC FORMAT=CSV file=result.csv {abs(I(dn1))}
+* .print DC FORMAT=CSV file=result.csv {N(dn1:is)}
+
+
+
+.include "../../../../design.xyce"
+.lib "../../../../sm141064.xyce" diode_typical
+
+.end

@@ -1,0 +1,30 @@
+*Xyce Common Source Circuit
+** library calling
+
+
+*****************
+** main netlist
+*****************
+.param volt = -3.3
+V1 in 0 dc {volt} ac 1
+R1 in out 1G
+xcn out 0 {{device}} c_length={{length}}u c_width={{width}}u l={{length}}u w={{width}}u
+
+.meas AC freq when Vdb(out)=-3 PRECISION=15
+
+
+
+
+*****************
+** Analysis
+*****************
+
+.ac dec 10 1 10G
+.step volt {{voltage}}
+
+.include "../../../../../design.xyce"
+.lib "../../../../../sm141064.xyce" moscap_{{corner}}
+
+.end
+
+

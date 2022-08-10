@@ -1,0 +1,28 @@
+*Xyce Common Source Circuit
+** library calling
+
+
+*****************
+** main netlist
+*****************
+Vn n 0 dc 1
+
+r1 n p 1M
+xrn p 0 rm1 L=100u W=100u
+* PJ=40u
+
+* .print dc Rs=par('(1M*V(p)/(V(n)-V(p)))/100u*100u')
+
+*****************
+** Analysis
+*****************
+.OP
+
+.print DC FORMAT=CSV file=result.csv {(1M*V(p)/(V(n)-V(p)))/100u*100u}
+
+
+
+.include "../../../../design.xyce"
+.lib "../../../../sm141064.xyce" res_typical
+
+.end
