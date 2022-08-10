@@ -54,6 +54,8 @@ jobs:
       # Installs Klayout verison 0.27.8
       - name: Installing Klayout 0.27.8
         run: |
+          sudo apt-get update
+          sudo apt-get upgrade -y
           wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.8-1_amd64.deb
           sudo apt-get install qt5-default qttools5-dev libqt5xmlpatterns5-dev qtmultimedia5-dev libqt5multimediawidgets5 libqt5svg5-dev
           sudo dpkg -i ./klayout_0.27.8-1_amd64.deb
