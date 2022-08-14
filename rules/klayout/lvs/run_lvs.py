@@ -44,6 +44,7 @@ Options:
 from docopt import docopt
 import os
 import logging
+import subprocess
 
 def main():
 
@@ -99,7 +100,7 @@ def main():
             print("The script must be given a netlist file or a path to be able to run LVS")
             exit()
 
-        os.system(f"klayout -b -r gf180mcu.lvs -rd input={path} -rd report={file_name[0]}.lyrdb -rd schematic={args['--net']} -rd target_netlist=extracted_netlist_{file_name[0]}.cir -rd thr={workers_count} {switches}")
+        subprocess.Popen(["klayout", f"-b", f"-r", f"gf180mcu.lvs", f"-rd", f"input={path}", f"-rd", f"report={file_name[0]}.lyrdb", f"-rd", f"schematic={args['--net']}", f"-rd", f"target_netlist=extracted_netlist_{file_name[0]}.cir", f"-rd", f"thr={workers_count}"] + switches.split(" ")).wait()
 
     else:
         print("The script must be given a layout file or a path to be able to run LVS")
