@@ -1,0 +1,34 @@
+
+*****************
+** main netlist
+*****************
+
+Vcp c 0 dc 3
+*Ib 0 b 9u
+Vbp b 0 dc 1.2
+
+.temp 25
+.options tnom=25
+
+xq1 c b 0 0 vnpn_10x10
+
+
+*****************
+** Analysis
+*****************
+
+.control
+set filetype=ascii
+
+dc Vbp 0.2 1.2 0.01 Vcp 1 3 1
+print -i(Vcp)
+print -i(Vbp)
+wrdata result.csv -i(Vcp)
+wrdata result.csv -i(Vbp)
+.endc
+
+.include "../../../design.ngspice"
+.lib "../../../sm141064.ngspice" bjt_typical
+
+.end
+

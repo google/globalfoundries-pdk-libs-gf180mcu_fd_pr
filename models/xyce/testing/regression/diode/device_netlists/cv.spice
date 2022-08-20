@@ -1,0 +1,28 @@
+*Xyce Common Source Circuit
+** library calling
+
+
+*****************
+** main netlist
+*****************
+.param volt = -3.3
+V1 in 0 dc {volt} ac 1
+R1 in out 1G
+dn1 out 0 np_3p3 AREA={10u*10u}
+
+.meas AC freq when Vdb(out)=-3
+*.meas AC C param = {1/(2*3.141592653589793238*freq*1000000000)}
+
+*****************
+** Analysis
+*****************
+*.control
+.ac dec 10 1 10G
+.step volt -12.13 1.13 0.13
+
+.include "../../design.xyce"
+.lib "../../sm141064.xyce" diode_typical
+
+.end
+
+

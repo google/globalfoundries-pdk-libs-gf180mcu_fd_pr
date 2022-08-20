@@ -1,0 +1,44 @@
+**.subckt INV_tb
+* Copyright 2022 Efabless Corporation
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+Vdd Vdd 0 3.3
+Vin Vin 0 dc pulse(0 3.3 0 1p 1p 100p 200p)
+X1 Vdd Vout Vin 0 INV
+
+
+.temp {{temp}}
+.options tnom={{temp}}
+
+
+.control
+tran 1p 400p
+meas tran tphl TRIG v(Vin) VAL={0.5*3.3} RISE=2 TARG v(Vout) VAL={0.5*3.3} FALL=2
+meas tran tplh TRIG v(Vin) VAL={0.5*3.3} FALL=1 TARG v(Vout) VAL={0.5*3.3} RISE=1
+print {(tplh+tphl)/2}
+wrdata {{run_path}}/simulation/inv_W{{width}}_L{{length}}_T{{temp}}_{{corner}}.csv {(tplh+tphl)/2}
+.endc
+
+
+.include "../../design.ngspice"
+.lib "../../sm141064.ngspice" {{corner}}
+
+
+.subckt INV  VDD Vout Vin GND
+XM1 Vout Vin GND GND nmos_3p3 W={{width}}u L={{length}}u 
+*ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+XM2 Vout Vin VDD VDD pmos_3p3 W = {{width_p}}u L = {{length}}u 
+*ad={{AD_p}}u pd={{PD_p}}u as={{AD_p}}u ps={{PD_p}}u
+.ends
+
+.end

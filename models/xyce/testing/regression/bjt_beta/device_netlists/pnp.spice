@@ -1,0 +1,26 @@
+*****************
+** main netlist
+*****************
+
+Vcp c 0 dc -3
+Vbp b 0 dc -1.2
+
+xq1 c b 0 {{device}}
+
+
+*****************
+** Analysis
+*****************
+
+.DC Vbp -0.2 -1.2 -0.01 Vcp -1 -3 -1
+.STEP TEMP {{temp}} -60 200
+.print DC FORMAT=CSV file=pnp/simulated_Ic/{{i}}_simulated_{{device}}.csv Vbp
+.print DC FORMAT=CSV file=pnp/simulated_Ic/{{i}}_simulated_{{device}}.csv {I(Vcp)}
+.print DC FORMAT=CSV file=pnp/simulated_Ib/{{i}}_simulated_{{device}}.csv Vbp
+.print DC FORMAT=CSV file=pnp/simulated_Ib/{{i}}_simulated_{{device}}.csv {I(Vbp)}
+
+
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" bjt_typical
+
+.end

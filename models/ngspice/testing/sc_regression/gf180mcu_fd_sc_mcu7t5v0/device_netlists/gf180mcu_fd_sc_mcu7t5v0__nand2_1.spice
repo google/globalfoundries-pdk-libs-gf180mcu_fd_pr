@@ -1,0 +1,50 @@
+* Copyright 2022 GlobalFoundries PDK Authors
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+* Sources
+Vdd VDD 0 dc {{volt}}
+Vin1 I1 0 dc pulse(0 5 200p 1p 1p 200p 400p)
+Vin2 I2 0 dc pulse(0 5 400p 1p 1p 400p 800p)
+
+* Main circuit
+X1 I1 I2 ZN VDD VDD 0 0 gf180mcu_fd_sc_mcu7t5v0__nand2_1
+
+* Temperature set
+.temp {{temp}}
+.options tnom={{temp}}
+
+* Analyses
+.control
+tran 1p 800p
+meas tran o0 FIND V(ZN) AT=200p
+meas tran o1  FIND V(ZN) AT=400p
+meas tran o2 FIND V(ZN) AT=600p
+meas tran o3  FIND V(ZN) AT=800p
+
+wrdata nand2/simulated/nand2_{{process}}_{{temp}}c_{{volt}}v.csv {o0} {o1} {o2} {o3}
+.endc
+
+* Libraries calling
+.include "../../../design.ngspice"
+.lib "../../../sm141064.ngspice" {{process}}
+
+.SUBCKT gf180mcu_fd_sc_mcu7t5v0__nand2_1 A1 A2 ZN VDD VNW VPW VSS
+xM_i_1 net_0 A2 VSS VPW nmos_6p0 W=8.2e-07 L=6e-07
+xM_i_0 ZN A1 net_0 VPW nmos_6p0 W=8.2e-07 L=6e-07
+xM_i_3 ZN A2 VDD VNW pmos_6p0 W=1.13e-06 L=5e-07
+xM_i_2 VDD A1 ZN VNW pmos_6p0 W=1.13e-06 L=5e-07
+.ENDS
+
+
+.end
