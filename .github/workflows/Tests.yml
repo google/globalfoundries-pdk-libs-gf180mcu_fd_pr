@@ -27,31 +27,13 @@ on:
 
 env:
   DOCKER_BUILDKIT: 1
+  IMAGE: ghcr.io/${{ github.repository }}/test
 
 jobs:
 
-  Test:
+
+  BuildContainerImage:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { type: DRC, pdk: drc, test: main }
-          - { type: DRC, pdk: drc, test: switch }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_io }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_ip_sram }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_sc_mcu7t5v0 }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_sc_mcu9t5v0 }
-          - { type: LVS, pdk: lvs, test: main }
-          - { type: LVS, pdk: lvs, test: switch }
-          - { type: LVS, pdk: lvs, test: gf180mcu_fd_sc_mcu7t5v0}
-          - { type: LVS, pdk: lvs, test: gf180mcu_fd_sc_mcu9t5v0 }
-
-    name: ${{ matrix.type }} | ${{ matrix.test }}
-
-    env:
-      IMAGE: ghcr.io/google/globalfoundries-pdk-libs-gf180mcu_fd_pr/test
-
     steps:
 
       - uses: actions/checkout@v3
@@ -71,6 +53,42 @@ jobs:
 
           RUN --mount=type=bind,target=/tmp/ctx pip3 install -r /tmp/ctx/requirements.test.txt
           EOF
+
+      - name: Push container image to registry
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: pyTooling/Actions/with-post-step@r0
+        with:
+          main: |
+            echo '${{ github.token }}' | docker login ghcr.io -u gha --password-stdin
+            docker push "$IMAGE"
+          post: docker logout ghcr.io
+
+
+  Test:
+    needs: BuildContainerImage
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { type: DRC, pdk: drc, test: main }
+          - { type: DRC, pdk: drc, test: switch }
+          - { type: DRC, pdk: drc, test: gf180mcu_fd_io }
+          - { type: DRC, pdk: drc, test: gf180mcu_fd_ip_sram }
+          - { type: DRC, pdk: drc, test: gf180mcu_fd_sc_mcu7t5v0 }
+          - { type: DRC, pdk: drc, test: gf180mcu_fd_sc_mcu9t5v0 }
+          - { type: LVS, pdk: lvs, test: main }
+          - { type: LVS, pdk: lvs, test: switch }
+          - { type: LVS, pdk: lvs, test: gf180mcu_fd_sc_mcu7t5v0}
+          - { type: LVS, pdk: lvs, test: gf180mcu_fd_sc_mcu9t5v0 }
+
+    name: ${{ matrix.type }} | ${{ matrix.test }}
+
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - run: docker pull "$IMAGE"
 
       - name: Testing ${{ matrix.type }} for ${{ matrix.test }}
         run: >
