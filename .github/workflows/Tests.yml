@@ -71,18 +71,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { type: DRC, pdk: drc, test: main }
-          - { type: DRC, pdk: drc, test: switch }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_io }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_ip_sram }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_sc_mcu7t5v0 }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_sc_mcu9t5v0 }
-          - { type: LVS, pdk: lvs, test: main }
-          - { type: LVS, pdk: lvs, test: switch }
-          - { type: LVS, pdk: lvs, test: gf180mcu_fd_sc_mcu7t5v0}
-          - { type: LVS, pdk: lvs, test: gf180mcu_fd_sc_mcu9t5v0 }
+          - { pdk: drc, test: main }
+          - { pdk: drc, test: switch }
+          - { pdk: drc, test: gf180mcu_fd_io }
+          - { pdk: drc, test: gf180mcu_fd_ip_sram }
+          - { pdk: drc, test: gf180mcu_fd_sc_mcu7t5v0 }
+          - { pdk: drc, test: gf180mcu_fd_sc_mcu9t5v0 }
+          - { pdk: lvs, test: main }
+          - { pdk: lvs, test: switch }
+          - { pdk: lvs, test: gf180mcu_fd_sc_mcu7t5v0}
+          - { pdk: lvs, test: gf180mcu_fd_sc_mcu9t5v0 }
 
-    name: ${{ matrix.type }} | ${{ matrix.test }}
+    name: ${{ matrix.pdk }} | ${{ matrix.test }}
 
     steps:
 
@@ -97,4 +97,4 @@ jobs:
           -e PDK_ROOT="/wrk/rules/klayout"
           -e PDK='${{ matrix.pdk }}'
           "$IMAGE"
-          make test-${{ matrix.type }}-${{ matrix.test }}
+          make test-"$(python -c 'print("${{ matrix.pdk }}".upper())')"-${{ matrix.test }}
