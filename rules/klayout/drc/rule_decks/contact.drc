@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -117,7 +117,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -126,12 +126,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -198,7 +198,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #--------------------CONTACT---------------------
-#================================================ 
+#================================================
 
 
 if FEOL
@@ -214,7 +214,7 @@ co1_l1.forget
 logger.info("Executing rule CO.2a")
 co2a_l1  = contact.space(0.25.um, euclidian).polygons(0.001)
 co2a_l1.output("CO.2a", "CO.2a : min. contact spacing : 0.25µm")
-co2a_l1.forget 
+co2a_l1.forget
 
 merged_co1 = contact.sized(0.18.um).sized(-0.18.um).with_bbox_min(1.63.um , nil).extents.inside(metal1)
 contact_mask = merged_co1.size(1).not(contact).with_holes(16, nil)
@@ -223,7 +223,7 @@ selected_co1 = contact.interacting(contact_mask)
 logger.info("Executing rule CO.2b")
 co2b_l1  = selected_co1.space(0.28.um, euclidian).polygons(0.001)
 co2b_l1.output("CO.2b", "CO.2b : Space in 4x4 or larger contact array. : 0.28µm")
-co2b_l1.forget 
+co2b_l1.forget
 
 merged_co1.forget
 contact_mask.forget
@@ -306,13 +306,13 @@ co_6b_3.forget
 logger.info("Executing rule CO.7")
 co7_l1  = contact.not_outside(comp).not(otp_mk).separation(tgate.not(otp_mk), 0.15.um, euclidian).polygons(0.001)
 co7_l1.output("CO.7", "CO.7 : Space from COMP contact to Poly2 on COMP. : 0.15µm")
-co7_l1.forget 
+co7_l1.forget
 
 # Rule CO.8: Space from Poly2 contact to COMP. is 0.17µm
 logger.info("Executing rule CO.8")
 co8_l1  = contact.not_outside(poly2).separation(comp, 0.17.um, euclidian).polygons(0.001)
 co8_l1.output("CO.8", "CO.8 : Space from Poly2 contact to COMP. : 0.17µm")
-co8_l1.forget 
+co8_l1.forget
 
 # Rule CO.9: Contact on NCOMP to PCOMP butting edge is forbidden (contact must not straddle butting edge).
 logger.info("Executing rule CO.9")
@@ -332,10 +332,10 @@ co11_l1 = contact.not(comp.or(poly2))
 co11_l1.output("CO.11", "CO.11 : Contact on field oxide is forbidden.")
 co11_l1.forget
 
-end #FEOL 
+end #FEOL
 
 if BEOL
-logger.info("BEOL section") 
+logger.info("BEOL section")
 
 
 end #FEOL

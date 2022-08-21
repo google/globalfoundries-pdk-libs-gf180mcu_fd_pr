@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -116,7 +116,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -125,12 +125,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -197,7 +197,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #---------------------PPLUS----------------------
-#================================================ 
+#================================================
 
 
 if FEOL
@@ -207,26 +207,26 @@ logger.info("FEOL section")
 logger.info("Executing rule PP.1")
 pp1_l1  = pplus.width(0.4.um, euclidian).polygons(0.001)
 pp1_l1.output("PP.1", "PP.1 : min. pplus width : 0.4µm")
-pp1_l1.forget 
+pp1_l1.forget
 
 # Rule PP.2: min. pplus spacing is 0.4µm
 logger.info("Executing rule PP.2")
 pp2_l1  = pplus.space(0.4.um, euclidian).polygons(0.001)
 pp2_l1.output("PP.2", "PP.2 : min. pplus spacing : 0.4µm")
-pp2_l1.forget 
+pp2_l1.forget
 
 # Rule PP.3a: Space to NCOMP for NCOMP (1) inside LVPWELL (2) outside NWELL and DNWELL. is 0.16µm
 logger.info("Executing rule PP.3a")
 pp3a_l1  = pplus.separation((ncomp.inside(lvpwell)).or(ncomp.outside(nwell).outside(dnwell)), 0.16.um, euclidian).polygons(0.001)
 pp3a_l1.output("PP.3a", "PP.3a : Space to NCOMP for NCOMP (1) inside LVPWELL (2) outside NWELL and DNWELL. : 0.16µm")
-pp3a_l1.forget 
+pp3a_l1.forget
 
 pp_3bi = ncomp.edges.not(lvpwell.inside(dnwell).sized(0.429.um))
 # Rule PP.3bi: Space to NCOMP: For Inside DNWELL. (i) NCOMP space to LVPWELL >= 0.43um. is 0.08µm
 logger.info("Executing rule PP.3bi")
 pp3bi_l1  = pplus.inside(dnwell).edges.separation(pp_3bi, 0.08.um, euclidian).polygons(0.001)
 pp3bi_l1.output("PP.3bi", "PP.3bi : Space to NCOMP: For Inside DNWELL. (i) NCOMP space to LVPWELL >= 0.43um. : 0.08µm")
-pp3bi_l1.forget 
+pp3bi_l1.forget
 
 pp_3bi.forget
 pp_3bii = ncomp.edges.and(lvpwell.inside(dnwell).sized(0.429.um))
@@ -234,7 +234,7 @@ pp_3bii = ncomp.edges.and(lvpwell.inside(dnwell).sized(0.429.um))
 logger.info("Executing rule PP.3bii")
 pp3bii_l1  = pplus.inside(dnwell).edges.separation(pp_3bii, 0.16.um, euclidian).polygons(0.001)
 pp3bii_l1.output("PP.3bii", "PP.3bii : Space to NCOMP: For Inside DNWELL. (ii) NCOMP space to LVPWELL < 0.43um. : 0.16µm")
-pp3bii_l1.forget 
+pp3bii_l1.forget
 
 pp_3bii.forget
 pp_3ci_extend = nwell.outside(dnwell).sized(-0.429.um)
@@ -243,7 +243,7 @@ pp_3ci = ncomp.edges.and(pp_3ci_extend)
 logger.info("Executing rule PP.3ci")
 pp3ci_l1  = pplus.outside(dnwell).edges.separation(pp_3ci, 0.08.um, euclidian).polygons(0.001)
 pp3ci_l1.output("PP.3ci", "PP.3ci : Space to NCOMP: For Outside DNWELL, inside Nwell: (i) NWELL Overlap of NCOMP >= 0.43um. : 0.08µm")
-pp3ci_l1.forget 
+pp3ci_l1.forget
 
 pp_3ci_extend.forget
 pp_3ci.forget
@@ -253,7 +253,7 @@ pp_3cii = ncomp.edges.and(pp_3cii_extend)
 logger.info("Executing rule PP.3cii")
 pp3cii_l1  = pplus.outside(dnwell).edges.separation(pp_3cii, 0.16.um, euclidian).polygons(0.001)
 pp3cii_l1.output("PP.3cii", "PP.3cii : Space to NCOMP: For Outside DNWELL, inside Nwell: (ii) NWELL Overlap of NCOMP 0.43um. : 0.16µm")
-pp3cii_l1.forget 
+pp3cii_l1.forget
 
 pp_3cii_extend.forget
 pp_3cii.forget
@@ -353,18 +353,18 @@ pp6_l1.forget
 logger.info("Executing rule PP.7")
 pp7_l1  = pplus.separation(poly2.and(sab), 0.18.um, euclidian).polygons(0.001)
 pp7_l1.output("PP.7", "PP.7 : Space to unrelated unsalicided Poly2. : 0.18µm")
-pp7_l1.forget 
+pp7_l1.forget
 
 # Rule PP.8a: Minimum Pplus area (um2). is 0.35µm²
 logger.info("Executing rule PP.8a")
 pp8a_l1  = pplus.with_area(nil, 0.35.um)
 pp8a_l1.output("PP.8a", "PP.8a : Minimum Pplus area (um2). : 0.35µm²")
-pp8a_l1.forget 
+pp8a_l1.forget
 # Rule PP.8b: Minimum area enclosed by Pplus (um2). is 0.35µm²
 logger.info("Executing rule PP.8b")
 pp8b_l1  = pplus.holes.with_area(nil, 0.35.um)
 pp8b_l1.output("PP.8b", "PP.8b : Minimum area enclosed by Pplus (um2). : 0.35µm²")
-pp8b_l1.forget 
+pp8b_l1.forget
 # Rule PP.9: Overlap of unsalicided Poly2. is 0.18µm
 logger.info("Executing rule PP.9")
 pp9_l1 = pplus.enclosing(poly2.not_interacting(resistor).and(sab), 0.18.um, euclidian).polygons(0.001)

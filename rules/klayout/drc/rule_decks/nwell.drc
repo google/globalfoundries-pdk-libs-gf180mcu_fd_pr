@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -117,7 +117,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -126,12 +126,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -223,7 +223,7 @@ if CONNECTIVITY_RULES
   connect(metal5,  via5)
   connect(via5,    metaltop)
 
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 #================================================
 #------------ PRE-DEFINED FUNCTIONS -------------
@@ -249,7 +249,7 @@ def conn_space(layer,conn_val,not_conn_val, mode)
     end
   end
   unconnected_output = unconnected_errors.polygons.or(singularity_errors.polygons(0.001))
-  return connected_output, unconnected_output 
+  return connected_output, unconnected_output
 end
 
 def conn_separation(layer1, layer2, conn_val,not_conn_val, mode)
@@ -278,10 +278,10 @@ end
 if CONNECTIVITY_RULES
   logger.info("Connectivity rules enabled, Netlist object will be generated.")
   netlist
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 # === LAYOUT EXTENT ===
-CHIP = extent.sized(0.0) 
+CHIP = extent.sized(0.0)
 
 logger.info("Total area of the design is #{CHIP.area()} um^2.")
 
@@ -289,7 +289,7 @@ logger.info("Total area of the design is #{CHIP.area()} um^2.")
 
 #================================================
 #---------------------NWELL----------------------
-#================================================ 
+#================================================
 
 
 if FEOL
@@ -299,86 +299,86 @@ logger.info("FEOL section")
 logger.info("Executing rule NW.1a_3.3V")
 nw1a_l1  = nwell.width(0.86.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 nw1a_l1.output("NW.1a_3.3V", "NW.1a_3.3V : Min. Nwell Width (This is only for litho purpose on the generated area). : 0.86µm")
-nw1a_l1.forget 
+nw1a_l1.forget
 
 # Rule NW.1a_5V: Min. Nwell Width (This is only for litho purpose on the generated area). is 0.86µm
 logger.info("Executing rule NW.1a_5V")
 nw1a_l1  = nwell.width(0.86.um, euclidian).polygons(0.001).overlapping(dualgate)
 nw1a_l1.output("NW.1a_5V", "NW.1a_5V : Min. Nwell Width (This is only for litho purpose on the generated area). : 0.86µm")
-nw1a_l1.forget 
+nw1a_l1.forget
 
 nw_1b = nwell.outside(dnwell).and(res_mk).not(comp).not(poly2)
 # Rule NW.1b_3.3V: Min. Nwell Width as a resistor (Outside DNWELL only). is 2µm
 logger.info("Executing rule NW.1b_3.3V")
 nw1b_l1  = nw_1b.width(2.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 nw1b_l1.output("NW.1b_3.3V", "NW.1b_3.3V : Min. Nwell Width as a resistor (Outside DNWELL only). : 2µm")
-nw1b_l1.forget 
+nw1b_l1.forget
 
 # Rule NW.1b_5V: Min. Nwell Width as a resistor (Outside DNWELL only). is 2µm
 logger.info("Executing rule NW.1b_5V")
 nw1b_l1  = nw_1b.width(2.um, euclidian).polygons(0.001).overlapping(dualgate)
 nw1b_l1.output("NW.1b_5V", "NW.1b_5V : Min. Nwell Width as a resistor (Outside DNWELL only). : 2µm")
-nw1b_l1.forget 
+nw1b_l1.forget
 
 if CONNECTIVITY_RULES
-logger.info("CONNECTIVITY_RULES section") 
+logger.info("CONNECTIVITY_RULES section")
 
-connected_nwell_3p3v, unconnected_nwell_3p3v = conn_space(nwell, 0.6, 1.4, euclidian) 
+connected_nwell_3p3v, unconnected_nwell_3p3v = conn_space(nwell, 0.6, 1.4, euclidian)
 
-connected_nwell_5p0v, unconnected_nwell_5p0v = conn_space(nwell, 0.74, 1.7, euclidian) 
+connected_nwell_5p0v, unconnected_nwell_5p0v = conn_space(nwell, 0.74, 1.7, euclidian)
 
 # Rule NW.2a_3.3V: Min. Nwell Space (Outside DNWELL) [Equi-potential], Merge if the space is less than. is 0.6µm
 logger.info("Executing rule NW.2a_3.3V")
 nw2a_l1  = connected_nwell_3p3v.not_inside(ymtp_mk).not_interacting(v5_xtor).not_interacting(dualgate)
 nw2a_l1.output("NW.2a_3.3V", "NW.2a_3.3V : Min. Nwell Space (Outside DNWELL) [Equi-potential], Merge if the space is less than. : 0.6µm")
-nw2a_l1.forget 
+nw2a_l1.forget
 
 # Rule NW.2a_5V: Min. Nwell Space (Outside DNWELL) [Equi-potential], Merge if the space is less than. is 0.74µm
 logger.info("Executing rule NW.2a_5V")
 nw2a_l1  = connected_nwell_5p0v.not_inside(ymtp_mk).overlapping(dualgate)
 nw2a_l1.output("NW.2a_5V", "NW.2a_5V : Min. Nwell Space (Outside DNWELL) [Equi-potential], Merge if the space is less than. : 0.74µm")
-nw2a_l1.forget 
+nw2a_l1.forget
 
 # Rule NW.2b_3.3V: Min. Nwell Space (Outside DNWELL) [Different potential]. is 1.4µm
 logger.info("Executing rule NW.2b_3.3V")
 nw2b_l1  = unconnected_nwell_3p3v.not_interacting(v5_xtor).not_interacting(dualgate)
 nw2b_l1.output("NW.2b_3.3V", "NW.2b_3.3V : Min. Nwell Space (Outside DNWELL) [Different potential]. : 1.4µm")
-nw2b_l1.forget 
+nw2b_l1.forget
 
 # Rule NW.2b_5V: Min. Nwell Space (Outside DNWELL) [Different potential]. is 1.7µm
 logger.info("Executing rule NW.2b_5V")
 nw2b_l1  = unconnected_nwell_5p0v.overlapping(dualgate)
 nw2b_l1.output("NW.2b_5V", "NW.2b_5V : Min. Nwell Space (Outside DNWELL) [Different potential]. : 1.7µm")
-nw2b_l1.forget 
+nw2b_l1.forget
 
 else
-logger.info("CONNECTIVITY_RULES disabled section") 
+logger.info("CONNECTIVITY_RULES disabled section")
 
 # Rule NW.2b_3.3V_: Min. Nwell Space (Outside DNWELL) [Different potential]. is 1.4µm
 logger.info("Executing rule NW.2b_3.3V_")
 nw2b_l1  = nwell.isolated(1.4.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 nw2b_l1.output("NW.2b_3.3V_", "NW.2b_3.3V_ : Min. Nwell Space (Outside DNWELL) [Different potential]. : 1.4µm")
-nw2b_l1.forget 
+nw2b_l1.forget
 
 # Rule NW.2b_5V_: Min. Nwell Space (Outside DNWELL) [Different potential]. is 1.7µm
 logger.info("Executing rule NW.2b_5V_")
 nw2b_l1  = nwell.isolated(1.7.um, euclidian).polygons(0.001).overlapping(dualgate)
 nw2b_l1.output("NW.2b_5V_", "NW.2b_5V_ : Min. Nwell Space (Outside DNWELL) [Different potential]. : 1.7µm")
-nw2b_l1.forget 
+nw2b_l1.forget
 
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 # Rule NW.3_3.3V: Min. Nwell to DNWELL space. is 3.1µm
 logger.info("Executing rule NW.3_3.3V")
 nw3_l1  = nwell.separation(dnwell, 3.1.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 nw3_l1.output("NW.3_3.3V", "NW.3_3.3V : Min. Nwell to DNWELL space. : 3.1µm")
-nw3_l1.forget 
+nw3_l1.forget
 
 # Rule NW.3_5V: Min. Nwell to DNWELL space. is 3.1µm
 logger.info("Executing rule NW.3_5V")
 nw3_l1  = nwell.separation(dnwell, 3.1.um, euclidian).polygons(0.001).overlapping(dualgate)
 nw3_l1.output("NW.3_5V", "NW.3_5V : Min. Nwell to DNWELL space. : 3.1µm")
-nw3_l1.forget 
+nw3_l1.forget
 
 # Rule NW.4_3.3V: Min. Nwell to LVPWELL space.
 logger.info("Executing rule NW.4_3.3V")

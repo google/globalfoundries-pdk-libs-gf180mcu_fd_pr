@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -116,7 +116,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -125,12 +125,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -222,7 +222,7 @@ if CONNECTIVITY_RULES
   connect(metal5,  via5)
   connect(via5,    metaltop)
 
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 #================================================
 #------------ PRE-DEFINED FUNCTIONS -------------
@@ -248,7 +248,7 @@ def conn_space(layer,conn_val,not_conn_val, mode)
     end
   end
   unconnected_output = unconnected_errors.polygons.or(singularity_errors.polygons(0.001))
-  return connected_output, unconnected_output 
+  return connected_output, unconnected_output
 end
 
 def conn_separation(layer1, layer2, conn_val,not_conn_val, mode)
@@ -277,10 +277,10 @@ end
 if CONNECTIVITY_RULES
   logger.info("Connectivity rules enabled, Netlist object will be generated.")
   netlist
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 # === LAYOUT EXTENT ===
-CHIP = extent.sized(0.0) 
+CHIP = extent.sized(0.0)
 
 logger.info("Total area of the design is #{CHIP.area()} um^2.")
 
@@ -288,7 +288,7 @@ logger.info("Total area of the design is #{CHIP.area()} um^2.")
 
 #================================================
 #--------------------LVPWELL---------------------
-#================================================ 
+#================================================
 
 
 if FEOL
@@ -298,61 +298,61 @@ logger.info("FEOL section")
 logger.info("Executing rule LPW.1_3.3V")
 lpw1_l1  = lvpwell.width(0.6.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 lpw1_l1.output("LPW.1_3.3V", "LPW.1_3.3V : Min. LVPWELL Width. : 0.6µm")
-lpw1_l1.forget 
+lpw1_l1.forget
 
 # Rule LPW.1_5V: Min. LVPWELL Width. is 0.74µm
 logger.info("Executing rule LPW.1_5V")
 lpw1_l1  = lvpwell.width(0.74.um, euclidian).polygons(0.001).overlapping(dualgate)
 lpw1_l1.output("LPW.1_5V", "LPW.1_5V : Min. LVPWELL Width. : 0.74µm")
-lpw1_l1.forget 
+lpw1_l1.forget
 
 if CONNECTIVITY_RULES
-logger.info("CONNECTIVITY_RULES section") 
+logger.info("CONNECTIVITY_RULES section")
 
-connected_lvpwell_3p3v, unconnected_lvpwell_3p3v = conn_space(lvpwell, 0.86, 1.4, euclidian) 
+connected_lvpwell_3p3v, unconnected_lvpwell_3p3v = conn_space(lvpwell, 0.86, 1.4, euclidian)
 
-connected_lvpwell_5p0v, unconnected_lvpwell_5p0v = conn_space(lvpwell, 0.86, 1.7, euclidian) 
+connected_lvpwell_5p0v, unconnected_lvpwell_5p0v = conn_space(lvpwell, 0.86, 1.7, euclidian)
 
 # Rule LPW.2a_3.3V: Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. is 1.4µm
 logger.info("Executing rule LPW.2a_3.3V")
 lpw2a_l1  = unconnected_lvpwell_3p3v.not_interacting(v5_xtor).not_interacting(dualgate)
 lpw2a_l1.output("LPW.2a_3.3V", "LPW.2a_3.3V : Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. : 1.4µm")
-lpw2a_l1.forget 
+lpw2a_l1.forget
 
 # Rule LPW.2a_5V: Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. is 1.7µm
 logger.info("Executing rule LPW.2a_5V")
 lpw2a_l1  = unconnected_lvpwell_5p0v.overlapping(dualgate)
 lpw2a_l1.output("LPW.2a_5V", "LPW.2a_5V : Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. : 1.7µm")
-lpw2a_l1.forget 
+lpw2a_l1.forget
 
 # Rule LPW.2b_3.3V: Min. LVPWELL to LVPWELL Space [Equi potential]. is 0.86µm
 logger.info("Executing rule LPW.2b_3.3V")
 lpw2b_l1  = connected_lvpwell_3p3v.not_interacting(v5_xtor).not_interacting(dualgate)
 lpw2b_l1.output("LPW.2b_3.3V", "LPW.2b_3.3V : Min. LVPWELL to LVPWELL Space [Equi potential]. : 0.86µm")
-lpw2b_l1.forget 
+lpw2b_l1.forget
 
 # Rule LPW.2b_5V: Min. LVPWELL to LVPWELL Space [Equi potential]. is 0.86µm
 logger.info("Executing rule LPW.2b_5V")
 lpw2b_l1  = connected_lvpwell_5p0v.overlapping(dualgate)
 lpw2b_l1.output("LPW.2b_5V", "LPW.2b_5V : Min. LVPWELL to LVPWELL Space [Equi potential]. : 0.86µm")
-lpw2b_l1.forget 
+lpw2b_l1.forget
 
 else
-logger.info("CONNECTIVITY_RULES disabled section") 
+logger.info("CONNECTIVITY_RULES disabled section")
 
 # Rule LPW.2a_3.3V_: Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. is 1.4µm
 logger.info("Executing rule LPW.2a_3.3V_")
 lpw2a_l1  = lvpwell.isolated(1.4.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 lpw2a_l1.output("LPW.2a_3.3V_", "LPW.2a_3.3V_ : Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. : 1.4µm")
-lpw2a_l1.forget 
+lpw2a_l1.forget
 
 # Rule LPW.2a_5V_: Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. is 1.7µm
 logger.info("Executing rule LPW.2a_5V_")
 lpw2a_l1  = lvpwell.isolated(1.7.um, euclidian).polygons(0.001).overlapping(dualgate)
 lpw2a_l1.output("LPW.2a_5V_", "LPW.2a_5V_ : Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. : 1.7µm")
-lpw2a_l1.forget 
+lpw2a_l1.forget
 
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 # Rule LPW.3_3.3V: Min. DNWELL enclose LVPWELL. is 2.5µm
 logger.info("Executing rule LPW.3_3.3V")
@@ -394,7 +394,7 @@ lpw5_l1.forget
 logger.info("Executing rule LPW.11")
 lpw11_l1  = lvpwell.outside(dnwell).separation(dnwell, 1.5.um, euclidian).polygons(0.001)
 lpw11_l1.output("LPW.11", "LPW.11 : Min. (LVPWELL outside DNWELL) space to DNWELL. : 1.5µm")
-lpw11_l1.forget 
+lpw11_l1.forget
 
 # Rule LPW.12: LVPWELL cannot overlap with Nwell.
 logger.info("Executing rule LPW.12")

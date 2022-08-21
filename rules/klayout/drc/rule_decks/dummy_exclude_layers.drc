@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -113,7 +113,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -122,12 +122,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -194,7 +194,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #--------------DUMMY EXCLUDE LAYERS--------------
-#================================================ 
+#================================================
 
 # rule DE.1 is not a DRC check
 
@@ -202,7 +202,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 logger.info("Executing rule DE.2")
 de2_l1  = ndmy.or(pmndmy).width(0.8.um, euclidian).polygons(0.001)
 de2_l1.output("DE.2", "DE.2 : Minimum NDMY or PMNDMY size (x or y dimension in um). : 0.8µm")
-de2_l1.forget 
+de2_l1.forget
 
 de3_ndmy_area = ndmy.with_area(15000.um, nil)
 # Rule DE.3: If size greater than 15000 um2 then two sides should not be greater than (um).
@@ -216,7 +216,7 @@ de3_ndmy_area.forget
 logger.info("Executing rule DE.4")
 de4_l1  = ndmy.space(20.um, euclidian).polygons(0.001)
 de4_l1.output("DE.4", "DE.4 : Minimum NDMY to NDMY space (Merge if space is less). : 20µm")
-de4_l1.forget 
+de4_l1.forget
 
 
 exec_end_time = Time.now

@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -118,7 +118,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -127,12 +127,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -199,7 +199,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #----------------------SAB-----------------------
-#================================================ 
+#================================================
 
 
 if FEOL
@@ -209,19 +209,19 @@ logger.info("FEOL section")
 logger.info("Executing rule SB.1")
 sb1_l1  = sab.width(0.42.um, euclidian).polygons(0.001)
 sb1_l1.output("SB.1", "SB.1 : min. sab width : 0.42µm")
-sb1_l1.forget 
+sb1_l1.forget
 
 # Rule SB.2: min. sab spacing is 0.42µm
 logger.info("Executing rule SB.2")
 sb2_l1  = sab.outside(otp_mk).space(0.42.um, euclidian).polygons(0.001)
 sb2_l1.output("SB.2", "SB.2 : min. sab spacing : 0.42µm")
-sb2_l1.forget 
+sb2_l1.forget
 
 # Rule SB.3: Space from salicide block to unrelated COMP. is 0.22µm
 logger.info("Executing rule SB.3")
 sb3_l1  = sab.outside(comp).outside(otp_mk).separation(comp.outside(sab), 0.22.um, euclidian).polygons(0.001)
 sb3_l1.output("SB.3", "SB.3 : Space from salicide block to unrelated COMP. : 0.22µm")
-sb3_l1.forget 
+sb3_l1.forget
 
 # Rule SB.4: Space from salicide block to contact.
 logger.info("Executing rule SB.4")
@@ -233,13 +233,13 @@ sb4_l1.forget
 logger.info("Executing rule SB.5a")
 sb5a_l1  = sab.outside(poly2.not(comp)).outside(otp_mk).separation(poly2.not(comp).outside(sab), 0.3.um, euclidian).polygons(0.001)
 sb5a_l1.output("SB.5a", "SB.5a : Space from salicide block to unrelated Poly2 on field. : 0.3µm")
-sb5a_l1.forget 
+sb5a_l1.forget
 
 # Rule SB.5b: Space from salicide block to unrelated Poly2 on COMP. is 0.28µm
 logger.info("Executing rule SB.5b")
 sb5b_l1  = sab.outside(tgate).outside(otp_mk).separation(tgate.outside(sab), 0.28.um, euclidian).polygons(0.001)
 sb5b_l1.output("SB.5b", "SB.5b : Space from salicide block to unrelated Poly2 on COMP. : 0.28µm")
-sb5b_l1.forget 
+sb5b_l1.forget
 
 # Rule SB.6: Salicide block extension beyond related COMP. is 0.22µm
 logger.info("Executing rule SB.6")
@@ -287,7 +287,7 @@ sb12_l1.forget
 logger.info("Executing rule SB.13")
 sb13_l1  = sab.outside(otp_mk).with_area(nil, 2.um)
 sb13_l1.output("SB.13", "SB.13 : Min. area (um2). : 2µm²")
-sb13_l1.forget 
+sb13_l1.forget
 # Rule SB.14a: Space from unsalicided Nplus Poly2 to unsalicided Pplus Poly2. (Unsalicided Nplus Poly2 must not fall within a square of 0.56um x 0.56um at unsalicided Pplus Poly2 corners). is 0.56µm
 logger.info("Executing rule SB.14a")
 sb14a_l1 = poly2.and(nplus).and(sab).separation(poly2.and(pplus).and(sab), 0.56.um, square).polygons
@@ -304,7 +304,7 @@ sb14b_l1.forget
 logger.info("Executing rule SB.15a")
 sb15a_l1  = poly2.and(sab).separation(nplus.or(pplus), 0.18.um, euclidian).polygons(0.001)
 sb15a_l1.output("SB.15a", "SB.15a : Space from unsalicided Poly2 to unrelated Nplus/Pplus. : 0.18µm")
-sb15a_l1.forget 
+sb15a_l1.forget
 
 sb_15b_1 = poly2.interacting(nplus.or(pplus)).and(sab).edges.not(poly2.edges.and(sab)).separation(nplus.or(pplus).edges, 0.32.um, projection).polygons(0.001)
 sb_15b_2 = poly2.interacting(nplus.or(pplus)).and(sab).separation(nplus.or(pplus), 0.32.um, projection).polygons(0.001)

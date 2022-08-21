@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -116,7 +116,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -125,12 +125,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -197,7 +197,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #--------------------5V SRAM---------------------
-#================================================ 
+#================================================
 
 # Rule S.DF.4c_MV: Min. (Nwell overlap of PCOMP) outside DNWELL. is 0.45µm
 logger.info("Executing rule S.DF.4c_MV")
@@ -219,7 +219,7 @@ sdf6_l1.forget
 logger.info("Executing rule S.DF.7_MV")
 sdf7_l1  = pcomp.inside(dnwell).inside(sramcore).separation(lvpwell.inside(dnwell).inside(sramcore), 0.45.um, euclidian).polygons(0.001).overlapping(v5_xtor).overlapping(dualgate)
 sdf7_l1.output("S.DF.7_MV", "S.DF.7_MV : Min. (LVPWELL Spacer to PCOMP) inside DNWELL. : 0.45µm")
-sdf7_l1.forget 
+sdf7_l1.forget
 
 # Rule S.DF.8_MV: Min. (LVPWELL overlap of NCOMP) Inside DNWELL. is 0.45µm
 logger.info("Executing rule S.DF.8_MV")
@@ -235,19 +235,19 @@ sdf8_l.forget
 logger.info("Executing rule S.DF.16_MV")
 sdf16_l1  = ncomp.outside(nwell).outside(dnwell).inside(sramcore).separation(nwell.outside(dnwell).inside(sramcore), 0.45.um, euclidian).polygons(0.001).overlapping(v5_xtor).overlapping(dualgate)
 sdf16_l1.output("S.DF.16_MV", "S.DF.16_MV : Min. space from (Nwell outside DNWELL) to (NCOMP outside Nwell and DNWELL). : 0.45µm")
-sdf16_l1.forget 
+sdf16_l1.forget
 
 # Rule S.PL.5a_MV: Space from field Poly2 to unrelated COMP Spacer from field Poly2 to Guard-ring. is 0.12µm
 logger.info("Executing rule S.PL.5a_MV")
 spl5a_l1  = poly2.inside(sramcore).separation(comp.inside(sramcore), 0.12.um, euclidian).polygons(0.001).overlapping(v5_xtor).overlapping(dualgate)
 spl5a_l1.output("S.PL.5a_MV", "S.PL.5a_MV : Space from field Poly2 to unrelated COMP Spacer from field Poly2 to Guard-ring. : 0.12µm")
-spl5a_l1.forget 
+spl5a_l1.forget
 
 # Rule S.PL.5b_MV: Space from field Poly2 to related COMP. is 0.12µm
 logger.info("Executing rule S.PL.5b_MV")
 spl5b_l1  = poly2.inside(sramcore).separation(comp.inside(sramcore), 0.12.um, euclidian).polygons(0.001).overlapping(v5_xtor).overlapping(dualgate)
 spl5b_l1.output("S.PL.5b_MV", "S.PL.5b_MV : Space from field Poly2 to related COMP. : 0.12µm")
-spl5b_l1.forget 
+spl5b_l1.forget
 
 # Rule S.CO.4_MV: COMP overlap of contact. is 0.04µm
 logger.info("Executing rule S.CO.4_MV")

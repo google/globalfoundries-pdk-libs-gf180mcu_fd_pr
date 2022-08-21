@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -116,7 +116,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -125,12 +125,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -197,10 +197,10 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #------------MIM CAPACITOR OPTION A -------------
-#================================================ 
+#================================================
 
 if MIM_OPTION == "A"
-logger.info("MIM Capacitor Option A section") 
+logger.info("MIM Capacitor Option A section")
 
 mim_virtual = fusetop.sized(1.06.um).and(metal2.interacting(fusetop))
 # Rule MIM.1: Minimum MiM bottom plate spacing to the bottom plate metal (whether adjacent MiM or routing metal). is 1.2µm
@@ -240,13 +240,13 @@ mim4_l.forget
 logger.info("Executing rule MIM.5")
 mim5_l1  = fusetop.separation(via2.interacting(metal2), 0.4.um, euclidian).polygons(0.001)
 mim5_l1.output("MIM.5", "MIM.5 : Minimum spacing between top plate and the Via2 connecting to the bottom plate. : 0.4µm")
-mim5_l1.forget 
+mim5_l1.forget
 
 # Rule MIM.6: Minimum spacing between unrelated top plates. is 0.6µm
 logger.info("Executing rule MIM.6")
 mim6_l1  = fusetop.space(0.6.um, euclidian).polygons(0.001)
 mim6_l1.output("MIM.6", "MIM.6 : Minimum spacing between unrelated top plates. : 0.6µm")
-mim6_l1.forget 
+mim6_l1.forget
 
 # Rule MIM.7: Min FuseTop enclosure by CAP_MK.
 logger.info("Executing rule MIM.7")
@@ -258,7 +258,7 @@ mim7_l1.forget
 logger.info("Executing rule MIM.8a")
 mim8a_l1  = fusetop.with_area(nil, 25.um)
 mim8a_l1.output("MIM.8a", "MIM.8a : Minimum MIM cap area (defined by FuseTop area) (um2). : 25µm²")
-mim8a_l1.forget 
+mim8a_l1.forget
 # Rule MIM.8b: Maximum single MIM Cap area (Use multiple MIM caps in parallel connection if bigger capacitors are required) (um2). is 10000µm
 logger.info("Executing rule MIM.8b")
 mim8b_l1 = fusetop.with_area(10000.um,nil).not_in(fusetop.with_area(10000.um))
@@ -269,7 +269,7 @@ mim8b_l1.forget
 logger.info("Executing rule MIM.9")
 mim9_l1  = via2.inside(fusetop).space(0.5.um, euclidian).polygons(0.001)
 mim9_l1.output("MIM.9", "MIM.9 : Min. via spacing for sea of via on MIM top plate. : 0.5µm")
-mim9_l1.forget 
+mim9_l1.forget
 
 # Rule MIM.10: (a) There cannot be any Via1 touching MIM bottom plate Metal2. (b) MIM bottom plate Metal2 can only be connected through the higher Via (Via2).
 logger.info("Executing rule MIM.10")
@@ -294,7 +294,7 @@ end
 logger.info("Executing rule MIM.11")
 mim11_l1  = mim11_large_metal2_violation
 mim11_l1.output("MIM.11", "MIM.11 : Bottom plate of multiple MIM caps can be shared (for common nodes) as long as total MIM area with that single common plate does not exceed MIM.8b rule. : -µm")
-mim11_l1.forget 
+mim11_l1.forget
 
 mim11_large_metal2.forget
 mim11_large_metal2_violation.forget
