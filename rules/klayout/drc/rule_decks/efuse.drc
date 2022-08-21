@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -120,7 +120,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -129,12 +129,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -201,7 +201,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #---------------------EFUSE----------------------
-#================================================ 
+#================================================
 
 # Rule EF.01: Min. (Poly2 butt PLFUSE) within EFUSE_MK and Pplus.
 logger.info("Executing rule EF.01")
@@ -283,13 +283,13 @@ ef09_l1.forget
 logger.info("Executing rule EF.10")
 ef10_l1  = cathode.space(0.26.um, euclidian).polygons(0.001)
 ef10_l1.output("EF.10", "EF.10 : Min. Cathode Poly2 to Poly2 space. : 0.26µm")
-ef10_l1.forget 
+ef10_l1.forget
 
 # Rule EF.11: Min. Anode Poly2 to Poly2 space. is 0.26µm
 logger.info("Executing rule EF.11")
 ef11_l1  = anode.space(0.26.um, euclidian).polygons(0.001)
 ef11_l1.output("EF.11", "EF.11 : Min. Anode Poly2 to Poly2 space. : 0.26µm")
-ef11_l1.forget 
+ef11_l1.forget
 
 cont_ef = contact.and(plfuse.inside(efuse_mk))
 # Rule EF.12: Min. Space of Cathode Contact to PLFUSE end.
@@ -333,7 +333,7 @@ ef16b_l1.forget
 logger.info("Executing rule EF.17")
 ef17_l1  = efuse_mk.space(0.26.um, euclidian).polygons(0.001)
 ef17_l1.output("EF.17", "EF.17 : Min. Space of EFUSE_MK to EFUSE_MK. : 0.26µm")
-ef17_l1.forget 
+ef17_l1.forget
 
 # Rule EF.18: PLFUSE must sit on field oxide (NOT COMP), no cross with any COMP, Nplus, Pplus, ESD, SAB, Resistor, Metal1, Metal2.
 logger.info("Executing rule EF.18")
@@ -351,7 +351,7 @@ ef19_l1.forget
 logger.info("Executing rule EF.20")
 ef20_l1  = plfuse.separation(comp.or(nplus).or(esd).or(sab).or(resistor), 2.73.um, euclidian).polygons(0.001)
 ef20_l1.output("EF.20", "EF.20 : Min. PLFUSE space to COMP, Nplus, Pplus, Resistor, ESD, SAB. : 2.73µm")
-ef20_l1.forget 
+ef20_l1.forget
 
 ef_21_fuse    = poly2.interacting(plfuse).inside(efuse_mk.and(pplus)).extents.edges
 ef_21_anode   = anode.edges.not_interacting(anode.edges.interacting(plfuse))

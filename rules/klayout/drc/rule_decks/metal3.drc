@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -112,7 +112,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -121,12 +121,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -193,7 +193,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #---------------------METAL3---------------------
-#================================================ 
+#================================================
 
 
 if BEOL
@@ -203,25 +203,25 @@ logger.info("BEOL section")
 logger.info("Executing rule M3.1")
 m31_l1  = metal3.width(0.28.um, euclidian).polygons(0.001)
 m31_l1.output("M3.1", "M3.1 : min. metal3 width : 0.28µm")
-m31_l1.forget 
+m31_l1.forget
 
 # Rule M3.2a: min. metal3 spacing is 0.28µm
 logger.info("Executing rule M3.2a")
 m32a_l1  = metal3.space(0.28.um, euclidian).polygons(0.001)
 m32a_l1.output("M3.2a", "M3.2a : min. metal3 spacing : 0.28µm")
-m32a_l1.forget 
+m32a_l1.forget
 
 # Rule M3.2b: Space to wide Metal3 (length & width > 10um) is 0.3µm
 logger.info("Executing rule M3.2b")
 m32b_l1  = metal3.separation(metal3.not_interacting(metal3.edges.with_length(nil, 10.um)), 0.3.um, euclidian).polygons(0.001)
 m32b_l1.output("M3.2b", "M3.2b : Space to wide Metal3 (length & width > 10um) : 0.3µm")
-m32b_l1.forget 
+m32b_l1.forget
 
 # Rule M3.3: Minimum metal3 area is 0.1444µm²
 logger.info("Executing rule M3.3")
 m33_l1  = metal3.with_area(nil, 0.1444.um)
 m33_l1.output("M3.3", "M3.3 : Minimum metal3 area : 0.1444µm²")
-m33_l1.forget 
+m33_l1.forget
 
 end #BEOL
 

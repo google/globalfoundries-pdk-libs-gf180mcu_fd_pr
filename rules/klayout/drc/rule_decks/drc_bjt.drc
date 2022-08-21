@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -114,7 +114,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -123,12 +123,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -195,7 +195,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #--------------------DRC_BJT---------------------
-#================================================ 
+#================================================
 
 # Rule BJT.1: Min. DRC_BJT overlap of DNWELL for NPN BJT.
 logger.info("Executing rule BJT.1")
@@ -213,7 +213,7 @@ bjt2_l1.forget
 logger.info("Executing rule BJT.3")
 bjt3_l1  = comp.outside(drc_bjt).separation(drc_bjt, 0.1.um, euclidian).polygons(0.001)
 bjt3_l1.output("BJT.3", "BJT.3 : Minimum space of DRC_BJT layer to unrelated COMP. : 0.1µm")
-bjt3_l1.forget 
+bjt3_l1.forget
 
 
 exec_end_time = Time.now

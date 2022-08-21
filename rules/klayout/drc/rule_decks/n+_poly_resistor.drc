@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -115,7 +115,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -124,12 +124,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -196,20 +196,20 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #----------------N+ POLY RESISTOR----------------
-#================================================ 
+#================================================
 
 lres_poly = poly2.and(nplus).interacting(sab).interacting(res_mk)
 # Rule LRES.1: Minimum width of Poly2 resistor. is 0.8µm
 logger.info("Executing rule LRES.1")
 lres1_l1  = lres_poly.width(0.8.um, euclidian).polygons(0.001)
 lres1_l1.output("LRES.1", "LRES.1 : Minimum width of Poly2 resistor. : 0.8µm")
-lres1_l1.forget 
+lres1_l1.forget
 
 # Rule LRES.2: Minimum space between Poly2 resistors. is 0.4µm
 logger.info("Executing rule LRES.2")
 lres2_l1  = lres_poly.isolated(0.4.um, euclidian).polygons(0.001)
 lres2_l1.output("LRES.2", "LRES.2 : Minimum space between Poly2 resistors. : 0.4µm")
-lres2_l1.forget 
+lres2_l1.forget
 
 # Rule LRES.3: Minimum space from Poly2 resistor to COMP.
 logger.info("Executing rule LRES.3")
@@ -221,7 +221,7 @@ lres3_l1.forget
 logger.info("Executing rule LRES.4")
 lres4_l1  = lres_poly.separation(poly2.not_interacting(sab), 0.6.um, euclidian).polygons(0.001)
 lres4_l1.output("LRES.4", "LRES.4 : Minimum space from Poly2 resistor to unrelated Poly2. : 0.6µm")
-lres4_l1.forget 
+lres4_l1.forget
 
 # Rule LRES.5: Minimum Nplus implant overlap of Poly2 resistor. is 0.3µm
 logger.info("Executing rule LRES.5")
@@ -250,7 +250,7 @@ cont_lres7.forget
 # rule LRES.8 is not a DRC check
 
 mk_lres9 = res_mk.edges.not(poly2.and(nplus).and(sab).edges).inside_part(poly2)
-# Rule LRES.9a: Nplus Poly2 resistor shall be covered by RES_MK marking. RES_MK length shall be coincide with resistor length (Defined by SAB length) and width covering the width of Poly2. 
+# Rule LRES.9a: Nplus Poly2 resistor shall be covered by RES_MK marking. RES_MK length shall be coincide with resistor length (Defined by SAB length) and width covering the width of Poly2.
 logger.info("Executing rule LRES.9a")
 lres9a_l1 = res_mk.interacting(lres_poly).interacting(mk_lres9)
 lres9a_l1.output("LRES.9a", "LRES.9a : Nplus Poly2 resistor shall be covered by RES_MK marking. RES_MK length shall be coincide with resistor length (Defined by SAB length) and width covering the width of Poly2. ")

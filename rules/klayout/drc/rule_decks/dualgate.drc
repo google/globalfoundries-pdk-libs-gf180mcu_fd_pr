@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -113,7 +113,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -122,12 +122,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -194,7 +194,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #--------------------DUALGATE--------------------
-#================================================ 
+#================================================
 
 
 if FEOL
@@ -214,13 +214,13 @@ dv1_l.forget
 logger.info("Executing rule DV.2")
 dv2_l1  = dualgate.space(0.44.um, euclidian).polygons(0.001)
 dv2_l1.output("DV.2", "DV.2 : Min. Dualgate Space. Merge if Space is less than this design rule. : 0.44µm")
-dv2_l1.forget 
+dv2_l1.forget
 
 # Rule DV.3: Min. Dualgate to COMP space [unrelated]. is 0.24µm
 logger.info("Executing rule DV.3")
 dv3_l1  = dualgate.separation(comp.outside(dualgate), 0.24.um, euclidian).polygons(0.001)
 dv3_l1.output("DV.3", "DV.3 : Min. Dualgate to COMP space [unrelated]. : 0.24µm")
-dv3_l1.forget 
+dv3_l1.forget
 
 # rule DV.4 is not a DRC check
 
@@ -228,7 +228,7 @@ dv3_l1.forget
 logger.info("Executing rule DV.5")
 dv5_l1  = dualgate.width(0.7.um, euclidian).polygons(0.001)
 dv5_l1.output("DV.5", "DV.5 : Min. Dualgate width. : 0.7µm")
-dv5_l1.forget 
+dv5_l1.forget
 
 comp_dv = comp.not(pcomp.outside(nwell))
 # Rule DV.6: Min. Dualgate enclose COMP (except substrate tap). is 0.24µm

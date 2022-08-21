@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -114,7 +114,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -123,12 +123,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -195,7 +195,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #----------------------VIA4----------------------
-#================================================ 
+#================================================
 
 
 if BEOL
@@ -211,7 +211,7 @@ v41_l1.forget
 logger.info("Executing rule V4.2a")
 v42a_l1  = via4.space(0.26.um, euclidian).polygons(0.001)
 v42a_l1.output("V4.2a", "V4.2a : min. via4 spacing : 0.26µm")
-v42a_l1.forget 
+v42a_l1.forget
 
 merged_via4   = via4.sized(0.18.um).sized(-0.18.um).with_bbox_min(1.82.um , nil).extents.inside(metal4)
 via4_mask     = merged_via4.size(1).not(via4).with_holes(16, nil)
@@ -220,7 +220,7 @@ selected_via4 = via4.interacting(via4_mask)
 logger.info("Executing rule V4.2b")
 v42b_l1  = selected_via4.space(0.36.um, euclidian).polygons(0.001)
 v42b_l1.output("V4.2b", "V4.2b : Via4 Space in 4x4 or larger Vian array : 0.36µm")
-v42b_l1.forget 
+v42b_l1.forget
 
 merged_via4.forget
 via4_mask.forget

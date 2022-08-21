@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -118,7 +118,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -127,12 +127,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -224,7 +224,7 @@ if CONNECTIVITY_RULES
   connect(metal5,  via5)
   connect(via5,    metaltop)
 
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 #================================================
 #------------ PRE-DEFINED FUNCTIONS -------------
@@ -250,7 +250,7 @@ def conn_space(layer,conn_val,not_conn_val, mode)
     end
   end
   unconnected_output = unconnected_errors.polygons.or(singularity_errors.polygons(0.001))
-  return connected_output, unconnected_output 
+  return connected_output, unconnected_output
 end
 
 def conn_separation(layer1, layer2, conn_val,not_conn_val, mode)
@@ -279,10 +279,10 @@ end
 if CONNECTIVITY_RULES
   logger.info("Connectivity rules enabled, Netlist object will be generated.")
   netlist
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 # === LAYOUT EXTENT ===
-CHIP = extent.sized(0.0) 
+CHIP = extent.sized(0.0)
 
 logger.info("Total area of the design is #{CHIP.area()} um^2.")
 
@@ -290,7 +290,7 @@ logger.info("Total area of the design is #{CHIP.area()} um^2.")
 
 #================================================
 #-------------------10V LDPMOS-------------------
-#================================================ 
+#================================================
 
 mdp_source = (pcomp).interacting(poly2.and(dualgate).and(ldmos_xtor).and(mvpsd)).not(poly2)
 ldpmos     = poly2.and(pcomp).and(dualgate).not(mvpsd).inside(ldmos_xtor)
@@ -312,7 +312,7 @@ mvpsd_mdp.forget
 logger.info("Executing rule MDP.2")
 mdp2_l1  = poly2.and(comp).inside(ldmos_xtor).inside(dualgate).edges.not(mvpsd).interacting(mvpsd).width(4.um, euclidian).polygons(0.001)
 mdp2_l1.output("MDP.2", "MDP.2 : Minimum transistor channel width. : 4µm")
-mdp2_l1.forget 
+mdp2_l1.forget
 
 mdp3_1 = ldpmos.or(mvpsd).or(mdp_source).not_interacting(ncomp.holes).inside(dualgate).inside(ldmos_xtor)
 mdp3_2 = ncomp.holes.not_interacting(ncomp.interacting(mdp_source)).not_interacting(mvpsd,1,1).inside(dualgate).inside(ldmos_xtor)
@@ -344,7 +344,7 @@ pcomp_mdp3b = pcomp.inside(dnwell).inside(ldmos_xtor).inside(dualgate)
 logger.info("Executing rule MDP.3b")
 mdp3b_l1  = ncomp_mdp3b.not(poly2).not(mvpsd).separation(pcomp_mdp3b.not(poly2).not(mvpsd), 0.4.um, euclidian).polygons(0.001)
 mdp3b_l1.output("MDP.3b", "MDP.3b : Min NCOMP (Nplus AND COMP) space to PCOMP in DNWELL (Pplus AND COMP AND DNWELL). Use butted source and DNWELL contacts otherwise and that is best for Latch-up immunity as well. : 0.4µm")
-mdp3b_l1.forget 
+mdp3b_l1.forget
 
 ncomp_mdp3b.forget
 pcomp_mdp3b.forget
@@ -372,7 +372,7 @@ mdp4_metal.forget
 logger.info("Executing rule MDP.4a")
 mdp4a_l1  = pcomp.inside(ldmos_xtor).inside(dualgate).separation(dnwell.inside(ldmos_xtor).inside(dualgate), 2.5.um, euclidian).polygons(0.001)
 mdp4a_l1.output("MDP.4a", "MDP.4a : Min PCOMP (Pplus AND COMP) space to DNWELL. : 2.5µm")
-mdp4a_l1.forget 
+mdp4a_l1.forget
 
 mdp4b_dnwell_edges = dnwell.inside(ldmos_xtor).inside(dualgate).edges.centers(0, 0.99)
 mdp4b_not_error = dnwell.drc(separation(pcomp.inside(ldmos_xtor.interacting(mvpsd)).inside(dualgate).not_interacting(mvpsd), euclidian) <= 15.um).polygons(0.001)
@@ -416,19 +416,19 @@ mdp6a_l1.forget
 logger.info("Executing rule MDP.7")
 mdp7_l1  = ldmos_xtor.separation(nwell.outside(ldmos_xtor), 2.um, euclidian).polygons(0.001)
 mdp7_l1.output("MDP.7", "MDP.7 : Minimum LDMOS_XTOR layer space to Nwell outside LDMOS_XTOR. : 2µm")
-mdp7_l1.forget 
+mdp7_l1.forget
 
 # Rule MDP.8: Minimum LDMOS_XTOR layer space to NCOMP outside LDMOS_XTOR. is 1.5µm
 logger.info("Executing rule MDP.8")
 mdp8_l1  = ldmos_xtor.separation(ncomp.outside(ldmos_xtor), 1.5.um, euclidian).polygons(0.001)
 mdp8_l1.output("MDP.8", "MDP.8 : Minimum LDMOS_XTOR layer space to NCOMP outside LDMOS_XTOR. : 1.5µm")
-mdp8_l1.forget 
+mdp8_l1.forget
 
 # Rule MDP.9a: Min LDPMOS POLY2 width. is 1.2µm
 logger.info("Executing rule MDP.9a")
 mdp9a_l1  = poly2.inside(dnwell.and(dualgate).and(ldmos_xtor)).width(1.2.um, euclidian).polygons(0.001)
 mdp9a_l1.output("MDP.9a", "MDP.9a : Min LDPMOS POLY2 width. : 1.2µm")
-mdp9a_l1.forget 
+mdp9a_l1.forget
 
 mdp9b_1 = poly2.inside(dnwell.and(dualgate).and(ldmos_xtor)).edges.interacting(mvpsd).not(mvpsd).enclosing(comp.edges,0.4.um).edges
 mdp9b_2 = poly2.inside(dnwell.and(dualgate).and(ldmos_xtor)).edges.interacting(mvpsd).not(mvpsd).interacting(pcomp)
@@ -490,32 +490,32 @@ mdp10_l1.output("MDP.10", "MDP.10 : Min/Max MVPSD overlap onto the channel (LDMO
 mdp10_l1.forget
 
 if CONNECTIVITY_RULES
-logger.info("CONNECTIVITY_RULES section") 
+logger.info("CONNECTIVITY_RULES section")
 
-connected_mdp_10b, unconnected_mdp_10a = conn_space(mvpsd, 1, 2, euclidian) 
+connected_mdp_10b, unconnected_mdp_10a = conn_space(mvpsd, 1, 2, euclidian)
 
 # Rule MDP.10a: Min MVPSD space within LDMOS_XTOR marking [diff potential]. is 2µm
 logger.info("Executing rule MDP.10a")
 mdp10a_l1  = unconnected_mdp_10a
 mdp10a_l1.output("MDP.10a", "MDP.10a : Min MVPSD space within LDMOS_XTOR marking [diff potential]. : 2µm")
-mdp10a_l1.forget 
+mdp10a_l1.forget
 
 # Rule MDP.10b: Min MVPSD space [same potential]. Merge if space less than 1um. is 1µm
 logger.info("Executing rule MDP.10b")
 mdp10b_l1  = connected_mdp_10b
 mdp10b_l1.output("MDP.10b", "MDP.10b : Min MVPSD space [same potential]. Merge if space less than 1um. : 1µm")
-mdp10b_l1.forget 
+mdp10b_l1.forget
 
 else
-logger.info("CONNECTIVITY_RULES disabled section") 
+logger.info("CONNECTIVITY_RULES disabled section")
 
 # Rule MDP.10a: Min MVPSD space within LDMOS_XTOR marking [diff potential]. is 2µm
 logger.info("Executing rule MDP.10a")
 mdp10a_l1  = mvpsd.space(2.um, euclidian).polygons(0.001)
 mdp10a_l1.output("MDP.10a", "MDP.10a : Min MVPSD space within LDMOS_XTOR marking [diff potential]. : 2µm")
-mdp10a_l1.forget 
+mdp10a_l1.forget
 
-end #CONNECTIVITY_RULES 
+end #CONNECTIVITY_RULES
 
 # Rule MDP.11: Min MVPSD enclosing PCOMP in the drain (MVPSD AND COMP NOT POLY2) direction and in the direction along the transistor width.
 logger.info("Executing rule MDP.11")
@@ -561,13 +561,13 @@ mdp_13c_source_side.forget
 logger.info("Executing rule MDP.15")
 mdp15_l1  = dnwell.separation(dnwell.covering(mvpsd).inside(dualgate).inside(ldmos_xtor), 6.um, euclidian).polygons(0.001)
 mdp15_l1.output("MDP.15", "MDP.15 : Min DNWELL enclosing MVPSD to any DNWELL spacing. : 6µm")
-mdp15_l1.forget 
+mdp15_l1.forget
 
 # Rule MDP.16a: Min LDPMOS drain COMP width. is 0.22µm
 logger.info("Executing rule MDP.16a")
 mdp16a_l1  = comp.inside(mvpsd).inside(dualgate).inside(ldmos_xtor).width(0.22.um, euclidian).polygons(0.001)
 mdp16a_l1.output("MDP.16a", "MDP.16a : Min LDPMOS drain COMP width. : 0.22µm")
-mdp16a_l1.forget 
+mdp16a_l1.forget
 
 # Rule MDP.16b: Min LDPMOS drain COMP enclose contact. is 0µm
 logger.info("Executing rule MDP.16b")

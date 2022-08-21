@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -113,7 +113,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -122,12 +122,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -203,7 +203,7 @@ if METAL_LEVEL == "6LM"
     via5           = polygons(82 , 0 )
     metaltop       = polygons(53 , 0 )
     top_via       = via5
-    topmin1_via   = via4 
+    topmin1_via   = via4
     top_metal     = metaltop
     topmin1_metal = metal5
 elsif METAL_LEVEL == "5LM"
@@ -212,7 +212,7 @@ elsif METAL_LEVEL == "5LM"
     via4           = polygons(41 , 0 )
     metal5         = polygons(81 , 0 )
     top_via       = via4
-    topmin1_via   = via3  
+    topmin1_via   = via3
     top_metal     = metal5
     topmin1_metal = metal4
 elsif METAL_LEVEL == "4LM"
@@ -221,7 +221,7 @@ elsif METAL_LEVEL == "4LM"
     via3           = polygons(40 , 0 )
     metal4         = polygons(46 , 0 )
     top_via       = via3
-    topmin1_via   = via2  
+    topmin1_via   = via2
     top_metal     = metal4
     topmin1_metal = metal3
 elsif METAL_LEVEL == "3LM"
@@ -246,10 +246,10 @@ end #METAL_LEVEL
 
 #================================================
 #-------------MIM CAPACITOR OPTION B-------------
-#================================================ 
+#================================================
 
 if MIM_OPTION == "B"
-logger.info("mim11_metal2_polygon_layer.interacting(fuse_in_polygon) section") 
+logger.info("mim11_metal2_polygon_layer.interacting(fuse_in_polygon) section")
 
 mimtm_virtual = fusetop.sized(1.06.um).and(topmin1_metal.interacting(fusetop))
 # Rule MIMTM.1: Minimum MiM bottom plate spacing to the bottom plate metal (whether adjacent MiM or routing metal). is 1.2µm
@@ -289,13 +289,13 @@ mimtm4_l.forget
 logger.info("Executing rule MIMTM.5")
 mimtm5_l1  = fusetop.separation(top_via.interacting(topmin1_metal), 0.4.um, euclidian).polygons(0.001)
 mimtm5_l1.output("MIMTM.5", "MIMTM.5 : Minimum spacing between top plate and the Vian-1 connecting to the bottom plate. : 0.4µm")
-mimtm5_l1.forget 
+mimtm5_l1.forget
 
 # Rule MIMTM.6: Minimum spacing between unrelated top plates. is 0.6µm
 logger.info("Executing rule MIMTM.6")
 mimtm6_l1  = fusetop.space(0.6.um, euclidian).polygons(0.001)
 mimtm6_l1.output("MIMTM.6", "MIMTM.6 : Minimum spacing between unrelated top plates. : 0.6µm")
-mimtm6_l1.forget 
+mimtm6_l1.forget
 
 # Rule MIMTM.7: Min FuseTop enclosure by CAP_MK.
 logger.info("Executing rule MIMTM.7")
@@ -307,7 +307,7 @@ mimtm7_l1.forget
 logger.info("Executing rule MIMTM.8a")
 mimtm8a_l1  = fusetop.with_area(nil, 25.um)
 mimtm8a_l1.output("MIMTM.8a", "MIMTM.8a : Minimum MIM cap area (defined by FuseTop area) (um2). : 25µm²")
-mimtm8a_l1.forget 
+mimtm8a_l1.forget
 # Rule MIMTM.8b: Maximum single MIM Cap area (Use multiple MIM caps in parallel connection if bigger capacitors are required) (um2). is 10000µm
 logger.info("Executing rule MIMTM.8b")
 mimtm8b_l1 = fusetop.with_area(10000.um,nil).not_in(fusetop.with_area(10000.um))
@@ -318,7 +318,7 @@ mimtm8b_l1.forget
 logger.info("Executing rule MIMTM.9")
 mimtm9_l1  = top_via.inside(fusetop).space(0.5.um, euclidian).polygons(0.001)
 mimtm9_l1.output("MIMTM.9", "MIMTM.9 : Min. Via (Vian-1) spacing for sea of Via on MIM top plate. : 0.5µm")
-mimtm9_l1.forget 
+mimtm9_l1.forget
 
 # Rule MIMTM.10: (a) There cannot be any Vian-2 touching MIM bottom plate Metaln-1. (b) MIM bottom plate Metaln-1 can only be connected through the higher Via (Vian-1).
 logger.info("Executing rule MIMTM.10")
@@ -343,16 +343,16 @@ end
 logger.info("Executing rule MIMTM.11")
 mimtm11_l1  = mimtm11_large_topmin1_metal_violation
 mimtm11_l1.output("MIMTM.11", "MIMTM.11 : Bottom plate of multiple MIM caps can be shared (for common nodes) as long as total MIM area with that single common plate does not exceed MIMTM.8b rule. : -µm")
-mimtm11_l1.forget 
+mimtm11_l1.forget
 
 mimtm11_large_topmin1_metal.forget
 mimtm11_large_topmin1_metal_violation.forget
 # rule MIMTM.12 is not a DRC check
 
 else
-logger.info("MIM Capacitor Option B not Selected") 
+logger.info("MIM Capacitor Option B not Selected")
 
-end #MIM_OPTION 
+end #MIM_OPTION
 
 
 exec_end_time = Time.now

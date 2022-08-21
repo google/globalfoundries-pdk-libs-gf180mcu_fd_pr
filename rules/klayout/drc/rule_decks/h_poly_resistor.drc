@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -115,7 +115,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -124,12 +124,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -196,7 +196,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #----------------H POLY RESISTOR-----------------
-#================================================ 
+#================================================
 
 hres_poly = poly2.interacting(pplus).interacting(sab).interacting(res_mk).interacting(resistor)
 hres1_poly = poly2.interacting(pplus).interacting(sab).interacting(res_mk)
@@ -204,19 +204,19 @@ hres1_poly = poly2.interacting(pplus).interacting(sab).interacting(res_mk)
 logger.info("Executing rule HRES.1")
 hres1_l1  = resistor.interacting(hres1_poly).space(0.4.um, euclidian).polygons(0.001)
 hres1_l1.output("HRES.1", "HRES.1 : Minimum space. Note : Merge if the spacing is less than 0.4 um. : 0.4µm")
-hres1_l1.forget 
+hres1_l1.forget
 
 # Rule HRES.2: Minimum width of Poly2 resistor. is 1µm
 logger.info("Executing rule HRES.2")
 hres2_l1  = hres_poly.width(1.um, euclidian).polygons(0.001)
 hres2_l1.output("HRES.2", "HRES.2 : Minimum width of Poly2 resistor. : 1µm")
-hres2_l1.forget 
+hres2_l1.forget
 
 # Rule HRES.3: Minimum space between Poly2 resistors. is 0.4µm
 logger.info("Executing rule HRES.3")
 hres3_l1  = hres_poly.space(0.4.um, euclidian).polygons(0.001)
 hres3_l1.output("HRES.3", "HRES.3 : Minimum space between Poly2 resistors. : 0.4µm")
-hres3_l1.forget 
+hres3_l1.forget
 
 # Rule HRES.4: Minimum RESISTOR overlap of Poly2 resistor. is 0.4µm
 logger.info("Executing rule HRES.4")
@@ -232,7 +232,7 @@ hres4_l.forget
 logger.info("Executing rule HRES.5")
 hres5_l1  = resistor.interacting(hres1_poly).separation(poly2.not_interacting(sab), 0.3.um, euclidian).polygons(0.001)
 hres5_l1.output("HRES.5", "HRES.5 : Minimum RESISTOR space to unrelated Poly2. : 0.3µm")
-hres5_l1.forget 
+hres5_l1.forget
 
 # Rule HRES.6: Minimum RESISTOR space to COMP.
 logger.info("Executing rule HRES.6")
@@ -284,7 +284,7 @@ pplus2_hres10.forget
 # rule HRES.11 is not a DRC check
 
 mk_hres12a = res_mk.edges.not(poly2.not(pplus).and(sab).edges).inside_part(poly2)
-# Rule HRES.12a: P type Poly2 resistor (high sheet rho) shall be covered by RES_MK marking. RES_MK length shall be coincide with resistor length (Defined by Pplus space) and width covering the width of Poly2. 
+# Rule HRES.12a: P type Poly2 resistor (high sheet rho) shall be covered by RES_MK marking. RES_MK length shall be coincide with resistor length (Defined by Pplus space) and width covering the width of Poly2.
 logger.info("Executing rule HRES.12a")
 hres12a_l1 = res_mk.interacting(resistor).interacting(mk_hres12a)
 hres12a_l1.output("HRES.12a", "HRES.12a : P type Poly2 resistor (high sheet rho) shall be covered by RES_MK marking. RES_MK length shall be coincide with resistor length (Defined by Pplus space) and width covering the width of Poly2. ")

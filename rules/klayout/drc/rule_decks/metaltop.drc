@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -114,7 +114,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -123,12 +123,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -204,7 +204,7 @@ if METAL_LEVEL == "6LM"
     via5           = polygons(82 , 0 )
     metaltop       = polygons(53 , 0 )
     top_via       = via5
-    topmin1_via   = via4 
+    topmin1_via   = via4
     top_metal     = metaltop
     topmin1_metal = metal5
 elsif METAL_LEVEL == "5LM"
@@ -213,7 +213,7 @@ elsif METAL_LEVEL == "5LM"
     via4           = polygons(41 , 0 )
     metal5         = polygons(81 , 0 )
     top_via       = via4
-    topmin1_via   = via3  
+    topmin1_via   = via3
     top_metal     = metal5
     topmin1_metal = metal4
 elsif METAL_LEVEL == "4LM"
@@ -222,7 +222,7 @@ elsif METAL_LEVEL == "4LM"
     via3           = polygons(40 , 0 )
     metal4         = polygons(46 , 0 )
     top_via       = via3
-    topmin1_via   = via2  
+    topmin1_via   = via2
     top_metal     = metal4
     topmin1_metal = metal3
 elsif METAL_LEVEL == "3LM"
@@ -247,84 +247,84 @@ end #METAL_LEVEL
 
 #================================================
 #--------------------METALTOP--------------------
-#================================================ 
+#================================================
 
 
 if BEOL
 logger.info("BEOL section")
 
 if METAL_TOP == "6K"
-logger.info("MetalTop thickness 6k section") 
+logger.info("MetalTop thickness 6k section")
 
 # Rule MT.1: min. metaltop width is 0.36µm
 logger.info("Executing rule MT.1")
 mt1_l1  = metaltop.width(0.36.um, euclidian).polygons(0.001)
 mt1_l1.output("MT.1", "MT.1 : min. metaltop width : 0.36µm")
-mt1_l1.forget 
+mt1_l1.forget
 
 # Rule MT.2a: min. metaltop spacing is 0.38µm
 logger.info("Executing rule MT.2a")
 mt2a_l1  = metaltop.space(0.38.um, euclidian).polygons(0.001)
 mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.38µm")
-mt2a_l1.forget 
+mt2a_l1.forget
 
 # Rule MT.4: Minimum MetalTop area is 0.5625µm²
 logger.info("Executing rule MT.4")
 mt4_l1  = metaltop.with_area(nil, 0.5625.um)
 mt4_l1.output("MT.4", "MT.4 : Minimum MetalTop area : 0.5625µm²")
-mt4_l1.forget 
+mt4_l1.forget
 elsif METAL_TOP == "9K"
-logger.info("MetalTop thickness 9k/11k section") 
+logger.info("MetalTop thickness 9k/11k section")
 
 # Rule MT.1: min. metaltop width is 0.44µm
 logger.info("Executing rule MT.1")
 mt1_l1  = metaltop.width(0.44.um, euclidian).polygons(0.001)
 mt1_l1.output("MT.1", "MT.1 : min. metaltop width : 0.44µm")
-mt1_l1.forget 
+mt1_l1.forget
 
 # Rule MT.2a: min. metaltop spacing is 0.46µm
 logger.info("Executing rule MT.2a")
 mt2a_l1  = metaltop.space(0.46.um, euclidian).polygons(0.001)
 mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.46µm")
-mt2a_l1.forget 
+mt2a_l1.forget
 
 # Rule MT.4: Minimum MetalTop area is 0.5625µm²
 logger.info("Executing rule MT.4")
 mt4_l1  = metaltop.with_area(nil, 0.5625.um)
 mt4_l1.output("MT.4", "MT.4 : Minimum MetalTop area : 0.5625µm²")
-mt4_l1.forget 
+mt4_l1.forget
 elsif METAL_TOP == "30K"
-logger.info("MetalTop thickness 30K section") 
+logger.info("MetalTop thickness 30K section")
 
 # Rule MT30.1a: Min. thick MetalTop width. is 1.8µm
 logger.info("Executing rule MT30.1a")
 mt301a_l1  = metaltop.width(1.8.um, euclidian).polygons(0.001)
 mt301a_l1.output("MT30.1a", "MT30.1a : Min. thick MetalTop width. : 1.8µm")
-mt301a_l1.forget 
+mt301a_l1.forget
 
 # Rule MT30.1b: Min width for >1000um long metal line (based on metal edge). is 2.2µm
 logger.info("Executing rule MT30.1b")
 mt301b_l1  = metaltop.interacting(metaltop.edges.with_length(1000.um, nil)).width(2.2.um, euclidian).polygons(0.001)
 mt301b_l1.output("MT30.1b", "MT30.1b : Min width for >1000um long metal line (based on metal edge). : 2.2µm")
-mt301b_l1.forget 
+mt301b_l1.forget
 
 # Rule MT30.2: Min. thick MetalTop space. is 1.8µm
 logger.info("Executing rule MT30.2")
 mt302_l1  = metaltop.space(1.8.um, euclidian).polygons(0.001)
 mt302_l1.output("MT30.2", "MT30.2 : Min. thick MetalTop space. : 1.8µm")
-mt302_l1.forget 
+mt302_l1.forget
 
 # Rule MT30.3: The separation of two corners should satisfy the minimum spacing. is 1.8µm
 logger.info("Executing rule MT30.3")
 mt303_l1  = metaltop.space(1.8.um, euclidian).polygons(0.001)
 mt303_l1.output("MT30.3", "MT30.3 : The separation of two corners should satisfy the minimum spacing. : 1.8µm")
-mt303_l1.forget 
+mt303_l1.forget
 
 # Rule MT30.4: The separation of single metal line from a any degree metal line should satisfy the minimum spacing. is 1.8µm
 logger.info("Executing rule MT30.4")
 mt304_l1  = metaltop.space(1.8.um, euclidian).polygons(0.001)
 mt304_l1.output("MT30.4", "MT30.4 : The separation of single metal line from a any degree metal line should satisfy the minimum spacing. : 1.8µm")
-mt304_l1.forget 
+mt304_l1.forget
 
 # Rule MT30.5: Minimum thick MetalTop enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
 logger.info("Executing rule MT30.5")
@@ -356,9 +356,9 @@ mt308_l1.forget
 mt30p8_via.forget
 mt30p8_mask.forget
 mt30p8_slct_via.forget
-end #METAL_TOP 
+end #METAL_TOP
 
-end #BEOL 
+end #BEOL
 
 
 exec_end_time = Time.now

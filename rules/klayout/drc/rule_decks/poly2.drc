@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -118,7 +118,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -127,12 +127,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -199,7 +199,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #---------------------POLY2----------------------
-#================================================ 
+#================================================
 
 
 if FEOL
@@ -209,31 +209,31 @@ logger.info("FEOL section")
 logger.info("Executing rule PL.1_3.3V")
 pl1_l1  = poly2.outside(plfuse).not(ymtp_mk).width(0.18.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 pl1_l1.output("PL.1_3.3V", "PL.1_3.3V : Interconnect Width (outside PLFUSE). : 0.18µm")
-pl1_l1.forget 
+pl1_l1.forget
 
 # Rule PL.1_5V: Interconnect Width (outside PLFUSE). is 0.2µm
 logger.info("Executing rule PL.1_5V")
 pl1_l1  = poly2.outside(plfuse).not(ymtp_mk).width(0.2.um, euclidian).polygons(0.001).overlapping(dualgate)
 pl1_l1.output("PL.1_5V", "PL.1_5V : Interconnect Width (outside PLFUSE). : 0.2µm")
-pl1_l1.forget 
+pl1_l1.forget
 
 # Rule PL.1a_3.3V: Interconnect Width (inside PLFUSE). is 0.18µm
 logger.info("Executing rule PL.1a_3.3V")
 pl1a_l1  = poly2.inside(plfuse).width(0.18.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 pl1a_l1.output("PL.1a_3.3V", "PL.1a_3.3V : Interconnect Width (inside PLFUSE). : 0.18µm")
-pl1a_l1.forget 
+pl1a_l1.forget
 
 # Rule PL.1a_5V: Interconnect Width (inside PLFUSE). is 0.18µm
 logger.info("Executing rule PL.1a_5V")
 pl1a_l1  = poly2.inside(plfuse).width(0.18.um, euclidian).polygons(0.001).overlapping(dualgate)
 pl1a_l1.output("PL.1a_5V", "PL.1a_5V : Interconnect Width (inside PLFUSE). : 0.18µm")
-pl1a_l1.forget 
+pl1a_l1.forget
 
 # Rule PL.2_3.3V: Gate Width (Channel Length). is 0.28µm
 logger.info("Executing rule PL.2_3.3V")
 pl2_l1  = poly2.edges.and(tgate.edges).not(otp_mk).not(ymtp_mk).width(0.28.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 pl2_l1.output("PL.2_3.3V", "PL.2_3.3V : Gate Width (Channel Length). : 0.28µm")
-pl2_l1.forget 
+pl2_l1.forget
 
 pl_2_5v_n = comp.not(poly2).edges.and(ngate.edges).and(v5_xtor).and(dualgate).space(0.6.um, euclidian).polygons
 pl_2_5v_p = comp.not(poly2).edges.and(pgate.edges).and(v5_xtor).and(dualgate).space(0.5.um, euclidian).polygons
@@ -253,13 +253,13 @@ pl_2_6v_p.forget
 logger.info("Executing rule PL.3a_3.3V")
 pl3a_l1  = (tgate).or(poly2.not(comp)).not(otp_mk).space(0.24.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 pl3a_l1.output("PL.3a_3.3V", "PL.3a_3.3V : Space on COMP/Field. : 0.24µm")
-pl3a_l1.forget 
+pl3a_l1.forget
 
 # Rule PL.3a_5V: Space on COMP/Field. is 0.24µm
 logger.info("Executing rule PL.3a_5V")
 pl3a_l1  = (tgate).or(poly2.not(comp)).not(otp_mk).space(0.24.um, euclidian).polygons(0.001).overlapping(dualgate)
 pl3a_l1.output("PL.3a_5V", "PL.3a_5V : Space on COMP/Field. : 0.24µm")
-pl3a_l1.forget 
+pl3a_l1.forget
 
 # rule PL.3b_3.3V is not a DRC check
 
@@ -283,25 +283,25 @@ pl4_l1.forget
 logger.info("Executing rule PL.5a_3.3V")
 pl5a_l1  = poly_pl.separation(comp_pl, 0.1.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 pl5a_l1.output("PL.5a_3.3V", "PL.5a_3.3V : Space from field Poly2 to unrelated COMP Spacer from field Poly2 to Guard-ring. : 0.1µm")
-pl5a_l1.forget 
+pl5a_l1.forget
 
 # Rule PL.5a_5V: Space from field Poly2 to unrelated COMP Spacer from field Poly2 to Guard-ring. is 0.3µm
 logger.info("Executing rule PL.5a_5V")
 pl5a_l1  = poly_pl.outside(sramcore).separation(comp_pl, 0.3.um, euclidian).polygons(0.001).overlapping(dualgate)
 pl5a_l1.output("PL.5a_5V", "PL.5a_5V : Space from field Poly2 to unrelated COMP Spacer from field Poly2 to Guard-ring. : 0.3µm")
-pl5a_l1.forget 
+pl5a_l1.forget
 
 # Rule PL.5b_3.3V: Space from field Poly2 to related COMP. is 0.1µm
 logger.info("Executing rule PL.5b_3.3V")
 pl5b_l1  = poly_pl.separation(comp_pl, 0.1.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 pl5b_l1.output("PL.5b_3.3V", "PL.5b_3.3V : Space from field Poly2 to related COMP. : 0.1µm")
-pl5b_l1.forget 
+pl5b_l1.forget
 
 # Rule PL.5b_5V: Space from field Poly2 to related COMP. is 0.3µm
 logger.info("Executing rule PL.5b_5V")
 pl5b_l1  = poly_pl.outside(sramcore).separation(comp_pl, 0.3.um, euclidian).polygons(0.001).overlapping(dualgate)
 pl5b_l1.output("PL.5b_5V", "PL.5b_5V : Space from field Poly2 to related COMP. : 0.3µm")
-pl5b_l1.forget 
+pl5b_l1.forget
 
 poly_pl.forget
 comp_pl.forget
@@ -318,13 +318,13 @@ poly_45deg = poly2.edges.with_angle(-45).or(poly2.edges.with_angle(45))
 logger.info("Executing rule PL.7_3.3V")
 pl7_l1  = poly_45deg.width(0.3.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
 pl7_l1.output("PL.7_3.3V", "PL.7_3.3V : 45 degree bent gate width : 0.3µm")
-pl7_l1.forget 
+pl7_l1.forget
 
 # Rule PL.7_5V: 45 degree bent gate width is 0.7µm
 logger.info("Executing rule PL.7_5V")
 pl7_l1  = poly_45deg.width(0.7.um, euclidian).polygons(0.001).overlapping(dualgate)
 pl7_l1.output("PL.7_5V", "PL.7_5V : 45 degree bent gate width : 0.7µm")
-pl7_l1.forget 
+pl7_l1.forget
 
 poly_45deg.forget
 # Rule PL.9: Poly2 inter connect connecting 3.3V and 5V areas (area inside and outside Dualgate) are not allowed. They shall be done though metal lines only.

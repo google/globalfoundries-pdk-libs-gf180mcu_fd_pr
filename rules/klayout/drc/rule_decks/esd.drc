@@ -32,7 +32,7 @@ end
 
 logger.info("Loading database to memory is complete.")
 
-if $report     
+if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
@@ -49,29 +49,29 @@ else
 end
 
 # === TILING MODE ===
-if $run_mode == "tiling" 
+if $run_mode == "tiling"
   # use a tile size of 1mm - not used in deep mode-
   # tiles(500.um)
   # use a tile border of 10 micron:
   # tile_borders(10.um)
   tiles(1000)
-  logger.info("Tiling  mode is enabled.")   
+  logger.info("Tiling  mode is enabled.")
 
 elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
-  logger.info("deep  mode is enabled.")   
+  logger.info("deep  mode is enabled.")
 
 elsif $run_mode == "flat"
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.")   
+  logger.info("flat  mode is enabled.")
 
 else
   #=== FLAT MODE ===
   flat
-  logger.info("flat  mode is enabled.") 
-  
+  logger.info("flat  mode is enabled.")
+
 end # run_mode
 
 #================================================
@@ -113,7 +113,7 @@ else
 end # FEOL
 
 # BEOL
-if $beol == "false" 
+if $beol == "false"
   BEOL = $beol
   logger.info("BEOL is disabled.")
 else
@@ -122,12 +122,12 @@ else
 end # BEOL
 
 # connectivity rules
-if $conn_drc == "true" 
+if $conn_drc == "true"
   CONNECTIVITY_RULES = $conn_drc
-  logger.info("connectivity rules are enabled.")  
+  logger.info("connectivity rules are enabled.")
 else
   CONNECTIVITY_RULES = false
-  logger.info("connectivity rules are disabled.")  
+  logger.info("connectivity rules are disabled.")
 end # connectivity rules
 
 # METAL_TOP
@@ -194,7 +194,7 @@ logger.info("Offgrid enabled  %s" % [OFFGRID])
 
 #================================================
 #----------------------ESD-----------------------
-#================================================ 
+#================================================
 
 
 if FEOL
@@ -204,19 +204,19 @@ logger.info("FEOL section")
 logger.info("Executing rule ESD.1")
 esd1_l1  = esd.width(0.6.um, euclidian).polygons(0.001)
 esd1_l1.output("ESD.1", "ESD.1 : Minimum width of an ESD implant area. : 0.6µm")
-esd1_l1.forget 
+esd1_l1.forget
 
 # Rule ESD.2: Minimum space between two ESD implant areas. (Merge if the space is less than 0.6um). is 0.6µm
 logger.info("Executing rule ESD.2")
 esd2_l1  = esd.space(0.6.um, euclidian).polygons(0.001)
 esd2_l1.output("ESD.2", "ESD.2 : Minimum space between two ESD implant areas. (Merge if the space is less than 0.6um). : 0.6µm")
-esd2_l1.forget 
+esd2_l1.forget
 
 # Rule ESD.3a: Minimum space to NCOMP. is 0.6µm
 logger.info("Executing rule ESD.3a")
 esd3a_l1  = esd.separation(ncomp, 0.6.um, euclidian).polygons(0.001)
 esd3a_l1.output("ESD.3a", "ESD.3a : Minimum space to NCOMP. : 0.6µm")
-esd3a_l1.forget 
+esd3a_l1.forget
 
 # Rule ESD.3b: Min/max space to a butted PCOMP.
 logger.info("Executing rule ESD.3b")
@@ -234,18 +234,18 @@ esd4a_l1.forget
 logger.info("Executing rule ESD.4b")
 esd4b_l1  = esd.overlap(comp, 0.45.um, euclidian).polygons(0.001)
 esd4b_l1.output("ESD.4b", "ESD.4b : Minimum overlap of an ESD implant edge to a COMP. : 0.45µm")
-esd4b_l1.forget 
+esd4b_l1.forget
 
 # Rule ESD.5a: Minimum ESD area (um2). is 0.49µm²
 logger.info("Executing rule ESD.5a")
 esd5a_l1  = esd.with_area(nil, 0.49.um)
 esd5a_l1.output("ESD.5a", "ESD.5a : Minimum ESD area (um2). : 0.49µm²")
-esd5a_l1.forget 
+esd5a_l1.forget
 # Rule ESD.5b: Minimum field area enclosed by ESD implant (um2). is 0.49µm²
 logger.info("Executing rule ESD.5b")
 esd5b_l1  = esd.holes.with_area(nil, 0.49.um)
 esd5b_l1.output("ESD.5b", "ESD.5b : Minimum field area enclosed by ESD implant (um2). : 0.49µm²")
-esd5b_l1.forget 
+esd5b_l1.forget
 # Rule ESD.6: Extension perpendicular to Poly2 gate. is 0.45µm
 logger.info("Executing rule ESD.6")
 esd6_l1 = esd.edges.enclosing(poly2.edges.interacting(tgate.edges), 0.45.um, projection).polygons(0.001)
@@ -268,7 +268,7 @@ esd8_l1.forget
 logger.info("Executing rule ESD.pl")
 esdpl_l1  = poly2.interacting(esd).edges.and(tgate.edges).width(0.8.um, euclidian).polygons(0.001).overlapping(dualgate)
 esdpl_l1.output("ESD.pl", "ESD.pl : Minimum gate length of 5V/6V gate NMOS. : 0.8µm")
-esdpl_l1.forget 
+esdpl_l1.forget
 
 # Rule ESD.9: ESD implant layer must be overlapped by Dualgate layer (as ESD implant option is only for 5V/6V devices).
 logger.info("Executing rule ESD.9")
