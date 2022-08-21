@@ -25,8 +25,10 @@ on:
   pull_request:
   workflow_dispatch:
 
-jobs:
+env:
+  DOCKER_BUILDKIT: 1
 
+jobs:
 
   Test:
     runs-on: ubuntu-latest
@@ -48,36 +50,33 @@ jobs:
     name: ${{ matrix.type }} | ${{ matrix.test }}
 
     env:
-      PDK_ROOT: $GITHUB_WORKSPACE/rules/klayout
-      PDK: ${{ matrix.pdk }}
+      IMAGE: ghcr.io/google/globalfoundries-pdk-libs-gf180mcu_fd_pr/test
 
     steps:
 
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.9'
-          cache: 'pip'
-          cache-dependency-path: '**/requirements.test.txt'
-
-      - run: pip install -r ./rules/klayout/requirements.test.txt
-
-      - name: Installing Klayout 0.27.8
+      - name: Build container image
         run: |
-          sudo apt update -qq -y
-          wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.8-1_amd64.deb
-          sudo apt install -qq -y \
-            qt5-default \
-            qttools5-dev \
-            libqt5xmlpatterns5-dev \
-            qtmultimedia5-dev \
-            libqt5multimediawidgets5 \
-            libqt5svg5-dev
-          sudo dpkg -i ./klayout_0.27.8-1_amd64.deb
-          sudo apt-get install -f -y
+          docker build -t "$IMAGE" -f- rules/klayout <<EOF
+          FROM gcr.io/hdl-containers/klayout
+
+          RUN apt-get update -qq \
+           && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
+              make \
+              procps \
+              python3-pip \
+           && apt-get autoclean && apt-get clean && apt-get -y autoremove \
+           && rm -rf /var/lib/apt/lists/*
+
+          RUN --mount=type=bind,target=/tmp/ctx pip3 install -r /tmp/ctx/requirements.test.txt
+          EOF
 
       - name: Testing ${{ matrix.type }} for ${{ matrix.test }}
-        run: |
-          cd ./rules/klayout/${{ matrix.pdk }}/testing
+        run: >
+          docker run --rm
+          -v $(pwd):/wrk -w /wrk/rules/klayout/${{ matrix.pdk }}/testing
+          -e PDK_ROOT="/wrk/rules/klayout"
+          -e PDK='${{ matrix.pdk }}'
+          "$IMAGE"
           make test-${{ matrix.type }}-${{ matrix.test }}
