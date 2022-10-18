@@ -15,25 +15,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 
-Vn n 0 DC {{sign}}3.3
+Vin top GND {{voltage}}
+XR1 top {{terminals}} {{device}} r_width={{width}}u r_length={{length}}u m=1
 
 .temp {{temp}}
 .options tnom={{temp}}
-      
-r1 n p 1M
-xrn p 0 0 {{device}} r_width={{width}}u r_length={{length}}u
-
-
-.print dc Rs=par('(1M*V(p)/(V(n)-V(p)))/{{length}}u*{{width}}u')
-
 
 .control
-set filetype=ascii
-set appendwrite
-
-DC Vn {{sign}}3.3 {{sign}}3.3 0.1
-wrdata {{device}}_r_{{corner}}_temp/simulated_r/{{i}}_simulated_w{{width}}_l{{length}}.csv Rs 
-
+op
+let ires=-1*vin#branch
+let res={{voltage}}/ires
+print res
 .endc
 
 ** library calling
@@ -41,4 +33,5 @@ wrdata {{device}}_r_{{corner}}_temp/simulated_r/{{i}}_simulated_w{{width}}_l{{le
 .include "../../../design.ngspice"
 .lib "../../../sm141064.ngspice" res_{{corner}}
 
+.GLOBAL GND
 .end
