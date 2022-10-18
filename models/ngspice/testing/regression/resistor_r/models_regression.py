@@ -1,4 +1,4 @@
-# Copyright 2022 Efabless Corporation
+# Copyright 2022 GlobalFoundries PDK Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ Usage:
   --num_cores=<num>      Number of cores to be used by simulator
 """
 
-from re import T
+from unittest.mock import DEFAULT
 from docopt import docopt
 import pandas as pd 
 import numpy as np
@@ -28,287 +28,225 @@ import os
 from jinja2 import Template
 import concurrent.futures
 import shutil
+import multiprocessing as mp
+
+import subprocess
+import glob
+
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
+
+PASS_THRESH = 2.0
+DEFAULT_TEMP = 25.0
+DEFAULT_VOLTAGE = 1.0
+
+
+def find_res(filename):
+    """
+    Find res in log
+    """
+    cmd = 'grep "res = " {} | head -n 1'.format(filename)
+    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    return float(process.communicate()[0][:-1].decode("utf-8").split(" ")[2])
 
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
     Args:
         file_name (str): Netlist file name.
     """
-    os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
+    return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
-def ext_measured_a(device,vn,d_in, r_sim, corner):
-    
-    # Get dimensions used for each device 
-    dirpath = f"{device}_{r_sim}_{corner}"
-    dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["w (um)" , "l (um)"])
-    loops = dimensions["l (um)"].count()
-    
-    # Extracting measured values for each W & L 
-    for i in range (0,loops):
-        width  = dimensions["w (um)"].iloc[i]
-        length = dimensions["l (um)"].iloc[i]
-                                      
-        # measured r   
-        col_list = [f"{vn}",f"{d_in}_{corner} Rev9 "]
-        df_measured = pd.read_csv(f"{dirpath}/{device}.csv",usecols=col_list)
-        df_measured.columns = [f"{vn}","value"]
-        df_measured.loc[i:i].to_csv(f"{dirpath}/measured_{r_sim}/{i}_measured_w{width}_l{length}.csv", index=False)
+def ext_const_temp_corners(dev_data_path, device, corners):
+    # Read Data
+    df = pd.read_excel(dev_data_path)
 
-def ext_measured_b(device,vn,d_in, r_sim, corner):
+    all_dfs = []
+    for corner in corners:
+        idf = df[["l (um)", "w (um)", f"res_{corner} Rev9 "]].copy()
+        idf.rename(columns={f"res_{corner} Rev9 ": "res_measured", "l (um)": "length", "w (um)": "width"}, inplace=True)
+        idf["corner"] = corner
+        all_dfs.append(idf)
     
-    # Get dimensions used for each device 
-    dirpath = f"{device}_{r_sim}_{corner}_temp"
-    dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["Temperature (C)" , "l (um)"])
-    if "rm" in device or "tm" in device:        
-        loops = dimensions["l (um)"].count()
-    else:
-        loops = 11
-    
-    # Extracting measured values for each W & L 
-    for i in range (0,loops):
-        temp   = dimensions["Temperature (C)"].iloc[i]
-        length = dimensions["l (um)"].iloc[i]
-        if "rm" in device or "tm" in device or "_u" in device:        
-            width  = length
-        else:
-            width  = length/2
-                                                  
-        # measured r   
-        col_list = [f"{vn}",f"{d_in}_{corner} Rev9 "]
-        df_measured = pd.read_csv(f"{dirpath}/{device}.csv",usecols=col_list)
-        df_measured.columns = [f"{vn}","value"]
-        df_measured.loc[i:i].to_csv(f"{dirpath}/measured_{r_sim}/{i}_measured_w{width}_l{length}.csv", index=False)
+    df = pd.concat(all_dfs)
+    df["temp"] = DEFAULT_TEMP
+    df["device"] = device
+    df["voltage"] = DEFAULT_VOLTAGE
+    df.dropna(axis=0, inplace=True)
+    df = df[["device", "corner", "length", "width", "voltage", "temp", "res_measured"]]
+    return df
 
-def ext_simulated_a(device,vn,d_in,r_sim, corner,sign):
+def ext_temp_corners(dev_data_path, device, corners):
+    # Read Data
+    df = pd.read_excel(dev_data_path)
     
+    all_dfs = []
+    for corner in corners:
+        idf = df[["Temperature (C)", "l (um)", "Unnamed: 2", f"res_{corner} Rev9 "]].copy()
+        idf.rename(columns={f"res_{corner} Rev9 ": "res_measured", "l (um)": "length", "Unnamed: 2": "info", "Temperature (C)": "temp"}, inplace=True)
+        idf["corner"] = corner
+        all_dfs.append(idf)
+    
+    df = pd.concat(all_dfs)
+    df["width"] = df["info"].str.extract("w=([\d\.]+)").astype(float)
+    df["device"] = device
+    df["voltage"] = DEFAULT_VOLTAGE
+    df.dropna(axis=0, inplace=True)
+    df = df[["device", "corner", "length", "width", "voltage", "temp", "res_measured"]]
+    return df
+
+def run_sim(dirpath, device, length, width, corner, voltage, temp=25):
+    """ Run simulation at specific information and corner """
+    netlist_tmp = "./device_netlists/res_op_analysis.spice"      
+
     if "rm" in device or "tm" in device:
-        netlist_tmp = f"./device_netlists/2term_res_a.spice"
+        terminals = "GND"
     else:
-        netlist_tmp = f"./device_netlists/3term_res_a.spice"        
+        terminals = "GND GND"      
 
-    # Get dimensions used for each device 
-    dirpath = f"{device}_{r_sim}_{corner}"
-    dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["w (um)" , "l (um)"])
-    loops = dimensions["l (um)"].count()
-    temp = 25 
-    # Extracting measured values for each W & L 
-    for i in range (0,loops):
-        width  = dimensions["w (um)"].iloc[i]
-        length = dimensions["l (um)"].iloc[i]
-      
-        with open(netlist_tmp) as f:
-            tmpl = Template(f.read())
-            os.makedirs(f"{dirpath}/{device}_netlists_{r_sim}",exist_ok=True)
-            with open(f"{dirpath}/{device}_netlists_{r_sim}/{i}_{device}_netlist_w{width}_l{length}.spice", "w") as netlist:
-                netlist.write(tmpl.render(device = device, width = width, length = length , corner = corner, i = i , sign = sign))
-            netlist_path  = f"{dirpath}/{device}_netlists_{r_sim}/{i}_{device}_netlist_w{width}_l{length}.spice" 
-            # Running ngspice for each netlist 
-            with concurrent.futures.ProcessPoolExecutor(max_workers=workers_count) as executor:
-                executor.submit(call_simulator, netlist_path)
-            
-            # Writing simulated data 
-            df_simulated = pd.read_csv(f"{dirpath}/simulated_r/{i}_simulated_w{width}_l{length}.csv",header=None, delimiter=r"\s+")
-            df_simulated.to_csv(f"{dirpath}/simulated_r/{i}_simulated_w{width}_l{length}.csv",index= False)    
+    info = {}
+    info["device"] = device
+    info["corner"] = corner
+    info["temp"] = temp
+    info["width"] = width
+    info["length"] = length
+    info["voltage"] = voltage
 
-            # Writing final simulated data                 
-            df_simulated.columns = [f"{vn}","value"]
-            df_simulated.to_csv(f"{dirpath}/simulated_r/{i}_simulated_w{width}_l{length}.csv",index= False) 
+    width_str = "{:.3f}".format(width)
+    length_str = "{:.3f}".format(length)
+    temp_str = "{:.1f}".format(temp)
+    voltage_str = "{:.2f}".format(voltage)
 
-def ext_simulated_b(device,vn,d_in,r_sim, corner,sign):
+    netlist_path = f"{dirpath}/{device}_netlists/netlist_w{width_str}_l{length_str}_t{temp_str}_{corner}.spice"
+
+    with open(netlist_tmp) as f:
+        tmpl = Template(f.read())
+        os.makedirs(f"{dirpath}/{device}_netlists", exist_ok=True)
+        
+        with open(netlist_path, "w") as netlist:
+            netlist.write(tmpl.render(device = device, 
+                                      width = width_str, 
+                                      length =  length_str, 
+                                      corner = corner, 
+                                      terminals = terminals, 
+                                      temp = temp_str,
+                                      voltage = voltage_str))
+
+    # Running ngspice for each netlist
+    try:
+        call_simulator(netlist_path)
+        # Find res in log
+        try:
+            res = find_res(f"{netlist_path}.log")
+        except Exception as e:
+            res = 0.0
+    except Exception as e:
+        res = 0.0
     
-    if "rm" in device or "tm" in device:
-        netlist_tmp = f"./device_netlists/2term_res_b.spice"
-    else:
-        netlist_tmp = f"./device_netlists/3term_res_b.spice"        
+    info["res_sim_unscaled"] = res
 
-    # Get dimensions used for each device 
-    dirpath = f"{device}_{r_sim}_{corner}_temp"
-    dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["Temperature (C)" , "l (um)"])
-    if "rm" in device or "tm" in device:        
-        loops = dimensions["l (um)"].count()
-    else:
-        loops = 11
-            
-    # Extracting measured values for each W & L 
-    for i in range (0,loops):
-        temp   = dimensions["Temperature (C)"].iloc[i]
-        length = dimensions["l (um)"].iloc[i]
-        if "rm" in device or "tm" in device or "_u" in device:        
-            width  = length
-        else:
-            width  = length/2            
-        
-        with open(netlist_tmp) as f:
-            tmpl = Template(f.read())
-            os.makedirs(f"{dirpath}/{device}_netlists_{r_sim}",exist_ok=True)
-            with open(f"{dirpath}/{device}_netlists_{r_sim}/{i}_{device}_netlist_w{width}_l{length}.spice", "w") as netlist:
-                netlist.write(tmpl.render(device = device, temp = temp , width = width, length = length , corner = corner, i = i , sign = sign))
-            netlist_path  = f"{dirpath}/{device}_netlists_{r_sim}/{i}_{device}_netlist_w{width}_l{length}.spice" 
-            # Running ngspice for each netlist 
-            with concurrent.futures.ProcessPoolExecutor(max_workers=workers_count) as executor:
-                executor.submit(call_simulator, netlist_path)
-            
-            # Writing simulated data 
-            df_simulated = pd.read_csv(f"{dirpath}/simulated_r/{i}_simulated_w{width}_l{length}.csv",header=None, delimiter=r"\s+")
-            df_simulated.to_csv(f"{dirpath}/simulated_r/{i}_simulated_w{width}_l{length}.csv",index= False)    
+    return info
 
-            # Writing final simulated data                 
-            df_simulated.columns = [f"{vn}","value"]
-            df_simulated.to_csv(f"{dirpath}/simulated_r/{i}_simulated_w{width}_l{length}.csv",index= False) 
-                  
-def error_cal_a(device,vn,d_in,r_sim, corner):
+def run_sims(df, dirpath, num_workers=mp.cpu_count()):
     
-    df_final = pd.DataFrame()
-    # Get dimensions used for each device 
-    dirpath = f"{device}_{r_sim}_{corner}"
-    dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["w (um)" , "l (um)"])
-    loops = dimensions["l (um)"].count()
-    temp = 25 
-    # Extracting measured values for each W & L 
-    for i in range (0,loops):
-        width  = dimensions["w (um)"].iloc[i]
-        length = dimensions["l (um)"].iloc[i]
-             
-        measured  = pd.read_csv(f"{dirpath}/measured_{r_sim}/{i}_measured_w{width}_l{length}.csv")
-        simulated = pd.read_csv(f"{dirpath}/simulated_{r_sim}/{i}_simulated_w{width}_l{length}.csv")
-
-        error_1 = round (100 * abs((abs(measured.iloc[:, 1]) - abs(simulated.iloc[:, 1]))/abs(measured.iloc[:, 1])),8)  
-
-        df_error = pd.DataFrame(data=[measured.iloc[:, 0],error_1]).transpose()        
-        df_error.to_csv(f"{dirpath}/error_{r_sim}/{i}_{device}_error_w{width}_l{length}.csv",index= False)
+    results = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures_list = []
+        for j, row in df.iterrows():
+            futures_list.append(executor.submit(run_sim, dirpath, row["device"], row["length"], row["width"], row["corner"], row["voltage"], row["temp"]))
         
-        # Mean error 
-        mean_error = (df_error[f"value"].mean())
-        # Max error 
-        max_error = df_error[f"value"].max()
-
-        df_final_ = {'Run no.': f'{i}', 'Device name': f'{dirpath}', 'Temperature': temp, 'Width': f'{width}', 'Length': f'{length}', 'Simulated_Val':f'{r_sim}','Mean error%':f'{"{:.2f}".format(mean_error)}', 'Max error%':f'{"{:.2f}".format(max_error)} '}
-        df_final = df_final.append(df_final_, ignore_index = True)
-    # Max mean error 
-    print (df_final)   
-    df_final.to_csv (f"{dirpath}/Final_report_{r_sim}.csv", index = False)
-    out_report = pd.read_csv (f"{dirpath}/Final_report_{r_sim}.csv")
-    print ("\n",f"Max. mean error = {out_report['Mean error%'].max()}%")    
-    print ("=====================================================================================================================================================")
-
-def error_cal_b(device,vn,d_in,r_sim, corner):
+        for future in concurrent.futures.as_completed(futures_list):
+            try:
+                data = future.result()
+                results.append(data)
+            except Exception as exc:
+                print('Test case generated an exception: %s' % (exc))
     
-    df_final = pd.DataFrame()
-    # Get dimensions used for each device 
-    dirpath = f"{device}_{r_sim}_{corner}_temp"
-    dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["Temperature (C)" , "l (um)"])
-    if "rm" in device or "tm" in device:        
-        loops = dimensions["l (um)"].count()
-    else:
-        loops = 11
-        
-    # Extracting measured values for each W & L 
-    for i in range (0,loops):
-        temp   = dimensions["Temperature (C)"].iloc[i]
-        length = dimensions["l (um)"].iloc[i]
-        if "rm" in device or "tm" in device or "_u" in device:        
-            width  = length
-        else:
-            width  = length/2   
-                         
-        measured  = pd.read_csv(f"{dirpath}/measured_{r_sim}/{i}_measured_w{width}_l{length}.csv")
-        simulated = pd.read_csv(f"{dirpath}/simulated_{r_sim}/{i}_simulated_w{width}_l{length}.csv")
+    df = pd.DataFrame(results)
+    df = df[["device", "corner", "length", "width", "voltage", "temp", "res_sim_unscaled"]]
+    df["res_sim"] = df["res_sim_unscaled"] * df["width"] / df["length"]
+    return df
 
-        error_1 = round (100 * abs((abs(measured.iloc[:, 1]) - abs(simulated.iloc[:, 1]))/abs(measured.iloc[:, 1])),8)  
-
-        df_error = pd.DataFrame(data=[measured.iloc[:, 0],error_1]).transpose()        
-        df_error.to_csv(f"{dirpath}/error_{r_sim}/{i}_{device}_error_w{width}_l{length}.csv",index= False)
-        
-        # Mean error 
-        mean_error = (df_error[f"value"].mean())
-        # Max error 
-        max_error = df_error[f"value"].max()
-
-        df_final_ = {'Run no.': f'{i}', 'Device name': f'{dirpath}', 'Temperature': temp, 'Width': f'{width}', 'Length': f'{length}', 'Simulated_Val':f'{r_sim}','Mean error%':f'{"{:.2f}".format(mean_error)}', 'Max error%':f'{"{:.2f}".format(max_error)} '}
-        df_final = df_final.append(df_final_, ignore_index = True)
-    # Max mean error 
-    print (df_final)   
-    df_final.to_csv (f"{dirpath}/Final_report_{r_sim}.csv", index = False)
-    out_report = pd.read_csv (f"{dirpath}/Final_report_{r_sim}.csv")
-    print ("\n",f"Max. mean error = {out_report['Mean error%'].max()}%")    
-    print ("=====================================================================================================================================================")
 
 def main():
+    main_regr_dir = "res_regr"
 
     # res W&L var. 
-    corners_a  = ["typical","ff","ss"]        
+    corners  = ["typical","ff","ss"]        
     
-    devices_a  = ["nplus_u" , "pplus_u" , "nplus_s" , "pplus_s" , "npolyf_u" , "ppolyf_u" , "npolyf_s" , "ppolyf_s" , "ppolyf_u_1k" , "ppolyf_u_2k" , "ppolyf_u_1k_6p0" ,
-                  "ppolyf_u_2k_6p0" , "ppolyf_u_3k" , "rm1" , "rm2" , "rm3" , "tm6k" , "tm9k" , "tm11k" , "tm30k" , "nwell"]
+    devices  = ["nplus_u" , "pplus_u" , "nplus_s" , "pplus_s" , "npolyf_u" , "ppolyf_u" , "npolyf_s" , "ppolyf_s" , "ppolyf_u_1k" , "ppolyf_u_2k" , "ppolyf_u_1k_6p0" ,
+                "ppolyf_u_2k_6p0" , "ppolyf_u_3k" , "rm1" , "rm2" , "rm3" , "tm6k" , "tm9k" , "tm11k" , "tm30k" , "nwell"]
     
-    dev_data_a = ["RES01a-wl-nplus_u.nl_out"     ,"RES02a-wl-pplus_u.nl_out"       ,"RES03a-wl-nplus_s.nl_out"       , "RES04a-wl-pplus_s.nl_out"     , 
-                  "RES06a-wl-npolyf_u.nl_out"    ,"RES07a-wl-ppolyf_u.nl_out"      ,"RES08a-wl-npolyf_s.nl_out"      , "RES09a-wl-ppolyf_s.nl_out"    , "RES10a-wl-ppolyf_u_1k.nl_out", 
-                  "RES11a-wl-ppolyf_u_2k.nl_out" ,"RES12a-wl-ppolyf_u_1k_6p0.nl_o" ,"RES13a-wl-ppolyf_u_2k_6p0.nl_o" , "RES14a-wl-ppolyf_u_3k.nl_out" , 
-                  "RES15a-wl-rm1.nl_out"         , "RES16a-wl-rm2.nl_out"          , "RES17a-wl-rm3.nl_out"          , "RES18a-wl-tm6k.nl_out"        , "RES19a-wl-tm9k.nl_out" ,
-                  "RES20a-wl-tm11k.nl_out"       , "RES21a-wl-tm30k.nl_out" ,"RES05a-wl-nwell.nl_out"]
     
-    sign_a     = ["+" , "-" , "+" , "-" , "+" , "+" , "-" , "+" , "-" , "-" , "-" , "-" , "-" , "-" , "+" , "+" , "+" , "+" , "+" , "+", "+", ""]
-    measure_a  = ["r","corners", "res"]
-   
-    for corner in corners_a: 
-        for i,device in enumerate(devices_a): 
-            # Folder structure of measured values
-            r_sim, res_vn, res_in = measure_a[0], measure_a[1], measure_a[2]
-            dirpath = f"{device}_{r_sim}_{corner}"
-            if os.path.exists(dirpath) and os.path.isdir(dirpath):
-                shutil.rmtree(dirpath)
-            os.makedirs(f"{dirpath}/measured_{r_sim}",exist_ok=False)
+    for i, dev in enumerate(devices):
+        dev_path = f"{main_regr_dir}/{dev}"
 
-            # From xlsx to csv
-            read_file = pd.read_excel (f"../../180MCU_SPICE_DATA/Resistor/{dev_data_a[i]}.xlsx")
-            read_file.to_csv (f"{dirpath}/{device}.csv", index = False, header=True)
+        if os.path.exists(dev_path) and os.path.isdir(dev_path):
+            shutil.rmtree(dev_path)
+        
+        os.makedirs(f"{dev_path}",exist_ok=False)
 
-            # Folder structure of simulated values 
-            os.makedirs(f"{dirpath}/simulated_{r_sim}",exist_ok=False)
-            os.makedirs(f"{dirpath}/error_{r_sim}",exist_ok=False)
+        print("######" * 10)
+        print(f"# Checking Device {dev}")
+
+        wl_data_files = glob.glob(f"../../180MCU_SPICE_DATA/Resistor/RES*-wl-{dev}.nl*.xlsx")
+        if len(wl_data_files) < 1:
+            print("# Can't find wl file for device: {}".format(dev))
+            wl_file = ""
+        else:
+            wl_file = wl_data_files[0]
+        print("# W/L data points file : ", wl_file)
+
+        temp_data_files = glob.glob(f"../../180MCU_SPICE_DATA/Resistor/RES*-temp-{dev}.nl*.xlsx")
+        if len(temp_data_files) < 1:
+            print("# Can't find temperature file for device: {}".format(dev))
+            temp_file = ""
+        else:
+            temp_file = temp_data_files[0]
+        print("# Temperature data points file : ", temp_file)
+
+        if wl_file == "" and temp_file == "":
+            print(f"# No datapoints available for validation for device {dev}")
+            continue
+
+        if wl_file != "":
+            meas_df_room_temp = ext_const_temp_corners(wl_file, dev, corners)
+        else:
+            meas_df_room_temp = []
+        
+        if temp_file != "":
+            temperature_corners_df = ext_temp_corners(temp_file, dev, corners)
+        else:
+            temperature_corners_df = []
+        
+        if len(meas_df_room_temp) > 0 and len(temperature_corners_df) > 0:
+            meas_df = pd.concat([meas_df_room_temp, temperature_corners_df])
+        elif len(meas_df_room_temp) > 0 and len(temperature_corners_df) < 1:
+            meas_df = meas_df_room_temp
+        elif len(meas_df_room_temp) < 1 and len(temperature_corners_df) > 0:
+            meas_df = temperature_corners_df
+        
+        print("# Device {} number of measured_datapoints : ".format(dev), len(meas_df))
+
+        sim_df_room_temp = run_sims(meas_df_room_temp, dev_path, 3)
+        print("# Device {} number of simulated datapoints : ".format(dev), len(sim_df_room_temp))
+        
+        merged_df = meas_df_room_temp.merge(sim_df_room_temp, on=["device", "corner", "length", "width", "temp"], how="left")
+        merged_df["error"] = np.abs(merged_df["res_sim"] - merged_df["res_measured"]) * 100.0 / merged_df["res_measured"]
+        
+        merged_df.to_csv(f"{dev_path}/error_analysis.csv", index=False)
+
+        print("# Device {} min error: {:.2f} , max error: {:.2f}, mean error {:.2f}".format(dev,
+                                                                                            merged_df["error"].min(), 
+                                                                                            merged_df["error"].max(),
+                                                                                            merged_df["error"].mean()))
+
+        if merged_df["error"].max() < PASS_THRESH:
+            print("# Device {} has passed regression.".format(dev))
+        else:
+            print("# Device {} has failed regression. Needs more analysis.".format(dev))
+
+        print("\n\n")
     
-            ext_measured_a (device,res_vn,res_in, r_sim, corner)
-            ext_simulated_a(device,res_vn,res_in,r_sim, corner,sign_a[i])
-            error_cal_a    (device,res_vn,res_in,r_sim, corner)            
-
-
-    # res temp_var
-    corners_b  = ["typical","ff","ss"]        
-    devices_b  = ["nplus_u" , "nplus_s", "pplus_u" , "pplus_s" , "nwell" , "npolyf_u" , "ppolyf_u" , "npolyf_s" , "ppolyf_s" , "ppolyf_u_1k" , "ppolyf_u_2k" , "ppolyf_u_1k_6p0" , "ppolyf_u_2k_6p0" , "ppolyf_u_3k" ,
-                  "rm1" , "rm2", "rm3" , "tm6k" , "tm9k" , "tm11k", "tm30k"]
-    dev_data_b = ["RES01b-temp-nplus_u.nl_out" , "RES03b-temp-nplus_s.nl_out", "RES02b-temp-pplus_u.nl_out" , "RES04b-temp-pplus_s.nl_out" , "RES05b-temp-nwell.nl_out" ,
-                  "RES06b-temp-npolyf_u.nl_out" , "RES07b-temp-ppolyf_u.nl_out" ,  "RES08b-temp-npolyf_s.nl_out" , "RES09b-temp-ppolyf_s.nl_out" , "RES10b-temp-ppolyf_u_1k.nl_out" ,
-                  "RES11b-temp-ppolyf_u_2k.nl_out" , "RES12b-temp-ppolyf_u_1k_6p0.nl" , "RES13b-temp-ppolyf_u_2k_6p0.nl" , "RES14b-temp-ppolyf_u_3k.nl_out" ,   
-                  "RES15b-temp-rm1.nl_out", "RES16b-temp-rm2.nl_out" , "RES17b-temp-rm3.nl_out" ,
-                  "RES18b-temp-tm6k.nl_out", "RES19b-temp-tm9k.nl_out" , "RES20b-temp-tm11k.nl_out", "RES21b-temp-tm30k.nl_out"]
-    
-    sign_b     = ["+" , "+", "-" , "-" , "+" , "+" , "-" ,"+" , "-" , "-" , "-" , "-" , "-" , "-" , "+" , "+" , "+" , "+" , "+" , "+", "+"]
-    measure_b  = ["r","corners", "res"]
-   
-    for corner in corners_b: 
-        for i,device in enumerate(devices_b): 
-            # Folder structure of measured values
-            r_sim, res_vn, res_in = measure_b[0], measure_b[1], measure_b[2]
-            dirpath = f"{device}_{r_sim}_{corner}_temp"
-            if os.path.exists(dirpath) and os.path.isdir(dirpath):
-                shutil.rmtree(dirpath)
-            os.makedirs(f"{dirpath}/measured_{r_sim}",exist_ok=False)
-
-            # From xlsx to csv
-            read_file = pd.read_excel (f"../../180MCU_SPICE_DATA/Resistor/{dev_data_b[i]}.xlsx")
-            read_file.to_csv (f"{dirpath}/{device}.csv", index = False, header=True)
-
-            # Folder structure of simulated values 
-            os.makedirs(f"{dirpath}/simulated_{r_sim}",exist_ok=False)
-            os.makedirs(f"{dirpath}/error_{r_sim}",exist_ok=False)
-    
-            ext_measured_b (device,res_vn,res_in, r_sim, corner)
-            ext_simulated_b(device,res_vn,res_in,r_sim, corner,sign_b[i])
-            error_cal_b    (device,res_vn,res_in,r_sim, corner)  
-
-
 # # ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================

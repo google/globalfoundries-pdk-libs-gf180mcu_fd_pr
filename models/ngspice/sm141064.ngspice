@@ -38584,11 +38584,11 @@ d2  3 2  nwp  area='r_w*r_l/2' PJ= 'r_w+2*r_l/2' dtemp=dtemp
 + cox=8.85E-05
 *-------------------
 * terminal 1
-rt1 1 11 npolyf_u_t l='s*1u'      w=r_w dtemp=dtemp
+rt1 1 11 npolyf_u_t l='s*1u'  w=r_w dtemp=dtemp
 c1  1 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21 npolyf_u_body l=r_l w=r_w
-+r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)*(1+mis_r*sw_stat_mismatch)'
+rb  11 21 npolyf_u_body 
++r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)*(1+mis_r*sw_stat_mismatch)' l=r_l w=r_w dtemp=dtemp
 * terminal 2
 rt2 21 2 npolyf_u_t l='s*1u'      w=r_w dtemp=dtemp
 c2  2 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
@@ -38639,8 +38639,8 @@ c2  2 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
 rt1 1 11 ppolyf_u_t l='s*1u'      w=r_w dtemp=dtemp
 c1  1 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21 ppolyf_u_body l=r_l w=r_w
-+r='(r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n))*(1+mis_r*sw_stat_mismatch)'
+rb  11 21 ppolyf_u_body
++r='(r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n))*(1+mis_r*sw_stat_mismatch)' l=r_l w=r_w dtemp=dtemp
 * terminal 2
 rt2 21 2 ppolyf_u_t l='s*1u'      w=r_w dtemp=dtemp
 c2  2 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
@@ -38684,8 +38684,8 @@ c2  2 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
 rt1 1 11 npolyf_s_t l='s*1u'      w=r_w dtemp=dtemp
 c1  1 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21 npolyf_s_body l=r_l w=r_w
-+r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)'
+rb  11 21 npolyf_s_body
++r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)' l=r_l w=r_w dtemp=dtemp
 * terminal 2
 rt2 21 2 npolyf_s_t l='s*1u'      w=r_w dtemp=dtemp
 c2  2 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
@@ -38729,8 +38729,8 @@ c2  2 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
 rt1 1 11 ppolyf_s_t l='s*1u'      w=r_w dtemp=dtemp
 c1  1 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21 ppolyf_s_body l=r_l w=r_w
-+r='(r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n))'
+rb  11 21 ppolyf_s_body
++r='(r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n))' l=r_l w=r_w dtemp=dtemp
 * terminal 2
 rt2 21 2 ppolyf_s_t l='s*1u'      w=r_w dtemp=dtemp
 c2  2 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
@@ -38775,8 +38775,8 @@ c2  2 3  fox_sub    l='r_l/2' w=r_w dtemp=dtemp
 rt1 1 11 ppolyf_u_1k_t l='s*1u'      w=r_w dtemp=dtemp
 c1  1 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21  ppolyf_u_1k_body l=r_l w=r_w
-+r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)'
+rb  11 21  ppolyf_u_1k_body
++r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)' l=r_l w=r_w dtemp=dtemp
 * terminal 2
 rt2 21 2 ppolyf_u_1k_t l='s*1u'      w=r_w dtemp=dtemp
 c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
@@ -38822,8 +38822,8 @@ c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 rt1 1 11 ppolyf_u_2k_t l='s*1u'      w=r_w dtemp=dtemp
 c1  1 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21  ppolyf_u_2k_body l=r_l w=r_w
-+r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)'
+rb  11 21  ppolyf_u_2k_body
++r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)' l=r_l w=r_w dtemp=dtemp
 * terminal 2
 rt2 21 2 ppolyf_u_2k_t l='s*1u'      w=r_w dtemp=dtemp
 c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
@@ -38868,8 +38868,8 @@ c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 rt1 1 11 ppolyf_u_1k_t l='s*1u'      w=r_w dtemp=dtemp
 c1  1 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21  ppolyf_u_1k_body l=r_l w=r_w
-+r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)'
+rb  11 21  ppolyf_u_1k_body
++r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)' l=r_l w=r_w dtemp=dtemp
 * terminal 2
 rt2 21 2 ppolyf_u_1k_t l='s*1u'      w=r_w dtemp=dtemp
 c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
@@ -38895,6 +38895,7 @@ c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 + r_w='r_width-2*r_dw'
 + r_n='r_l/r_w'
 + r_temp='1+r_tc1*(temper+dtemp-r_tnom)+r_tc2*(temper+dtemp-r_tnom)*(temper+dtemp-r_tnom)'
+
 .model ppolyf_u_2k_body r
 + af=1
 + kf=2.62e-26
@@ -38912,13 +38913,15 @@ c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 + cox=8.85E-05
 *-------------------
 * terminal 1
-rt1 1 11 ppolyf_u_2k_t l='s*1u'      w=r_w dtemp=dtemp
+rt1 1 11 ppolyf_u_2k_t l='s*1u'  w=r_w dtemp=dtemp
 c1  1 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21  ppolyf_u_2k_body l=r_l w=r_w
-+r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)'
+
+rb  11 21  ppolyf_u_2k_body
++r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)' l='r_l' w='r_w' dtemp=dtemp
+
 * terminal 2
-rt2 21 2 ppolyf_u_2k_t l='s*1u'      w=r_w dtemp=dtemp
+rt2 21 2 ppolyf_u_2k_t l='s*1u'  w=r_w dtemp=dtemp
 c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 *-------------------
 .ends ppolyf_u_2k_6p0
@@ -38962,8 +38965,8 @@ c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 rt1 1 11 ppolyf_u_3k_t l='s*1u'      w=r_w dtemp=dtemp
 c1  1 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
 * body
-rb  11 21  ppolyf_u_3k_body l=r_l w=r_w
-+r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)'
+rb  11 21  ppolyf_u_3k_body
++r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)' dtemp=dtemp l='r_l' w='r_w'
 * terminal 2
 rt2 21 2 ppolyf_u_3k_t l='s*1u'      w=r_w dtemp=dtemp
 c2  2 3  fox_sub       l='r_l/2' w=r_w dtemp=dtemp
