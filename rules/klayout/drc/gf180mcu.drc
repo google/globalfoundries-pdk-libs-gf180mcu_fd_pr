@@ -49,16 +49,25 @@ if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
-    logger.info("GF180MCU Klayout DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180_drc.lyrdb").path])
+    logger.info("GF180MCU Klayout DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180_drc.lyrdb")])
     report("DRC Run Report at", File.join(File.dirname(RBA::CellView::active.filename), "gf180_drc.lyrdb"))
 end
 
 if $thr
-    logger.info("Number of threads to use %s" % [$thr])
     threads($thr)
+    logger.info("Number of threads to use %s" % [$thr])
 else
-    logger.info("Number of threads to use 16")
-    threads(16)
+    threads(%x("nproc"))
+    logger.info("Number of threads to use #{%x("nproc")}")
+end
+
+#=== PRINT DETAILS ===
+if $verbose == "true"
+  logger.info("Verbose mode: #{$verbose}")
+  verbose(true)
+else
+  verbose(false)
+  logger.info("Verbose mode: false")
 end
 
 # === TILING MODE ===
@@ -474,7 +483,7 @@ logger.info("METAL_TOP Selected is %s" % [METAL_TOP])
 if $metal_level
   METAL_LEVEL = $metal_level
 else
-  METAL_LEVEL = "6LM"
+  METAL_LEVEL = "5LM"
 end # METAL_LEVEL
 
 logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
@@ -509,7 +518,7 @@ logger.info("Gold enabled  %s" % [GOLD])
 if $mim_option
   MIM_OPTION = $mim_option
 else
-  MIM_OPTION = "Nan"
+  MIM_OPTION = "B"
 end
 
 logger.info("MIM Option selected %s" % [MIM_OPTION])

@@ -47,8 +47,8 @@ if $thr
   threads($thr)
   logger.info("Number of threads: #{$thr}")
 else
-  threads(16)
-  logger.info("Number of threads: 16")
+  threads(%x("nproc"))
+  logger.info("Number of threads: #{%x("nproc")}")
 end
 
 #=== GET REPORT ===
@@ -136,9 +136,9 @@ elsif $run_mode == "flat"
   logger.info("flat  mode is enabled.")
 
 else
-  #=== FLAT MODE ===
-  flat
-  logger.info("flat  mode is enabled.")
+  #=== HIER MODE ===
+  deep
+  logger.info("deep  mode is enabled.")
 
 end # run_mode
 
@@ -255,8 +255,13 @@ if $schematic
   schematic($schematic, reader)
   logger.info("Netlist file: #{$schematic}")
 else
-  puts "No schematic loaded , please add your netlist file"
-  logger.info("No schematic loaded , please add your netlist file")
+  begin  
+    schematic("#{source.cell_name}.cdl", reader)
+    logger.info("Netlist file: #{source.cell_name}.cdl")
+  rescue 
+    puts "No schematic loaded , please add your netlist file"
+    logger.error("No schematic loaded , please add your netlist file")
+  end 
 end
 
 class BResistor < RBA::DeviceClassResistorWithBulk
@@ -435,7 +440,7 @@ logger.info("METAL_TOP Selected is %s" % [METAL_TOP])
 if $metal_level
   METAL_LEVEL = $metal_level
 else
-  METAL_LEVEL = "6LM"
+  METAL_LEVEL = "5LM"
 end # METAL_LEVEL
 
 logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
@@ -443,7 +448,7 @@ logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
 if $poly_res
   POLY_RES = $poly_res
 else
-  POLY_RES = false
+  POLY_RES = "1k"
 end # POLY_RES
 
 logger.info("POLY_RES Selected is %s" % [POLY_RES])
@@ -451,13 +456,13 @@ logger.info("POLY_RES Selected is %s" % [POLY_RES])
 if $mim_option
   MIM_OPTION = $mim_option
 else
-  MIM_OPTION = false
+  MIM_OPTION = "B"
 end # MIM_OPTION
 
 if $mim_cap
   MIM_CAP = $mim_cap
 else
-  MIM_CAP = false
+  MIM_CAP = "2"
 end # MIM_CAP
 
 logger.info("MIM Option selected %s" % [MIM_OPTION])
