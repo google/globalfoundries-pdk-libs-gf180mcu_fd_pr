@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+from subprocess import check_call
 import pandas as pd
 import subprocess
 import logging
@@ -71,10 +71,10 @@ def run_switches():
     def run_test_case(test_case, switches, expected_result,expected_log):
         test_case = test_case.split("--")[-1]
         run_directory = RUN_DIRECTORY + test_case
-        os.system('mkdir -p {0}'.format(run_directory))
+        check_call(f'mkdir -p {run_directory}', shell=True)
 
         log_file = run_directory + "/" + test_case + ".log"
-        os.system('python3 ../run_drc.py --path=switch_checking/simple_por.gds.gz {0} >> {1}'.format(switches, log_file))
+        check_call(f'python3 ../run_drc.py --path=switch_checking/simple_por.gds.gz {switches} >> {log_file}', shell=True)
 
         check_output_log(log_file, expected_result)
 
@@ -84,10 +84,10 @@ def run_switches():
         out = str(out.decode())
         if len(out) == 0 and expected_result == PASS:
             logging.info("Test case passed.")
-            os.system('echo Test case passed. >> {0}{1}'.format(RUN_DIRECTORY,LOG_FILE_NAME))
+            check_call(f'echo Test case passed. >> {RUN_DIRECTORY}{LOG_FILE_NAME}', shell=True)
         else:
             logging.error("Test case FAILD check log file for more info.")
-            os.system('echo Test case FAILD check log file for more info. >> {0}{1}'.format(RUN_DIRECTORY,LOG_FILE_NAME))
+            check_call(f'echo Test case FAILD check log file for more info. >> {RUN_DIRECTORY}{LOG_FILE_NAME}', shell=True)
 
     ## read testcases from csv file
     df = pd.read_csv(csv_path)
@@ -97,16 +97,21 @@ def run_switches():
     expected_log = df["expected_logs"]
 
     ## init log file
-    os.system('mkdir -p {0}'.format(RUN_DIRECTORY))
-    os.system('touch {0}temp.log'.format(RUN_DIRECTORY))
-    os.system('mv -f {0}temp.log {0}{1}'.format(RUN_DIRECTORY,LOG_FILE_NAME))
+    check_call(
+        f'''
+mkdir -p {RUN_DIRECTORY}
+touch {RUN_DIRECTORY}temp.log
+mv -f {RUN_DIRECTORY}temp.log {RUN_DIRECTORY}{LOG_FILE_NAME}
+''',
+        shell=True
+    )
 
     for test_case_index in range(0,len(test_cases)):
         test_case_switches = switches[test_case_index]
 
         running_msg = "\nrunning: "+test_cases[test_case_index] + "     with switches: " + test_case_switches + "..."
         logging.info(running_msg)
-        os.system('echo "{0}" >> {1}{2}'.format(running_msg, RUN_DIRECTORY, LOG_FILE_NAME))
+        check_call(f'echo "{running_msg}" >> {RUN_DIRECTORY}{LOG_FILE_NAME}', shell=True)
 
         run_test_case(test_cases[test_case_index], test_case_switches, expected_results[test_case_index],expected_log[test_case_index])
 
@@ -117,7 +122,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG, format=f"%(asctime)s | %(levelname)-7s | %(message)s", datefmt='%d-%b-%Y %H:%M:%S')
 
     # Remove old files
-    os.system("rm -rf patterns.csv switch_checking/run_switch_results")
+    check_call("rm -rf patterns.csv switch_checking/run_switch_results", shell=True)
 
     # Gen. patterns
     gen_patterns ()
