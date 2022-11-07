@@ -1,4 +1,4 @@
-v {xschem version=3.0.0 file_version=1.2
+v {xschem version=3.1.0 file_version=1.2
 
 * Copyright 2022 GlobalFoundries PDK Authors
 *
@@ -39,7 +39,7 @@ unitx=1
 dataset=-1}
 B 2 580 -1000 1170 -540 {flags=graph
 y1=-0
-y2=130
+y2=500
 ypos1=0
 ypos2=2
 divy=5
@@ -65,10 +65,10 @@ lab=M}
 C {devices/code_shown.sym} 20 -160 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
-.include $::180MCU_MODELS/design.spice
-.lib $::180MCU_MODELS/sm141064.spice typical
-.lib $::180MCU_MODELS/sm141064.spice res_typical
-* .lib $::180MCU_MODELS/sm141064.spice res_statistical
+.include $::180MCU_MODELS/design.ngspice
+.lib $::180MCU_MODELS/sm141064.ngspice typical
+.lib $::180MCU_MODELS/sm141064.ngspice res_typical
+* .lib $::180MCU_MODELS/sm141064.ngspice res_statistical
 "}
 C {devices/lab_pin.sym} 130 -490 0 0 {name=l2 sig_type=std_logic lab=P}
 C {devices/lab_pin.sym} 130 -310 0 0 {name=l3 sig_type=std_logic lab=M}
@@ -77,7 +77,7 @@ C {devices/code_shown.sym} 300 -450 0 0 {name=NGSPICE only_toplevel=true
 value="
 vp p 0 0
 vm m 0 0
-vb b 0 3.3
+vb b 0 0
 
 .control
 save all
@@ -93,7 +93,7 @@ tclcommand="
 xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
 "
 }
-C {gf180mcu_fd_pr/ppolyf_u.sym} 130 -410 0 0 {name=R1
+C {symbols/ppolyf_u.sym} 130 -410 0 0 {name=R1
 W=1e-6
 L=1e-6
 model=ppolyf_u

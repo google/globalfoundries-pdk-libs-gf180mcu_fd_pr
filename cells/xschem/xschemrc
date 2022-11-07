@@ -29,9 +29,8 @@
 set XSCHEM_LIBRARY_PATH {}
 #### include devices/*.sym
 append XSCHEM_LIBRARY_PATH ${XSCHEM_SHAREDIR}/xschem_library
-#### include skywater libraries. Here i use [pwd]. This works if i start xschem from here.
+#### include gf180mcu libraries. Here i use [pwd]. This works if i start xschem from here.
 append XSCHEM_LIBRARY_PATH :$env(PWD)
-# append XSCHEM_LIBRARY_PATH :/mnt/sda7/home/schippes/pdks/sky130A/libs.tech/xschem
 #### add ~/.xschem/xschem_library (USER_CONF_DIR is normally ~/.xschem)
 append XSCHEM_LIBRARY_PATH :$USER_CONF_DIR/xschem_library 
 
@@ -53,7 +52,7 @@ set dircolor(devices$) red
 #### Start without a design if no filename given on command line:
 #### To avoid absolute paths, use a path that is relative to one of the
 #### XSCHEM_LIBRARY_PATH directories. Default: empty
-set XSCHEM_START_WINDOW {gf180mcu_tests/0_top.sch}
+set XSCHEM_START_WINDOW {tests/0_top.sch}
 
 ###########################################################################
 #### DIRECTORY WHERE SIMULATIONS, NETLIST AND SIMULATOR OUTPUTS ARE PLACED
@@ -314,18 +313,20 @@ if { [info exists env(PDK_ROOT)] && $env(PDK_ROOT) ne {} } {
     puts stderr "Warning: PDK_ROOT environment variable is set but path not found on the system."
   }
   set PDK_ROOT $env(PDK_ROOT)
+  # set 180MCU_MODELS ....to be decided...
 } else {
   ## not existing or empty. 
   puts stderr "Warning: PDK_ROOT env. var. not found or empty, trying to find a pdk install"
-  if {[file isdir [pwd]/..]} {
-    set PDK_ROOT [file normalize [pwd]/..]
+  if {[regexp {/cells/xschem} [pwd]]} {
+    set PDK_ROOT [file normalize [pwd]/../..]
+    set 180MCU_MODELS ${PDK_ROOT}/models/ngspice
+    puts stderr "pdk installation: using $PDK_ROOT"
+    puts stderr "180MCU_MODELS: $180MCU_MODELS"
+  ##
+  ## do some elseif trying to find an installed pdk on the system, typically in ~/ and /usr/local
+  ##
   } else {
     puts stderr {No pdk installation found, set PDK_ROOT env. var. and restart xschem}
   }
 }
 
-if {[info exists PDK_ROOT]} {
-  set 180MCU_MODELS ${PDK_ROOT}/ngspice/models
-  puts stderr "pdk installation: using $PDK_ROOT"
-  puts stderr "180MCU_MODELS: $180MCU_MODELS"
-}
