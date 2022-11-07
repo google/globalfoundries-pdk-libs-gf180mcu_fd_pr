@@ -1,0 +1,49 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: cap_nmos_06v0
+* View Name:     schematic
+* Netlisted on:  Nov 24 09:13:17 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    cap_nmos_06v0
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT cap_nmos_06v0 I1_0_0_R0_D I1_0_0_R0_G I1_0_1_R0_D I1_0_1_R0_G 
++ I1_0_2_R0_D I1_0_2_R0_G I1_1_0_R0_D I1_1_0_R0_G I1_1_1_R0_D I1_1_1_R0_G 
++ I1_1_2_R0_D I1_1_2_R0_G I1_2_0_R0_D I1_2_0_R0_G I1_2_1_R0_D I1_2_1_R0_G 
++ I1_2_2_R0_D I1_2_2_R0_G I1_default_D I1_default_G
+*.PININFO I1_0_0_R0_D:I I1_0_0_R0_G:I I1_0_1_R0_D:I I1_0_1_R0_G:I 
+*.PININFO I1_0_2_R0_D:I I1_0_2_R0_G:I I1_1_0_R0_D:I I1_1_0_R0_G:I 
+*.PININFO I1_1_1_R0_D:I I1_1_1_R0_G:I I1_1_2_R0_D:I I1_1_2_R0_G:I 
+*.PININFO I1_2_0_R0_D:I I1_2_0_R0_G:I I1_2_1_R0_D:I I1_2_1_R0_G:I 
+*.PININFO I1_2_2_R0_D:I I1_2_2_R0_G:I I1_default_D:I I1_default_G:I
+CI1_2_2_R0 I1_2_2_R0_G I1_2_2_R0_D $[cap_nmos_06v0] m=1 l=50.000u w=50.000u
+CI1_2_1_R0 I1_2_1_R0_G I1_2_1_R0_D $[cap_nmos_06v0] m=1 l=50.000u w=12.350u
+CI1_2_0_R0 I1_2_0_R0_G I1_2_0_R0_D $[cap_nmos_06v0] m=1 l=50.000u w=1.000u
+CI1_1_2_R0 I1_1_2_R0_G I1_1_2_R0_D $[cap_nmos_06v0] m=1 l=12.350u w=50.000u
+CI1_1_1_R0 I1_1_1_R0_G I1_1_1_R0_D $[cap_nmos_06v0] m=1 l=12.350u w=12.350u
+CI1_1_0_R0 I1_1_0_R0_G I1_1_0_R0_D $[cap_nmos_06v0] m=1 l=12.350u w=1.000u
+CI1_0_2_R0 I1_0_2_R0_G I1_0_2_R0_D $[cap_nmos_06v0] m=1 l=1.000u w=50.000u
+CI1_0_1_R0 I1_0_1_R0_G I1_0_1_R0_D $[cap_nmos_06v0] m=1 l=1.000u w=12.350u
+CI1_0_0_R0 I1_0_0_R0_G I1_0_0_R0_D $[cap_nmos_06v0] m=1 l=1.000u w=1.000u
+CI1_default I1_default_G I1_default_D $[cap_nmos_06v0] m=1 l=5u w=5u
+.ENDS
+

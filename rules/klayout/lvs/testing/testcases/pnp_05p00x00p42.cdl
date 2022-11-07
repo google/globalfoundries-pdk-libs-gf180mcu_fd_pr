@@ -1,0 +1,33 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: pnp_05p00x00p42
+* View Name:     schematic
+* Netlisted on:  Nov 24 10:29:25 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    pnp_05p00x00p42
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT pnp_05p00x00p42 I1_default_B I1_default_C I1_default_E
+*.PININFO I1_default_B:I I1_default_C:I I1_default_E:I
+QI1_default I1_default_C I1_default_B I1_default_E pnp_05p00x00p42 m=1
+.ENDS
+
