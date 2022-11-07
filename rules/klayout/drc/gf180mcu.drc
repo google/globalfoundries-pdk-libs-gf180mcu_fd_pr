@@ -3071,6 +3071,12 @@ mt2a_l1  = metaltop.space(0.38.um, euclidian).polygons(0.001)
 mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.38µm")
 mt2a_l1.forget
 
+# Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.5µm
+logger.info("Executing rule MT.2b")
+mt2b_l1  = metaltop.separation(metaltop.not_interacting(metal2.edges.with_length(nil, 10.um)), 0.5.um, euclidian).polygons(0.001)
+mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.5µm")
+mt2b_l1.forget 
+
 # Rule MT.4: Minimum MetalTop area is 0.5625µm²
 logger.info("Executing rule MT.4")
 mt4_l1  = metaltop.with_area(nil, 0.5625.um)
@@ -3091,6 +3097,12 @@ logger.info("Executing rule MT.2a")
 mt2a_l1  = metaltop.space(0.46.um, euclidian).polygons(0.001)
 mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.46µm")
 mt2a_l1.forget
+
+# Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.6µm
+logger.info("Executing rule MT.2b")
+mt2b_l1  = metaltop.separation(metaltop.not_interacting(metal2.edges.with_length(nil, 10.um)), 0.6.um, euclidian).polygons(0.001)
+mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.6µm")
+mt2b_l1.forget 
 
 # Rule MT.4: Minimum MetalTop area is 0.5625µm²
 logger.info("Executing rule MT.4")
@@ -3137,8 +3149,8 @@ mt305_l1 = top_metal.enclosing(top_via, 0.12.um, euclidian).polygons(0.001).or(t
 mt305_l1.output("MT30.5", "MT30.5 : Minimum thick MetalTop enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].")
 mt305_l1.forget
 
-mt30p6_cond = top_metal.drc( width <= 0.34.um)
-mt30p6_eol = top_metal.edges.with_length(nil, 0.34.um).interacting(mt30p6_cond.first_edges).interacting(mt30p6_cond.second_edges).not(mt30p6_cond.first_edges).not(mt30p6_cond.second_edges)
+mt30p6_cond = top_metal.drc( width < 2.5.um)
+mt30p6_eol = top_metal.edges.with_length(nil, 2.5.um).interacting(mt30p6_cond.first_edges).interacting(mt30p6_cond.second_edges).not(mt30p6_cond.first_edges).not(mt30p6_cond.second_edges)
 # Rule MT30.6: Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
 logger.info("Executing rule MT30.6")
 mt306_l1 = mt30p6_eol.enclosing(top_via.edges,0.25.um, projection).polygons(0.001).or(top_via.not_inside(top_metal))
