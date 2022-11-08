@@ -66,8 +66,8 @@ def draw_nmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     cont2cont               = 0.28      * dbu_PERCISION
     dg_enc_ply              = 0.4       * dbu_PERCISION
     dg_enc_cmp              = 0.24      * dbu_PERCISION
-    cmp2cmp                 = 0.28      * dbu_PERCISION
-    ply2gr                  = 0.1       * dbu_PERCISION
+    cmp2cmp                 = 0.32      * dbu_PERCISION
+    ply2gr                  = 0.26      * dbu_PERCISION
     ld_violat               = 0         * dbu_PERCISION
     tie_violat              = 0         * dbu_PERCISION
     metal_violat            = 0.01      * dbu_PERCISION
@@ -157,7 +157,7 @@ def draw_nmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 pya.Trans.new(pya.Point.new(((l + ld + ld_violat + cont2ply - cmp2cont) * i + 2 * (ld + ld_violat) + l - cont_size - dx), dy)),
                 pya.Point.new(-(cont2cont+cont_size), 0), pya.Point.new(0, (cont2cont+cont_size)), nx, ny))
             # Metals
-            cell.shapes(metal1).insert(pya.Box((ld + 2 * ld_violat + l + cont2ply - cmp2cont)*(i + 1), - metal_violat,
+            cell.shapes(metal1).insert(pya.Box((ld + 2 * ld_violat + l + cont2ply - cmp2cont)*(i + 1) - metal_violat, - metal_violat,
              ld + metal_violat + ld_violat + (ld + ld_violat + l + cont2ply - cmp2cont)*(i + 1) - (cont_size-2*cmp2cont), w + metal_violat))
 
     # Adding diffusion to avoid contact violation
@@ -230,7 +230,7 @@ def draw_nmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
 
         # Inserting Tie
         if (w * ld) < min_cmp_area:
-            tie_violat = (min_cmp_area/ld - w)/2 * tol
+            tie_violat = (min_cmp_area * tol/ld - w)/2
         cell.shapes(comp).insert(pya.Box(- cmp2cmp - ld, -tie_violat, -cmp2cmp, w + tie_violat))
         cell.shapes(pplus).insert(pya.Box(- cmp2cmp - pp_enc_cmp - ld, -pp_enc_cmp-tie_violat, -cmp2cmp+pp_enc_cmp, w + tie_violat + pp_enc_cmp))
 
@@ -365,7 +365,7 @@ def draw_nmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         nygr    = int(((2 * grw + w + 2*(ply_ext_cmp + ply2gr)) - (cont_size+2*cmp2cont))/(cont2cont+cont_size)) + 1
         dxgr    = (grw - nxgr * cont_size - (nxgr - 1) * cont2cont)/2
         dygr    = ((2 * grw + w + 2*(ply_ext_cmp + ply2gr)) - nygr * cont_size - (nygr - 1) * cont2cont)/2
-        nxgr_h  = int(((2 * (ld + ld_violat) + l + 2*cmp2cmp + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)) - 2*cont2cont)/(cont2cont+cont_size)) + 1
+        nxgr_h  = int(((2 * (ld + ld_violat) + l + 2*cmp2cmp + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)) - 3*cont2cont)/(cont2cont+cont_size)) + 1
         dxgr_h  = ((2 * (ld + ld_violat) + l + cont2cont + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)) - nxgr_h * cont_size - (nxgr_h - 1) * cont2cont)/2
 
         # Inserting Guard Ring contacts
@@ -484,8 +484,8 @@ def draw_pmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     cont2cont               = 0.28      * dbu_PERCISION
     dg_enc_ply              = 0.4       * dbu_PERCISION
     dg_enc_cmp              = 0.24      * dbu_PERCISION
-    cmp2cmp                 = 0.28      * dbu_PERCISION
-    ply2gr                  = 0.1       * dbu_PERCISION
+    cmp2cmp                 = 0.32      * dbu_PERCISION
+    ply2gr                  = 0.26      * dbu_PERCISION
     nwell_enc_pcomp         = 0.43      * dbu_PERCISION
     nwell_enc_ncomp         = 0.12      * dbu_PERCISION
     ld_violat               = 0         * dbu_PERCISION
@@ -578,7 +578,7 @@ def draw_pmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 pya.Trans.new(pya.Point.new(((l + ld + ld_violat + cont2ply - cmp2cont) * i + 2 * (ld + ld_violat) + l - cont_size - dx), dy)),
                 pya.Point.new(-(cont2cont+cont_size), 0), pya.Point.new(0, (cont2cont+cont_size)), nx, ny))
             # Metals
-            cell.shapes(metal1).insert(pya.Box((ld + 2 * ld_violat + l + cont2ply - cmp2cont)*(i + 1), - metal_violat,
+            cell.shapes(metal1).insert(pya.Box((ld + 2 * ld_violat + l + cont2ply - cmp2cont)*(i + 1)- metal_violat, - metal_violat,
              ld + metal_violat + ld_violat + (ld + ld_violat + l + cont2ply - cmp2cont)*(i + 1) - (cont_size-2*cmp2cont), w + metal_violat))
 
     # Adding diffusion to avoid contact violation
@@ -646,7 +646,7 @@ def draw_pmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
 
         # Inserting Tie
         if (w * ld) < min_cmp_area:
-            tie_violat = (min_cmp_area/ld - w)/2 * tol
+            tie_violat = (min_cmp_area * tol/ld - w)/2
         cell.shapes(comp).insert(pya.Box(- cmp2cmp - ld, -tie_violat, -cmp2cmp, w + tie_violat))
         cell.shapes(nplus).insert(pya.Box(- cmp2cmp - np_enc_cmp - ld, -np_enc_cmp-tie_violat, -cmp2cmp+np_enc_cmp, w + tie_violat + np_enc_cmp))
 
@@ -779,7 +779,7 @@ def draw_pmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         nygr    = int(((2 * grw + w + 2*(ply_ext_cmp + ply2gr)) - (cont_size+2*cmp2cont))/(cont2cont+cont_size)) + 1
         dxgr    = (grw - nxgr * cont_size - (nxgr - 1) * cont2cont)/2
         dygr    = ((2 * grw + w + 2*(ply_ext_cmp + ply2gr)) - nygr * cont_size - (nygr - 1) * cont2cont)/2
-        nxgr_h  = int(((2 * (ld + ld_violat) + l + 2*cmp2cmp + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)) - 2*cont2cont)/(cont2cont+cont_size)) + 1
+        nxgr_h  = int(((2 * (ld + ld_violat) + l + 2*cmp2cmp + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)) - 3*cont2cont)/(cont2cont+cont_size)) + 1
         dxgr_h  = ((2 * (ld + ld_violat) + l + cont2cont + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)) - nxgr_h * cont_size - (nxgr_h - 1) * cont2cont)/2
 
         # Inserting Guard Ring contacts
@@ -964,12 +964,12 @@ def draw_nmos_6p0_nat(layout, l, w, ld, nf, grw, bulk):
                 pya.Point(-(nat_enc_cmp + cmp2cmp) - grw, (w + (nat_enc_cmp + cmp2cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp), (w + (nat_enc_cmp + cmp2cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp), -(nat_enc_cmp + cmp2cmp)),
-                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)), -(nat_enc_cmp + cmp2cmp)),
-                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)), (w + (nat_enc_cmp + cmp2cmp))),
+                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), -(nat_enc_cmp + cmp2cmp)),
+                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), (w + (nat_enc_cmp + cmp2cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp) - grw, (w + (nat_enc_cmp + cmp2cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp) - grw, (w + (nat_enc_cmp + cmp2cmp) + grw)),
-                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)), (w + (nat_enc_cmp + cmp2cmp) + grw)),
-                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)), -(nat_enc_cmp + cmp2cmp) - grw),
+                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), (w + (nat_enc_cmp + cmp2cmp) + grw)),
+                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), -(nat_enc_cmp + cmp2cmp) - grw),
             ],
             True,
             )
@@ -981,12 +981,12 @@ def draw_nmos_6p0_nat(layout, l, w, ld, nf, grw, bulk):
                 pya.Point(-(nat_enc_cmp + cmp2cmp + pp_enc_cmp) - grw, (w + (nat_enc_cmp + cmp2cmp - pp_enc_cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp - pp_enc_cmp), (w + (nat_enc_cmp + cmp2cmp - pp_enc_cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp - pp_enc_cmp), -(nat_enc_cmp + cmp2cmp - pp_enc_cmp)),
-                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp - pp_enc_cmp) + (nf - 1) * (ld + l)), -(nat_enc_cmp + cmp2cmp - pp_enc_cmp)),
-                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp - pp_enc_cmp) + (nf - 1) * (ld + l)), (w + (nat_enc_cmp + cmp2cmp - pp_enc_cmp))),
+                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp - pp_enc_cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), -(nat_enc_cmp + cmp2cmp - pp_enc_cmp)),
+                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp - pp_enc_cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), (w + (nat_enc_cmp + cmp2cmp - pp_enc_cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp + pp_enc_cmp) - grw, (w + (nat_enc_cmp + cmp2cmp - pp_enc_cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp + pp_enc_cmp) - grw, (w + (nat_enc_cmp + cmp2cmp + pp_enc_cmp) + grw)),
-                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp + pp_enc_cmp) + (nf - 1) * (ld + l)), (w + (nat_enc_cmp + cmp2cmp + pp_enc_cmp) + grw)),
-                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp + pp_enc_cmp) + (nf - 1) * (ld + l)), -(nat_enc_cmp + cmp2cmp + pp_enc_cmp) - grw),
+                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp + pp_enc_cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), (w + (nat_enc_cmp + cmp2cmp + pp_enc_cmp) + grw)),
+                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp + pp_enc_cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), -(nat_enc_cmp + cmp2cmp + pp_enc_cmp) - grw),
             ],
             True,
             )
@@ -1000,12 +1000,12 @@ def draw_nmos_6p0_nat(layout, l, w, ld, nf, grw, bulk):
                 pya.Point(-(nat_enc_cmp + cmp2cmp) - grw, (w + (nat_enc_cmp + cmp2cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp), (w + (nat_enc_cmp + cmp2cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp), -(nat_enc_cmp + cmp2cmp)),
-                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)), -(nat_enc_cmp + cmp2cmp)),
-                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)), (w + (nat_enc_cmp + cmp2cmp))),
+                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), -(nat_enc_cmp + cmp2cmp)),
+                pya.Point((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), (w + (nat_enc_cmp + cmp2cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp) - grw, (w + (nat_enc_cmp + cmp2cmp))),
                 pya.Point(-(nat_enc_cmp + cmp2cmp) - grw, (w + (nat_enc_cmp + cmp2cmp) + grw)),
-                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)), (w + (nat_enc_cmp + cmp2cmp) + grw)),
-                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)), -(nat_enc_cmp + cmp2cmp) - grw),
+                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), (w + (nat_enc_cmp + cmp2cmp) + grw)),
+                pya.Point((2 * ld + l + grw + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)), -(nat_enc_cmp + cmp2cmp) - grw),
             ],
             True,
             )
@@ -1015,15 +1015,15 @@ def draw_nmos_6p0_nat(layout, l, w, ld, nf, grw, bulk):
         nygr    = int(((2 * grw + w + 2*(nat_enc_cmp + cmp2cmp)) - (cont_size+2*cmp2cont))/(cont2cont+cont_size)) + 1
         dxgr    = (grw - nxgr * cont_size - (nxgr - 1) * cont2cont)/2
         dygr    = ((2 * grw + w + 2*(nat_enc_cmp + cmp2cmp)) - nygr * cont_size - (nygr - 1) * cont2cont)/2
-        nxgr_h  = int(((2 * ld + l + 2*(nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l))- 2*cont2cont)/(cont2cont+cont_size)) + 1
-        dxgr_h  = ((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l)) - nxgr_h * cont_size - (nxgr_h - 1) * cont2cont)/2
+        nxgr_h  = int(((2 * ld + l + 2*(nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont))- 3*cont2cont)/(cont2cont+cont_size)) + 1
+        dxgr_h  = ((2 * ld + l + (nat_enc_cmp + cmp2cmp) + (nf - 1) * (ld + l + cont2ply - cmp2cont)) - nxgr_h * cont_size - (nxgr_h - 1) * cont2cont)/2
 
         # Inserting Guard Ring contacts
         cell.insert(pya.CellInstArray.new(cont_cell_index, pya.Trans.new(pya.Point.new((-(nat_enc_cmp + cmp2cmp) - grw + dxgr), (-(nat_enc_cmp + cmp2cmp) - grw + dygr))),
                     pya.Point.new((cont2cont+cont_size), 0), pya.Point.new(0, (cont2cont+cont_size)), nxgr, nygr))
         cell.insert(pya.CellInstArray.new(cont_cell_index, pya.Trans.new(pya.Point.new(-(nat_enc_cmp + cmp2cmp)/2 + dxgr_h, -(nat_enc_cmp + cmp2cmp + cont_size) - dxgr)),
                     pya.Point.new((cont2cont+cont_size), 0), pya.Point.new(0, -(cont2cont+cont_size)), nxgr_h, nxgr))
-        cell.insert(pya.CellInstArray.new(cont_cell_index, pya.Trans.new(pya.Point.new(2 * ld + l + grw - dxgr + nat_enc_cmp + cmp2cmp - cont_size + (nf - 1) * (ld + l), (-(nat_enc_cmp + cmp2cmp) - grw + dygr))),
+        cell.insert(pya.CellInstArray.new(cont_cell_index, pya.Trans.new(pya.Point.new(2 * ld + l + grw - dxgr + nat_enc_cmp + cmp2cmp - cont_size + (nf - 1) * (ld + l + cont2ply - cmp2cont), (-(nat_enc_cmp + cmp2cmp) - grw + dygr))),
                     pya.Point.new(-(cont2cont+cont_size), 0), pya.Point.new(0, (cont2cont+cont_size)), nxgr, nygr))
         cell.insert(pya.CellInstArray.new(cont_cell_index, pya.Trans.new(pya.Point.new(-(nat_enc_cmp + cmp2cmp)/2 + dxgr_h, w + (nat_enc_cmp + cmp2cmp) + dxgr)),
                     pya.Point.new((cont2cont+cont_size), 0), pya.Point.new(0, (cont2cont+cont_size)), nxgr_h, nxgr))
