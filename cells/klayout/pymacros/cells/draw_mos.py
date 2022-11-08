@@ -851,7 +851,7 @@ def draw_pmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     cell.flatten(True)
     return cell
 
-def draw_nmos_6p0_nat(layout, l, w, ld, nf, grw, bulk):
+def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
     '''
     Usage:-
      used to draw Native NMOS 6V transistor by specifying parameters
@@ -894,7 +894,7 @@ def draw_nmos_6p0_nat(layout, l, w, ld, nf, grw, bulk):
     nat_enc_cmp             = 2         * dbu_PERCISION
 
     # Inserting NMOS cell
-    cell_index  = layout.add_cell("nmos_6p0_nat")
+    cell_index  = layout.add_cell("nfet_06v0_nvt")
     cell        = layout.cell(cell_index)
 
     # Inserting diffusion
@@ -1031,7 +1031,7 @@ def draw_nmos_6p0_nat(layout, l, w, ld, nf, grw, bulk):
     cell.flatten(True)
     return cell
 
-def draw_nmos_10p0_asym(layout, l, w):
+def draw_nfet_10v0_asym(layout, l, w):
     '''
     Usage:-
      used to draw LDNMOS 10V transistor by specifying parameters
@@ -1077,7 +1077,7 @@ def draw_nmos_10p0_asym(layout, l, w):
 
 
     # Inserting NMOS cell
-    cell_index  = layout.add_cell("nmos_10p0_asym")
+    cell_index  = layout.add_cell("nfet_10v0_asym")
     cell        = layout.cell(cell_index)
 
     # Inserting layers for LDMOS
@@ -1216,7 +1216,7 @@ def draw_nmos_10p0_asym(layout, l, w):
     cell.flatten(True)
     return cell
 
-def draw_pmos_10p0_asym(layout, l, w, dgr_en):
+def draw_pfet_10v0_asym(layout, l, w, dgr_en):
     '''
     Usage:-
      used to draw LDPMOS 10V transistor by specifying parameters
@@ -1266,7 +1266,7 @@ def draw_pmos_10p0_asym(layout, l, w, dgr_en):
 
 
     # Inserting PMOS cell
-    cell_index  = layout.add_cell("pmos_10p0_asym")
+    cell_index  = layout.add_cell("pfet_10v0_asym")
     cell        = layout.cell(cell_index)
 
     # Inserting layers for LDMOS

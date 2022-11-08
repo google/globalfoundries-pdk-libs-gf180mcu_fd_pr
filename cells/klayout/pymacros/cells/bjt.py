@@ -30,12 +30,12 @@ class npn_bjt(pya.PCellDeclarationHelper):
         # Important: initialize the super class
         super(npn_bjt, self).__init__()
         self.Type_handle = self.param("Type", self.TypeList, "Type")
-        self.Type_handle.add_choice("vnpn_10x10", "vnpn_10x10")
-        self.Type_handle.add_choice("vnpn_5x5", "vnpn_5x5")
-        self.Type_handle.add_choice("vnpn_0p54x16", "vnpn_0p54x16")
-        self.Type_handle.add_choice("vnpn_0p54x8", "vnpn_0p54x8")
-        self.Type_handle.add_choice("vnpn_0p54x4", "vnpn_0p54x4")
-        self.Type_handle.add_choice("vnpn_0p54x2", "vnpn_0p54x2")
+        self.Type_handle.add_choice("npn_10p00x10p00", "npn_10p00x10p00")
+        self.Type_handle.add_choice("npn_05p00x05p00", "npn_05p00x05p00")
+        self.Type_handle.add_choice("npn_00p54x16p00", "npn_00p54x16p00")
+        self.Type_handle.add_choice("npn_00p54x08p00", "npn_00p54x08p00")
+        self.Type_handle.add_choice("npn_00p54x04p00", "npn_00p54x04p00")
+        self.Type_handle.add_choice("npn_00p54x02p00", "npn_00p54x02p00")
         self.param("Model", self.TypeString, "Model", default="gf180mcu_fd_pr__npn",readonly=True)
 
     def display_text_impl(self):
@@ -92,10 +92,10 @@ class pnp_bjt(pya.PCellDeclarationHelper):
         # Important: initialize the super class
         super(pnp_bjt, self).__init__()
         self.Type_handle = self.param("Type", self.TypeList, "Type")
-        self.Type_handle.add_choice("vpnp_10x10", "vpnp_10x10")
-        self.Type_handle.add_choice("vpnp_5x5", "vpnp_5x5")
-        self.Type_handle.add_choice("vpnp_0p42x10", "vpnp_0p42x10")
-        self.Type_handle.add_choice("vpnp_0p42x5", "vpnp_0p42x5")
+        self.Type_handle.add_choice("pnp_10p00x10p00", "pnp_10p00x10p00")
+        self.Type_handle.add_choice("pnp_05p00x05p00", "pnp_05p00x05p00")
+        self.Type_handle.add_choice("pnp_10p00x00p42", "pnp_10p00x00p42")
+        self.Type_handle.add_choice("pnp_05p00x00p42", "pnp_05p00x00p42")
         self.param("Model", self.TypeString, "Model", default="gf180mcu_fd_pr__pnp",readonly=True)
 
     def display_text_impl(self):

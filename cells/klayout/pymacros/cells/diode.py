@@ -28,11 +28,11 @@ pn_w = 0.22
 nwp_l = 0.36
 nwp_w = 0.22
 
-dnwpw_l = 0.36
-dnwpw_w = 0.22
+diode_pw2dw_l = 0.36
+diode_pw2dw_w = 0.22
 
-dnwps_l = 0.36
-dnwps_w = 0.22
+diode_dw2ps_l = 0.36
+diode_dw2ps_w = 0.22
 
 sc_l = 1
 sc_w = 0.62
@@ -219,7 +219,7 @@ class nwp_diode(pya.PCellDeclarationHelper):
         self.cell.insert(write_cells)
         self.cell.flatten(1)
 
-class dnwpw_diode(pya.PCellDeclarationHelper):
+class diode_pw2dw_diode(pya.PCellDeclarationHelper):
     """
     LVPWELL/DNWELL diode Generator for GF180MCU
     """
@@ -227,21 +227,21 @@ class dnwpw_diode(pya.PCellDeclarationHelper):
     def __init__(self):
 
         # Initializing super class.
-        super(dnwpw_diode, self).__init__()
+        super(diode_pw2dw_diode, self).__init__()
 
         #===================== PARAMETERS DECLARATIONS =====================
         self.Type_handle  = self.param("volt", self.TypeList, "Voltage area")
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l", self.TypeDouble,"Length", default=dnwpw_l, unit="um")
-        self.param("w", self.TypeDouble,"Width", default=dnwpw_w, unit="um")
+        self.param("l", self.TypeDouble,"Length", default=diode_pw2dw_l, unit="um")
+        self.param("w", self.TypeDouble,"Width", default=diode_pw2dw_w, unit="um")
         self.param("area", self.TypeDouble,"Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble,"Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "dnwpw_diode(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
+        return "diode_pw2dw_diode(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
@@ -249,10 +249,10 @@ class dnwpw_diode(pya.PCellDeclarationHelper):
         self.area  = self.w * self.l
         self.perim = 2*(self.w + self.l)
         # w,l must be larger or equal than min. values.
-        if (self.l) < dnwpw_l:
-            self.l  = dnwpw_l
-        if (self.w) < dnwpw_w:
-            self.w  = dnwpw_w
+        if (self.l) < diode_pw2dw_l:
+            self.l  = diode_pw2dw_l
+        if (self.w) < diode_pw2dw_w:
+            self.w  = diode_pw2dw_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -271,14 +271,14 @@ class dnwpw_diode(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dnwpw_instance = draw_dnwpw_diode(self.layout, self.l, self.w , self.volt)
-        write_cells = pya.CellInstArray(dnwpw_instance.cell_index(), pya.Trans(pya.Point(0, 0)),
+        diode_pw2dw_instance = draw_diode_pw2dw_diode(self.layout, self.l, self.w , self.volt)
+        write_cells = pya.CellInstArray(diode_pw2dw_instance.cell_index(), pya.Trans(pya.Point(0, 0)),
                       pya.Vector(0, 0), pya.Vector(0, 0), 1, 1)
 
         self.cell.insert(write_cells)
         self.cell.flatten(1)
 
-class dnwps_diode(pya.PCellDeclarationHelper):
+class diode_dw2ps_diode(pya.PCellDeclarationHelper):
     """
     LVPWELL/DNWELL diode Generator for GF180MCU
     """
@@ -286,21 +286,21 @@ class dnwps_diode(pya.PCellDeclarationHelper):
     def __init__(self):
 
         # Initializing super class.
-        super(dnwps_diode, self).__init__()
+        super(diode_dw2ps_diode, self).__init__()
 
         #===================== PARAMETERS DECLARATIONS =====================
         self.Type_handle  = self.param("volt", self.TypeList, "Voltage area")
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l", self.TypeDouble,"Length", default=dnwps_l, unit="um")
-        self.param("w", self.TypeDouble,"Width", default=dnwps_w, unit="um")
+        self.param("l", self.TypeDouble,"Length", default=diode_dw2ps_l, unit="um")
+        self.param("w", self.TypeDouble,"Width", default=diode_dw2ps_w, unit="um")
         self.param("area", self.TypeDouble,"Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble,"Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "dnwps_diode(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
+        return "diode_dw2ps_diode(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
@@ -308,10 +308,10 @@ class dnwps_diode(pya.PCellDeclarationHelper):
         self.area  = self.w * self.l
         self.perim = 2*(self.w + self.l)
         # w,l must be larger or equal than min. values.
-        if (self.l) < dnwps_l:
-            self.l  = dnwps_l
-        if (self.w) < dnwps_w:
-            self.w  = dnwps_w
+        if (self.l) < diode_dw2ps_l:
+            self.l  = diode_dw2ps_l
+        if (self.w) < diode_dw2ps_w:
+            self.w  = diode_dw2ps_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -330,8 +330,8 @@ class dnwps_diode(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dnwps_instance = draw_dnwps_diode(self.layout, self.l, self.w , self.volt)
-        write_cells = pya.CellInstArray(dnwps_instance.cell_index(), pya.Trans(pya.Point(0, 0)),
+        diode_dw2ps_instance = draw_diode_dw2ps_diode(self.layout, self.l, self.w , self.volt)
+        write_cells = pya.CellInstArray(diode_dw2ps_instance.cell_index(), pya.Trans(pya.Point(0, 0)),
                       pya.Vector(0, 0), pya.Vector(0, 0), 1, 1)
 
         self.cell.insert(write_cells)
