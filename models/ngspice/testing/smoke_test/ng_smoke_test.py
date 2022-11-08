@@ -44,7 +44,7 @@ def call_simulator(file_name):
 def get_sizes(models_path):
     with open(models_path, "r") as f:
         device_model = f.read()
-        dimensions = re.findall(f"\.model  nmos_3p3.*\n.*\n\+lmin.*= (.*\S).*\n.*\n\+wmin.*= (.*\S)", device_model)
+        dimensions = re.findall(f"\.model  nfet_03v3.*\n.*\n\+lmin.*= (.*\S).*\n.*\n\+wmin.*= (.*\S)", device_model)
     return dimensions[0:16]
 
 def get_results(run_path, sizes, temp, corner):
