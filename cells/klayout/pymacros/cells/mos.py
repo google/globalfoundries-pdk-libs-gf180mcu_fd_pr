@@ -22,11 +22,11 @@ mos_3p3_l   = 0.28
 mos_3p3_w   = 0.22
 mos_5_6_w   = 0.3
 
-nmos_5p0_l  = 0.6
-nmos_6p0_l  = 0.7
+nfet_05v0_l  = 0.6
+nfet_06v0_l  = 0.7
 
-pmos_5p0_l  = 0.5
-pmos_6p0_l  = 0.55
+pfet_05v0_l  = 0.5
+pfet_06v0_l  = 0.55
 
 nmos_nat_l  = 1.8
 nmos_nat_w  = 0.8
@@ -85,13 +85,13 @@ class nmos(pya.PCellDeclarationHelper):
             if (self.w) < mos_3p3_w:
                 self.w  = mos_3p3_w
         elif self.volt  == "5V":
-            if (self.l) < nmos_5p0_l:
-                self.l  = nmos_5p0_l
+            if (self.l) < nfet_05v0_l:
+                self.l  = nfet_05v0_l
             if (self.w) < mos_5_6_w:
                 self.w  = mos_5_6_w
         elif self.volt  == "6V":
-            if (self.l) < nmos_6p0_l:
-                self.l  = nmos_6p0_l
+            if (self.l) < nfet_06v0_l:
+                self.l  = nfet_06v0_l
             if (self.w) < mos_5_6_w:
                 self.w  = mos_5_6_w
         if (self.grw)   < mos_grw:
@@ -167,13 +167,13 @@ class pmos(pya.PCellDeclarationHelper):
             if (self.w) < mos_3p3_w:
                 self.w  = mos_3p3_w
         elif self.volt  == "5V":
-            if (self.l) < pmos_5p0_l:
-                self.l  = pmos_5p0_l
+            if (self.l) < pfet_05v0_l:
+                self.l  = pfet_05v0_l
             if (self.w) < mos_5_6_w:
                 self.w  = mos_5_6_w
         elif self.volt  == "6V":
-            if (self.l) < pmos_6p0_l:
-                self.l  = pmos_6p0_l
+            if (self.l) < pfet_06v0_l:
+                self.l  = pfet_06v0_l
             if (self.w) < mos_5_6_w:
                 self.w  = mos_5_6_w
         if (self.grw)   < mos_grw:
@@ -202,14 +202,14 @@ class pmos(pya.PCellDeclarationHelper):
         self.cell.insert(write_cells)
         self.cell.flatten(1)
 
-class nmos_6p0_nat(pya.PCellDeclarationHelper):
+class nfet_06v0_nvt(pya.PCellDeclarationHelper):
     """
     6V Native NMOS Generator for GF180MCU
     """
 
     def __init__(self):
         # Initialize super class.
-        super(nmos_6p0_nat, self).__init__()
+        super(nfet_06v0_nvt, self).__init__()
 
         #===================== PARAMETERS DECLARATIONS =====================
         self.Type_handle  = self.param("bulk", self.TypeList, "Bulk Type")
@@ -227,7 +227,7 @@ class nmos_6p0_nat(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "nmos_6p0_nat(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
+        return "nfet_06v0_nvt(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
@@ -261,20 +261,20 @@ class nmos_6p0_nat(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        instance = draw_nmos_6p0_nat(self.layout, self.l, self.w, self.ld, self.nf, self.grw, self.bulk)
+        instance = draw_nfet_06v0_nvt(self.layout, self.l, self.w, self.ld, self.nf, self.grw, self.bulk)
         write_cells = pya.CellInstArray(instance.cell_index(), pya.Trans(pya.Point(0, 0)),
                       pya.Vector(0, 0), pya.Vector(0, 0), 1, 1)
         self.cell.insert(write_cells)
         self.cell.flatten(1)
 
-class nmos_10p0_asym(pya.PCellDeclarationHelper):
+class nfet_10v0_asym(pya.PCellDeclarationHelper):
     """
     10V LDNMOS Generator for GF180MCU
     """
 
     def __init__(self):
         # Initialize super class.
-        super(nmos_10p0_asym, self).__init__()
+        super(nfet_10v0_asym, self).__init__()
 
         #===================== PARAMETERS DECLARATIONS =====================
 
@@ -285,7 +285,7 @@ class nmos_10p0_asym(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "nmos_10p0_asym(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
+        return "nfet_10v0_asym(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
@@ -321,20 +321,20 @@ class nmos_10p0_asym(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        instance = draw_nmos_10p0_asym(self.layout, self.l, self.w)
+        instance = draw_nfet_10v0_asym(self.layout, self.l, self.w)
         write_cells = pya.CellInstArray(instance.cell_index(), pya.Trans(pya.Point(0, 0)),
                       pya.Vector(0, 0), pya.Vector(0, 0), 1, 1)
         self.cell.insert(write_cells)
         self.cell.flatten(1)
 
-class pmos_10p0_asym(pya.PCellDeclarationHelper):
+class pfet_10v0_asym(pya.PCellDeclarationHelper):
     """
     10V LDPMOS Generator for GF180MCU
     """
 
     def __init__(self):
         # Initialize super class.
-        super(pmos_10p0_asym, self).__init__()
+        super(pfet_10v0_asym, self).__init__()
 
         #===================== PARAMETERS DECLARATIONS =====================
 
@@ -346,7 +346,7 @@ class pmos_10p0_asym(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "pmos_10p0_asym(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
+        return "pfet_10v0_asym(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
@@ -382,7 +382,7 @@ class pmos_10p0_asym(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        instance = draw_pmos_10p0_asym(self.layout, self.l, self.w, self.double_gr)
+        instance = draw_pfet_10v0_asym(self.layout, self.l, self.w, self.double_gr)
         write_cells = pya.CellInstArray(instance.cell_index(), pya.Trans(pya.Point(0, 0)),
                       pya.Vector(0, 0), pya.Vector(0, 0), 1, 1)
         self.cell.insert(write_cells)

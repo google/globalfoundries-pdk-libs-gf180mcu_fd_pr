@@ -55,7 +55,7 @@ test-DRC-bjt: Add_run-dir
 #=================================
 
 .ONESHELL:
-test-DRC-diode: test-DRC-np_diode  test-DRC-pn_diode test-DRC-np_dw_diode  test-DRC-pn_dw_diode  test-DRC-nwp_diode  test-DRC-dnwpw_diode  test-DRC-dnwps_diode  test-DRC-sc_diode
+test-DRC-diode: test-DRC-np_diode  test-DRC-pn_diode test-DRC-np_dw_diode  test-DRC-pn_dw_diode  test-DRC-nwp_diode  test-DRC-diode_pw2dw_diode  test-DRC-diode_dw2ps_diode  test-DRC-sc_diode
 
 .ONESHELL:
 test-DRC-np_diode: Add_run-dir	
@@ -98,19 +98,19 @@ test-DRC-nwp_diode: Add_run-dir
 
 
 .ONESHELL:
-test-DRC-dnwpw_diode: Add_run-dir	
+test-DRC-diode_pw2dw_diode: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for dnwpw_diode pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/dnwpw_diode_pcells.gds --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/dnwpw_diode.log 
-	@mv -f ../testcases/dnwpw_diode_pcells*.lyrdb $(run_folder)/diode_drc
+	@echo "===== test-DRC for diode_pw2dw_diode pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_pw2dw_diode_pcells.gds --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_pw2dw_diode.log 
+	@mv -f ../testcases/diode_pw2dw_diode_pcells*.lyrdb $(run_folder)/diode_drc
 
 
 .ONESHELL:
-test-DRC-dnwps_diode: Add_run-dir	
+test-DRC-diode_dw2ps_diode: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for dnwps_diode pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/dnwps_diode_pcells.gds --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/dnwps_diode.log
-	@mv -f ../testcases/dnwps_diode_pcells*.lyrdb $(run_folder)/diode_drc
+	@echo "===== test-DRC for diode_dw2ps_diode pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_dw2ps_diode_pcells.gds --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_dw2ps_diode.log
+	@mv -f ../testcases/diode_dw2ps_diode_pcells*.lyrdb $(run_folder)/diode_drc
 
 
 .ONESHELL:
@@ -151,156 +151,156 @@ test-DRC-MIM-B: Add_run-dir
 #=================================
 
 .ONESHELL:
-test-DRC-MOS: test-DRC-nmos_3p3  test-DRC-nmos_5p0  test-DRC-nmos_6p0  test-DRC-pmos_3p3  test-DRC-pmos_5p0  test-DRC-pmos_6p0 test-DRC-nmos_3p3_dw  test-DRC-nmos_5p0_dw  test-DRC-nmos_6p0_dw  test-DRC-pmos_3p3_dw  test-DRC-pmos_5p0_dw  test-DRC-pmos_6p0_dw test-DRC-nmos_6p0_nat  test-DRC-nmos_10p0_asym  test-DRC-pmos_10p0_asym
+test-DRC-MOS: test-DRC-nfet_03v3  test-DRC-nfet_05v0  test-DRC-nfet_06v0  test-DRC-pfet_03v3  test-DRC-pfet_05v0  test-DRC-pfet_06v0 test-DRC-nfet_03v3_dn  test-DRC-nfet_05v0_dn  test-DRC-nfet_06v0_dn  test-DRC-pfet_03v3_dn  test-DRC-pfet_05v0_dn  test-DRC-pfet_06v0_dn test-DRC-nfet_06v0_nvt  test-DRC-nfet_10v0_asym  test-DRC-pfet_10v0_asym
 
 
 .ONESHELL:
-test-DRC-nmos_3p3: Add_run-dir
+test-DRC-nfet_03v3: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmos_3p3 pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_3p3_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_3p3_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_3p3_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_3p3_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_3p3_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_3p3_gfC.log
-	@mv -f ../testcases/nmos_3p3_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for nfet_03v3 pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_03v3_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_03v3_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_03v3_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_03v3_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_03v3_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_03v3_gfC.log
+	@mv -f ../testcases/nfet_03v3_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-nmos_5p0: Add_run-dir	
+test-DRC-nfet_05v0: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmos_5p0 pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_5p0_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_5p0_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_5p0_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_5p0_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_5p0_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_5p0_gfC.log
-	@mv -f ../testcases/nmos_5p0_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for nfet_05v0 pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_05v0_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_05v0_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_05v0_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_05v0_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_05v0_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_05v0_gfC.log
+	@mv -f ../testcases/nfet_05v0_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-nmos_6p0: Add_run-dir	
+test-DRC-nfet_06v0: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmos_6p0 pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_gfC.log
-	@mv -f ../testcases/nmos_6p0_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for nfet_06v0 pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_gfC.log
+	@mv -f ../testcases/nfet_06v0_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-pmos_3p3: Add_run-dir
+test-DRC-pfet_03v3: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmos_3p3 pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_3p3_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_3p3_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_3p3_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_3p3_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_3p3_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_3p3_gfC.log
-	@mv -f ../testcases/pmos_3p3_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for pfet_03v3 pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_03v3_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_03v3_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_03v3_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_03v3_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_03v3_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_03v3_gfC.log
+	@mv -f ../testcases/pfet_03v3_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-pmos_5p0: Add_run-dir	
+test-DRC-pfet_05v0: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmos_5p0 pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_5p0_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_5p0_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_5p0_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_5p0_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_5p0_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_5p0_gfC.log
-	@mv -f ../testcases/pmos_5p0_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for pfet_05v0 pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_05v0_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_05v0_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_05v0_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_05v0_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_05v0_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_05v0_gfC.log
+	@mv -f ../testcases/pfet_05v0_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-pmos_6p0: Add_run-dir	
+test-DRC-pfet_06v0: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmos_6p0 pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_6p0_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_6p0_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_6p0_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_6p0_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_6p0_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_6p0_gfC.log
-	@mv -f ../testcases/pmos_6p0_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for pfet_06v0 pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_06v0_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_06v0_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_06v0_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_06v0_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_06v0_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_06v0_gfC.log
+	@mv -f ../testcases/pfet_06v0_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 .ONESHELL:
-test-DRC-nmos_3p3_dw: Add_run-dir
+test-DRC-nfet_03v3_dn: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmos_3p3_dw pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_3p3_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_3p3_dw_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_3p3_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_3p3_dw_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_3p3_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_3p3_dw_gfC.log
-	@mv -f ../testcases/nmos_3p3_dw_pcells*.lyrdb $(run_folder)/mosfet_drc
-
-
-.ONESHELL:
-test-DRC-nmos_5p0_dw: Add_run-dir	
-	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmos_5p0_dw pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_5p0_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_5p0_dw_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_5p0_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_5p0_dw_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_5p0_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_5p0_dw_gfC.log
-	@mv -f ../testcases/nmos_5p0_dw_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for nfet_03v3_dn pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_03v3_dn_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_03v3_dn_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_03v3_dn_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_03v3_dn_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_03v3_dn_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_03v3_dn_gfC.log
+	@mv -f ../testcases/nfet_03v3_dn_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-nmos_6p0_dw: Add_run-dir	
+test-DRC-nfet_05v0_dn: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmos_6p0_dw pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_dw_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_dw_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_dw_gfC.log
-	@mv -f ../testcases/nmos_6p0_dw_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for nfet_05v0_dn pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_05v0_dn_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_05v0_dn_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_05v0_dn_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_05v0_dn_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_05v0_dn_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_05v0_dn_gfC.log
+	@mv -f ../testcases/nfet_05v0_dn_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-pmos_3p3_dw: Add_run-dir
+test-DRC-nfet_06v0_dn: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmos_3p3_dw pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_3p3_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_3p3_dw_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_3p3_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_3p3_dw_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_3p3_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_3p3_dw_gfC.log
-	@mv -f ../testcases/pmos_3p3_dw_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for nfet_06v0_dn pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_dn_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_dn_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_dn_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_dn_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_dn_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_dn_gfC.log
+	@mv -f ../testcases/nfet_06v0_dn_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-pmos_5p0_dw: Add_run-dir	
+test-DRC-pfet_03v3_dn: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmos_5p0_dw pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_5p0_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_5p0_dw_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_5p0_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_5p0_dw_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_5p0_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_5p0_dw_gfC.log
-	@mv -f ../testcases/pmos_5p0_dw_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for pfet_03v3_dn pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_03v3_dn_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_03v3_dn_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_03v3_dn_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_03v3_dn_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_03v3_dn_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_03v3_dn_gfC.log
+	@mv -f ../testcases/pfet_03v3_dn_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-pmos_6p0_dw: Add_run-dir	
+test-DRC-pfet_05v0_dn: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmos_6p0_dw pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_6p0_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_6p0_dw_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_6p0_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_6p0_dw_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_6p0_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_6p0_dw_gfC.log
-	@mv -f ../testcases/pmos_6p0_dw_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for pfet_05v0_dn pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_05v0_dn_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_05v0_dn_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_05v0_dn_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_05v0_dn_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_05v0_dn_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_05v0_dn_gfC.log
+	@mv -f ../testcases/pfet_05v0_dn_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-nmos_6p0_nat: Add_run-dir
+test-DRC-pfet_06v0_dn: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmos_6p0_nat pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_nat_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_nat_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_nat_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_nat_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_6p0_nat_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_6p0_nat_gfC.log
-	@mv -f ../testcases/nmos_6p0_nat_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for pfet_06v0_dn pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_06v0_dn_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_06v0_dn_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_06v0_dn_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_06v0_dn_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_06v0_dn_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_06v0_dn_gfC.log
+	@mv -f ../testcases/pfet_06v0_dn_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-nmos_10p0_asym: Add_run-dir	
+test-DRC-nfet_06v0_nvt: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmos_10p0_asym pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_10p0_asym_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_10p0_asym_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_10p0_asym_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_10p0_asym_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmos_10p0_asym_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nmos_10p0_asym_gfC.log
-	@mv -f ../testcases/nmos_10p0_asym_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for nfet_06v0_nvt pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_nvt_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_nvt_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_nvt_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_nvt_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_06v0_nvt_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_06v0_nvt_gfC.log
+	@mv -f ../testcases/nfet_06v0_nvt_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 .ONESHELL:
-test-DRC-pmos_10p0_asym: Add_run-dir	
+test-DRC-nfet_10v0_asym: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmos_10p0_asym pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_10p0_asym_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_10p0_asym_gfA.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_10p0_asym_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_10p0_asym_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmos_10p0_asym_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pmos_10p0_asym_gfC.log
-	@mv -f ../testcases/pmos_10p0_asym_pcells*.lyrdb $(run_folder)/mosfet_drc
+	@echo "===== test-DRC for nfet_10v0_asym pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_10v0_asym_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_10v0_asym_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_10v0_asym_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_10v0_asym_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nfet_10v0_asym_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/nfet_10v0_asym_gfC.log
+	@mv -f ../testcases/nfet_10v0_asym_pcells*.lyrdb $(run_folder)/mosfet_drc
+
+
+.ONESHELL:
+test-DRC-pfet_10v0_asym: Add_run-dir	
+	@cd $(Testing_DIR)
+	@echo "===== test-DRC for pfet_10v0_asym pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_10v0_asym_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_10v0_asym_gfA.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_10v0_asym_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_10v0_asym_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pfet_10v0_asym_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mosfet_drc/pfet_10v0_asym_gfC.log
+	@mv -f ../testcases/pfet_10v0_asym_pcells*.lyrdb $(run_folder)/mosfet_drc
 
 
 #=================================

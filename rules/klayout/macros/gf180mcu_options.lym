@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Load PDK options</description>
+ <version/>
+ <category/>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>Load PDK options</group-name>
+ <menu-path>submenu&gt;end("gf180mcu PDK").end</menu-path>
+ <interpreter>ruby</interpreter>
+ <dsl-interpreter-name/>
+ <text>module MyMacro
+ 
+  include RBA
+
+  #####################################################################################
+  # Loading options
+  #####################################################################################
+  mw = RBA::MainWindow::instance
+
+  # create a toolbar submenu
+  mw.menu.insert_menu("submenu.end", "drc_menu", "Klayout DRC Options")
+  mw.menu.insert_menu("submenu.end", "lvs_menu", "Klayout LVS Options")
+  #mw.menu.insert_separator("submenu.drc_menu.end", "name1")
+  mw.menu.insert_separator("submenu.lvs_menu+", "name2")
+  
+  
+  #####################################################################################
+  # Adding DRC options
+  #####################################################################################
+  
+  #0 Setting DRC mode
+  drc_mode_action = RBA::Action::new
+  drc_mode_action.title = "DRC type"
+  drc_mode_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_drc.lydrc", 'w') { |f| 
+      text = File.read(f)
+      drc_mode_select = RBA::InputDialog::ask_item("DRC modes options", "Select DRC mode:", [ "Antenna only", "Density only", "Antenna &amp; Density only", "Main only", "Main &amp; Antenna only", "Main &amp; Density only", "Main, Antenna &amp; Density" ], 3)
+      if drc_mode_select == "Antenna only" 
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu_antenna.drc")
+        File.open(f, "w") {|file| file.puts new_contents }
+      elsif drc_mode_select == "Density only" 
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu_density.drc")
+        File.open(f, "w") {|file| file.puts new_contents }
+      elsif drc_mode_select == "Antenna &amp; Density only" 
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu_antenna.drc\n# %include ../drc/gf180mcu_density.drc")
+        File.open(f, "w") {|file| file.puts new_contents }
+      elsif drc_mode_select == "Main only" 
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu.drc")
+        File.open(f, "w") {|file| file.puts new_contents }
+      elsif drc_mode_select == "Main &amp; Antenna only" 
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu.drc\n# %include ../drc/gf180mcu_antenna.drc")
+        File.open(f, "w") {|file| file.puts new_contents }
+      elsif drc_mode_select == "Main &amp; Density only" 
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu.drc\n# %include ../drc/gf180mcu_density.drc")
+        File.open(f, "w") {|file| file.puts new_contents }
+      elsif drc_mode_select == "Main, Antenna &amp; Density" 
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu.drc\n# %include ../drc/gf180mcu_antenna.drc\n# %include ../drc/gf180mcu_density.drc")
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
+  
+  #1 Setting run mode
+  run_mode_drc_action = RBA::Action::new
+  run_mode_drc_action.title = "Run mode"
+  run_mode_drc_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_drc.lydrc", 'w') { |f| 
+      text = File.read(f)
+      run_mode_select = RBA::InputDialog::ask_item("Run mode", "Select run mode:", [ "tiling", "deep", "flat" ], 1)
+      if run_mode_select 
+        if text.include?("$run_mode")
+          new_contents = text.gsub(/\$run_mode = \".*\"/, '$run_mode = "'+ run_mode_select + '"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*drc)/m, '$run_mode = "'+ run_mode_select +'"' +"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.drc_menu.end", "run_mode", run_mode_drc_action)
+  
+  #2 Setting stack
+  stack_drc_action = RBA::Action::new
+  stack_drc_action.title = "Stack options"
+  stack_drc_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_drc.lydrc", 'w') { |f| 
+      text = File.read(f)
+      stack_select = RBA::InputDialog::ask_item("Stack options", "Select stack option:", [ "gf180mcuA", "gf180mcuB", "gf180mcuC" ], 2)
+      if stack_select == "gf180mcuA" 
+        if text.include?("$metal_top") &amp;&amp; text.include?("$metal_level") &amp;&amp; text.include?("$mim_option")
+          new_contents = text.gsub(/\$metal_top = \".*\"\n\$metal_level = \".*\"\n\$mim_option = \".*\"/, '$metal_top = "30K"'+"\n"+'$metal_level = "3LM"'+"\n"+'$mim_option = "A"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*drc)/m, '$metal_top = "30K"'+"\n"+'$metal_level = "3LM"'+"\n"+'$mim_option = "A"'+"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      elsif stack_select == "gf180mcuB" 
+        if text.include?("$metal_top") &amp;&amp; text.include?("$metal_level") &amp;&amp; text.include?("$mim_option")
+          new_contents = text.gsub(/\$metal_top = \".*\"\n\$metal_level = \".*\"\n\$mim_option = \".*\"/, '$metal_top = "11K"'+"\n"+'$metal_level = "4LM"'+"\n"+'$mim_option = "B"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*drc)/m, '$metal_top = "11K"'+"\n"+'$metal_level = "4LM"'+"\n"+'$mim_option = "B"'+"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      elsif stack_select == "gf180mcuC" 
+        if text.include?("$metal_top") &amp;&amp; text.include?("$metal_level") &amp;&amp; text.include?("$mim_option")
+          new_contents = text.gsub(/\$metal_top = \".*\"\n\$metal_level = \".*\"\n\$mim_option = \".*\"/, '$metal_top = "9K"'+"\n"+'$metal_level = "5LM"'+"\n"+'$mim_option = "B"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*drc)/m, '$metal_top = "9K"'+"\n"+'$metal_level = "5LM"'+"\n"+'$mim_option = "B"'+"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.drc_menu.end", "stack", stack_drc_action)
+  
+  #3 Setting verbose mode
+  verbose_drc_action = RBA::Action::new
+  verbose_drc_action.title = "Verbose mode"
+  verbose_drc_action.checkable=(true)
+  verbose_drc_action.checked=(false)
+  verbose_drc_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_drc.lydrc", 'w') { |f| 
+      text = File.read(f)
+      if verbose_drc_action.is_checked?
+        verbose_bool = "true"
+      else
+        verbose_bool = "false"
+      end
+      if text.include?("$verbose")
+        new_contents = text.gsub(/\$verbose = \".*\"/, '$verbose = "'+ verbose_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*drc)/m, '$verbose = "'+ verbose_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.drc_menu.end", "verbose", verbose_drc_action)
+  
+  #4 Setting FEOL rules
+  feol_action = RBA::Action::new
+  feol_action.title = "FEOL rules"
+  feol_action.checkable=(true)
+  feol_action.checked=(true)
+  feol_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_drc.lydrc", 'w') { |f| 
+      text = File.read(f)
+      if feol_action.is_checked?
+        feol_bool = "true"
+      else
+        feol_bool = "false"
+      end
+      if text.include?("$feol")
+        new_contents = text.gsub(/\$feol = \".*\"/, '$feol = "'+ feol_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*drc)/m, '$feol = "'+ feol_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.drc_menu.end", "feol", feol_action)
+  
+  #5 Setting BEOL rules
+  beol_action = RBA::Action::new
+  beol_action.title = "BEOL rules"
+  beol_action.checkable=(true)
+  beol_action.checked=(true)
+  beol_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_drc.lydrc", 'w') { |f| 
+      text = File.read(f)
+      if beol_action.is_checked?
+        beol_bool = "true"
+      else
+        beol_bool = "false"
+      end
+      if text.include?("$feol")
+        new_contents = text.gsub(/\$beol = \".*\"/, '$beol = "'+ beol_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*drc)/m, '$beol = "'+ beol_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.drc_menu.end", "beol", beol_action)
+  
+  #6 Setting offgrid rules
+  offgrid_action = RBA::Action::new
+  offgrid_action.title = "Offgrid rules"
+  offgrid_action.checkable=(true)
+  offgrid_action.checked=(true)
+  offgrid_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_drc.lydrc", 'w') { |f| 
+      text = File.read(f)
+      if offgrid_action.is_checked?
+        offgrid_bool = "true"
+      else
+        offgrid_bool = "false"
+      end
+      if text.include?("$offgrid")
+        new_contents = text.gsub(/\$offgrid = \".*\"/, '$offgrid = "'+ offgrid_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*drc)/m, '$offgrid = "'+ offgrid_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.drc_menu.end", "offgrid", offgrid_action)
+  
+  #7 Setting connectivity rules
+  connectivity_action = RBA::Action::new
+  connectivity_action.title = "Connectivity rules"
+  connectivity_action.checkable=(true)
+  connectivity_action.checked=(true)
+  connectivity_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_drc.lydrc", 'w') { |f| 
+      text = File.read(f)
+      if connectivity_action.is_checked?
+        connectivity_bool = "true"
+      else
+        connectivity_bool = "false"
+      end
+      if text.include?("$connectivity")
+        new_contents = text.gsub(/\$connectivity = \".*\"/, '$connectivity = "'+ connectivity_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*drc)/m, '$connectivity = "'+ connectivity_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.drc_menu.end", "connectivity", connectivity_action)
+  
+  #####################################################################################
+  # Adding LVS options
+  #####################################################################################
+  
+  #1 Adding substrate name
+  run_action = RBA::Action::new
+  run_action.title = "Substrate name"
+  run_action.on_triggered do
+    sub_name = RBA::InputDialog::ask_string("Substrate name", "Please enter substrate name", "gf180mcu_gnd")
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if sub_name 
+        if text.include?("$lvs_sub")
+          new_contents = text.gsub(/\$lvs_sub = \".*\"/, '$lvs_sub = "'+ sub_name + '"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*lvs)/m, '$lvs_sub = "'+ sub_name +'"' +"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      end
+    }
+    #system( "klayout -r #{File.expand_path File.dirname(__FILE__)}/sky130.lvs -rd input=#{RBA::CellView::active.filename}" )
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "SUB_name", run_action)
+  
+  #2 Setting run mode
+  run_mode_action = RBA::Action::new
+  run_mode_action.title = "Run mode"
+  run_mode_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      run_mode_select = RBA::InputDialog::ask_item("Run mode", "Select run mode:", [ "tiling", "deep", "flat" ], 1)
+      if run_mode_select 
+        if text.include?("$run_mode")
+          new_contents = text.gsub(/\$run_mode = \".*\"/, '$run_mode = "'+ run_mode_select + '"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*lvs)/m, '$run_mode = "'+ run_mode_select +'"' +"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "run_mode", run_mode_action)
+  
+  #3 Setting stack
+  stack_action = RBA::Action::new
+  stack_action.title = "Stack options"
+  stack_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      stack_select = RBA::InputDialog::ask_item("Stack options", "Select stack option:", [ "gf180mcuA", "gf180mcuB", "gf180mcuC" ], 2)
+      if stack_select == "gf180mcuA" 
+        if text.include?("$metal_top") &amp;&amp; text.include?("$metal_level") &amp;&amp; text.include?("$mim_option")
+          new_contents = text.gsub(/\$metal_top = \".*\"\n\$metal_level = \".*\"\n\$mim_option = \".*\"/, '$metal_top = "30K"'+"\n"+'$metal_level = "3LM"'+"\n"+'$mim_option = "A"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*lvs)/m, '$metal_top = "30K"'+"\n"+'$metal_level = "3LM"'+"\n"+'$mim_option = "A"'+"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      elsif stack_select == "gf180mcuB" 
+        if text.include?("$metal_top") &amp;&amp; text.include?("$metal_level") &amp;&amp; text.include?("$mim_option")
+          new_contents = text.gsub(/\$metal_top = \".*\"\n\$metal_level = \".*\"\n\$mim_option = \".*\"/, '$metal_top = "11K"'+"\n"+'$metal_level = "4LM"'+"\n"+'$mim_option = "B"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*lvs)/m, '$metal_top = "11K"'+"\n"+'$metal_level = "4LM"'+"\n"+'$mim_option = "B"'+"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      elsif stack_select == "gf180mcuC" 
+        if text.include?("$metal_top") &amp;&amp; text.include?("$metal_level") &amp;&amp; text.include?("$mim_option")
+          new_contents = text.gsub(/\$metal_top = \".*\"\n\$metal_level = \".*\"\n\$mim_option = \".*\"/, '$metal_top = "9K"'+"\n"+'$metal_level = "5LM"'+"\n"+'$mim_option = "B"')
+          File.open(f, "w") {|file| file.puts new_contents }
+        else
+          new_contents = text.gsub(/(\# \%.*lvs)/m, '$metal_top = "9K"'+"\n"+'$metal_level = "5LM"'+"\n"+'$mim_option = "B"'+"\n"+'\1')
+          File.open(f, "w") {|file| file.puts new_contents }
+        end
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "stack", stack_action)
+  
+  #4 Setting spice net names
+  spice_net_action = RBA::Action::new
+  spice_net_action.title = "SPICE net name"
+  spice_net_action.checkable=(true)
+  spice_net_action.checked=(true)
+  spice_net_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if spice_net_action.is_checked?
+        spice_net_bool = "true"
+      else
+        spice_net_bool = "false"
+      end
+      if text.include?("$spice_net_names")
+        new_contents = text.gsub(/\$spice_net_names = \".*\"/, '$spice_net_names = "'+ spice_net_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$spice_net_names = "'+ spice_net_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "SPICE_net_name", spice_net_action)
+  
+  #5 Setting spice comments
+  spice_comment_action = RBA::Action::new
+  spice_comment_action.title = "SPICE comments"
+  spice_comment_action.checkable=(true)
+  spice_comment_action.checked=(false)
+  spice_comment_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if spice_comment_action.is_checked?
+        spice_comment_bool = "true"
+      else
+        spice_comment_bool = "false"
+      end
+      if text.include?("$spice_with_comments")
+        new_contents = text.gsub(/\$spice_with_comments = \".*\"/, '$spice_with_comments = "'+ spice_comment_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$spice_with_comments = "'+ spice_comment_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "SPICE_comments", spice_comment_action)
+  
+  #6 Setting scaling
+  scale_action = RBA::Action::new
+  scale_action.title = "Scaling x10^6"
+  scale_action.checkable=(true)
+  scale_action.checked=(false)
+  scale_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if scale_action.is_checked?
+        scale_bool = "true"
+      else
+        scale_bool = "false"
+      end
+      if text.include?("$scale")
+        new_contents = text.gsub(/\$scale = \".*\"/, '$scale = "'+ scale_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$scale = "'+ scale_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "scale", scale_action)
+  
+  #7 Setting verbose mode
+  verbose_action = RBA::Action::new
+  verbose_action.title = "Verbose mode"
+  verbose_action.checkable=(true)
+  verbose_action.checked=(false)
+  verbose_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if verbose_action.is_checked?
+        verbose_bool = "true"
+      else
+        verbose_bool = "false"
+      end
+      if text.include?("$verbose")
+        new_contents = text.gsub(/\$verbose = \".*\"/, '$verbose = "'+ verbose_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$verbose = "'+ verbose_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "verbose", verbose_action)
+  
+  #8 Setting schematic simplification
+  schematic_simple_action = RBA::Action::new
+  schematic_simple_action.title = "Schematic simplify"
+  schematic_simple_action.checkable=(true)
+  schematic_simple_action.checked=(false)
+  schematic_simple_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if schematic_simple_action.is_checked?
+        schematic_simple_bool = "true"
+      else
+        schematic_simple_bool = "false"
+      end
+      if text.include?("$schematic_simplify")
+        new_contents = text.gsub(/\$schematic_simplify = \".*\"/, '$schematic_simplify = "'+ schematic_simple_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$schematic_simplify = "'+ schematic_simple_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "schematic_simple", schematic_simple_action)
+  
+  #9 Setting netlist only
+  net_only_action = RBA::Action::new
+  net_only_action.title = "Netlist only"
+  net_only_action.checkable=(true)
+  net_only_action.checked=(false)
+  net_only_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if net_only_action.is_checked?
+        net_only_bool = "true"
+      else
+        net_only_bool = "false"
+      end
+      if text.include?("$net_only")
+        new_contents = text.gsub(/\$net_only = \".*\"/, '$net_only = "'+ net_only_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$net_only = "'+ net_only_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "net_only", net_only_action)
+  
+  #10 Setting top level pins
+  top_lvl_pins_action = RBA::Action::new
+  top_lvl_pins_action.title = "Top level pins"
+  top_lvl_pins_action.checkable=(true)
+  top_lvl_pins_action.checked=(false)
+  top_lvl_pins_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if top_lvl_pins_action.is_checked?
+        top_lvl_pins_bool = "true"
+      else
+        top_lvl_pins_bool = "false"
+      end
+      if text.include?("$top_lvl_pins")
+        new_contents = text.gsub(/\$top_lvl_pins = \".*\"/, '$top_lvl_pins = "'+ top_lvl_pins_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$top_lvl_pins = "'+ top_lvl_pins_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "top_lvl_pins", top_lvl_pins_action)
+  
+  #11 Setting device combine
+  combine_action = RBA::Action::new
+  combine_action.title = "Devices combine"
+  combine_action.checkable=(true)
+  combine_action.checked=(false)
+  combine_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if combine_action.is_checked?
+        combine_bool = "true"
+      else
+        combine_bool = "false"
+      end
+      if text.include?("$combine")
+        new_contents = text.gsub(/\$combine = \".*\"/, '$combine = "'+ combine_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$combine = "'+ combine_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "combine", combine_action)
+  
+  #12 Setting purge
+  purge_action = RBA::Action::new
+  purge_action.title = "Purge"
+  purge_action.checkable=(true)
+  purge_action.checked=(false)
+  purge_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if purge_action.is_checked?
+        purge_bool = "true"
+      else
+        purge_bool = "false"
+      end
+      if text.include?("$verbose")
+        new_contents = text.gsub(/\$purge = \".*\"/, '$purge = "'+ purge_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$purge = "'+ purge_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "purge", purge_action)
+  
+  #13 Setting purge nets
+  purge_nets_action = RBA::Action::new
+  purge_nets_action.title = "Purge nets"
+  purge_nets_action.checkable=(true)
+  purge_nets_action.checked=(false)
+  purge_nets_action.on_triggered do
+    File.open(File.expand_path File.dirname(__FILE__) + "/gf180mcu_lvs.lylvs", 'w') { |f| 
+      text = File.read(f)
+      if purge_nets_action.is_checked?
+        purge_nets_bool = "true"
+      else
+        purge_nets_bool = "false"
+      end
+      if text.include?("$purge_nets")
+        new_contents = text.gsub(/\$purge_nets = \".*\"/, '$purge_nets = "'+ purge_nets_bool + '"')
+        File.open(f, "w") {|file| file.puts new_contents }
+      else
+        new_contents = text.gsub(/(\# \%.*lvs)/m, '$purge_nets = "'+ purge_nets_bool +'"' +"\n"+'\1')
+        File.open(f, "w") {|file| file.puts new_contents }
+      end
+    }
+  end
+  mw.menu.insert_item("submenu.lvs_menu.end", "purge_nets", purge_nets_action)
+  
+  
+  #####################################################################################
+  # Return to defaults on closing
+  #####################################################################################
+  
+  mw.on_view_closed do
+    str = '&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;klayout-macro&gt;
+ &lt;description&gt;Run Klayout LVS&lt;/description&gt;
+ &lt;version&gt;0.1&lt;/version&gt;
+ &lt;category&gt;lvs&lt;/category&gt;
+ &lt;prolog/&gt;
+ &lt;epilog/&gt;
+ &lt;doc/&gt;
+ &lt;autorun&gt;false&lt;/autorun&gt;
+ &lt;autorun-early&gt;false&lt;/autorun-early&gt;
+ &lt;shortcut/&gt;
+ &lt;show-in-menu&gt;true&lt;/show-in-menu&gt;
+ &lt;group-name/&gt;
+ &lt;menu-path&gt;submenu&amp;gt;end("gf180mcu PDK").end&lt;/menu-path&gt;
+ &lt;interpreter&gt;dsl&lt;/interpreter&gt;
+ &lt;dsl-interpreter-name&gt;lvs-dsl-xml&lt;/dsl-interpreter-name&gt;
+ &lt;text&gt;
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+'
+  str = str + "\n# %include ../lvs/gf180mcu.lvs\n&lt;/text&gt;\n&lt;/klayout-macro&gt;"
+
+  File.open(File.expand_path(File.dirname(__FILE__)) + "/gf180mcu_lvs.lylvs", 'w') { |f| f.write(str) }
+  
+  str = '&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;klayout-macro&gt;
+ &lt;description&gt;Run Klayout DRC&lt;/description&gt;
+ &lt;version&gt;0.1&lt;/version&gt;
+ &lt;category&gt;drc&lt;/category&gt;
+ &lt;prolog/&gt;
+ &lt;epilog/&gt;
+ &lt;doc/&gt;
+ &lt;autorun&gt;false&lt;/autorun&gt;
+ &lt;autorun-early&gt;false&lt;/autorun-early&gt;
+ &lt;shortcut/&gt;
+ &lt;show-in-menu&gt;true&lt;/show-in-menu&gt;
+ &lt;group-name/&gt;
+ &lt;menu-path&gt;submenu&amp;gt;end("gf180mcu PDK").end&lt;/menu-path&gt;
+ &lt;interpreter&gt;dsl&lt;/interpreter&gt;
+ &lt;dsl-interpreter-name&gt;drc-dsl-xml&lt;/dsl-interpreter-name&gt;
+ &lt;text&gt;
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+'
+  str = str + "\n# %include ../drc/gf180mcu.drc\n&lt;/text&gt;\n&lt;/klayout-macro&gt;"
+
+  File.open(File.expand_path(File.dirname(__FILE__)) + "/gf180mcu_drc.lydrc", 'w') { |f| f.write(str) }
+  end
+
+end
+
+
+</text>
+</klayout-macro>
