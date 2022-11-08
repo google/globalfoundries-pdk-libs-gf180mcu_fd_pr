@@ -63,10 +63,10 @@ jobs:
 
       - run: pip install -r ./rules/klayout/requirements.test.txt
 
-      - name: Installing Klayout 0.27.8
+      - name: Installing Klayout
         run: |
           sudo apt update -qq -y
-          wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.8-1_amd64.deb
+          wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.10-1_amd64.deb
           sudo apt install -qq -y \
             qt5-default \
             qttools5-dev \
@@ -74,8 +74,8 @@ jobs:
             qtmultimedia5-dev \
             libqt5multimediawidgets5 \
             libqt5svg5-dev
-          sudo dpkg -i ./klayout_0.27.8-1_amd64.deb
-          sudo apt-get install -f -y
+          sudo dpkg -i ./klayout_0.27.10-1_amd64.deb
+          sudo apt install -f -y
 
       - name: Testing ${{ matrix.type }} for ${{ matrix.test }}
         run: |
