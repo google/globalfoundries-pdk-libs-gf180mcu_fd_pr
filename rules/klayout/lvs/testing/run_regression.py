@@ -31,6 +31,9 @@ import time
 import datetime
 import logging
 
+from subprocess import check_call
+
+
 def lvs_check(table,files):
 
     ## TODO : Add run folder to save all the runs inside.
@@ -40,7 +43,7 @@ def lvs_check(table,files):
     # x = x.replace(" ", "_")
 
     # name_ext = str(rule_deck_path).replace(".drc","").split("/")[-1]
-    # os.system(f"mkdir run_{x}_{name_ext}")
+    # check_call(f"mkdir run_{x}_{name_ext}")
 
     pass_count = 0
     fail_count = 0
@@ -91,7 +94,7 @@ def lvs_check(table,files):
         # moving all reports to run dir
         out_dir = arguments["--run_dir"]
         device_dir = table.split(" ")[0]
-        os.system(f"mv -f testcases/{layout}.lvsdb testcases/{layout}_extracted.cir testcases/{layout}_generated.cdl {out_dir}/LVS_{device_dir}/")
+        check_call(f"mv -f testcases/{layout}.lvsdb testcases/{layout}_extracted.cir testcases/{layout}_generated.cdl {out_dir}/LVS_{device_dir}/")
 
         if "INFO : Congratulations! Netlists match." in result:
             logging.info(f"Extraction of {layout} is passed")
@@ -106,7 +109,7 @@ def lvs_check(table,files):
                     result = os.popen(f"klayout -b -r ../gf180mcu.lvs -rd input={file} -rd report={layout}.lvsdb -rd schematic={layout}.cdl -rd target_netlist={layout}_extracted.cir -rd thr={workers_count} {switches}").read()
 
                     dir_clean = file.replace(".gds","")
-                    os.system(f"mv -f {dir_clean}.lvsdb {dir_clean}_extracted.cir {out_dir}/LVS_{device_dir}/")
+                    check_call(f"mv -f {dir_clean}.lvsdb {dir_clean}_extracted.cir {out_dir}/LVS_{device_dir}/")
 
                     if "INFO : Congratulations! Netlists match." in result:
                         logging.info(f"Extraction of {layout} in manual test case is passed")

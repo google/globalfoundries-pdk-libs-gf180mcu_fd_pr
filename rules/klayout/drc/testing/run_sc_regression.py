@@ -25,6 +25,8 @@ Options:
     --thr=<thr>         The number of threads used in run.
 
 """
+from subprocess import check_call
+
 from docopt import docopt
 import os
 import xml.etree.ElementTree as ET
@@ -76,7 +78,7 @@ def call_simulator(arg):
     :param path: The path to the GDS file you want to simulate
     :param thrCount: number of threads to use
     """
-    os.system(arg)
+    check_call(arg)
 
 if __name__ == "__main__":
 

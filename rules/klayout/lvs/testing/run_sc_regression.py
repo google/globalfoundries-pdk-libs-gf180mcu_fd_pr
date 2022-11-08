@@ -25,6 +25,8 @@ Options:
     --num_cores=<num>       Number of cores to be used by LVS checker 
 """
 
+from subprocess import check_call
+
 from docopt import docopt
 import os
 import concurrent.futures
@@ -88,8 +90,8 @@ def lvs_check(sc_input):
 
     # moving all reports to run dir
     out_dir = arguments["--run_dir"]
-    # os.system(f"cd {out_dir} && mkdir {sc_input_clean}")
-    # os.system(f"mv -f sc_testcases/{sc_input}.lvsdb sc_testcases/*/{cdl_input_clean}_extracted.cir sc_testcases/*/{cdl_input_clean}_modified.cdl {out_dir}/{sc_input_clean}/")
+    # check_call(f"cd {out_dir} && mkdir {sc_input_clean}")
+    # check_call(f"mv -f sc_testcases/{sc_input}.lvsdb sc_testcases/*/{cdl_input_clean}_extracted.cir sc_testcases/*/{cdl_input_clean}_modified.cdl {out_dir}/{sc_input_clean}/")
 
     if "INFO : Congratulations! Netlists match." in result:
         logging.info("Extraction of {:<25s} is passed".format(sc_input_clean))
@@ -105,8 +107,8 @@ def lvs_check(sc_input):
 def main():
 
     # Remove old reports
-    os.system(f"rm -rf sc_testcases/sc_report.csv")
-    os.system(f"rm -rf ip_testcases/ip_report.csv")
+    check_call(f"rm -rf sc_testcases/sc_report.csv")
+    check_call(f"rm -rf ip_testcases/ip_report.csv")
 
     cell_list = arguments["--path"]
     if isinstance(cell_list, str): cell_list = [cell_list]
@@ -133,8 +135,8 @@ def main():
                                 ly2.cell(new_top).copy_tree(layout.cell("#{cell.name}"))
                                 ly2.write("sc_testcases/sc_split/#{cell.name}.gds")
                             end''')
-            os.system(f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds")
-            os.system(f"rm -rf sc_testcases/split_gds.rb")
+            check_call(f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds")
+            check_call(f"rm -rf sc_testcases/split_gds.rb")
 
             # Create cdl splitter script
             cdl = cell.split("/")[-1]
