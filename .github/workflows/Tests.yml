@@ -25,59 +25,76 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  DOCKER_BUILDKIT: 1
+  IMAGE: ghcr.io/${{ github.repository }}/test
+
 jobs:
 
 
+  BuildContainerImage:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Build container image
+        run: |
+          docker build -t "$IMAGE" -f- rules/klayout <<EOF
+          FROM gcr.io/hdl-containers/klayout
+
+          RUN apt-get update -qq \
+           && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
+              make \
+              procps \
+              python3-pip \
+           && apt-get autoclean && apt-get clean && apt-get -y autoremove \
+           && rm -rf /var/lib/apt/lists/*
+
+          RUN --mount=type=bind,target=/tmp/ctx pip3 install -r /tmp/ctx/requirements.test.txt
+          EOF
+
+      - name: Push container image to registry
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: pyTooling/Actions/with-post-step@r0
+        with:
+          main: |
+            echo '${{ github.token }}' | docker login ghcr.io -u gha --password-stdin
+            docker push "$IMAGE"
+          post: docker logout ghcr.io
+
+
   Test:
+    needs: BuildContainerImage
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { type: DRC, pdk: drc, test: main }
-          - { type: DRC, pdk: drc, test: switch }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_io }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_ip_sram }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_sc_mcu7t5v0 }
-          - { type: DRC, pdk: drc, test: gf180mcu_fd_sc_mcu9t5v0 }
-          - { type: LVS, pdk: lvs, test: main }
-          - { type: LVS, pdk: lvs, test: switch }
-          - { type: LVS, pdk: lvs, test: gf180mcu_fd_sc_mcu7t5v0}
-          - { type: LVS, pdk: lvs, test: gf180mcu_fd_sc_mcu9t5v0 }
+          - { pdk: drc, test: main }
+          - { pdk: drc, test: switch }
+          - { pdk: drc, test: gf180mcu_fd_io }
+          - { pdk: drc, test: gf180mcu_fd_ip_sram }
+          - { pdk: drc, test: gf180mcu_fd_sc_mcu7t5v0 }
+          - { pdk: drc, test: gf180mcu_fd_sc_mcu9t5v0 }
+          - { pdk: lvs, test: main }
+          - { pdk: lvs, test: switch }
+          - { pdk: lvs, test: gf180mcu_fd_sc_mcu7t5v0}
+          - { pdk: lvs, test: gf180mcu_fd_sc_mcu9t5v0 }
 
-    name: ${{ matrix.type }} | ${{ matrix.test }}
-
-    env:
-      PDK_ROOT: $GITHUB_WORKSPACE/rules/klayout
-      PDK: ${{ matrix.pdk }}
+    name: ${{ matrix.pdk }} | ${{ matrix.test }}
 
     steps:
 
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.9'
-          cache: 'pip'
-          cache-dependency-path: '**/requirements.test.txt'
-
-      - run: pip install -r ./rules/klayout/requirements.test.txt
-
-      - name: Installing Klayout
-        run: |
-          sudo apt update -qq -y
-          wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.10-1_amd64.deb
-          sudo apt install -qq -y \
-            qt5-default \
-            qttools5-dev \
-            libqt5xmlpatterns5-dev \
-            qtmultimedia5-dev \
-            libqt5multimediawidgets5 \
-            libqt5svg5-dev
-          sudo dpkg -i ./klayout_0.27.10-1_amd64.deb
-          sudo apt install -f -y
+      - run: docker pull "$IMAGE"
 
       - name: Testing ${{ matrix.type }} for ${{ matrix.test }}
-        run: |
-          cd ./rules/klayout/${{ matrix.pdk }}/testing
-          make test-${{ matrix.type }}-${{ matrix.test }}
+        run: >
+          docker run --rm
+          -v $(pwd):/wrk -w /wrk/rules/klayout/${{ matrix.pdk }}/testing
+          -e PDK_ROOT="/wrk/rules/klayout"
+          -e PDK='${{ matrix.pdk }}'
+          "$IMAGE"
+          make test-"$(python -c 'print("${{ matrix.pdk }}".upper())')"-${{ matrix.test }}

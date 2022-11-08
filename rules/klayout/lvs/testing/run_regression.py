@@ -162,6 +162,7 @@ def main():
 
     # ESD (SAB MOSFET)
     esd_files = [['sample_pfet_05v0_dss'], ['sample_nfet_05v0_dss'], ['sample_pfet_03v3_dn_dss'], ['sample_pfet_03v3_dss'], ['sample_pfet_05v0_dn_dss'], ['sample_nfet_06v0_dss'], ['sample_pfet_06v0_dn_dss'], ['sample_nfet_06v0_dn_dss'], ['sample_nfet_03v3_dn_dss'], ['sample_nfet_05v0_dn_dss'], ['sample_nfet_03v3_dss'], ['sample_pfet_06v0_dss']]
+    
     # eFuse
     efuse_files = [['efuse']]
 
