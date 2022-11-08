@@ -42,25 +42,25 @@
       text = File.read(f)
       drc_mode_select = RBA::InputDialog::ask_item("DRC modes options", "Select DRC mode:", [ "Antenna only", "Density only", "Antenna &amp; Density only", "Main only", "Main &amp; Antenna only", "Main &amp; Density only", "Main, Antenna &amp; Density" ], 3)
       if drc_mode_select == "Antenna only" 
-        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../tech/GF180/drc/gf180mcu_antenna.drc")
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu_antenna.drc")
         File.open(f, "w") {|file| file.puts new_contents }
       elsif drc_mode_select == "Density only" 
-        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../tech/GF180/drc/gf180mcu_density.drc")
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu_density.drc")
         File.open(f, "w") {|file| file.puts new_contents }
       elsif drc_mode_select == "Antenna &amp; Density only" 
-        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../tech/GF180/drc/gf180mcu_antenna.drc\n# %include ../tech/GF180/drc/gf180mcu_density.drc")
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu_antenna.drc\n# %include ../drc/gf180mcu_density.drc")
         File.open(f, "w") {|file| file.puts new_contents }
       elsif drc_mode_select == "Main only" 
-        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../tech/GF180/drc/gf180mcu.drc")
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu.drc")
         File.open(f, "w") {|file| file.puts new_contents }
       elsif drc_mode_select == "Main &amp; Antenna only" 
-        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../tech/GF180/drc/gf180mcu.drc\n# %include ../tech/GF180/drc/gf180mcu_antenna.drc")
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu.drc\n# %include ../drc/gf180mcu_antenna.drc")
         File.open(f, "w") {|file| file.puts new_contents }
       elsif drc_mode_select == "Main &amp; Density only" 
-        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../tech/GF180/drc/gf180mcu.drc\n# %include ../tech/GF180/drc/gf180mcu_density.drc")
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu.drc\n# %include ../drc/gf180mcu_density.drc")
         File.open(f, "w") {|file| file.puts new_contents }
       elsif drc_mode_select == "Main, Antenna &amp; Density" 
-        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../tech/GF180/drc/gf180mcu.drc\n# %include ../tech/GF180/drc/gf180mcu_antenna.drc\n# %include ../tech/GF180/drc/gf180mcu_density.drc")
+        new_contents = text.gsub(/\# \%.*drc/m, "# %include ../drc/gf180mcu.drc\n# %include ../drc/gf180mcu_antenna.drc\n# %include ../drc/gf180mcu_density.drc")
         File.open(f, "w") {|file| file.puts new_contents }
       end
     }
