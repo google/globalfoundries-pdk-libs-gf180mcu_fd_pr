@@ -39,29 +39,29 @@ class gf180mcu(pya.Library):
 
     # Create the PCell declarations
         # MOS DEVICES
-        self.layout().register_pcell("nmos", nmos())                    # nmos_3p3 , nmos_5p0 , nmos_6p0
-        self.layout().register_pcell("pmos", pmos())                    # pmos_3p3 , pmos_5p0 , pmos_6p0
-        self.layout().register_pcell("nmos_6p0_nat", nmos_6p0_nat())
-        self.layout().register_pcell("nmos_10p0_asym", nmos_10p0_asym())
-        self.layout().register_pcell("pmos_10p0_asym", pmos_10p0_asym())
+        self.layout().register_pcell("nmos", nmos())                    # nfet_03v3 , nfet_05v0 , nfet_06v0
+        self.layout().register_pcell("pmos", pmos())                    # pfet_03v3 , pfet_05v0 , pfet_06v0
+        self.layout().register_pcell("nfet_06v0_nvt", nfet_06v0_nvt())
+        self.layout().register_pcell("nfet_10v0_asym", nfet_10v0_asym())
+        self.layout().register_pcell("pfet_10v0_asym", pfet_10v0_asym())
 
         # BJT
-        self.layout().register_pcell("npn_bjt", npn_bjt())             # vnpn_10x10 , vnpn_5x5 , vnpn_0p54x16 , vnpn_0p54x8 , vnpn_0p54x4 , vnpn_0p54x2
-        self.layout().register_pcell("pnp_bjt", pnp_bjt())             # vpnp_10x10 , vpnp_5x5 , vpnp_0p42x10 , vpnp_0p42x5
+        self.layout().register_pcell("npn_bjt", npn_bjt())             # npn_10p00x10p00 , npn_05p00x05p00 , npn_00p54x16p00 , npn_00p54x08p00 , npn_00p54x04p00 , npn_00p54x02p00
+        self.layout().register_pcell("pnp_bjt", pnp_bjt())             # pnp_10p00x10p00 , pnp_05p00x05p00 , pnp_10p00x00p42 , pnp_05p00x00p42
 
         # DIODE DEVICES
-        self.layout().register_pcell("np_diode"   , np_diode()   )     # np_3p3    , np_6p0
-        self.layout().register_pcell("pn_diode"   , pn_diode()   )     # pn_3p3    , pn_6p0
-        self.layout().register_pcell("nwp_diode"  , nwp_diode()  )     # nwp_3p3   , nwp_6p0
-        self.layout().register_pcell("dnwpw_diode", dnwpw_diode())     # dnwpw_3p3 , dnwpw_6p0
-        self.layout().register_pcell("dnwps_diode", dnwps_diode())     # dnwps_3p3 , dnwps_6p0
+        self.layout().register_pcell("np_diode"   , np_diode()   )     # diode_nd2ps_03v3    , diode_nd2ps_06v0
+        self.layout().register_pcell("pn_diode"   , pn_diode()   )     # diode_pd2nw_03v3    , diode_pd2nw_06v0
+        self.layout().register_pcell("nwp_diode"  , nwp_diode()  )     # diode_nw2ps_03v3   , diode_nw2ps_06v0
+        self.layout().register_pcell("diode_pw2dw_diode", diode_pw2dw_diode())     # diode_pw2dw_03v3 , diode_pw2dw_06v0
+        self.layout().register_pcell("diode_dw2ps_diode", diode_dw2ps_diode())     # diode_dw2ps_03v3 , diode_dw2ps_06v0
         self.layout().register_pcell("sc_diode"   , sc_diode()   )
 
         #MOSCAP
-        self.layout().register_pcell("nmoscap"  , nmoscap()  )         # nmoscap_3p3   , nmoscap_6p0
-        self.layout().register_pcell("pmoscap"  , pmoscap()  )         # pmoscap_3p3   , pmoscap_6p0
-        self.layout().register_pcell("nmoscap_b", nmoscap_b())         # nmoscap_3p3_b , nmoscap_6p0_b
-        self.layout().register_pcell("pmoscap_b", pmoscap_b())         # pmoscap_3p3_b , pmoscap_6p0_b
+        self.layout().register_pcell("nmoscap"  , nmoscap()  )         # cap_nmos_03v3   , cap_nmos_06v0
+        self.layout().register_pcell("pmoscap"  , pmoscap()  )         # cap_pmos_03v3   , cap_pmos_06v0
+        self.layout().register_pcell("nmoscap_b", nmoscap_b())         # cap_nmos_03v3_b , cap_nmos_06v0_b
+        self.layout().register_pcell("pmoscap_b", pmoscap_b())         # cap_pmos_03v3_b , cap_pmos_06v0_b
 
         #MIMCAP
         self.layout().register_pcell("mimcap"  , mimcap())             #mimcap (Option-A) , mimcap_tm (Option-B)

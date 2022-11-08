@@ -47,8 +47,8 @@ if $thr
   threads($thr)
   logger.info("Number of threads: #{$thr}")
 else
-  threads(16)
-  logger.info("Number of threads: 16")
+  threads(%x("nproc"))
+  logger.info("Number of threads: #{%x("nproc")}")
 end
 
 #=== GET REPORT ===
@@ -136,9 +136,9 @@ elsif $run_mode == "flat"
   logger.info("flat  mode is enabled.")
 
 else
-  #=== FLAT MODE ===
-  flat
-  logger.info("flat  mode is enabled.")
+  #=== HIER MODE ===
+  deep
+  logger.info("deep  mode is enabled.")
 
 end # run_mode
 
@@ -153,6 +153,8 @@ class SubcircuitModelsReader < RBA::NetlistSpiceReaderDelegate
   def parse_element(s, element)
     if element == "C"
       super(s + " C=2e-16", element)
+    elsif element == "R"
+      super(s + " R=0", element)
     else
       super
     end
@@ -253,8 +255,13 @@ if $schematic
   schematic($schematic, reader)
   logger.info("Netlist file: #{$schematic}")
 else
-  puts "No schematic loaded , please add your netlist file"
-  logger.info("No schematic loaded , please add your netlist file")
+  begin  
+    schematic("#{source.cell_name}.cdl", reader)
+    logger.info("Netlist file: #{source.cell_name}.cdl")
+  rescue 
+    puts "No schematic loaded , please add your netlist file"
+    logger.error("No schematic loaded , please add your netlist file")
+  end 
 end
 
 class BResistor < RBA::DeviceClassResistorWithBulk
@@ -433,7 +440,7 @@ logger.info("METAL_TOP Selected is %s" % [METAL_TOP])
 if $metal_level
   METAL_LEVEL = $metal_level
 else
-  METAL_LEVEL = "6LM"
+  METAL_LEVEL = "5LM"
 end # METAL_LEVEL
 
 logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
@@ -441,7 +448,7 @@ logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
 if $poly_res
   POLY_RES = $poly_res
 else
-  POLY_RES = false
+  POLY_RES = "1k"
 end # POLY_RES
 
 logger.info("POLY_RES Selected is %s" % [POLY_RES])
@@ -449,13 +456,13 @@ logger.info("POLY_RES Selected is %s" % [POLY_RES])
 if $mim_option
   MIM_OPTION = $mim_option
 else
-  MIM_OPTION = false
+  MIM_OPTION = "B"
 end # MIM_OPTION
 
 if $mim_cap
   MIM_CAP = $mim_cap
 else
-  MIM_CAP = false
+  MIM_CAP = "2"
 end # MIM_CAP
 
 logger.info("MIM Option selected %s" % [MIM_OPTION])
@@ -528,26 +535,41 @@ if METAL_LEVEL == "6LM"
   topmin1_via   = via4
   top_metal     = metaltop
   topmin1_metal = metal5
+  cap_mim1f0 = "cap_mim_1f0_m5m6_noshield"
+  cap_mim1f5 = "cap_mim_1f5_m5m6_noshield"
+  cap_mim2f0 = "cap_mim_2f0_m5m6_noshield"  
 elsif METAL_LEVEL == "5LM"
   top_via       = via4
   topmin1_via   = via3
   top_metal     = metal5
   topmin1_metal = metal4
+  cap_mim1f0 = "cap_mim_1f0_m4m5_noshield"
+  cap_mim1f5 = "cap_mim_1f5_m4m5_noshield"
+  cap_mim2f0 = "cap_mim_2f0_m4m5_noshield"
 elsif METAL_LEVEL == "4LM"
   top_via       = via3
   topmin1_via   = via2
   top_metal     = metal4
   topmin1_metal = metal3
+  cap_mim1f0 = "cap_mim_1f0_m3m4_noshield"
+  cap_mim1f5 = "cap_mim_1f5_m3m4_noshield"
+  cap_mim2f0 = "cap_mim_2f0_m3m4_noshield"
 elsif METAL_LEVEL == "3LM"
   top_via       = via2
   topmin1_via   = via1
   top_metal     = metal3
   topmin1_metal = metal2
+  cap_mim1f0 = "cap_mim_1f0_m2m3_noshield"
+  cap_mim1f5 = "cap_mim_1f5_m2m3_noshield"
+  cap_mim2f0 = "cap_mim_2f0_m2m3_noshield"
 elsif METAL_LEVEL == "2LM"
   top_via       = via1
   topmin1_via   = via1
   top_metal     = metal2
   topmin1_metal = metal1
+  cap_mim1f0 = "cap_mim_1f0_m2m3_noshield"
+  cap_mim1f5 = "cap_mim_1f5_m2m3_noshield"
+  cap_mim2f0 = "cap_mim_2f0_m2m3_noshield"
 end #METAL_LEVEL
 
 #================================================================
@@ -676,35 +698,35 @@ vnpn_e = ncomp.interacting(lvs_bjt).inside(dnwell)
 vnpn_b = pcomp.and(lvpwell).inside(dnwell).inside(drc_bjt)
 vnpn_c = ncomp.inside(dnwell).outside(lvs_bjt).inside(drc_bjt)
 
-# vnpn_10x10 nodes DERIVATIONS
-vnpn_10x10_e = vnpn_e.with_area(99.5.um,100.5.um).interacting(vnpn_e.edges.with_length(9.8.um,10.2.um))
-vnpn_10x10_b = vnpn_b.interacting(vnpn_b.extents.interacting(vnpn_10x10_e))
-vnpn_10x10_c = vnpn_c.interacting(vnpn_c.extents.interacting(vnpn_10x10_e))
+# npn_10p00x10p00 nodes DERIVATIONS
+npn_10p00x10p00_e = vnpn_e.with_area(99.5.um,100.5.um).interacting(vnpn_e.edges.with_length(9.8.um,10.2.um))
+npn_10p00x10p00_b = vnpn_b.interacting(vnpn_b.extents.interacting(npn_10p00x10p00_e))
+npn_10p00x10p00_c = vnpn_c.interacting(vnpn_c.extents.interacting(npn_10p00x10p00_e))
 
-# vnpn_5x5 nodes DERIVATIONS
-vnpn_5x5_e = vnpn_e.with_area(24.5.um,25.5.um).interacting(vnpn_e.edges.with_length(4.8.um,5.2.um))
-vnpn_5x5_b = vnpn_b.interacting(vnpn_b.extents.interacting(vnpn_5x5_e))
-vnpn_5x5_c = vnpn_c.interacting(vnpn_c.extents.interacting(vnpn_5x5_e))
+# npn_05p00x05p00 nodes DERIVATIONS
+npn_05p00x05p00_e = vnpn_e.with_area(24.5.um,25.5.um).interacting(vnpn_e.edges.with_length(4.8.um,5.2.um))
+npn_05p00x05p00_b = vnpn_b.interacting(vnpn_b.extents.interacting(npn_05p00x05p00_e))
+npn_05p00x05p00_c = vnpn_c.interacting(vnpn_c.extents.interacting(npn_05p00x05p00_e))
 
-# vnpn_0p54x16 nodes DERIVATIONS
-vnpn_0p54x16_e = vnpn_e.with_area(8.um,9.um).interacting(vnpn_e.edges.with_length(15.5.um,16.5.um))
-vnpn_0p54x16_b = vnpn_b.interacting(vnpn_b.extents.interacting(vnpn_0p54x16_e))
-vnpn_0p54x16_c = vnpn_c.interacting(vnpn_c.extents.interacting(vnpn_0p54x16_e))
+# npn_00p54x16p00 nodes DERIVATIONS
+npn_00p54x16p00_e = vnpn_e.with_area(8.um,9.um).interacting(vnpn_e.edges.with_length(15.5.um,16.5.um))
+npn_00p54x16p00_b = vnpn_b.interacting(vnpn_b.extents.interacting(npn_00p54x16p00_e))
+npn_00p54x16p00_c = vnpn_c.interacting(vnpn_c.extents.interacting(npn_00p54x16p00_e))
 
-# vnpn_0p54x8 nodes DERIVATIONS
-vnpn_0p54x8_e = vnpn_e.with_area(4.um,5.um).interacting(vnpn_e.edges.with_length(7.5.um,8.5.um))
-vnpn_0p54x8_b = vnpn_b.interacting(vnpn_b.extents.interacting(vnpn_0p54x8_e))
-vnpn_0p54x8_c = vnpn_c.interacting(vnpn_c.extents.interacting(vnpn_0p54x8_e))
+# npn_00p54x08p00 nodes DERIVATIONS
+npn_00p54x08p00_e = vnpn_e.with_area(4.um,5.um).interacting(vnpn_e.edges.with_length(7.5.um,8.5.um))
+npn_00p54x08p00_b = vnpn_b.interacting(vnpn_b.extents.interacting(npn_00p54x08p00_e))
+npn_00p54x08p00_c = vnpn_c.interacting(vnpn_c.extents.interacting(npn_00p54x08p00_e))
 
-# vnpn_0p54x4 nodes DERIVATIONS
-vnpn_0p54x4_e = vnpn_e.with_area(1.5.um,2.5.um).interacting(vnpn_e.edges.with_length(3.8.um,4.2.um))
-vnpn_0p54x4_b = vnpn_b.interacting(vnpn_b.extents.interacting(vnpn_0p54x4_e))
-vnpn_0p54x4_c = vnpn_c.interacting(vnpn_c.extents.interacting(vnpn_0p54x4_e))
+# npn_00p54x04p00 nodes DERIVATIONS
+npn_00p54x04p00_e = vnpn_e.with_area(1.5.um,2.5.um).interacting(vnpn_e.edges.with_length(3.8.um,4.2.um))
+npn_00p54x04p00_b = vnpn_b.interacting(vnpn_b.extents.interacting(npn_00p54x04p00_e))
+npn_00p54x04p00_c = vnpn_c.interacting(vnpn_c.extents.interacting(npn_00p54x04p00_e))
 
-# vnpn_0p54x2 nodes DERIVATIONS
-vnpn_0p54x2_e = vnpn_e.with_area(0.8.um,1.5.um).interacting(vnpn_e.edges.with_length(1.8.um,2.2.um))
-vnpn_0p54x2_b = vnpn_b.interacting(vnpn_b.extents.interacting(vnpn_0p54x2_e))
-vnpn_0p54x2_c = vnpn_c.interacting(vnpn_c.extents.interacting(vnpn_0p54x2_e))
+# npn_00p54x02p00 nodes DERIVATIONS
+npn_00p54x02p00_e = vnpn_e.with_area(0.8.um,1.5.um).interacting(vnpn_e.edges.with_length(1.8.um,2.2.um))
+npn_00p54x02p00_b = vnpn_b.interacting(vnpn_b.extents.interacting(npn_00p54x02p00_e))
+npn_00p54x02p00_c = vnpn_c.interacting(vnpn_c.extents.interacting(npn_00p54x02p00_e))
 
 # ==============
 # ---- vpnp ----
@@ -716,74 +738,74 @@ vpnp_e = pcomp.inside(nwell).interacting(lvs_bjt)
 vpnp_b = ncomp.and(nwell).inside(drc_bjt)
 vpnp_c = ptap.outside(lvs_bjt).inside(drc_bjt)
 
-# vpnp_10x10 nodes DERIVATIONS
-vpnp_10x10_e = vpnp_e.with_area(99.5.um,100.5.um).interacting(vpnp_e.edges.with_length(9.8.um,10.2.um))
-vpnp_10x10_b = vpnp_b.interacting(vpnp_b.extents.interacting(vpnp_10x10_e))
-vpnp_10x10_c = vpnp_c.interacting(vpnp_c.extents.interacting(vpnp_10x10_e))
+# pnp_10p00x10p00 nodes DERIVATIONS
+pnp_10p00x10p00_e = vpnp_e.with_area(99.5.um,100.5.um).interacting(vpnp_e.edges.with_length(9.8.um,10.2.um))
+pnp_10p00x10p00_b = vpnp_b.interacting(vpnp_b.extents.interacting(pnp_10p00x10p00_e))
+pnp_10p00x10p00_c = vpnp_c.interacting(vpnp_c.extents.interacting(pnp_10p00x10p00_e))
 
-# vpnp_5x5 nodes DERIVATIONS
-vpnp_5x5_e = vpnp_e.with_area(24.5.um,25.5.um).interacting(vpnp_e.edges.with_length(4.8.um,5.2.um))
-vpnp_5x5_b = vpnp_b.interacting(vpnp_b.extents.interacting(vpnp_5x5_e))
-vpnp_5x5_c = vpnp_c.interacting(vpnp_c.extents.interacting(vpnp_5x5_e))
+# pnp_05p00x05p00 nodes DERIVATIONS
+pnp_05p00x05p00_e = vpnp_e.with_area(24.5.um,25.5.um).interacting(vpnp_e.edges.with_length(4.8.um,5.2.um))
+pnp_05p00x05p00_b = vpnp_b.interacting(vpnp_b.extents.interacting(pnp_05p00x05p00_e))
+pnp_05p00x05p00_c = vpnp_c.interacting(vpnp_c.extents.interacting(pnp_05p00x05p00_e))
 
-# vpnp_0p42x10 nodes DERIVATIONS
-vpnp_0p42x10_e = vpnp_e.with_area(4.um,4.5.um).interacting(vpnp_e.edges.with_length(9.8.um,10.2.um))
-vpnp_0p42x10_b = vpnp_b.interacting(vpnp_b.extents.interacting(vpnp_0p42x10_e))
-vpnp_0p42x10_c = vpnp_c.interacting(vpnp_c.extents.interacting(vpnp_0p42x10_e))
+# pnp_10p00x00p42 nodes DERIVATIONS
+pnp_10p00x00p42_e = vpnp_e.with_area(4.um,4.5.um).interacting(vpnp_e.edges.with_length(9.8.um,10.2.um))
+pnp_10p00x00p42_b = vpnp_b.interacting(vpnp_b.extents.interacting(pnp_10p00x00p42_e))
+pnp_10p00x00p42_c = vpnp_c.interacting(vpnp_c.extents.interacting(pnp_10p00x00p42_e))
 
-# vpnp_0p42x5 nodes DERIVATIONS
-vpnp_0p42x5_e = vpnp_e.with_area(2.um,2.2.um).interacting(vpnp_e.edges.with_length(4.8.um,5.2.um))
-vpnp_0p42x5_b = vpnp_b.interacting(vpnp_b.extents.interacting(vpnp_0p42x5_e))
-vpnp_0p42x5_c = vpnp_c.interacting(vpnp_c.extents.interacting(vpnp_0p42x5_e))
+# pnp_05p00x00p42 nodes DERIVATIONS
+pnp_05p00x00p42_e = vpnp_e.with_area(2.um,2.2.um).interacting(vpnp_e.edges.with_length(4.8.um,5.2.um))
+pnp_05p00x00p42_b = vpnp_b.interacting(vpnp_b.extents.interacting(pnp_05p00x00p42_e))
+pnp_05p00x00p42_c = vpnp_c.interacting(vpnp_c.extents.interacting(pnp_05p00x00p42_e))
 
 #================================
 # ----- DIODE DERIVATIONS -------
 #================================
 logger.info("Starting DIODE DERIVATIONS")
 
-# np_3p3 diode
-np_3p3_terminal_n = ncomp.not(v5_xtor).not(dualgate).outside(dnwell).interacting(diode_mk)
+# diode_nd2ps_03v3 diode
+diode_nd2ps_03v3_terminal_n = ncomp.not(v5_xtor).not(dualgate).outside(dnwell).interacting(diode_mk)
 
-# np_3p3_dw diode
-np_3p3_dw_terminal_n = ncomp.not(v5_xtor).not(dualgate).inside(dnwell).interacting(diode_mk)
+# diode_nd2ps_03v3_dn diode
+diode_nd2ps_03v3_dn_terminal_n = ncomp.not(v5_xtor).not(dualgate).inside(dnwell).interacting(diode_mk)
 
-# np_6p0 diode
-np_6p0_terminal_n = ncomp.and(dualgate).outside(dnwell).interacting(diode_mk)
+# diode_nd2ps_06v0 diode
+diode_nd2ps_06v0_terminal_n = ncomp.and(dualgate).outside(dnwell).interacting(diode_mk)
 
-# np_6p0_dw diode
-np_6p0_dw_terminal_n = ncomp.and(dualgate).inside(dnwell).interacting(diode_mk)
+# diode_nd2ps_06v0_dn diode
+diode_nd2ps_06v0_dn_terminal_n = ncomp.and(dualgate).inside(dnwell).interacting(diode_mk)
 
-# pn_3p3 diode
-pn_3p3_terminal_p = pcomp.not(v5_xtor).not(dualgate).outside(dnwell).interacting(diode_mk)
+# diode_pd2nw_03v3 diode
+diode_pd2nw_03v3_terminal_p = pcomp.not(v5_xtor).not(dualgate).outside(dnwell).interacting(diode_mk)
 
-# pn_3p3_dw diode
-pn_3p3_dw_terminal_p = pcomp.not(v5_xtor).not(dualgate).inside(dnwell).interacting(diode_mk)
+# diode_pd2nw_03v3_dn diode
+diode_pd2nw_03v3_dn_terminal_p = pcomp.not(v5_xtor).not(dualgate).inside(dnwell).interacting(diode_mk)
 
-# pn_6p0 diode
-pn_6p0_terminal_p = pcomp.and(dualgate).outside(dnwell).interacting(diode_mk)
+# diode_pd2nw_06v0 diode
+diode_pd2nw_06v0_terminal_p = pcomp.and(dualgate).outside(dnwell).interacting(diode_mk)
 
-# pn_6p0_dw diode
-pn_6p0_dw_terminal_p = pcomp.and(dualgate).inside(dnwell).interacting(diode_mk)
+# diode_pd2nw_06v0_dn diode
+diode_pd2nw_06v0_dn_terminal_p = pcomp.and(dualgate).inside(dnwell).interacting(diode_mk)
 
-# nwp_3p3 diode
-nwp_3p3_terminal_p = pcomp.not(v5_xtor).not(dualgate).outside(dnwell).interacting(well_diode_mk)
-nwp_3p3_terminal_n = well_diode_mk.not(v5_xtor).not(dualgate).covering(nwell)
+# diode_nw2ps_03v3 diode
+diode_nw2ps_03v3_terminal_p = pcomp.not(v5_xtor).not(dualgate).outside(dnwell).interacting(well_diode_mk)
+diode_nw2ps_03v3_terminal_n = well_diode_mk.not(v5_xtor).not(dualgate).covering(nwell)
 
-# nwp_6p0 diode
-nwp_6p0_terminal_p = pcomp.and(dualgate).outside(dnwell).interacting(well_diode_mk)
-nwp_6p0_terminal_n = well_diode_mk.and(dualgate).covering(nwell)
+# diode_nw2ps_06v0 diode
+diode_nw2ps_06v0_terminal_p = pcomp.and(dualgate).outside(dnwell).interacting(well_diode_mk)
+diode_nw2ps_06v0_terminal_n = well_diode_mk.and(dualgate).covering(nwell)
 
-# dnwpw_3p3 diode
-dnwpw_3p3_terminal_p = lvpwell.not(v5_xtor).not(dualgate).interacting(well_diode_mk)
+# diode_pw2dw_03v3 diode
+diode_pw2dw_03v3_terminal_p = lvpwell.not(v5_xtor).not(dualgate).interacting(well_diode_mk)
 
-# dnwpw_6p0 diode
-dnwpw_6p0_terminal_p = lvpwell.and(dualgate).interacting(well_diode_mk)
+# diode_pw2dw_06v0 diode
+diode_pw2dw_06v0_terminal_p = lvpwell.and(dualgate).interacting(well_diode_mk)
 
-# dnwps_3p3 diode
-dnwps_3p3_terminal_p = ptap.extents.not_interacting(lvpwell).not_covering(v5_xtor).not_covering(dualgate).interacting(well_diode_mk)
+# diode_dw2ps_03v3 diode
+diode_dw2ps_03v3_terminal_p = ptap.extents.not_interacting(lvpwell).not_covering(v5_xtor).not_covering(dualgate).interacting(well_diode_mk)
 
-# dnwps_6p0 diode
-dnwps_6p0_terminal_p = ptap.extents.not_interacting(lvpwell).covering(dualgate).interacting(well_diode_mk)
+# diode_dw2ps_06v0 diode
+diode_dw2ps_06v0_terminal_p = ptap.extents.not_interacting(lvpwell).covering(dualgate).interacting(well_diode_mk)
 
 # sc_diode diode
 sc_diode_terminal_n = ncomp.inside(dnwell).inside(schottky_diode)
@@ -946,41 +968,41 @@ metal5_ncap     = metal5.not(mimtm_virtual)
 #==================================
 logger.info("Starting MOSCAP DERIVATIONS")
 
-# nmoscap_3p3 capacitor
+# cap_nmos_03v3 capacitor
 nmos_gate_3p3 = ngate.not(v5_xtor).not(dualgate).outside(dnwell).interacting(mos_cap_mk)
 
-# nmoscap_3p3_dw capacitor
+# cap_nmos_03v3_dn capacitor
 nmos_gate_3p3_dw = ngate.not(v5_xtor).not(dualgate).inside(dnwell).interacting(mos_cap_mk)
 
-# pmoscap_3p3 capacitor
+# cap_pmos_03v3 capacitor
 pmos_gate_3p3 = pgate.not(v5_xtor).not(dualgate).outside(dnwell).interacting(mos_cap_mk)
 
-# pmoscap_3p3_dw capacitor
+# cap_pmos_03v3_dn capacitor
 pmos_gate_3p3_dw = pgate.not(v5_xtor).not(dualgate).inside(dnwell).interacting(mos_cap_mk)
 
-# nmoscap_6p0 capacitor
+# cap_nmos_06v0 capacitor
 nmos_gate_6p0 = ngate.and(dualgate).outside(dnwell).interacting(mos_cap_mk)
 
-# nmoscap_6p0_dw capacitor
+# cap_nmos_06v0_dn capacitor
 nmos_gate_6p0_dw = ngate.and(dualgate).inside(dnwell).interacting(mos_cap_mk)
 
-# pmoscap_6p0 capacitor
+# cap_pmos_06v0 capacitor
 pmos_gate_6p0 = pgate.and(dualgate).outside(dnwell).interacting(mos_cap_mk)
 
-# pmoscap_6p0_dw capacitor
+# cap_pmos_06v0_dn capacitor
 pmos_gate_6p0_dw = pgate.and(dualgate).inside(dnwell).interacting(mos_cap_mk)
 
-# nmoscap_3p3_b capacitor
-nmoscap_3p3_b = ngate.not(v5_xtor).not(dualgate).inside(nwell).interacting(mos_cap_mk)
+# cap_nmos_03v3_b capacitor
+cap_nmos_03v3_b = ngate.not(v5_xtor).not(dualgate).inside(nwell).interacting(mos_cap_mk)
 
-# pmoscap_3p3_b capacitor
-pmoscap_3p3_b = pgate.not(v5_xtor).not(dualgate).inside(ptap).interacting(mos_cap_mk)
+# cap_pmos_03v3_b capacitor
+cap_pmos_03v3_b = pgate.not(v5_xtor).not(dualgate).inside(ptap).interacting(mos_cap_mk)
 
-# nmoscap_6p0_b capacitor
-nmoscap_6p0_b = ngate.and(dualgate).inside(nwell).interacting(mos_cap_mk)
+# cap_nmos_06v0_b capacitor
+cap_nmos_06v0_b = ngate.and(dualgate).inside(nwell).interacting(mos_cap_mk)
 
-# pmoscap_6p0_b capacitor
-pmoscap_6p0_b = pgate.and(dualgate).inside(ptap).interacting(mos_cap_mk)
+# cap_pmos_06v0_b capacitor
+cap_pmos_06v0_b = pgate.and(dualgate).inside(ptap).interacting(mos_cap_mk)
 
 #================================
 # ------ ESD DERIVATIONS --------
@@ -1126,59 +1148,59 @@ logger.info("Starting LVS BJT CONNECTIONS")
 # ---- vnpn ----
 # ==============
 
-# vnpn_10x10 nodes connections
-connect(vnpn_10x10_e,contact)
-connect(vnpn_10x10_b,contact)
-connect(vnpn_10x10_c,contact)
+# npn_10p00x10p00 nodes connections
+connect(npn_10p00x10p00_e,contact)
+connect(npn_10p00x10p00_b,contact)
+connect(npn_10p00x10p00_c,contact)
 
-# vnpn_5x5 nodes connections
-connect(vnpn_5x5_e,contact)
-connect(vnpn_5x5_b,contact)
-connect(vnpn_5x5_c,contact)
+# npn_05p00x05p00 nodes connections
+connect(npn_05p00x05p00_e,contact)
+connect(npn_05p00x05p00_b,contact)
+connect(npn_05p00x05p00_c,contact)
 
-# vnpn_0p54x16 nodes connections
-connect(vnpn_0p54x16_e,contact)
-connect(vnpn_0p54x16_b,contact)
-connect(vnpn_0p54x16_c,contact)
+# npn_00p54x16p00 nodes connections
+connect(npn_00p54x16p00_e,contact)
+connect(npn_00p54x16p00_b,contact)
+connect(npn_00p54x16p00_c,contact)
 
-# vnpn_0p54x8 nodes connections
-connect(vnpn_0p54x8_e,contact)
-connect(vnpn_0p54x8_b,contact)
-connect(vnpn_0p54x8_c,contact)
+# npn_00p54x08p00 nodes connections
+connect(npn_00p54x08p00_e,contact)
+connect(npn_00p54x08p00_b,contact)
+connect(npn_00p54x08p00_c,contact)
 
-# vnpn_0p54x4 nodes connections
-connect(vnpn_0p54x4_e,contact)
-connect(vnpn_0p54x4_b,contact)
-connect(vnpn_0p54x4_c,contact)
+# npn_00p54x04p00 nodes connections
+connect(npn_00p54x04p00_e,contact)
+connect(npn_00p54x04p00_b,contact)
+connect(npn_00p54x04p00_c,contact)
 
-# vnpn_0p54x2 nodes connections
-connect(vnpn_0p54x2_e,contact)
-connect(vnpn_0p54x2_b,contact)
-connect(vnpn_0p54x2_c,contact)
+# npn_00p54x02p00 nodes connections
+connect(npn_00p54x02p00_e,contact)
+connect(npn_00p54x02p00_b,contact)
+connect(npn_00p54x02p00_c,contact)
 
 # ==============
 # ---- vpnp ----
 # ==============
 
-# vpnp_10x10 nodes connections
-connect(vpnp_10x10_e,contact)
-connect(vpnp_10x10_b,contact)
-connect(vpnp_10x10_c,contact)
+# pnp_10p00x10p00 nodes connections
+connect(pnp_10p00x10p00_e,contact)
+connect(pnp_10p00x10p00_b,contact)
+connect(pnp_10p00x10p00_c,contact)
 
-# vpnp_5x5 nodes connections
-connect(vpnp_5x5_e,contact)
-connect(vpnp_5x5_b,contact)
-connect(vpnp_5x5_c,contact)
+# pnp_05p00x05p00 nodes connections
+connect(pnp_05p00x05p00_e,contact)
+connect(pnp_05p00x05p00_b,contact)
+connect(pnp_05p00x05p00_c,contact)
 
-# vpnp_0p42x10 nodes connections
-connect(vpnp_0p42x10_e,contact)
-connect(vpnp_0p42x10_b,contact)
-connect(vpnp_0p42x10_c,contact)
+# pnp_10p00x00p42 nodes connections
+connect(pnp_10p00x00p42_e,contact)
+connect(pnp_10p00x00p42_b,contact)
+connect(pnp_10p00x00p42_c,contact)
 
-# vpnp_0p42x5 nodes connections
-connect(vpnp_0p42x5_e,contact)
-connect(vpnp_0p42x5_b,contact)
-connect(vpnp_0p42x5_c,contact)
+# pnp_05p00x00p42 nodes connections
+connect(pnp_05p00x00p42_e,contact)
+connect(pnp_05p00x00p42_b,contact)
+connect(pnp_05p00x00p42_c,contact)
 
 
 #================================
@@ -1187,49 +1209,49 @@ connect(vpnp_0p42x5_c,contact)
 
 logger.info("Starting LVS DIODE CONNECTIONS")
 
-# np_3p3 diode
-connect(np_3p3_terminal_n,contact)
+# diode_nd2ps_03v3 diode
+connect(diode_nd2ps_03v3_terminal_n,contact)
 
-# np_3p3_dw diode
-connect(np_3p3_dw_terminal_n,contact)
+# diode_nd2ps_03v3_dn diode
+connect(diode_nd2ps_03v3_dn_terminal_n,contact)
 
-# np_6p0 diode
-connect(np_6p0_terminal_n,contact)
+# diode_nd2ps_06v0 diode
+connect(diode_nd2ps_06v0_terminal_n,contact)
 
-# np_6p0_dw diode
-connect(np_6p0_dw_terminal_n,contact)
+# diode_nd2ps_06v0_dn diode
+connect(diode_nd2ps_06v0_dn_terminal_n,contact)
 
-# pn_3p3 diode
-connect(pn_3p3_terminal_p,contact)
+# diode_pd2nw_03v3 diode
+connect(diode_pd2nw_03v3_terminal_p,contact)
 
-# pn_3p3_dw diode
-connect(pn_3p3_dw_terminal_p,contact)
+# diode_pd2nw_03v3_dn diode
+connect(diode_pd2nw_03v3_dn_terminal_p,contact)
 
-# pn_6p0 diode
-connect(pn_6p0_terminal_p,contact)
+# diode_pd2nw_06v0 diode
+connect(diode_pd2nw_06v0_terminal_p,contact)
 
-# pn_6p0_dw diode
-connect(pn_6p0_dw_terminal_p,contact)
+# diode_pd2nw_06v0_dn diode
+connect(diode_pd2nw_06v0_dn_terminal_p,contact)
 
-# nwp_3p3 diode
-connect(nwp_3p3_terminal_p,contact)
-connect(nwp_3p3_terminal_n,nwell)
+# diode_nw2ps_03v3 diode
+connect(diode_nw2ps_03v3_terminal_p,contact)
+connect(diode_nw2ps_03v3_terminal_n,nwell)
 
-# nwp_6p0 diode
-connect(nwp_6p0_terminal_p,contact)
-connect(nwp_6p0_terminal_n,nwell)
+# diode_nw2ps_06v0 diode
+connect(diode_nw2ps_06v0_terminal_p,contact)
+connect(diode_nw2ps_06v0_terminal_n,nwell)
 
-# dnwpw_3p3 diode
-connect(dnwpw_3p3_terminal_p,contact)
+# diode_pw2dw_03v3 diode
+connect(diode_pw2dw_03v3_terminal_p,contact)
 
-# dnwpw_6p0 diode
-connect(dnwpw_6p0_terminal_p,contact)
+# diode_pw2dw_06v0 diode
+connect(diode_pw2dw_06v0_terminal_p,contact)
 
-# dnwps_3p3 diode
-connect(dnwps_3p3_terminal_p,ptap)
+# diode_dw2ps_03v3 diode
+connect(diode_dw2ps_03v3_terminal_p,ptap)
 
-# dnwps_6p0 diode
-connect(dnwps_6p0_terminal_p,ptap)
+# diode_dw2ps_06v0 diode
+connect(diode_dw2ps_06v0_terminal_p,ptap)
 
 # sc_diode diode
 connect(sc_diode_terminal_n,contact)
@@ -1293,31 +1315,31 @@ logger.info("Starting PMOS EXTRACTION")
 
 # 3.3V PMOS transistor outside DNWELL
 logger.info("Extracting 3.3V PMOS transistor outside DNWEL")
-extract_devices(mos4("pmos_3p3"), { "SD" => psd, "G" => pgate_3p3v, "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
+extract_devices(mos4("pfet_03v3"), { "SD" => psd, "G" => pgate_3p3v, "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
 
 # 5V PMOS transistor outside DNWELL
 logger.info("Extracting 5V PMOS transistor outside DNWELL")
-extract_devices(mos4("pmos_5p0"), { "SD" => psd, "G" => pgate_5v,   "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
+extract_devices(mos4("pfet_05v0"), { "SD" => psd, "G" => pgate_5v,   "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
 
 # 6V PMOS transistor outside DNWELL
 logger.info("Extracting 6V PMOS transistor outside DNWELL")
-extract_devices(mos4("pmos_6p0"), { "SD" => psd, "G" => pgate_6v,   "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
+extract_devices(mos4("pfet_06v0"), { "SD" => psd, "G" => pgate_6v,   "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
 
 # 3.3V PMOS transistor inside DNWELL
 logger.info("Extracting 3.3V PMOS transistor inside DNWELL")
-extract_devices(mos4("pmos_3p3_dw"), { "SD" => psd_dw, "G" => pgate_3p3v_dw,   "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
+extract_devices(mos4("pfet_03v3_dn"), { "SD" => psd_dw, "G" => pgate_3p3v_dw,   "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
 
 # 5V PMOS transistor inside DNWELL
 logger.info("Extracting 5V PMOS transistor inside DNWELL")
-extract_devices(mos4("pmos_5p0_dw"), { "SD" => psd_dw, "G" => pgate_5v_dw,   "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
+extract_devices(mos4("pfet_05v0_dn"), { "SD" => psd_dw, "G" => pgate_5v_dw,   "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
 
 # 6V PMOS transistor inside DNWELL
 logger.info("Extracting 6V PMOS transistor inside DNWELL")
-extract_devices(mos4("pmos_6p0_dw"), { "SD" => psd_dw, "G" => pgate_6v_dw,   "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
+extract_devices(mos4("pfet_06v0_dn"), { "SD" => psd_dw, "G" => pgate_6v_dw,   "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
 
 # LDPMOS transistor
 logger.info("Extracting LDPMOS transistor")
-extract_devices(mos4("pmos_10p0_asym"), { "SD" => psd_ldmos, "G" => pgate_ldmos, "tS" => ps_ldmos, "tD" => pd_ldmos, "tG" => poly2_con, "W" => dnwell })
+extract_devices(mos4("pfet_10v0_asym"), { "SD" => psd_ldmos, "G" => pgate_ldmos, "tS" => ps_ldmos, "tD" => pd_ldmos, "tG" => poly2_con, "W" => dnwell })
 
 # ==============
 # ---- NMOS ----
@@ -1327,35 +1349,35 @@ logger.info("Starting NMOS EXTRACTION")
 
 # 3.3V NMOS transistor outside DNWELL
 logger.info("3.3V NMOS transistor outside DNWELL")
-extract_devices(mos4("nmos_3p3"), { "SD" => nsd, "G" => ngate_3p3v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
+extract_devices(mos4("nfet_03v3"), { "SD" => nsd, "G" => ngate_3p3v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
 
 # 5V NMOS transistor outside DNWELL
 logger.info("5V NMOS transistor outside DNWELL")
-extract_devices(mos4("nmos_5p0"), { "SD" => nsd, "G" => ngate_5v,   "tS" => nsd, "tD" => nsd, "tG" => poly2_con,   "W" => sub })
+extract_devices(mos4("nfet_05v0"), { "SD" => nsd, "G" => ngate_5v,   "tS" => nsd, "tD" => nsd, "tG" => poly2_con,   "W" => sub })
 
 # 6V NMOS transistor outside DNWELL
 logger.info("6V NMOS transistor outside DNWELL")
-extract_devices(mos4("nmos_6p0"), { "SD" => nsd, "G" => ngate_6v,   "tS" => nsd, "tD" => nsd, "tG" => poly2_con,   "W" => sub })
+extract_devices(mos4("nfet_06v0"), { "SD" => nsd, "G" => ngate_6v,   "tS" => nsd, "tD" => nsd, "tG" => poly2_con,   "W" => sub })
 
 # 3.3V NMOS transistor inside DNWELL
 logger.info("3.3V NMOS transistor inside DNWELL")
-extract_devices(mos4("nmos_3p3_dw"), { "SD" => nsd, "G" => ngate_3p3v_dw, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => lvpwell_con })
+extract_devices(mos4("nfet_03v3_dn"), { "SD" => nsd, "G" => ngate_3p3v_dw, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => lvpwell_con })
 
 # 5V NMOS transistor inside DNWELL
 logger.info("5V NMOS transistor inside DNWELL")
-extract_devices(mos4("nmos_5p0_dw"), { "SD" => nsd, "G" => ngate_5v_dw,   "tS" => nsd, "tD" => nsd, "tG" => poly2_con,   "W" => lvpwell_con })
+extract_devices(mos4("nfet_05v0_dn"), { "SD" => nsd, "G" => ngate_5v_dw,   "tS" => nsd, "tD" => nsd, "tG" => poly2_con,   "W" => lvpwell_con })
 
 # 6V NMOS transistor inside DNWELL
 logger.info("6V NMOS transistor inside DNWELL")
-extract_devices(mos4("nmos_6p0_dw"), { "SD" => nsd, "G" => ngate_6v_dw,   "tS" => nsd, "tD" => nsd, "tG" => poly2_con,   "W" => lvpwell_con })
+extract_devices(mos4("nfet_06v0_dn"), { "SD" => nsd, "G" => ngate_6v_dw,   "tS" => nsd, "tD" => nsd, "tG" => poly2_con,   "W" => lvpwell_con })
 
 # Native Vt NMOS transistor
 logger.info("Native Vt NMOS transistor")
-extract_devices(mos4("nmos_6p0_nat"), { "SD" => nsd, "G" => ngate_nat, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
+extract_devices(mos4("nfet_06v0_nvt"), { "SD" => nsd, "G" => ngate_nat, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
 
 # LDNMOS transistor
 logger.info("Extracting LDNMOS transistor")
-extract_devices(mos4("nmos_10p0_asym"), { "SD" => nsd_ldmos, "G" => ngate_ldmos, "tS" => ns_ldmos, "tD" => nd_ldmos, "tG" => poly2_con, "W" => sub })
+extract_devices(mos4("nfet_10v0_asym"), { "SD" => nsd_ldmos, "G" => ngate_ldmos, "tS" => ns_ldmos, "tD" => nd_ldmos, "tG" => poly2_con, "W" => sub })
 
 
 #================================
@@ -1368,70 +1390,70 @@ logger.info("Starting BJT EXTRACTION")
 # ====================
 logger.info("Starting vnpn BJT EXTRACTION")
 
-# vnpn_10x10 BJT
-ignore_parameter("vnpn_10x10","AE")
-logger.info("Extracting vnpn_10x10 BJT")
-extract_devices(bjt4("vnpn_10x10"), { "C" => vnpn_10x10_c.extents , "B" => vnpn_10x10_b.extents , "E" => vnpn_10x10_e,"S" => sub.extents,
-                                  "tC" => vnpn_10x10_c , "tB" => vnpn_10x10_b, "tE" => vnpn_10x10_e, "tS" => sub })
+# npn_10p00x10p00 BJT
+ignore_parameter("npn_10p00x10p00","AE")
+logger.info("Extracting npn_10p00x10p00 BJT")
+extract_devices(bjt4("npn_10p00x10p00"), { "C" => npn_10p00x10p00_c.extents , "B" => npn_10p00x10p00_b.extents , "E" => npn_10p00x10p00_e,"S" => sub.extents,
+                                  "tC" => npn_10p00x10p00_c , "tB" => npn_10p00x10p00_b, "tE" => npn_10p00x10p00_e, "tS" => sub })
 
-# vnpn_5x5 BJT
-ignore_parameter("vnpn_5x5","AE")
-logger.info("Extracting vnpn_5x5 BJT")
-extract_devices(bjt4("vnpn_5x5"), { "C" => vnpn_5x5_c.extents , "B" => vnpn_5x5_b.extents , "E" => vnpn_5x5_e,"S" => sub.extents,
-                                "tC" => vnpn_5x5_c , "tB" => vnpn_5x5_b, "tE" => vnpn_5x5_e, "tS" => sub })
+# npn_05p00x05p00 BJT
+ignore_parameter("npn_05p00x05p00","AE")
+logger.info("Extracting npn_05p00x05p00 BJT")
+extract_devices(bjt4("npn_05p00x05p00"), { "C" => npn_05p00x05p00_c.extents , "B" => npn_05p00x05p00_b.extents , "E" => npn_05p00x05p00_e,"S" => sub.extents,
+                                "tC" => npn_05p00x05p00_c , "tB" => npn_05p00x05p00_b, "tE" => npn_05p00x05p00_e, "tS" => sub })
 
-# vnpn_0p54x16 BJT
-ignore_parameter("vnpn_0p54x16","AE")
-logger.info("Extracting vnpn_0p54x16 BJT")
-extract_devices(bjt4("vnpn_0p54x16"), { "C" => vnpn_0p54x16_c.extents , "B" => vnpn_0p54x16_b.extents , "E" => vnpn_0p54x16_e,"S" => sub.extents,
-                                    "tC" => vnpn_0p54x16_c , "tB" => vnpn_0p54x16_b, "tE" => vnpn_0p54x16_e, "tS" => sub })
+# npn_00p54x16p00 BJT
+ignore_parameter("npn_00p54x16p00","AE")
+logger.info("Extracting npn_00p54x16p00 BJT")
+extract_devices(bjt4("npn_00p54x16p00"), { "C" => npn_00p54x16p00_c.extents , "B" => npn_00p54x16p00_b.extents , "E" => npn_00p54x16p00_e,"S" => sub.extents,
+                                    "tC" => npn_00p54x16p00_c , "tB" => npn_00p54x16p00_b, "tE" => npn_00p54x16p00_e, "tS" => sub })
 
-# vnpn_0p54x8 BJT
-ignore_parameter("vnpn_0p54x8","AE")
-logger.info("Extracting vnpn_0p54x8 BJT")
-extract_devices(bjt4("vnpn_0p54x8"), { "C" => vnpn_0p54x8_c.extents , "B" => vnpn_0p54x8_b.extents , "E" => vnpn_0p54x8_e,"S" => sub.extents,
-                                   "tC" => vnpn_0p54x8_c , "tB" => vnpn_0p54x8_b, "tE" => vnpn_0p54x8_e, "tS" => sub })
+# npn_00p54x08p00 BJT
+ignore_parameter("npn_00p54x08p00","AE")
+logger.info("Extracting npn_00p54x08p00 BJT")
+extract_devices(bjt4("npn_00p54x08p00"), { "C" => npn_00p54x08p00_c.extents , "B" => npn_00p54x08p00_b.extents , "E" => npn_00p54x08p00_e,"S" => sub.extents,
+                                   "tC" => npn_00p54x08p00_c , "tB" => npn_00p54x08p00_b, "tE" => npn_00p54x08p00_e, "tS" => sub })
 
-# vnpn_0p54x4 BJT
-ignore_parameter("vnpn_0p54x4","AE")
-logger.info("Extracting vnpn_0p54x4 BJT")
-extract_devices(bjt4("vnpn_0p54x4"), { "C" => vnpn_0p54x4_c.extents , "B" => vnpn_0p54x4_b.extents , "E" => vnpn_0p54x4_e,"S" => sub.extents,
-                                   "tC" => vnpn_0p54x4_c , "tB" => vnpn_0p54x4_b, "tE" => vnpn_0p54x4_e, "tS" => sub })
+# npn_00p54x04p00 BJT
+ignore_parameter("npn_00p54x04p00","AE")
+logger.info("Extracting npn_00p54x04p00 BJT")
+extract_devices(bjt4("npn_00p54x04p00"), { "C" => npn_00p54x04p00_c.extents , "B" => npn_00p54x04p00_b.extents , "E" => npn_00p54x04p00_e,"S" => sub.extents,
+                                   "tC" => npn_00p54x04p00_c , "tB" => npn_00p54x04p00_b, "tE" => npn_00p54x04p00_e, "tS" => sub })
 
-# vnpn_0p54x2 BJT
-ignore_parameter("vnpn_0p54x2","AE")
-logger.info("Extracting vnpn_0p54x2 BJT")
-extract_devices(bjt4("vnpn_0p54x2"), { "C" => vnpn_0p54x2_c.extents , "B" => vnpn_0p54x2_b.extents , "E" => vnpn_0p54x2_e,"S" => sub.extents,
-                                   "tC" => vnpn_0p54x2_c , "tB" => vnpn_0p54x2_b, "tE" => vnpn_0p54x2_e, "tS" => sub })
+# npn_00p54x02p00 BJT
+ignore_parameter("npn_00p54x02p00","AE")
+logger.info("Extracting npn_00p54x02p00 BJT")
+extract_devices(bjt4("npn_00p54x02p00"), { "C" => npn_00p54x02p00_c.extents , "B" => npn_00p54x02p00_b.extents , "E" => npn_00p54x02p00_e,"S" => sub.extents,
+                                   "tC" => npn_00p54x02p00_c , "tB" => npn_00p54x02p00_b, "tE" => npn_00p54x02p00_e, "tS" => sub })
 
 # ====================
 # ------- vpnp--------
 # ====================
 logger.info("Starting vpnp BJT EXTRACTION")
 
-# vpnp_10x10 BJT
-ignore_parameter("vpnp_10x10","AE")
-logger.info("Extracting vpnp_10x10 BJT")
-extract_devices(bjt3("vpnp_10x10"), { "C" => vpnp_10x10_c.extents , "B" => vpnp_10x10_b.extents , "E" => vpnp_10x10_e,
-                                  "tC" => vpnp_10x10_c , "tB" => vpnp_10x10_b, "tE" => vpnp_10x10_e })
+# pnp_10p00x10p00 BJT
+ignore_parameter("pnp_10p00x10p00","AE")
+logger.info("Extracting pnp_10p00x10p00 BJT")
+extract_devices(bjt3("pnp_10p00x10p00"), { "C" => pnp_10p00x10p00_c.extents , "B" => pnp_10p00x10p00_b.extents , "E" => pnp_10p00x10p00_e,
+                                  "tC" => pnp_10p00x10p00_c , "tB" => pnp_10p00x10p00_b, "tE" => pnp_10p00x10p00_e })
 
-# vpnp_5x5 BJT
-ignore_parameter("vpnp_5x5","AE")
-logger.info("Extracting vpnp_5x5 BJT")
-extract_devices(bjt3("vpnp_5x5"), { "C" => vpnp_5x5_c.extents , "B" => vpnp_5x5_b.extents , "E" => vpnp_5x5_e,
-                                "tC" => vpnp_5x5_c , "tB" => vpnp_5x5_b, "tE" => vpnp_5x5_e })
+# pnp_05p00x05p00 BJT
+ignore_parameter("pnp_05p00x05p00","AE")
+logger.info("Extracting pnp_05p00x05p00 BJT")
+extract_devices(bjt3("pnp_05p00x05p00"), { "C" => pnp_05p00x05p00_c.extents , "B" => pnp_05p00x05p00_b.extents , "E" => pnp_05p00x05p00_e,
+                                "tC" => pnp_05p00x05p00_c , "tB" => pnp_05p00x05p00_b, "tE" => pnp_05p00x05p00_e })
 
-# vpnp_0p42x10 BJT
-ignore_parameter("vpnp_0p42x10","AE")
-logger.info("Extracting vpnp_0p42x10 BJT")
-extract_devices(bjt3("vpnp_0p42x10"), { "C" => vpnp_0p42x10_c.extents , "B" => vpnp_0p42x10_b.extents , "E" => vpnp_0p42x10_e,
-                                    "tC" => vpnp_0p42x10_c , "tB" => vpnp_0p42x10_b, "tE" => vpnp_0p42x10_e })
+# pnp_10p00x00p42 BJT
+ignore_parameter("pnp_10p00x00p42","AE")
+logger.info("Extracting pnp_10p00x00p42 BJT")
+extract_devices(bjt3("pnp_10p00x00p42"), { "C" => pnp_10p00x00p42_c.extents , "B" => pnp_10p00x00p42_b.extents , "E" => pnp_10p00x00p42_e,
+                                    "tC" => pnp_10p00x00p42_c , "tB" => pnp_10p00x00p42_b, "tE" => pnp_10p00x00p42_e })
 
-# vpnp_0p42x5 BJT
-ignore_parameter("vpnp_0p42x5","AE")
-logger.info("Extracting vpnp_0p42x5 BJT")
-extract_devices(bjt3("vpnp_0p42x5"), { "C" => vpnp_0p42x5_c.extents , "B" => vpnp_0p42x5_b.extents , "E" => vpnp_0p42x5_e,
-                                   "tC" => vpnp_0p42x5_c , "tB" => vpnp_0p42x5_b, "tE" => vpnp_0p42x5_e })
+# pnp_05p00x00p42 BJT
+ignore_parameter("pnp_05p00x00p42","AE")
+logger.info("Extracting pnp_05p00x00p42 BJT")
+extract_devices(bjt3("pnp_05p00x00p42"), { "C" => pnp_05p00x00p42_c.extents , "B" => pnp_05p00x00p42_b.extents , "E" => pnp_05p00x00p42_e,
+                                   "tC" => pnp_05p00x00p42_c , "tB" => pnp_05p00x00p42_b, "tE" => pnp_05p00x00p42_e })
 
 
 #================================
@@ -1439,61 +1461,61 @@ extract_devices(bjt3("vpnp_0p42x5"), { "C" => vpnp_0p42x5_c.extents , "B" => vpn
 #================================
 logger.info("Starting DIODE EXTRACTION")
 
-# np_3p3 diode
-logger.info("Extracting np_3p3 diode")
-extract_devices(diode("np_3p3"), { "N" => np_3p3_terminal_n , "P" => lvpwell_con})
+# diode_nd2ps_03v3 diode
+logger.info("Extracting diode_nd2ps_03v3 diode")
+extract_devices(diode("diode_nd2ps_03v3"), { "N" => diode_nd2ps_03v3_terminal_n , "P" => lvpwell_con})
 
-# np_3p3_dw diode
-logger.info("Extracting np_3p3_dw diode")
-extract_devices(diode("np_3p3_dw"), { "N" => np_3p3_dw_terminal_n , "P" => lvpwell_con})
+# diode_nd2ps_03v3_dn diode
+logger.info("Extracting diode_nd2ps_03v3_dn diode")
+extract_devices(diode("diode_nd2ps_03v3_dn"), { "N" => diode_nd2ps_03v3_dn_terminal_n , "P" => lvpwell_con})
 
-# np_6p0 diode
-logger.info("Extracting np_6p0 diode")
-extract_devices(diode("np_6p0"), { "N" => np_6p0_terminal_n , "P" => lvpwell_con})
+# diode_nd2ps_06v0 diode
+logger.info("Extracting diode_nd2ps_06v0 diode")
+extract_devices(diode("diode_nd2ps_06v0"), { "N" => diode_nd2ps_06v0_terminal_n , "P" => lvpwell_con})
 
-# np_6p0_dw diode
-logger.info("Extracting np_6p0_dw diode")
-extract_devices(diode("np_6p0_dw"), { "N" => np_6p0_dw_terminal_n , "P" => lvpwell_con})
+# diode_nd2ps_06v0_dn diode
+logger.info("Extracting diode_nd2ps_06v0_dn diode")
+extract_devices(diode("diode_nd2ps_06v0_dn"), { "N" => diode_nd2ps_06v0_dn_terminal_n , "P" => lvpwell_con})
 
-# pn_3p3 diode
-logger.info("Extracting pn_3p3 diode")
-extract_devices(diode("pn_3p3"), { "N" => nwell_con , "P" => pn_3p3_terminal_p})
+# diode_pd2nw_03v3 diode
+logger.info("Extracting diode_pd2nw_03v3 diode")
+extract_devices(diode("diode_pd2nw_03v3"), { "N" => nwell_con , "P" => diode_pd2nw_03v3_terminal_p})
 
-# pn_3p3_dw diode
-logger.info("Extractingpn_3p3_dw diode")
-extract_devices(diode("pn_3p3_dw"), { "N" => nwell_con , "P" => pn_3p3_dw_terminal_p})
+# diode_pd2nw_03v3_dn diode
+logger.info("Extractingdiode_pd2nw_03v3_dn diode")
+extract_devices(diode("diode_pd2nw_03v3_dn"), { "N" => nwell_con , "P" => diode_pd2nw_03v3_dn_terminal_p})
 
-# pn_6p0 diode
-logger.info("Extracting pn_6p0 diode")
-extract_devices(diode("pn_6p0"), { "N" => nwell_con , "P" => pn_6p0_terminal_p})
+# diode_pd2nw_06v0 diode
+logger.info("Extracting diode_pd2nw_06v0 diode")
+extract_devices(diode("diode_pd2nw_06v0"), { "N" => nwell_con , "P" => diode_pd2nw_06v0_terminal_p})
 
-# pn_6p0_dw diode
-logger.info("Extracting pn_6p0_dw diode")
-extract_devices(diode("pn_6p0_dw"), { "N" => nwell_con , "P" => pn_6p0_dw_terminal_p})
+# diode_pd2nw_06v0_dn diode
+logger.info("Extracting diode_pd2nw_06v0_dn diode")
+extract_devices(diode("diode_pd2nw_06v0_dn"), { "N" => nwell_con , "P" => diode_pd2nw_06v0_dn_terminal_p})
 
-# nwp_3p3 diode
-logger.info("Extracting nwp_3p3 diode")
-extract_devices(diode("nwp_3p3"), { "N" => nwp_3p3_terminal_n , "P" => nwp_3p3_terminal_p})
+# diode_nw2ps_03v3 diode
+logger.info("Extracting diode_nw2ps_03v3 diode")
+extract_devices(diode("diode_nw2ps_03v3"), { "N" => diode_nw2ps_03v3_terminal_n , "P" => diode_nw2ps_03v3_terminal_p})
 
-# nwp_6p0 diode
-logger.info("Extracting nwp_6p0 diode")
-extract_devices(diode("nwp_6p0"), { "N" => nwp_6p0_terminal_n , "P" => nwp_6p0_terminal_p})
+# diode_nw2ps_06v0 diode
+logger.info("Extracting diode_nw2ps_06v0 diode")
+extract_devices(diode("diode_nw2ps_06v0"), { "N" => diode_nw2ps_06v0_terminal_n , "P" => diode_nw2ps_06v0_terminal_p})
 
-# dnwpw_3p3 diode
-logger.info("Extracting dnwpw_3p3 diode")
-extract_devices(diode("dnwpw_3p3"), { "N" => dnwell , "P" => dnwpw_3p3_terminal_p})
+# diode_pw2dw_03v3 diode
+logger.info("Extracting diode_pw2dw_03v3 diode")
+extract_devices(diode("diode_pw2dw_03v3"), { "N" => dnwell , "P" => diode_pw2dw_03v3_terminal_p})
 
-# dnwpw_6p0 diode
-logger.info("Extracting dnwpw_6p0 diode")
-extract_devices(diode("dnwpw_6p0"), { "N" => dnwell , "P" => dnwpw_6p0_terminal_p})
+# diode_pw2dw_06v0 diode
+logger.info("Extracting diode_pw2dw_06v0 diode")
+extract_devices(diode("diode_pw2dw_06v0"), { "N" => dnwell , "P" => diode_pw2dw_06v0_terminal_p})
 
-# dnwps_3p3 diode
-logger.info("Extracting dnwps_3p3 diode")
-extract_devices(diode("dnwps_3p3"), { "N" => dnwell , "P" => dnwps_3p3_terminal_p})
+# diode_dw2ps_03v3 diode
+logger.info("Extracting diode_dw2ps_03v3 diode")
+extract_devices(diode("diode_dw2ps_03v3"), { "N" => dnwell , "P" => diode_dw2ps_03v3_terminal_p})
 
-# dnwps_6p0 diode
-logger.info("Extracting dnwps_6p0 diode")
-extract_devices(diode("dnwps_6p0"), { "N" => dnwell , "P" => dnwps_6p0_terminal_p})
+# diode_dw2ps_06v0 diode
+logger.info("Extracting diode_dw2ps_06v0 diode")
+extract_devices(diode("diode_dw2ps_06v0"), { "N" => dnwell , "P" => diode_dw2ps_06v0_terminal_p})
 
 # sc_diode diode
 logger.info("Extracting sc_diode diode")
@@ -1668,7 +1690,6 @@ elsif METAL_TOP == "30K"
 
 end
 
-
 #==================================
 # ------- MIMCAP EXTRACTION -------
 #==================================
@@ -1678,24 +1699,24 @@ if MIM_OPTION == "A"
 
   if MIM_CAP == "1"
 
-    # mim_1p0fF capacitor
-    logger.info("Extracting mim_1p0fF device")
-    extract_devices(capacitor("mim_1p0fF", 1.0e-15, MIMCap), { "P1" => mim_virtual, "P2" => fuse_cap })
-    tolerance("mim_1p0fF", "C", :relative => 0.25)
+    # cap_mim1f0 capacitor
+    logger.info("Extracting cap_mim1f0 device")
+    extract_devices(capacitor(cap_mim1f0, 1.0e-15, MIMCap), { "P1" => mim_virtual, "P2" => fuse_cap })
+    tolerance(cap_mim1f0, "C", :relative => 0.25)
 
   elsif MIM_CAP == "1.5"
 
-    # mim_1p5fF capacitor
-    logger.info("Extracting mim_1p5fF device")
-    extract_devices(capacitor("mim_1p5fF", 1.5e-15, MIMCap), { "P1" => mim_virtual, "P2" => fuse_cap })
-    tolerance("mim_1p5fF", "C", :relative => 0.25)
+    # cap_mim1f5 capacitor
+    logger.info("Extracting cap_mim1f5 device")
+    extract_devices(capacitor(cap_mim1f5, 1.5e-15, MIMCap), { "P1" => mim_virtual, "P2" => fuse_cap })
+    tolerance(cap_mim1f5, "C", :relative => 0.25)
 
   elsif MIM_CAP == "2"
 
-    # mim_single_2p0fF capacitor
-    logger.info("Extracting mim_single_2p0fF device")
-    extract_devices(capacitor("mim_single_2p0fF", 2.0e-15, MIMCap), { "P1" => mim_virtual, "P2" => fuse_cap })
-    tolerance("mim_single_2p0fF", "C", :relative => 0.25)
+    # cap_mim2f0 capacitor
+    logger.info("Extracting cap_mim2f0 device")
+    extract_devices(capacitor(cap_mim2f0, 2.0e-15, MIMCap), { "P1" => mim_virtual, "P2" => fuse_cap })
+    tolerance(cap_mim2f0, "C", :relative => 0.25)
 
   end
 
@@ -1703,24 +1724,24 @@ elsif MIM_OPTION == "B"
 
   if MIM_CAP == "1"
 
-    # mim_1p0fF capacitor
-    logger.info("Extracting mim_1p0fF device")
-    extract_devices(capacitor("mim_1p0fF", 1.0e-15, MIMCap), { "P1" => mimtm_virtual, "P2" => fuse_cap })
-    tolerance("mim_1p0fF", "C", :relative => 0.25)
+    # cap_mim1f0 capacitor
+    logger.info("Extracting cap_mim1f0 device")
+    extract_devices(capacitor(cap_mim1f0, 1.0e-15, MIMCap), { "P1" => mimtm_virtual, "P2" => fuse_cap })
+    tolerance(cap_mim1f0, "C", :relative => 0.25)
 
   elsif MIM_CAP == "1.5"
 
-    # mim_1p5fF capacitor
-    logger.info("Extracting mim_1p5fF device")
-    extract_devices(capacitor("mim_1p5fF", 1.5e-15, MIMCap), { "P1" => mimtm_virtual, "P2" => fuse_cap })
-    tolerance("mim_1p5fF", "C", :relative => 0.25)
+    # cap_mim1f5 capacitor
+    logger.info("Extracting cap_mim1f5 device")
+    extract_devices(capacitor(cap_mim1f5, 1.5e-15, MIMCap), { "P1" => mimtm_virtual, "P2" => fuse_cap })
+    tolerance(cap_mim1f5, "C", :relative => 0.25)
 
   elsif MIM_CAP == "2"
 
-    # mim_single_2p0fF capacitor
-    logger.info("Extracting mim_single_2p0fF device")
-    extract_devices(capacitor("mim_single_2p0fF", 2.0e-15, MIMCap), { "P1" => mimtm_virtual, "P2" => fuse_cap })
-    tolerance("mim_single_2p0fF", "C", :relative => 0.25)
+    # cap_mim2f0 capacitor
+    logger.info("Extracting cap_mim2f0 device")
+    extract_devices(capacitor(cap_mim2f0, 2.0e-15, MIMCap), { "P1" => mimtm_virtual, "P2" => fuse_cap })
+    tolerance(cap_mim2f0, "C", :relative => 0.25)
 
   end
 
@@ -1732,52 +1753,52 @@ end
 #==================================
 logger.info("Starting MOSCAP EXTRACTION")
 
-#nmoscap_3p3
-logger.info("Extracting nmoscap_3p3 device")
-extract_devices(capacitor("nmoscap_3p3", 4.4e-15, MosCap), { "P1" => nmos_gate_3p3, "P2" => lvpwell_con, "tA" => poly2_con, "tB" => nsd})
+#cap_nmos_03v3
+logger.info("Extracting cap_nmos_03v3 device")
+extract_devices(capacitor("cap_nmos_03v3", 4.4e-15, MosCap), { "P1" => nmos_gate_3p3, "P2" => lvpwell_con, "tA" => poly2_con, "tB" => nsd})
 
-#nmoscap_3p3_dw
-logger.info("Extracting nmoscap_3p3_dw device")
-extract_devices(capacitor("nmoscap_3p3_dw", 4.4e-15, MosCap), { "P1" => nmos_gate_3p3_dw, "P2" => lvpwell_con, "tA" => poly2_con, "tB" => nsd })
+#cap_nmos_03v3_dn
+logger.info("Extracting cap_nmos_03v3_dn device")
+extract_devices(capacitor("cap_nmos_03v3_dn", 4.4e-15, MosCap), { "P1" => nmos_gate_3p3_dw, "P2" => lvpwell_con, "tA" => poly2_con, "tB" => nsd })
 
-#pmoscap_3p3
-logger.info("Extracting pmoscap_3p3 device")
-extract_devices(capacitor("pmoscap_3p3", 4.4e-15, MosCap), { "P1" => pmos_gate_3p3, "P2" => nwell_con, "tA" => poly2_con, "tB" => psd })
+#cap_pmos_03v3
+logger.info("Extracting cap_pmos_03v3 device")
+extract_devices(capacitor("cap_pmos_03v3", 4.4e-15, MosCap), { "P1" => pmos_gate_3p3, "P2" => nwell_con, "tA" => poly2_con, "tB" => psd })
 
-#pmoscap_3p3_dw
-logger.info("Extracting pmoscap_3p3_dw device")
-extract_devices(capacitor("pmoscap_3p3_dw", 4.4e-15, MosCap), { "P1" => pmos_gate_3p3_dw, "P2" => dnwell, "tA" => poly2_con, "tB" => psd_dw })
+#cap_pmos_03v3_dn
+logger.info("Extracting cap_pmos_03v3_dn device")
+extract_devices(capacitor("cap_pmos_03v3_dn", 4.4e-15, MosCap), { "P1" => pmos_gate_3p3_dw, "P2" => dnwell, "tA" => poly2_con, "tB" => psd_dw })
 
-#nmoscap_6p0
-logger.info("Extracting nmoscap_6p0 device")
-extract_devices(capacitor("nmoscap_6p0", 2.3e-15, MosCap), { "P1" => nmos_gate_6p0, "P2" => lvpwell_con, "tA" => poly2_con, "tB" => nsd })
+#cap_nmos_06v0
+logger.info("Extracting cap_nmos_06v0 device")
+extract_devices(capacitor("cap_nmos_06v0", 2.3e-15, MosCap), { "P1" => nmos_gate_6p0, "P2" => lvpwell_con, "tA" => poly2_con, "tB" => nsd })
 
-#nmoscap_6p0_dw
-logger.info("Extracting nmoscap_6p0_dw device")
-extract_devices(capacitor("nmoscap_6p0_dw", 2.3e-15, MosCap), { "P1" => nmos_gate_6p0_dw, "P2" => lvpwell_con, "tA" => poly2_con, "tB" => nsd })
+#cap_nmos_06v0_dn
+logger.info("Extracting cap_nmos_06v0_dn device")
+extract_devices(capacitor("cap_nmos_06v0_dn", 2.3e-15, MosCap), { "P1" => nmos_gate_6p0_dw, "P2" => lvpwell_con, "tA" => poly2_con, "tB" => nsd })
 
-#pmoscap_6p0
-logger.info("Extracting pmoscap_6p0 device")
-extract_devices(capacitor("pmoscap_6p0", 2.3e-15, MosCap), { "P1" => pmos_gate_6p0, "P2" => nwell_con, "tA" => poly2_con, "tB" => psd })
+#cap_pmos_06v0
+logger.info("Extracting cap_pmos_06v0 device")
+extract_devices(capacitor("cap_pmos_06v0", 2.3e-15, MosCap), { "P1" => pmos_gate_6p0, "P2" => nwell_con, "tA" => poly2_con, "tB" => psd })
 
-#pmoscap_6p0
-logger.info("Extracting pmoscap_6p0 device")
-extract_devices(capacitor("pmoscap_6p0_dw", 2.3e-15, MosCap), { "P1" => pmos_gate_6p0_dw, "P2" => dnwell, "tA" => poly2_con, "tB" => psd_dw  })
+#cap_pmos_06v0
+logger.info("Extracting cap_pmos_06v0 device")
+extract_devices(capacitor("cap_pmos_06v0_dn", 2.3e-15, MosCap), { "P1" => pmos_gate_6p0_dw, "P2" => dnwell, "tA" => poly2_con, "tB" => psd_dw  })
 
-# nmoscap_3p3_b capacitor
-extract_devices(capacitor("nmoscap_3p3_b", 4.4e-15, MosCap), { "P1" => nmoscap_3p3_b, "P2" => nwell_con, "tA" => poly2_con, "tB" => ntap })
+# cap_nmos_03v3_b capacitor
+extract_devices(capacitor("cap_nmos_03v3_b", 4.4e-15, MosCap), { "P1" => cap_nmos_03v3_b, "P2" => nwell_con, "tA" => poly2_con, "tB" => ntap })
 
-#pmoscap_3p3_b
-logger.info("Extracting pmoscap_3p3_b device")
-extract_devices(capacitor("pmoscap_3p3_b", 4.4e-15, MosCap), { "P1" => pmoscap_3p3_b, "P2" => ptap, "tA" => poly2_con, "tB" => ptap })
+#cap_pmos_03v3_b
+logger.info("Extracting cap_pmos_03v3_b device")
+extract_devices(capacitor("cap_pmos_03v3_b", 4.4e-15, MosCap), { "P1" => cap_pmos_03v3_b, "P2" => ptap, "tA" => poly2_con, "tB" => ptap })
 
-#nmoscap_6p0_b
-logger.info("Extracting nmoscap_6p0_b device")
-extract_devices(capacitor("nmoscap_6p0_b", 2.3e-15, MosCap), { "P1" => nmoscap_6p0_b, "P2" => nwell_con, "tA" => poly2_con, "tB" => ntap })
+#cap_nmos_06v0_b
+logger.info("Extracting cap_nmos_06v0_b device")
+extract_devices(capacitor("cap_nmos_06v0_b", 2.3e-15, MosCap), { "P1" => cap_nmos_06v0_b, "P2" => nwell_con, "tA" => poly2_con, "tB" => ntap })
 
-#pmoscap_6p0_b
-logger.info("Extracting pmoscap_6p0_b device")
-extract_devices(capacitor("pmoscap_6p0_b", 2.3e-15, MosCap), { "P1" => pmoscap_6p0_b, "P2" => ptap, "tA" => poly2_con, "tB" => ptap })
+#cap_pmos_06v0_b
+logger.info("Extracting cap_pmos_06v0_b device")
+extract_devices(capacitor("cap_pmos_06v0_b", 2.3e-15, MosCap), { "P1" => cap_pmos_06v0_b, "P2" => ptap, "tA" => poly2_con, "tB" => ptap })
 
 
 #================================
@@ -1792,27 +1813,27 @@ logger.info("Starting PMOS SAB EXTRACTION")
 
 #3.3V ESD PMOS transistor outside DNWELL
 logger.info("Extracting 3.3V ESD PMOS transistor outside DNWELL device")
-extract_devices(mos4("pmos_3p3_sab"), { "SD" => psd, "G" => pgate_sab_3p3v, "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
+extract_devices(mos4("pfet_03v3_dss"), { "SD" => psd, "G" => pgate_sab_3p3v, "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
 
 #5V ESD PMOS transistor outside DNWELL
 logger.info("Extracting 5V ESD PMOS transistor outside DNWELL device")
-extract_devices(mos4("pmos_5p0_sab"), { "SD" => psd, "G" => pgate_sab_5v, "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
+extract_devices(mos4("pfet_05v0_dss"), { "SD" => psd, "G" => pgate_sab_5v, "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
 
 #6V ESD PMOS transistor outside DNWELL
 logger.info("Extracting 6V ESD PMOS transistor outside DNWELL device")
-extract_devices(mos4("pmos_6p0_sab"), { "SD" => psd, "G" => pgate_sab_6v, "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
+extract_devices(mos4("pfet_06v0_dss"), { "SD" => psd, "G" => pgate_sab_6v, "tS" => psd, "tD" => psd, "tG" => poly2_con, "W" => nwell_con })
 
 #3.3V ESD PMOS transistor inside DNWELL
 logger.info("Extracting 3.3V ESD PMOS transistor inside DNWELL device")
-extract_devices(mos4("pmos_3p3_dw_sab"), { "SD" => psd_dw, "G" => pgate_dw_sab_3p3v, "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
+extract_devices(mos4("pfet_03v3_dn_dss"), { "SD" => psd_dw, "G" => pgate_dw_sab_3p3v, "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
 
 #5V ESD PMOS transistor inside DNWELL
 logger.info("Extracting 5V ESD PMOS transistor inside DNWELL device")
-extract_devices(mos4("pmos_5p0_dw_sab"), { "SD" => psd_dw, "G" => pgate_dw_sab_5v, "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
+extract_devices(mos4("pfet_05v0_dn_dss"), { "SD" => psd_dw, "G" => pgate_dw_sab_5v, "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
 
 #6V ESD PMOS transistor inside DNWELL
 logger.info("Extracting 6V ESD PMOS transistor inside DNWELL device")
-extract_devices(mos4("pmos_6p0_dw_sab"), { "SD" => psd_dw, "G" => pgate_dw_sab_6v, "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
+extract_devices(mos4("pfet_06v0_dn_dss"), { "SD" => psd_dw, "G" => pgate_dw_sab_6v, "tS" => psd_dw, "tD" => psd_dw, "tG" => poly2_con, "W" => dnwell })
 
 # ==============
 # ---- NMOS ----
@@ -1821,27 +1842,27 @@ logger.info("Starting NMOS SAB EXTRACTION")
 
 #3.3V ESD NMOS transistor outside DNWELL
 logger.info("Extracting 3.3V ESD NMOS transistor outside DNWELL device")
-extract_devices(mos4("nmos_3p3_sab"), { "SD" => nsd, "G" => ngate_sab_3p3v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
+extract_devices(mos4("nfet_03v3_dss"), { "SD" => nsd, "G" => ngate_sab_3p3v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
 
 #5V ESD NMOS transistor outside DNWELL
 logger.info("Extracting 5V ESD NMOS transistor outside DNWELL device")
-extract_devices(mos4("nmos_5p0_sab"), { "SD" => nsd, "G" => ngate_sab_5v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
+extract_devices(mos4("nfet_05v0_dss"), { "SD" => nsd, "G" => ngate_sab_5v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
 
 #6V ESD NMOS transistor outside DNWELL
 logger.info("Extracting 6V ESD NMOS transistor outside DNWELL device")
-extract_devices(mos4("nmos_6p0_sab"), { "SD" => nsd, "G" => ngate_sab_6v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
+extract_devices(mos4("nfet_06v0_dss"), { "SD" => nsd, "G" => ngate_sab_6v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => sub })
 
 #3.3V ESD NMOS transistor inside DNWELL
 logger.info("Extracting 3.3V ESD NMOS transistor inside DNWELL device")
-extract_devices(mos4("nmos_3p3_dw_sab"), { "SD" => nsd, "G" => ngate_dw_sab_3p3v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => lvpwell_con })
+extract_devices(mos4("nfet_03v3_dn_dss"), { "SD" => nsd, "G" => ngate_dw_sab_3p3v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => lvpwell_con })
 
 #5V ESD NMOS transistor inside DNWELL
 logger.info("Extracting 5V ESD NMOS transistor inside DNWELL device")
-extract_devices(mos4("nmos_5p0_dw_sab"), { "SD" => nsd, "G" => ngate_dw_sab_5v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => lvpwell_con })
+extract_devices(mos4("nfet_05v0_dn_dss"), { "SD" => nsd, "G" => ngate_dw_sab_5v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => lvpwell_con })
 
 #6V ESD NMOS transistor inside DNWELL
 logger.info("Extracting 6V ESD NMOS transistor inside DNWELL device")
-extract_devices(mos4("nmos_6p0_dw_sab"), { "SD" => nsd, "G" => ngate_dw_sab_6v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => lvpwell_con })
+extract_devices(mos4("nfet_06v0_dn_dss"), { "SD" => nsd, "G" => ngate_dw_sab_6v, "tS" => nsd, "tD" => nsd, "tG" => poly2_con, "W" => lvpwell_con })
 
 
 #================================
