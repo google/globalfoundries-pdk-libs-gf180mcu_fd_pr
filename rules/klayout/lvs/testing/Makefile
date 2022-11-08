@@ -29,6 +29,9 @@ test-LVS: Add_run-dir  test-LVS-switch  test-LVS-gf180mcu_fd_sc  test-LVS-main
 #=================================
 # --------- RUN FOLDER ----------
 #=================================
+.ONESHELL:
+print_klayout_version:
+	@echo "Klayout version : $(klayout -v)"
 
 .ONESHELL:
 Add_run-dir:
@@ -40,10 +43,10 @@ Add_run-dir:
 #=================================
 
 .ONESHELL:
-test-LVS-gf180mcu_fd_sc: test-LVS-gf180mcu_fd_sc_mcu7t5v0 test-LVS-gf180mcu_fd_sc_mcu9t5v0 test-LVS-gf180mcu_fd_io test-LVS-gf180mcu_fd_ip_sram
+test-LVS-gf180mcu_fd_sc: print_klayout_version test-LVS-gf180mcu_fd_sc_mcu7t5v0 test-LVS-gf180mcu_fd_sc_mcu9t5v0 test-LVS-gf180mcu_fd_io test-LVS-gf180mcu_fd_ip_sram
 
 .ONESHELL:
-test-LVS-gf180mcu_fd_io: Add_run-dir
+test-LVS-gf180mcu_fd_io: print_klayout_version Add_run-dir
 	@cd $(Testing_DIR)
 	@ python3 run_sc_regression.py --path=ip_testcases/gf180mcu_fd_io_3lm --path=ip_testcases/gf180mcu_fd_io_4lm --path=ip_testcases/gf180mcu_fd_io_5lm --run_dir=$(run_folder)/gf180mcu_fd_io |& tee $(run_folder)/gf180mcu_fd_io/results.log
 
@@ -67,7 +70,7 @@ test-LVS-gf180mcu_fd_sc_mcu9t5v0: Add_run-dir
 #=================================
 
 .ONESHELL:
-test-LVS-main: test-LVS_MOS  test-LVS_BJT  test-LVS_DIODE  test-LVS_RES  test-LVS_MIMCAP  test-LVS_MOSCAP  test-LVS_MOS-SAB
+test-LVS-main: print_klayout_version test-LVS_MOS  test-LVS_BJT  test-LVS_DIODE  test-LVS_RES  test-LVS_MIMCAP  test-LVS_MOSCAP  test-LVS_MOS-SAB
 
 .ONESHELL:
 test-LVS_MOS: Add_run-dir
@@ -116,7 +119,7 @@ test-LVS_MOS-SAB: Add_run-dir
 #=================================
 
 .ONESHELL:
-test-LVS-switch: Add_run-dir
+test-LVS-switch: print_klayout_version Add_run-dir
 	@cd $(Testing_DIR)
 	@cd ..
 	@echo "========== LVS-Switch testing =========="
