@@ -26,6 +26,7 @@ on:
   workflow_dispatch:
 
 env:
+  GITHUB_TOKEN: ${{ github.token }}
   DOCKER_BUILDKIT: 1
   IMAGE: ghcr.io/${{ github.repository }}/test
 
