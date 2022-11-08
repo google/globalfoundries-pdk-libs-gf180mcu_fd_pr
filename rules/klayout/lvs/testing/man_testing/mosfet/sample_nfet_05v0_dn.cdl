@@ -1,0 +1,729 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_library_2
+* Top Cell Name: sample_nfet_05v0_dn
+* View Name:     schematic
+* Netlisted on:  Sep 10 16:38:58 2021
+************************************************************************
+
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+*.GLOBAL vdd!
+
+*.PIN vdd!
+
+************************************************************************
+* Library Name: TCG_library_2
+* Cell Name:    sample_nfet_05v0_dn
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT sample_nfet_05v0_dn I1_default_D I1_default_G I1_default_S 
++ I1_lin_default_bodytie_0_R0_D I1_lin_default_bodytie_0_R0_G 
++ I1_lin_default_bodytie_0_R0_S I1_lin_default_bodytie_1_R0_D 
++ I1_lin_default_bodytie_1_R0_G I1_lin_default_bodytie_1_R0_S 
++ I1_lin_default_bottomTap_0_R0_D I1_lin_default_bottomTap_0_R0_G 
++ I1_lin_default_bottomTap_0_R0_S I1_lin_default_calculatedParam_0_R0_D 
++ I1_lin_default_calculatedParam_0_R0_G I1_lin_default_calculatedParam_0_R0_S 
++ I1_lin_default_calculatedParam_1_R0_D I1_lin_default_calculatedParam_1_R0_G 
++ I1_lin_default_calculatedParam_1_R0_S I1_lin_default_calculatedParam_2_R0_D 
++ I1_lin_default_calculatedParam_2_R0_G I1_lin_default_calculatedParam_2_R0_S 
++ I1_lin_default_fingerW_0_R0_D I1_lin_default_fingerW_0_R0_G 
++ I1_lin_default_fingerW_0_R0_S I1_lin_default_fingerW_1_R0_D 
++ I1_lin_default_fingerW_1_R0_G I1_lin_default_fingerW_1_R0_S 
++ I1_lin_default_fingerW_2_R0_D I1_lin_default_fingerW_2_R0_G 
++ I1_lin_default_fingerW_2_R0_S I1_lin_default_fingerW_3_R0_D 
++ I1_lin_default_fingerW_3_R0_G I1_lin_default_fingerW_3_R0_S 
++ I1_lin_default_fingerW_4_R0_D I1_lin_default_fingerW_4_R0_G 
++ I1_lin_default_fingerW_4_R0_S I1_lin_default_fingerW_5_R0_D 
++ I1_lin_default_fingerW_5_R0_G I1_lin_default_fingerW_5_R0_S 
++ I1_lin_default_fingerW_6_R0_D I1_lin_default_fingerW_6_R0_G 
++ I1_lin_default_fingerW_6_R0_S I1_lin_default_fingerW_7_R0_D 
++ I1_lin_default_fingerW_7_R0_G I1_lin_default_fingerW_7_R0_S 
++ I1_lin_default_fingerW_8_R0_D I1_lin_default_fingerW_8_R0_G 
++ I1_lin_default_fingerW_8_R0_S I1_lin_default_fingerW_9_R0_D 
++ I1_lin_default_fingerW_9_R0_G I1_lin_default_fingerW_9_R0_S 
++ I1_lin_default_fingerW_10_R0_D I1_lin_default_fingerW_10_R0_G 
++ I1_lin_default_fingerW_10_R0_S I1_lin_default_fingerW_11_R0_D 
++ I1_lin_default_fingerW_11_R0_G I1_lin_default_fingerW_11_R0_S 
++ I1_lin_default_fingerW_12_R0_D I1_lin_default_fingerW_12_R0_G 
++ I1_lin_default_fingerW_12_R0_S I1_lin_default_fingerW_13_R0_D 
++ I1_lin_default_fingerW_13_R0_G I1_lin_default_fingerW_13_R0_S 
++ I1_lin_default_fingerW_14_R0_D I1_lin_default_fingerW_14_R0_G 
++ I1_lin_default_fingerW_14_R0_S I1_lin_default_fingerW_15_R0_D 
++ I1_lin_default_fingerW_15_R0_G I1_lin_default_fingerW_15_R0_S 
++ I1_lin_default_fingerW_16_R0_D I1_lin_default_fingerW_16_R0_G 
++ I1_lin_default_fingerW_16_R0_S I1_lin_default_fingerW_17_R0_D 
++ I1_lin_default_fingerW_17_R0_G I1_lin_default_fingerW_17_R0_S 
++ I1_lin_default_fingerW_18_R0_D I1_lin_default_fingerW_18_R0_G 
++ I1_lin_default_fingerW_18_R0_S I1_lin_default_fingerW_19_R0_D 
++ I1_lin_default_fingerW_19_R0_G I1_lin_default_fingerW_19_R0_S 
++ I1_lin_default_fingerW_20_R0_D I1_lin_default_fingerW_20_R0_G 
++ I1_lin_default_fingerW_20_R0_S I1_lin_default_fingerW_21_R0_D 
++ I1_lin_default_fingerW_21_R0_G I1_lin_default_fingerW_21_R0_S 
++ I1_lin_default_fingerW_22_R0_D I1_lin_default_fingerW_22_R0_G 
++ I1_lin_default_fingerW_22_R0_S I1_lin_default_fingerW_23_R0_D 
++ I1_lin_default_fingerW_23_R0_G I1_lin_default_fingerW_23_R0_S 
++ I1_lin_default_fingerW_24_R0_D I1_lin_default_fingerW_24_R0_G 
++ I1_lin_default_fingerW_24_R0_S I1_lin_default_fingerW_25_R0_D 
++ I1_lin_default_fingerW_25_R0_G I1_lin_default_fingerW_25_R0_S 
++ I1_lin_default_fingerW_26_R0_D I1_lin_default_fingerW_26_R0_G 
++ I1_lin_default_fingerW_26_R0_S I1_lin_default_fingerW_27_R0_D 
++ I1_lin_default_fingerW_27_R0_G I1_lin_default_fingerW_27_R0_S 
++ I1_lin_default_fingerW_28_R0_D I1_lin_default_fingerW_28_R0_G 
++ I1_lin_default_fingerW_28_R0_S I1_lin_default_fingerW_29_R0_D 
++ I1_lin_default_fingerW_29_R0_G I1_lin_default_fingerW_29_R0_S 
++ I1_lin_default_fingerW_30_R0_D I1_lin_default_fingerW_30_R0_G 
++ I1_lin_default_fingerW_30_R0_S I1_lin_default_fingerW_31_R0_D 
++ I1_lin_default_fingerW_31_R0_G I1_lin_default_fingerW_31_R0_S 
++ I1_lin_default_fingerW_32_R0_D I1_lin_default_fingerW_32_R0_G 
++ I1_lin_default_fingerW_32_R0_S I1_lin_default_gateConn_0_R0_D 
++ I1_lin_default_gateConn_0_R0_G I1_lin_default_gateConn_0_R0_S 
++ I1_lin_default_gateConn_1_R0_D I1_lin_default_gateConn_1_R0_G 
++ I1_lin_default_gateConn_1_R0_S I1_lin_default_gateConn_2_R0_D 
++ I1_lin_default_gateConn_2_R0_G I1_lin_default_gateConn_2_R0_S 
++ I1_lin_default_l_0_R0_D I1_lin_default_l_0_R0_G I1_lin_default_l_0_R0_S 
++ I1_lin_default_l_1_R0_D I1_lin_default_l_1_R0_G I1_lin_default_l_1_R0_S 
++ I1_lin_default_l_2_R0_D I1_lin_default_l_2_R0_G I1_lin_default_l_2_R0_S 
++ I1_lin_default_l_3_R0_D I1_lin_default_l_3_R0_G I1_lin_default_l_3_R0_S 
++ I1_lin_default_l_4_R0_D I1_lin_default_l_4_R0_G I1_lin_default_l_4_R0_S 
++ I1_lin_default_l_5_R0_D I1_lin_default_l_5_R0_G I1_lin_default_l_5_R0_S 
++ I1_lin_default_l_6_R0_D I1_lin_default_l_6_R0_G I1_lin_default_l_6_R0_S 
++ I1_lin_default_l_7_R0_D I1_lin_default_l_7_R0_G I1_lin_default_l_7_R0_S 
++ I1_lin_default_l_8_R0_D I1_lin_default_l_8_R0_G I1_lin_default_l_8_R0_S 
++ I1_lin_default_l_9_R0_D I1_lin_default_l_9_R0_G I1_lin_default_l_9_R0_S 
++ I1_lin_default_l_10_R0_D I1_lin_default_l_10_R0_G I1_lin_default_l_10_R0_S 
++ I1_lin_default_l_11_R0_D I1_lin_default_l_11_R0_G I1_lin_default_l_11_R0_S 
++ I1_lin_default_l_12_R0_D I1_lin_default_l_12_R0_G I1_lin_default_l_12_R0_S 
++ I1_lin_default_l_13_R0_D I1_lin_default_l_13_R0_G I1_lin_default_l_13_R0_S 
++ I1_lin_default_l_14_R0_D I1_lin_default_l_14_R0_G I1_lin_default_l_14_R0_S 
++ I1_lin_default_l_15_R0_D I1_lin_default_l_15_R0_G I1_lin_default_l_15_R0_S 
++ I1_lin_default_l_16_R0_D I1_lin_default_l_16_R0_G I1_lin_default_l_16_R0_S 
++ I1_lin_default_l_17_R0_D I1_lin_default_l_17_R0_G I1_lin_default_l_17_R0_S 
++ I1_lin_default_l_18_R0_D I1_lin_default_l_18_R0_G I1_lin_default_l_18_R0_S 
++ I1_lin_default_l_19_R0_D I1_lin_default_l_19_R0_G I1_lin_default_l_19_R0_S 
++ I1_lin_default_l_20_R0_D I1_lin_default_l_20_R0_G I1_lin_default_l_20_R0_S 
++ I1_lin_default_l_21_R0_D I1_lin_default_l_21_R0_G I1_lin_default_l_21_R0_S 
++ I1_lin_default_l_22_R0_D I1_lin_default_l_22_R0_G I1_lin_default_l_22_R0_S 
++ I1_lin_default_l_23_R0_D I1_lin_default_l_23_R0_G I1_lin_default_l_23_R0_S 
++ I1_lin_default_l_24_R0_D I1_lin_default_l_24_R0_G I1_lin_default_l_24_R0_S 
++ I1_lin_default_l_25_R0_D I1_lin_default_l_25_R0_G I1_lin_default_l_25_R0_S 
++ I1_lin_default_leftTap_0_R0_D I1_lin_default_leftTap_0_R0_G 
++ I1_lin_default_leftTap_0_R0_S I1_lin_default_m_0_R0_D 
++ I1_lin_default_m_0_R0_G I1_lin_default_m_0_R0_S I1_lin_default_m_1_R0_D 
++ I1_lin_default_m_1_R0_G I1_lin_default_m_1_R0_S I1_lin_default_m_2_R0_D 
++ I1_lin_default_m_2_R0_G I1_lin_default_m_2_R0_S I1_lin_default_nf_0_R0_D 
++ I1_lin_default_nf_0_R0_G I1_lin_default_nf_0_R0_S I1_lin_default_nf_1_R0_D 
++ I1_lin_default_nf_1_R0_G I1_lin_default_nf_1_R0_S I1_lin_default_nf_2_R0_D 
++ I1_lin_default_nf_2_R0_G I1_lin_default_nf_2_R0_S 
++ I1_lin_default_rightTap_0_R0_D I1_lin_default_rightTap_0_R0_G 
++ I1_lin_default_rightTap_0_R0_S I1_lin_default_sFirst_0_R0_D 
++ I1_lin_default_sFirst_0_R0_G I1_lin_default_sFirst_0_R0_S I1_lin_default_sFirst_1_R0_D 
++ I1_lin_default_sFirst_1_R0_G I1_lin_default_sFirst_1_R0_S
++ I1_lin_default_sdConn_0_R0_D I1_lin_default_sdConn_0_R0_G 
++ I1_lin_default_sdConn_0_R0_S I1_lin_default_sdConn_1_R0_D 
++ I1_lin_default_sdConn_1_R0_G I1_lin_default_sdConn_1_R0_S 
++ I1_lin_default_sdConn_2_R0_D I1_lin_default_sdConn_2_R0_G 
++ I1_lin_default_sdConn_2_R0_S I1_lin_default_sdWidth_0_R0_D 
++ I1_lin_default_sdWidth_0_R0_G I1_lin_default_sdWidth_0_R0_S 
++ I1_lin_default_sdWidth_1_R0_D I1_lin_default_sdWidth_1_R0_G 
++ I1_lin_default_sdWidth_1_R0_S I1_lin_default_sdWidth_2_R0_D 
++ I1_lin_default_sdWidth_2_R0_G I1_lin_default_sdWidth_2_R0_S 
++ I1_lin_default_sdWidth_3_R0_D I1_lin_default_sdWidth_3_R0_G 
++ I1_lin_default_sdWidth_3_R0_S I1_lin_default_sdWidth_4_R0_D 
++ I1_lin_default_sdWidth_4_R0_G I1_lin_default_sdWidth_4_R0_S 
++ I1_lin_default_sdWidth_5_R0_D I1_lin_default_sdWidth_5_R0_G 
++ I1_lin_default_sdWidth_5_R0_S I1_lin_default_sdWidth_6_R0_D 
++ I1_lin_default_sdWidth_6_R0_G I1_lin_default_sdWidth_6_R0_S 
++ I1_lin_default_sdWidth_7_R0_D I1_lin_default_sdWidth_7_R0_G 
++ I1_lin_default_sdWidth_7_R0_S I1_lin_default_sdWidth_8_R0_D 
++ I1_lin_default_sdWidth_8_R0_G I1_lin_default_sdWidth_8_R0_S 
++ I1_lin_default_sdWidth_9_R0_D I1_lin_default_sdWidth_9_R0_G 
++ I1_lin_default_sdWidth_9_R0_S I1_lin_default_tapCntRows_0_R0_D 
++ I1_lin_default_tapCntRows_0_R0_G I1_lin_default_tapCntRows_0_R0_S 
++ I1_lin_default_tapCntRows_1_R0_D I1_lin_default_tapCntRows_1_R0_G 
++ I1_lin_default_tapCntRows_1_R0_S I1_lin_default_tapCntRows_2_R0_D 
++ I1_lin_default_tapCntRows_2_R0_G I1_lin_default_tapCntRows_2_R0_S 
++ I1_lin_default_tapCntRows_3_R0_D I1_lin_default_tapCntRows_3_R0_G 
++ I1_lin_default_tapCntRows_3_R0_S I1_lin_default_tapCntRows_4_R0_D 
++ I1_lin_default_tapCntRows_4_R0_G I1_lin_default_tapCntRows_4_R0_S 
++ I1_lin_default_topTap_0_R0_D I1_lin_default_topTap_0_R0_G 
++ I1_lin_default_topTap_0_R0_S vdd!
+*.PININFO I1_default_D:I I1_default_G:I I1_default_S:I 
+*.PININFO I1_lin_default_bodytie_0_R0_D:I I1_lin_default_bodytie_0_R0_G:I 
+*.PININFO I1_lin_default_bodytie_0_R0_S:I I1_lin_default_bodytie_1_R0_D:I 
+*.PININFO I1_lin_default_bodytie_1_R0_G:I I1_lin_default_bodytie_1_R0_S:I 
+*.PININFO I1_lin_default_bottomTap_0_R0_D:I I1_lin_default_bottomTap_0_R0_G:I 
+*.PININFO I1_lin_default_bottomTap_0_R0_S:I 
+*.PININFO I1_lin_default_calculatedParam_0_R0_D:I 
+*.PININFO I1_lin_default_calculatedParam_0_R0_G:I 
+*.PININFO I1_lin_default_calculatedParam_0_R0_S:I 
+*.PININFO I1_lin_default_calculatedParam_1_R0_D:I 
+*.PININFO I1_lin_default_calculatedParam_1_R0_G:I 
+*.PININFO I1_lin_default_calculatedParam_1_R0_S:I 
+*.PININFO I1_lin_default_calculatedParam_2_R0_D:I 
+*.PININFO I1_lin_default_calculatedParam_2_R0_G:I 
+*.PININFO I1_lin_default_calculatedParam_2_R0_S:I 
+*.PININFO I1_lin_default_fingerW_0_R0_D:I I1_lin_default_fingerW_0_R0_G:I 
+*.PININFO I1_lin_default_fingerW_0_R0_S:I I1_lin_default_fingerW_1_R0_D:I 
+*.PININFO I1_lin_default_fingerW_1_R0_G:I I1_lin_default_fingerW_1_R0_S:I 
+*.PININFO I1_lin_default_fingerW_2_R0_D:I I1_lin_default_fingerW_2_R0_G:I 
+*.PININFO I1_lin_default_fingerW_2_R0_S:I I1_lin_default_fingerW_3_R0_D:I 
+*.PININFO I1_lin_default_fingerW_3_R0_G:I I1_lin_default_fingerW_3_R0_S:I 
+*.PININFO I1_lin_default_fingerW_4_R0_D:I I1_lin_default_fingerW_4_R0_G:I 
+*.PININFO I1_lin_default_fingerW_4_R0_S:I I1_lin_default_fingerW_5_R0_D:I 
+*.PININFO I1_lin_default_fingerW_5_R0_G:I I1_lin_default_fingerW_5_R0_S:I 
+*.PININFO I1_lin_default_fingerW_6_R0_D:I I1_lin_default_fingerW_6_R0_G:I 
+*.PININFO I1_lin_default_fingerW_6_R0_S:I I1_lin_default_fingerW_7_R0_D:I 
+*.PININFO I1_lin_default_fingerW_7_R0_G:I I1_lin_default_fingerW_7_R0_S:I 
+*.PININFO I1_lin_default_fingerW_8_R0_D:I I1_lin_default_fingerW_8_R0_G:I 
+*.PININFO I1_lin_default_fingerW_8_R0_S:I I1_lin_default_fingerW_9_R0_D:I 
+*.PININFO I1_lin_default_fingerW_9_R0_G:I I1_lin_default_fingerW_9_R0_S:I 
+*.PININFO I1_lin_default_fingerW_10_R0_D:I I1_lin_default_fingerW_10_R0_G:I 
+*.PININFO I1_lin_default_fingerW_10_R0_S:I I1_lin_default_fingerW_11_R0_D:I 
+*.PININFO I1_lin_default_fingerW_11_R0_G:I I1_lin_default_fingerW_11_R0_S:I 
+*.PININFO I1_lin_default_fingerW_12_R0_D:I I1_lin_default_fingerW_12_R0_G:I 
+*.PININFO I1_lin_default_fingerW_12_R0_S:I I1_lin_default_fingerW_13_R0_D:I 
+*.PININFO I1_lin_default_fingerW_13_R0_G:I I1_lin_default_fingerW_13_R0_S:I 
+*.PININFO I1_lin_default_fingerW_14_R0_D:I I1_lin_default_fingerW_14_R0_G:I 
+*.PININFO I1_lin_default_fingerW_14_R0_S:I I1_lin_default_fingerW_15_R0_D:I 
+*.PININFO I1_lin_default_fingerW_15_R0_G:I I1_lin_default_fingerW_15_R0_S:I 
+*.PININFO I1_lin_default_fingerW_16_R0_D:I I1_lin_default_fingerW_16_R0_G:I 
+*.PININFO I1_lin_default_fingerW_16_R0_S:I I1_lin_default_fingerW_17_R0_D:I 
+*.PININFO I1_lin_default_fingerW_17_R0_G:I I1_lin_default_fingerW_17_R0_S:I 
+*.PININFO I1_lin_default_fingerW_18_R0_D:I I1_lin_default_fingerW_18_R0_G:I 
+*.PININFO I1_lin_default_fingerW_18_R0_S:I I1_lin_default_fingerW_19_R0_D:I 
+*.PININFO I1_lin_default_fingerW_19_R0_G:I I1_lin_default_fingerW_19_R0_S:I 
+*.PININFO I1_lin_default_fingerW_20_R0_D:I I1_lin_default_fingerW_20_R0_G:I 
+*.PININFO I1_lin_default_fingerW_20_R0_S:I I1_lin_default_fingerW_21_R0_D:I 
+*.PININFO I1_lin_default_fingerW_21_R0_G:I I1_lin_default_fingerW_21_R0_S:I 
+*.PININFO I1_lin_default_fingerW_22_R0_D:I I1_lin_default_fingerW_22_R0_G:I 
+*.PININFO I1_lin_default_fingerW_22_R0_S:I I1_lin_default_fingerW_23_R0_D:I 
+*.PININFO I1_lin_default_fingerW_23_R0_G:I I1_lin_default_fingerW_23_R0_S:I 
+*.PININFO I1_lin_default_fingerW_24_R0_D:I I1_lin_default_fingerW_24_R0_G:I 
+*.PININFO I1_lin_default_fingerW_24_R0_S:I I1_lin_default_fingerW_25_R0_D:I 
+*.PININFO I1_lin_default_fingerW_25_R0_G:I I1_lin_default_fingerW_25_R0_S:I 
+*.PININFO I1_lin_default_fingerW_26_R0_D:I I1_lin_default_fingerW_26_R0_G:I 
+*.PININFO I1_lin_default_fingerW_26_R0_S:I I1_lin_default_fingerW_27_R0_D:I 
+*.PININFO I1_lin_default_fingerW_27_R0_G:I I1_lin_default_fingerW_27_R0_S:I 
+*.PININFO I1_lin_default_fingerW_28_R0_D:I I1_lin_default_fingerW_28_R0_G:I 
+*.PININFO I1_lin_default_fingerW_28_R0_S:I I1_lin_default_fingerW_29_R0_D:I 
+*.PININFO I1_lin_default_fingerW_29_R0_G:I I1_lin_default_fingerW_29_R0_S:I 
+*.PININFO I1_lin_default_fingerW_30_R0_D:I I1_lin_default_fingerW_30_R0_G:I 
+*.PININFO I1_lin_default_fingerW_30_R0_S:I I1_lin_default_fingerW_31_R0_D:I 
+*.PININFO I1_lin_default_fingerW_31_R0_G:I I1_lin_default_fingerW_31_R0_S:I 
+*.PININFO I1_lin_default_fingerW_32_R0_D:I I1_lin_default_fingerW_32_R0_G:I 
+*.PININFO I1_lin_default_fingerW_32_R0_S:I I1_lin_default_gateConn_0_R0_D:I 
+*.PININFO I1_lin_default_gateConn_0_R0_G:I I1_lin_default_gateConn_0_R0_S:I 
+*.PININFO I1_lin_default_gateConn_1_R0_D:I I1_lin_default_gateConn_1_R0_G:I 
+*.PININFO I1_lin_default_gateConn_1_R0_S:I I1_lin_default_gateConn_2_R0_D:I 
+*.PININFO I1_lin_default_gateConn_2_R0_G:I I1_lin_default_gateConn_2_R0_S:I 
+*.PININFO I1_lin_default_l_0_R0_D:I I1_lin_default_l_0_R0_G:I 
+*.PININFO I1_lin_default_l_0_R0_S:I I1_lin_default_l_1_R0_D:I 
+*.PININFO I1_lin_default_l_1_R0_G:I I1_lin_default_l_1_R0_S:I 
+*.PININFO I1_lin_default_l_2_R0_D:I I1_lin_default_l_2_R0_G:I 
+*.PININFO I1_lin_default_l_2_R0_S:I I1_lin_default_l_3_R0_D:I 
+*.PININFO I1_lin_default_l_3_R0_G:I I1_lin_default_l_3_R0_S:I 
+*.PININFO I1_lin_default_l_4_R0_D:I I1_lin_default_l_4_R0_G:I 
+*.PININFO I1_lin_default_l_4_R0_S:I I1_lin_default_l_5_R0_D:I 
+*.PININFO I1_lin_default_l_5_R0_G:I I1_lin_default_l_5_R0_S:I 
+*.PININFO I1_lin_default_l_6_R0_D:I I1_lin_default_l_6_R0_G:I 
+*.PININFO I1_lin_default_l_6_R0_S:I I1_lin_default_l_7_R0_D:I 
+*.PININFO I1_lin_default_l_7_R0_G:I I1_lin_default_l_7_R0_S:I 
+*.PININFO I1_lin_default_l_8_R0_D:I I1_lin_default_l_8_R0_G:I 
+*.PININFO I1_lin_default_l_8_R0_S:I I1_lin_default_l_9_R0_D:I 
+*.PININFO I1_lin_default_l_9_R0_G:I I1_lin_default_l_9_R0_S:I 
+*.PININFO I1_lin_default_l_10_R0_D:I I1_lin_default_l_10_R0_G:I 
+*.PININFO I1_lin_default_l_10_R0_S:I I1_lin_default_l_11_R0_D:I 
+*.PININFO I1_lin_default_l_11_R0_G:I I1_lin_default_l_11_R0_S:I 
+*.PININFO I1_lin_default_l_12_R0_D:I I1_lin_default_l_12_R0_G:I 
+*.PININFO I1_lin_default_l_12_R0_S:I I1_lin_default_l_13_R0_D:I 
+*.PININFO I1_lin_default_l_13_R0_G:I I1_lin_default_l_13_R0_S:I 
+*.PININFO I1_lin_default_l_14_R0_D:I I1_lin_default_l_14_R0_G:I 
+*.PININFO I1_lin_default_l_14_R0_S:I I1_lin_default_l_15_R0_D:I 
+*.PININFO I1_lin_default_l_15_R0_G:I I1_lin_default_l_15_R0_S:I 
+*.PININFO I1_lin_default_l_16_R0_D:I I1_lin_default_l_16_R0_G:I 
+*.PININFO I1_lin_default_l_16_R0_S:I I1_lin_default_l_17_R0_D:I 
+*.PININFO I1_lin_default_l_17_R0_G:I I1_lin_default_l_17_R0_S:I 
+*.PININFO I1_lin_default_l_18_R0_D:I I1_lin_default_l_18_R0_G:I 
+*.PININFO I1_lin_default_l_18_R0_S:I I1_lin_default_l_19_R0_D:I 
+*.PININFO I1_lin_default_l_19_R0_G:I I1_lin_default_l_19_R0_S:I 
+*.PININFO I1_lin_default_l_20_R0_D:I I1_lin_default_l_20_R0_G:I 
+*.PININFO I1_lin_default_l_20_R0_S:I I1_lin_default_l_21_R0_D:I 
+*.PININFO I1_lin_default_l_21_R0_G:I I1_lin_default_l_21_R0_S:I 
+*.PININFO I1_lin_default_l_22_R0_D:I I1_lin_default_l_22_R0_G:I 
+*.PININFO I1_lin_default_l_22_R0_S:I I1_lin_default_l_23_R0_D:I 
+*.PININFO I1_lin_default_l_23_R0_G:I I1_lin_default_l_23_R0_S:I 
+*.PININFO I1_lin_default_l_24_R0_D:I I1_lin_default_l_24_R0_G:I 
+*.PININFO I1_lin_default_l_24_R0_S:I I1_lin_default_l_25_R0_D:I 
+*.PININFO I1_lin_default_l_25_R0_G:I I1_lin_default_l_25_R0_S:I 
+*.PININFO I1_lin_default_leftTap_0_R0_D:I I1_lin_default_leftTap_0_R0_G:I 
+*.PININFO I1_lin_default_leftTap_0_R0_S:I I1_lin_default_m_0_R0_D:I 
+*.PININFO I1_lin_default_m_0_R0_G:I I1_lin_default_m_0_R0_S:I 
+*.PININFO I1_lin_default_m_1_R0_D:I I1_lin_default_m_1_R0_G:I 
+*.PININFO I1_lin_default_m_1_R0_S:I I1_lin_default_m_2_R0_D:I 
+*.PININFO I1_lin_default_m_2_R0_G:I I1_lin_default_m_2_R0_S:I 
+*.PININFO I1_lin_default_nf_0_R0_D:I I1_lin_default_nf_0_R0_G:I 
+*.PININFO I1_lin_default_nf_0_R0_S:I I1_lin_default_nf_1_R0_D:I 
+*.PININFO I1_lin_default_nf_1_R0_G:I I1_lin_default_nf_1_R0_S:I 
+*.PININFO I1_lin_default_nf_2_R0_D:I I1_lin_default_nf_2_R0_G:I 
+*.PININFO I1_lin_default_nf_2_R0_S:I I1_lin_default_rightTap_0_R0_D:I 
+*.PININFO I1_lin_default_rightTap_0_R0_G:I I1_lin_default_rightTap_0_R0_S:I 
+*.PININFO I1_lin_default_sFirst_0_R0_D:I I1_lin_default_sFirst_0_R0_G:I 
+*.PININFO I1_lin_default_sFirst_0_R0_S:I I1_lin_default_sdConn_0_R0_D:I 
+*.PININFO I1_lin_default_sdConn_0_R0_G:I I1_lin_default_sdConn_0_R0_S:I 
+*.PININFO I1_lin_default_sdConn_1_R0_D:I I1_lin_default_sdConn_1_R0_G:I 
+*.PININFO I1_lin_default_sdConn_1_R0_S:I I1_lin_default_sdConn_2_R0_D:I 
+*.PININFO I1_lin_default_sdConn_2_R0_G:I I1_lin_default_sdConn_2_R0_S:I 
+*.PININFO I1_lin_default_sdWidth_0_R0_D:I I1_lin_default_sdWidth_0_R0_G:I 
+*.PININFO I1_lin_default_sdWidth_0_R0_S:I I1_lin_default_sdWidth_1_R0_D:I 
+*.PININFO I1_lin_default_sdWidth_1_R0_G:I I1_lin_default_sdWidth_1_R0_S:I 
+*.PININFO I1_lin_default_sdWidth_2_R0_D:I I1_lin_default_sdWidth_2_R0_G:I 
+*.PININFO I1_lin_default_sdWidth_2_R0_S:I I1_lin_default_sdWidth_3_R0_D:I 
+*.PININFO I1_lin_default_sdWidth_3_R0_G:I I1_lin_default_sdWidth_3_R0_S:I 
+*.PININFO I1_lin_default_sdWidth_4_R0_D:I I1_lin_default_sdWidth_4_R0_G:I 
+*.PININFO I1_lin_default_sdWidth_4_R0_S:I I1_lin_default_sdWidth_5_R0_D:I 
+*.PININFO I1_lin_default_sdWidth_5_R0_G:I I1_lin_default_sdWidth_5_R0_S:I 
+*.PININFO I1_lin_default_sdWidth_6_R0_D:I I1_lin_default_sdWidth_6_R0_G:I 
+*.PININFO I1_lin_default_sdWidth_6_R0_S:I I1_lin_default_sdWidth_7_R0_D:I 
+*.PININFO I1_lin_default_sdWidth_7_R0_G:I I1_lin_default_sdWidth_7_R0_S:I 
+*.PININFO I1_lin_default_sdWidth_8_R0_D:I I1_lin_default_sdWidth_8_R0_G:I 
+*.PININFO I1_lin_default_sdWidth_8_R0_S:I I1_lin_default_sdWidth_9_R0_D:I 
+*.PININFO I1_lin_default_sdWidth_9_R0_G:I I1_lin_default_sdWidth_9_R0_S:I 
+*.PININFO I1_lin_default_tapCntRows_0_R0_D:I 
+*.PININFO I1_lin_default_tapCntRows_0_R0_G:I 
+*.PININFO I1_lin_default_tapCntRows_0_R0_S:I 
+*.PININFO I1_lin_default_tapCntRows_1_R0_D:I 
+*.PININFO I1_lin_default_tapCntRows_1_R0_G:I 
+*.PININFO I1_lin_default_tapCntRows_1_R0_S:I 
+*.PININFO I1_lin_default_tapCntRows_2_R0_D:I 
+*.PININFO I1_lin_default_tapCntRows_2_R0_G:I 
+*.PININFO I1_lin_default_tapCntRows_2_R0_S:I 
+*.PININFO I1_lin_default_tapCntRows_3_R0_D:I 
+*.PININFO I1_lin_default_tapCntRows_3_R0_G:I 
+*.PININFO I1_lin_default_tapCntRows_3_R0_S:I 
+*.PININFO I1_lin_default_tapCntRows_4_R0_D:I 
+*.PININFO I1_lin_default_tapCntRows_4_R0_G:I 
+*.PININFO I1_lin_default_tapCntRows_4_R0_S:I I1_lin_default_topTap_0_R0_D:I 
+*.PININFO I1_lin_default_topTap_0_R0_G:I I1_lin_default_topTap_0_R0_S:I vdd!:I
+MMN0 I1_lin_default_sFirst_1_R0_D 
++ I1_lin_default_sFirst_1_R0_G I1_lin_default_sFirst_1_R0_S vdd! nfet_05v0_dn m=1 w=16.8e-6 l=600n nf=5 
++ as=4.9728e-12 ad=4.9728e-12 ps=23.12e-6 pd=23.12e-6 nrd=0.017619 
++ nrs=0.017619 sa=0.440u sb=0.440u sd=0.520u dtemp=0 par=1
+MI1_lin_default_fingerW_32_R0 I1_lin_default_fingerW_32_R0_D 
++ I1_lin_default_fingerW_32_R0_G I1_lin_default_fingerW_32_R0_S vdd! 
++ nfet_05v0_dn m=1 w=1e-3 l=600n nf=10 as=296e-12 ad=260e-12 ps=1.20592e-3 
++ pd=1.0052e-3 nrd=0.000260 nrs=0.000296 sa=0.440u sb=0.440u sd=0.520u dtemp=0 
++ par=1
+MI1_lin_default_fingerW_31_R0 I1_lin_default_fingerW_31_R0_D 
++ I1_lin_default_fingerW_31_R0_G I1_lin_default_fingerW_31_R0_S vdd! 
++ nfet_05v0_dn m=1 w=85.455e-6 l=600n nf=1 as=37.6002e-12 ad=37.6002e-12 
++ ps=171.79e-6 pd=171.79e-6 nrd=0.005149 nrs=0.005149 sa=0.440u sb=0.440u 
++ sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_30_R0 I1_lin_default_fingerW_30_R0_D 
++ I1_lin_default_fingerW_30_R0_G I1_lin_default_fingerW_30_R0_S vdd! 
++ nfet_05v0_dn m=1 w=71.215e-6 l=600n nf=1 as=31.3346e-12 ad=31.3346e-12 
++ ps=143.31e-6 pd=143.31e-6 nrd=0.006178 nrs=0.006178 sa=0.440u sb=0.440u 
++ sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_29_R0 I1_lin_default_fingerW_29_R0_D 
++ I1_lin_default_fingerW_29_R0_G I1_lin_default_fingerW_29_R0_S vdd! 
++ nfet_05v0_dn m=1 w=59.345e-6 l=600n nf=1 as=26.1118e-12 ad=26.1118e-12 
++ ps=119.57e-6 pd=119.57e-6 nrd=0.007414 nrs=0.007414 sa=0.440u sb=0.440u 
++ sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_28_R0 I1_lin_default_fingerW_28_R0_D 
++ I1_lin_default_fingerW_28_R0_G I1_lin_default_fingerW_28_R0_S vdd! 
++ nfet_05v0_dn m=1 w=49.455e-6 l=600n nf=1 as=21.7602e-12 ad=21.7602e-12 
++ ps=99.79e-6 pd=99.79e-6 nrd=0.008897 nrs=0.008897 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_27_R0 I1_lin_default_fingerW_27_R0_D 
++ I1_lin_default_fingerW_27_R0_G I1_lin_default_fingerW_27_R0_S vdd! 
++ nfet_05v0_dn m=1 w=41.21e-6 l=600n nf=1 as=18.1324e-12 ad=18.1324e-12 
++ ps=83.3e-6 pd=83.3e-6 nrd=0.010677 nrs=0.010677 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_26_R0 I1_lin_default_fingerW_26_R0_D 
++ I1_lin_default_fingerW_26_R0_G I1_lin_default_fingerW_26_R0_S vdd! 
++ nfet_05v0_dn m=1 w=34.345e-6 l=600n nf=1 as=15.1118e-12 ad=15.1118e-12 
++ ps=69.57e-6 pd=69.57e-6 nrd=0.012811 nrs=0.012811 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_25_R0 I1_lin_default_fingerW_25_R0_D 
++ I1_lin_default_fingerW_25_R0_G I1_lin_default_fingerW_25_R0_S vdd! 
++ nfet_05v0_dn m=1 w=28.62e-6 l=600n nf=1 as=12.5928e-12 ad=12.5928e-12 
++ ps=58.12e-6 pd=58.12e-6 nrd=0.015374 nrs=0.015374 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_24_R0 I1_lin_default_fingerW_24_R0_D 
++ I1_lin_default_fingerW_24_R0_G I1_lin_default_fingerW_24_R0_S vdd! 
++ nfet_05v0_dn m=1 w=23.85e-6 l=600n nf=1 as=10.494e-12 ad=10.494e-12 
++ ps=48.58e-6 pd=48.58e-6 nrd=0.018449 nrs=0.018449 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_23_R0 I1_lin_default_fingerW_23_R0_D 
++ I1_lin_default_fingerW_23_R0_G I1_lin_default_fingerW_23_R0_S vdd! 
++ nfet_05v0_dn m=1 w=19.875e-6 l=600n nf=1 as=8.745e-12 ad=8.745e-12 
++ ps=40.63e-6 pd=40.63e-6 nrd=0.022138 nrs=0.022138 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_22_R0 I1_lin_default_fingerW_22_R0_D 
++ I1_lin_default_fingerW_22_R0_G I1_lin_default_fingerW_22_R0_S vdd! 
++ nfet_05v0_dn m=1 w=16.56e-6 l=600n nf=1 as=7.2864e-12 ad=7.2864e-12 ps=34e-6 
++ pd=34e-6 nrd=0.026570 nrs=0.026570 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_21_R0 I1_lin_default_fingerW_21_R0_D 
++ I1_lin_default_fingerW_21_R0_G I1_lin_default_fingerW_21_R0_S vdd! 
++ nfet_05v0_dn m=1 w=13.8e-6 l=600n nf=1 as=6.072e-12 ad=6.072e-12 ps=28.48e-6 
++ pd=28.48e-6 nrd=0.031884 nrs=0.031884 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_20_R0 I1_lin_default_fingerW_20_R0_D 
++ I1_lin_default_fingerW_20_R0_G I1_lin_default_fingerW_20_R0_S vdd! 
++ nfet_05v0_dn m=1 w=11.5e-6 l=600n nf=1 as=5.06e-12 ad=5.06e-12 ps=23.88e-6 
++ pd=23.88e-6 nrd=0.038261 nrs=0.038261 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_19_R0 I1_lin_default_fingerW_19_R0_D 
++ I1_lin_default_fingerW_19_R0_G I1_lin_default_fingerW_19_R0_S vdd! 
++ nfet_05v0_dn m=1 w=9.585e-6 l=600n nf=1 as=4.2174e-12 ad=4.2174e-12 
++ ps=20.05e-6 pd=20.05e-6 nrd=0.045905 nrs=0.045905 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_18_R0 I1_lin_default_fingerW_18_R0_D 
++ I1_lin_default_fingerW_18_R0_G I1_lin_default_fingerW_18_R0_S vdd! 
++ nfet_05v0_dn m=1 w=7.985e-6 l=600n nf=1 as=3.5134e-12 ad=3.5134e-12 
++ ps=16.85e-6 pd=16.85e-6 nrd=0.055103 nrs=0.055103 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_17_R0 I1_lin_default_fingerW_17_R0_D 
++ I1_lin_default_fingerW_17_R0_G I1_lin_default_fingerW_17_R0_S vdd! 
++ nfet_05v0_dn m=1 w=6.655e-6 l=600n nf=1 as=2.9282e-12 ad=2.9282e-12 
++ ps=14.19e-6 pd=14.19e-6 nrd=0.066116 nrs=0.066116 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_16_R0 I1_lin_default_fingerW_16_R0_D 
++ I1_lin_default_fingerW_16_R0_G I1_lin_default_fingerW_16_R0_S vdd! 
++ nfet_05v0_dn m=1 w=5.545e-6 l=600n nf=1 as=2.4398e-12 ad=2.4398e-12 
++ ps=11.97e-6 pd=11.97e-6 nrd=0.079351 nrs=0.079351 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_15_R0 I1_lin_default_fingerW_15_R0_D 
++ I1_lin_default_fingerW_15_R0_G I1_lin_default_fingerW_15_R0_S vdd! 
++ nfet_05v0_dn m=1 w=4.62e-6 l=600n nf=1 as=2.0328e-12 ad=2.0328e-12 
++ ps=10.12e-6 pd=10.12e-6 nrd=0.095238 nrs=0.095238 sa=0.440u sb=0.440u sd=0u 
++ dtemp=0 par=1
+MI1_lin_default_fingerW_14_R0 I1_lin_default_fingerW_14_R0_D 
++ I1_lin_default_fingerW_14_R0_G I1_lin_default_fingerW_14_R0_S vdd! 
++ nfet_05v0_dn m=1 w=3.85e-6 l=600n nf=1 as=1.694e-12 ad=1.694e-12 ps=8.58e-6 
++ pd=8.58e-6 nrd=0.114286 nrs=0.114286 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_13_R0 I1_lin_default_fingerW_13_R0_D 
++ I1_lin_default_fingerW_13_R0_G I1_lin_default_fingerW_13_R0_S vdd! 
++ nfet_05v0_dn m=1 w=3.21e-6 l=600n nf=1 as=1.4124e-12 ad=1.4124e-12 ps=7.3e-6 
++ pd=7.3e-6 nrd=0.137072 nrs=0.137072 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_12_R0 I1_lin_default_fingerW_12_R0_D 
++ I1_lin_default_fingerW_12_R0_G I1_lin_default_fingerW_12_R0_S vdd! 
++ nfet_05v0_dn m=1 w=2.675e-6 l=600n nf=1 as=1.177e-12 ad=1.177e-12 ps=6.23e-6 
++ pd=6.23e-6 nrd=0.164486 nrs=0.164486 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_11_R0 I1_lin_default_fingerW_11_R0_D 
++ I1_lin_default_fingerW_11_R0_G I1_lin_default_fingerW_11_R0_S vdd! 
++ nfet_05v0_dn m=1 w=2.23e-6 l=600n nf=1 as=981.2e-15 ad=981.2e-15 ps=5.34e-6 
++ pd=5.34e-6 nrd=0.197309 nrs=0.197309 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_10_R0 I1_lin_default_fingerW_10_R0_D 
++ I1_lin_default_fingerW_10_R0_G I1_lin_default_fingerW_10_R0_S vdd! 
++ nfet_05v0_dn m=1 w=1.86e-6 l=600n nf=1 as=818.4e-15 ad=818.4e-15 ps=4.6e-6 
++ pd=4.6e-6 nrd=0.236559 nrs=0.236559 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_9_R0 I1_lin_default_fingerW_9_R0_D 
++ I1_lin_default_fingerW_9_R0_G I1_lin_default_fingerW_9_R0_S vdd! nfet_05v0_dn 
++ m=1 w=1.55e-6 l=600n nf=1 as=682e-15 ad=682e-15 ps=3.98e-6 pd=3.98e-6 
++ nrd=0.283871 nrs=0.283871 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_8_R0 I1_lin_default_fingerW_8_R0_D 
++ I1_lin_default_fingerW_8_R0_G I1_lin_default_fingerW_8_R0_S vdd! nfet_05v0_dn 
++ m=1 w=1.29e-6 l=600n nf=1 as=567.6e-15 ad=567.6e-15 ps=3.46e-6 pd=3.46e-6 
++ nrd=0.341085 nrs=0.341085 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_7_R0 I1_lin_default_fingerW_7_R0_D 
++ I1_lin_default_fingerW_7_R0_G I1_lin_default_fingerW_7_R0_S vdd! nfet_05v0_dn 
++ m=1 w=1.075e-6 l=600n nf=1 as=473e-15 ad=473e-15 ps=3.03e-6 pd=3.03e-6 
++ nrd=0.409302 nrs=0.409302 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_6_R0 I1_lin_default_fingerW_6_R0_D 
++ I1_lin_default_fingerW_6_R0_G I1_lin_default_fingerW_6_R0_S vdd! nfet_05v0_dn 
++ m=1 w=895e-9 l=600n nf=1 as=393.8e-15 ad=393.8e-15 ps=2.67e-6 pd=2.67e-6 
++ nrd=0.491620 nrs=0.491620 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_5_R0 I1_lin_default_fingerW_5_R0_D 
++ I1_lin_default_fingerW_5_R0_G I1_lin_default_fingerW_5_R0_S vdd! nfet_05v0_dn 
++ m=1 w=745e-9 l=600n nf=1 as=327.8e-15 ad=327.8e-15 ps=2.37e-6 pd=2.37e-6 
++ nrd=0.590604 nrs=0.590604 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_4_R0 I1_lin_default_fingerW_4_R0_D 
++ I1_lin_default_fingerW_4_R0_G I1_lin_default_fingerW_4_R0_S vdd! nfet_05v0_dn 
++ m=1 w=620e-9 l=600n nf=1 as=272.8e-15 ad=272.8e-15 ps=2.12e-6 pd=2.12e-6 
++ nrd=0.709677 nrs=0.709677 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_3_R0 I1_lin_default_fingerW_3_R0_D 
++ I1_lin_default_fingerW_3_R0_G I1_lin_default_fingerW_3_R0_S vdd! nfet_05v0_dn 
++ m=1 w=520e-9 l=600n nf=1 as=228.8e-15 ad=228.8e-15 ps=1.92e-6 pd=1.92e-6 
++ nrd=0.846154 nrs=0.846154 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_2_R0 I1_lin_default_fingerW_2_R0_D 
++ I1_lin_default_fingerW_2_R0_G I1_lin_default_fingerW_2_R0_S vdd! nfet_05v0_dn 
++ m=1 w=430e-9 l=600n nf=1 as=189.2e-15 ad=189.2e-15 ps=1.74e-6 pd=1.74e-6 
++ nrd=1.023256 nrs=1.023256 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_1_R0 I1_lin_default_fingerW_1_R0_D 
++ I1_lin_default_fingerW_1_R0_G I1_lin_default_fingerW_1_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 
++ nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_fingerW_0_R0 I1_lin_default_fingerW_0_R0_D 
++ I1_lin_default_fingerW_0_R0_G I1_lin_default_fingerW_0_R0_S vdd! nfet_05v0_dn 
++ m=1 w=300e-9 l=600n nf=1 as=219.6e-15 ad=219.6e-15 ps=2.04e-6 pd=2.04e-6 
++ nrd=2.440000 nrs=2.440000 sa=0.660u sb=0.660u sd=0u dtemp=0 par=1
+MI1_lin_default_l_25_R0 I1_lin_default_l_25_R0_D I1_lin_default_l_25_R0_G 
++ I1_lin_default_l_25_R0_S vdd! nfet_05v0_dn m=1 w=1.8e-6 l=50.000u nf=5 
++ as=532.8e-15 ad=532.8e-15 ps=5.12e-6 pd=5.12e-6 nrd=0.164444 nrs=0.164444 
++ sa=0.440u sb=0.440u sd=0.520u dtemp=0 par=1
+MI1_lin_default_l_24_R0 I1_lin_default_l_24_R0_D I1_lin_default_l_24_R0_G 
++ I1_lin_default_l_24_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=47.700u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_23_R0 I1_lin_default_l_23_R0_D I1_lin_default_l_23_R0_G 
++ I1_lin_default_l_23_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=39.750u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_22_R0 I1_lin_default_l_22_R0_D I1_lin_default_l_22_R0_G 
++ I1_lin_default_l_22_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=33.125u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_21_R0 I1_lin_default_l_21_R0_D I1_lin_default_l_21_R0_G 
++ I1_lin_default_l_21_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=27.605u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_20_R0 I1_lin_default_l_20_R0_D I1_lin_default_l_20_R0_G 
++ I1_lin_default_l_20_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=23.005u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_19_R0 I1_lin_default_l_19_R0_D I1_lin_default_l_19_R0_G 
++ I1_lin_default_l_19_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=19.170u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_18_R0 I1_lin_default_l_18_R0_D I1_lin_default_l_18_R0_G 
++ I1_lin_default_l_18_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=15.975u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_17_R0 I1_lin_default_l_17_R0_D I1_lin_default_l_17_R0_G 
++ I1_lin_default_l_17_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=13.310u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_16_R0 I1_lin_default_l_16_R0_D I1_lin_default_l_16_R0_G 
++ I1_lin_default_l_16_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=11.095u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_15_R0 I1_lin_default_l_15_R0_D I1_lin_default_l_15_R0_G 
++ I1_lin_default_l_15_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=9.245u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_14_R0 I1_lin_default_l_14_R0_D I1_lin_default_l_14_R0_G 
++ I1_lin_default_l_14_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=7.705u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_13_R0 I1_lin_default_l_13_R0_D I1_lin_default_l_13_R0_G 
++ I1_lin_default_l_13_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=6.420u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_12_R0 I1_lin_default_l_12_R0_D I1_lin_default_l_12_R0_G 
++ I1_lin_default_l_12_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=5.350u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_11_R0 I1_lin_default_l_11_R0_D I1_lin_default_l_11_R0_G 
++ I1_lin_default_l_11_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=4.460u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_10_R0 I1_lin_default_l_10_R0_D I1_lin_default_l_10_R0_G 
++ I1_lin_default_l_10_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=3.715u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_9_R0 I1_lin_default_l_9_R0_D I1_lin_default_l_9_R0_G 
++ I1_lin_default_l_9_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=3.095u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_8_R0 I1_lin_default_l_8_R0_D I1_lin_default_l_8_R0_G 
++ I1_lin_default_l_8_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=2.580u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_7_R0 I1_lin_default_l_7_R0_D I1_lin_default_l_7_R0_G 
++ I1_lin_default_l_7_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=2.150u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_6_R0 I1_lin_default_l_6_R0_D I1_lin_default_l_6_R0_G 
++ I1_lin_default_l_6_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=1.790u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_5_R0 I1_lin_default_l_5_R0_D I1_lin_default_l_5_R0_G 
++ I1_lin_default_l_5_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=1.495u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_4_R0 I1_lin_default_l_4_R0_D I1_lin_default_l_4_R0_G 
++ I1_lin_default_l_4_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=1.245u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_3_R0 I1_lin_default_l_3_R0_D I1_lin_default_l_3_R0_G 
++ I1_lin_default_l_3_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=1.035u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_2_R0 I1_lin_default_l_2_R0_D I1_lin_default_l_2_R0_G 
++ I1_lin_default_l_2_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=0.865u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_1_R0 I1_lin_default_l_1_R0_D I1_lin_default_l_1_R0_G 
++ I1_lin_default_l_1_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=0.720u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_l_0_R0 I1_lin_default_l_0_R0_D I1_lin_default_l_0_R0_G 
++ I1_lin_default_l_0_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=0.600u nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_nf_2_R0 I1_lin_default_nf_2_R0_D I1_lin_default_nf_2_R0_G 
++ I1_lin_default_nf_2_R0_S vdd! nfet_05v0_dn m=1 w=36e-6 l=600n nf=100 
++ as=9.4896e-12 ad=9.36e-12 ps=89.44e-6 pd=88e-6 nrd=0.007222 nrs=0.007322 
++ sa=0.440u sb=0.440u sd=0.520u dtemp=0 par=1
+MI1_lin_default_nf_1_R0 I1_lin_default_nf_1_R0_D I1_lin_default_nf_1_R0_G 
++ I1_lin_default_nf_1_R0_S vdd! nfet_05v0_dn m=1 w=18.36e-6 l=600n nf=51 
++ as=4.8384e-12 ad=4.8384e-12 ps=45.6e-6 pd=45.6e-6 nrd=0.014353 nrs=0.014353 
++ sa=0.440u sb=0.440u sd=0.520u dtemp=0 par=1
+MI1_lin_default_nf_0_R0 I1_lin_default_nf_0_R0_D I1_lin_default_nf_0_R0_G 
++ I1_lin_default_nf_0_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_m_2_R0 I1_lin_default_m_2_R0_D I1_lin_default_m_2_R0_G 
++ I1_lin_default_m_2_R0_S vdd! nfet_05v0_dn m=100 w=360e-9 l=600n nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=100
+MI1_lin_default_m_1_R0 I1_lin_default_m_1_R0_D I1_lin_default_m_1_R0_G 
++ I1_lin_default_m_1_R0_S vdd! nfet_05v0_dn m=51 w=360e-9 l=600n nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=51
+MI1_lin_default_m_0_R0 I1_lin_default_m_0_R0_D I1_lin_default_m_0_R0_G 
++ I1_lin_default_m_0_R0_S vdd! nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 
++ as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 nrd=1.222222 nrs=1.222222 
++ sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_calculatedParam_2_R0 I1_lin_default_calculatedParam_2_R0_D 
++ I1_lin_default_calculatedParam_2_R0_G I1_lin_default_calculatedParam_2_R0_S 
++ vdd! nfet_05v0_dn m=1 w=720e-9 l=600n nf=2 as=316.8e-15 ad=187.2e-15 
++ ps=3.2e-6 pd=1.76e-6 nrd=0.361111 nrs=0.611111 sa=0.440u sb=0.440u sd=0.520u 
++ dtemp=0 par=1
+MI1_lin_default_calculatedParam_1_R0 I1_lin_default_calculatedParam_1_R0_D 
++ I1_lin_default_calculatedParam_1_R0_G I1_lin_default_calculatedParam_1_R0_S 
++ vdd! nfet_05v0_dn m=1 w=900e-9 l=600n nf=3 as=529.2e-15 ad=529.2e-15 
++ ps=4.68e-6 pd=4.68e-6 nrd=0.653333 nrs=0.653333 sa=0.660u sb=0.660u 
++ sd=0.960u dtemp=0 par=1
+MI1_lin_default_calculatedParam_0_R0 I1_lin_default_calculatedParam_0_R0_D 
++ I1_lin_default_calculatedParam_0_R0_G I1_lin_default_calculatedParam_0_R0_S 
++ vdd! nfet_05v0_dn m=1 w=1.08e-6 l=600n nf=3 as=345.6e-15 ad=345.6e-15 
++ ps=3.36e-6 pd=3.36e-6 nrd=0.296296 nrs=0.296296 sa=0.440u sb=0.440u 
++ sd=0.520u dtemp=0 par=1
+MI1_lin_default_gateConn_2_R0 I1_lin_default_gateConn_2_R0_D 
++ I1_lin_default_gateConn_2_R0_G I1_lin_default_gateConn_2_R0_S vdd! 
++ nfet_05v0_dn m=1 w=16.08e-6 l=600n nf=3 as=5.1456e-12 ad=5.1456e-12 
++ ps=23.36e-6 pd=23.36e-6 nrd=0.019900 nrs=0.019900 sa=0.440u sb=0.440u 
++ sd=0.520u dtemp=0 par=1
+MI1_lin_default_gateConn_1_R0 I1_lin_default_gateConn_1_R0_D 
++ I1_lin_default_gateConn_1_R0_G I1_lin_default_gateConn_1_R0_S vdd! 
++ nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 
++ pd=1.6e-6 nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_gateConn_0_R0 I1_lin_default_gateConn_0_R0_D 
++ I1_lin_default_gateConn_0_R0_G I1_lin_default_gateConn_0_R0_S vdd! 
++ nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 
++ pd=1.6e-6 nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_9_R0 I1_lin_default_sdWidth_9_R0_D 
++ I1_lin_default_sdWidth_9_R0_G I1_lin_default_sdWidth_9_R0_S vdd! nfet_05v0_dn 
++ m=1 w=26.8e-6 l=600n nf=5 as=20.3144e-12 ad=20.3144e-12 ps=39.74e-6 
++ pd=39.74e-6 nrd=0.028284 nrs=0.028284 sa=1.210u sb=1.210u sd=1.290u dtemp=0 
++ par=1
+MI1_lin_default_sdWidth_8_R0 I1_lin_default_sdWidth_8_R0_D 
++ I1_lin_default_sdWidth_8_R0_G I1_lin_default_sdWidth_8_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=432e-15 ad=432e-15 ps=3.12e-6 pd=3.12e-6 
++ nrd=3.333333 nrs=3.333333 sa=1.200u sb=1.200u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_7_R0 I1_lin_default_sdWidth_7_R0_D 
++ I1_lin_default_sdWidth_7_R0_G I1_lin_default_sdWidth_7_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=372.6e-15 ad=372.6e-15 ps=2.79e-6 pd=2.79e-6 
++ nrd=2.875000 nrs=2.875000 sa=1.035u sb=1.035u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_6_R0 I1_lin_default_sdWidth_6_R0_D 
++ I1_lin_default_sdWidth_6_R0_G I1_lin_default_sdWidth_6_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=322.2e-15 ad=322.2e-15 ps=2.51e-6 pd=2.51e-6 
++ nrd=2.486111 nrs=2.486111 sa=0.895u sb=0.895u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_5_R0 I1_lin_default_sdWidth_5_R0_D 
++ I1_lin_default_sdWidth_5_R0_G I1_lin_default_sdWidth_5_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=280.8e-15 ad=280.8e-15 ps=2.28e-6 pd=2.28e-6 
++ nrd=2.166667 nrs=2.166667 sa=0.780u sb=0.780u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_4_R0 I1_lin_default_sdWidth_4_R0_D 
++ I1_lin_default_sdWidth_4_R0_G I1_lin_default_sdWidth_4_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=246.6e-15 ad=246.6e-15 ps=2.09e-6 pd=2.09e-6 
++ nrd=1.902778 nrs=1.902778 sa=0.685u sb=0.685u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_3_R0 I1_lin_default_sdWidth_3_R0_D 
++ I1_lin_default_sdWidth_3_R0_G I1_lin_default_sdWidth_3_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=217.8e-15 ad=217.8e-15 ps=1.93e-6 pd=1.93e-6 
++ nrd=1.680556 nrs=1.680556 sa=0.605u sb=0.605u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_2_R0 I1_lin_default_sdWidth_2_R0_D 
++ I1_lin_default_sdWidth_2_R0_G I1_lin_default_sdWidth_2_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=194.4e-15 ad=194.4e-15 ps=1.8e-6 pd=1.8e-6 
++ nrd=1.500000 nrs=1.500000 sa=0.540u sb=0.540u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_1_R0 I1_lin_default_sdWidth_1_R0_D 
++ I1_lin_default_sdWidth_1_R0_G I1_lin_default_sdWidth_1_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=174.6e-15 ad=174.6e-15 ps=1.69e-6 pd=1.69e-6 
++ nrd=1.347222 nrs=1.347222 sa=0.485u sb=0.485u sd=0u dtemp=0 par=1
+MI1_lin_default_sdWidth_0_R0 I1_lin_default_sdWidth_0_R0_D 
++ I1_lin_default_sdWidth_0_R0_G I1_lin_default_sdWidth_0_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 
++ nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_sFirst_0_R0 I1_lin_default_sFirst_0_R0_D 
++ I1_lin_default_sFirst_0_R0_G I1_lin_default_sFirst_0_R0_S vdd! nfet_05v0_dn 
++ m=1 w=16.8e-6 l=600n nf=5 as=4.9728e-12 ad=4.9728e-12 ps=23.12e-6 
++ pd=23.12e-6 nrd=0.017619 nrs=0.017619 sa=0.440u sb=0.440u sd=0.520u dtemp=0 
++ par=1
+MI1_lin_default_sdConn_2_R0 I1_lin_default_sdConn_2_R0_D 
++ I1_lin_default_sdConn_2_R0_G I1_lin_default_sdConn_2_R0_S vdd! nfet_05v0_dn 
++ m=1 w=10.08e-6 l=600n nf=3 as=3.2256e-12 ad=3.2256e-12 ps=15.36e-6 
++ pd=15.36e-6 nrd=0.031746 nrs=0.031746 sa=0.440u sb=0.440u sd=0.520u dtemp=0 
++ par=1
+MI1_lin_default_sdConn_1_R0 I1_lin_default_sdConn_1_R0_D 
++ I1_lin_default_sdConn_1_R0_G I1_lin_default_sdConn_1_R0_S vdd! nfet_05v0_dn 
++ m=1 w=6.72e-6 l=600n nf=2 as=1.7472e-12 ad=2.9568e-12 ps=7.76e-6 pd=15.2e-6 
++ nrd=0.065476 nrs=0.038690 sa=0.440u sb=0.440u sd=0.520u dtemp=0 par=1
+MI1_lin_default_sdConn_0_R0 I1_lin_default_sdConn_0_R0_D 
++ I1_lin_default_sdConn_0_R0_G I1_lin_default_sdConn_0_R0_S vdd! nfet_05v0_dn 
++ m=1 w=6.72e-6 l=600n nf=2 as=2.9568e-12 ad=1.7472e-12 ps=15.2e-6 pd=7.76e-6 
++ nrd=0.038690 nrs=0.065476 sa=0.440u sb=0.440u sd=0.520u dtemp=0 par=1
+MI1_lin_default_bodytie_1_R0 I1_lin_default_bodytie_1_R0_D 
++ I1_lin_default_bodytie_1_R0_G I1_lin_default_bodytie_1_R0_S vdd! nfet_05v0_dn 
++ m=1 w=10.08e-6 l=600n nf=3 as=3.2256e-12 ad=3.2256e-12 ps=15.36e-6 
++ pd=15.36e-6 nrd=0.031746 nrs=0.031746 sa=0.440u sb=0.440u sd=0.520u dtemp=0 
++ par=1
+MI1_lin_default_bodytie_0_R0 I1_lin_default_bodytie_0_R0_D 
++ I1_lin_default_bodytie_0_R0_G I1_lin_default_bodytie_0_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 
++ nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_leftTap_0_R0 I1_lin_default_leftTap_0_R0_D 
++ I1_lin_default_leftTap_0_R0_G I1_lin_default_leftTap_0_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 
++ nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_rightTap_0_R0 I1_lin_default_rightTap_0_R0_D 
++ I1_lin_default_rightTap_0_R0_G I1_lin_default_rightTap_0_R0_S vdd! 
++ nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 
++ pd=1.6e-6 nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_topTap_0_R0 I1_lin_default_topTap_0_R0_D 
++ I1_lin_default_topTap_0_R0_G I1_lin_default_topTap_0_R0_S vdd! nfet_05v0_dn 
++ m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 
++ nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_bottomTap_0_R0 I1_lin_default_bottomTap_0_R0_D 
++ I1_lin_default_bottomTap_0_R0_G I1_lin_default_bottomTap_0_R0_S vdd! 
++ nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 
++ pd=1.6e-6 nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_tapCntRows_4_R0 I1_lin_default_tapCntRows_4_R0_D 
++ I1_lin_default_tapCntRows_4_R0_G I1_lin_default_tapCntRows_4_R0_S vdd! 
++ nfet_05v0_dn m=1 w=25.08e-6 l=600n nf=3 as=8.0256e-12 ad=8.0256e-12 
++ ps=35.36e-6 pd=35.36e-6 nrd=0.012759 nrs=0.012759 sa=0.440u sb=0.440u 
++ sd=0.520u dtemp=0 par=1
+MI1_lin_default_tapCntRows_3_R0 I1_lin_default_tapCntRows_3_R0_D 
++ I1_lin_default_tapCntRows_3_R0_G I1_lin_default_tapCntRows_3_R0_S vdd! 
++ nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 
++ pd=1.6e-6 nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_tapCntRows_2_R0 I1_lin_default_tapCntRows_2_R0_D 
++ I1_lin_default_tapCntRows_2_R0_G I1_lin_default_tapCntRows_2_R0_S vdd! 
++ nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 
++ pd=1.6e-6 nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_tapCntRows_1_R0 I1_lin_default_tapCntRows_1_R0_D 
++ I1_lin_default_tapCntRows_1_R0_G I1_lin_default_tapCntRows_1_R0_S vdd! 
++ nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 
++ pd=1.6e-6 nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_lin_default_tapCntRows_0_R0 I1_lin_default_tapCntRows_0_R0_D 
++ I1_lin_default_tapCntRows_0_R0_G I1_lin_default_tapCntRows_0_R0_S vdd! 
++ nfet_05v0_dn m=1 w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 
++ pd=1.6e-6 nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+MI1_default I1_default_D I1_default_G I1_default_S vdd! nfet_05v0_dn m=1 
++ w=360e-9 l=600n nf=1 as=158.4e-15 ad=158.4e-15 ps=1.6e-6 pd=1.6e-6 
++ nrd=1.222222 nrs=1.222222 sa=0.440u sb=0.440u sd=0u dtemp=0 par=1
+.ENDS
+

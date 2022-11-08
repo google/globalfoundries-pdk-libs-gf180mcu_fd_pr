@@ -123,7 +123,11 @@ def main():
 
     # mim
     corners = ["ss" , "typical","ff"]        
-    devices = ["mim_1p5fF" , "mim_1p0fF" , "mim_2p0fF"]
+    devices = ["cap_mim_1f5_m2m3_noshield" , "cap_mim_1f0_m2m3_noshield" , "cap_mim_2f0_m2m3_noshield" ,\
+               "cap_mim_1f5_m3m4_noshield" , "cap_mim_1f0_m3m4_noshield" , "cap_mim_2f0_m3m4_noshield" ,\
+               "cap_mim_1f5_m4m5_noshield" , "cap_mim_1f0_m4m5_noshield" , "cap_mim_2f0_m4m5_noshield" ,\
+               "cap_mim_1f5_m5m6_noshield" , "cap_mim_1f0_m5m6_noshield" , "cap_mim_2f0_m5m6_noshield" ]
+
     measure = ["cv","corners", "CV (fF)"]
     start = 0
     for corner in corners: 
