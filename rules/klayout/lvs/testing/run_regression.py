@@ -94,7 +94,7 @@ def lvs_check(table,files):
         # moving all reports to run dir
         out_dir = arguments["--run_dir"]
         device_dir = table.split(" ")[0]
-        check_call(f"mv -f testcases/{layout}.lvsdb testcases/{layout}_extracted.cir testcases/{layout}_generated.cdl {out_dir}/LVS_{device_dir}/")
+        check_call(f"mv -f testcases/{layout}.lvsdb testcases/{layout}_extracted.cir testcases/{layout}_generated.cdl {out_dir}/LVS_{device_dir}/", shell=True)
 
         if "INFO : Congratulations! Netlists match." in result:
             logging.info(f"Extraction of {layout} is passed")
@@ -109,7 +109,7 @@ def lvs_check(table,files):
                     result = os.popen(f"klayout -b -r ../gf180mcu.lvs -rd input={file} -rd report={layout}.lvsdb -rd schematic={layout}.cdl -rd target_netlist={layout}_extracted.cir -rd thr={workers_count} {switches}").read()
 
                     dir_clean = file.replace(".gds","")
-                    check_call(f"mv -f {dir_clean}.lvsdb {dir_clean}_extracted.cir {out_dir}/LVS_{device_dir}/")
+                    check_call(f"mv -f {dir_clean}.lvsdb {dir_clean}_extracted.cir {out_dir}/LVS_{device_dir}/", shell=True)
 
                     if "INFO : Congratulations! Netlists match." in result:
                         logging.info(f"Extraction of {layout} in manual test case is passed")

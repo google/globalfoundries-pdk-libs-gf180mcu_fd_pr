@@ -107,8 +107,8 @@ def lvs_check(sc_input):
 def main():
 
     # Remove old reports
-    check_call(f"rm -rf sc_testcases/sc_report.csv")
-    check_call(f"rm -rf ip_testcases/ip_report.csv")
+    check_call(f"rm -rf sc_testcases/sc_report.csv", shell=True)
+    check_call(f"rm -rf ip_testcases/ip_report.csv", shell=True)
 
     cell_list = arguments["--path"]
     if isinstance(cell_list, str): cell_list = [cell_list]
@@ -135,8 +135,8 @@ def main():
                                 ly2.cell(new_top).copy_tree(layout.cell("#{cell.name}"))
                                 ly2.write("sc_testcases/sc_split/#{cell.name}.gds")
                             end''')
-            check_call(f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds")
-            check_call(f"rm -rf sc_testcases/split_gds.rb")
+            check_call(f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds", shell=True)
+            check_call(f"rm -rf sc_testcases/split_gds.rb", shell=True)
 
             # Create cdl splitter script
             cdl = cell.split("/")[-1]

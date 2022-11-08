@@ -78,7 +78,7 @@ def call_simulator(arg):
     :param path: The path to the GDS file you want to simulate
     :param thrCount: number of threads to use
     """
-    check_call(arg)
+    check_call(arg, shell=True)
 
 if __name__ == "__main__":
 

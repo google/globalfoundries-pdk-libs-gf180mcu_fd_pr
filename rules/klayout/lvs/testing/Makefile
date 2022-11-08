@@ -31,7 +31,7 @@ test-LVS: Add_run-dir  test-LVS-switch  test-LVS-gf180mcu_fd_sc  test-LVS-main
 #=================================
 .ONESHELL:
 print_klayout_version:
-	@echo "Klayout version : $(klayout -v)"
+	@klayout -v
 
 .ONESHELL:
 Add_run-dir:

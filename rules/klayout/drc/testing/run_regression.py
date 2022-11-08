@@ -55,7 +55,7 @@ def call_regression(rule_deck_path, path):
     x = x.replace(" ", "_")
 
     name_ext = str(rule_deck_path).replace(".drc","").split("/")[-1]
-    check_call(f"mkdir run_{x}_{name_ext}")
+    check_call(f"mkdir run_{x}_{name_ext}", shell=True)
 
     # Get the same rule deck with gds output
     with open(rule_deck_path, 'r') as f:
@@ -88,9 +88,9 @@ def call_regression(rule_deck_path, path):
     iname = path.split('.gds')
     if '/' in iname[0]:
         file = iname[0].split('/')
-        check_call(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={file[-1]}.lyrdb -rd thr={thrCount} {switches} ")
+        check_call(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={file[-1]}.lyrdb -rd thr={thrCount} {switches} ", shell=True)
     else:
-        check_call(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={iname[0]}.lyrdb -rd thr={thrCount} {switches} ")
+        check_call(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={iname[0]}.lyrdb -rd thr={thrCount} {switches} ", shell=True)
 
     marker_gen = []
     ly = 0
@@ -134,7 +134,7 @@ def call_regression(rule_deck_path, path):
     marker_file.close()
 
     # Generate databases
-    check_call(f"klayout -b -r run_{x}_{name_ext}/regression.drc -rd input=run_{x}_{name_ext}/merged_output.gds -rd report=database.lyrdb -rd thr={thrCount} {switches}")
+    check_call(f"klayout -b -r run_{x}_{name_ext}/regression.drc -rd input=run_{x}_{name_ext}/merged_output.gds -rd report=database.lyrdb -rd thr={thrCount} {switches}", shell=True)
 
     mytree = ET.parse(f'run_{x}_{name_ext}/database.lyrdb')
     myroot = mytree.getroot()
@@ -252,9 +252,6 @@ if __name__ == "__main__":
     else:
         print("The number of metal layers in stack allowed values are (2, 3, 4, 5, 6) only")
         exit()
-
-
-    check_call("klayout -v")
 
     rule_deck_path = []
 

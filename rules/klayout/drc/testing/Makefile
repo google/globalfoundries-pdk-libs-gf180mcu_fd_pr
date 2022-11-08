@@ -31,7 +31,7 @@ test-DRC: test-DRC-switch  test-DRC-SC  test-DRC-main
 #=================================
 .ONESHELL:
 print_klayout_version:
-	@echo "Klayout version : $(klayout -v)"
+	@klayout -v
 
 .ONESHELL:
 test-DRC-SC : test-DRC-gf180mcu_fd_ip_sram test-DRC-gf180mcu_fd_io test-DRC-gf180mcu_fd_sc_mcu7t5v0 test-DRC-gf180mcu_fd_sc_mcu9t5v0
