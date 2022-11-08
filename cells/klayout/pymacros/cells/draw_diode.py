@@ -357,7 +357,7 @@ def draw_nwp_diode(layout, l, w , volt):
     nwp_diode_cell.flatten(True)
     return nwp_diode_cell
 
-def draw_dnwpw_diode(layout, l, w , volt):
+def draw_diode_pw2dw_diode(layout, l, w , volt):
     '''
     Usage:-
      used to draw LVPWELL/DNWELL diode by specifying parameters
@@ -403,9 +403,9 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pcmp2ncmp_spc       = 0.36 * dbu_PERCISION
         lvpwell_pcmp_enc    = 0.16 * dbu_PERCISION
 
-    # Inserting dnwpw cell
-    cell_index       = layout.add_cell("dnwpw_diode")
-    dnwpw_diode_cell = layout.cell(cell_index)
+    # Inserting diode_pw2dw cell
+    cell_index       = layout.add_cell("diode_pw2dw_diode")
+    diode_pw2dw_diode_cell = layout.cell(cell_index)
 
     # Inserting a contact cell
     cont_cell_index = layout.add_cell("contact")
@@ -413,29 +413,29 @@ def draw_dnwpw_diode(layout, l, w , volt):
     cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
 
     # Inserting lvpwell
-    dnwpw_diode_cell.shapes(lvpwell).insert(pya.Box(0, 0, lvpwell_w, lvpwell_l))
+    diode_pw2dw_diode_cell.shapes(lvpwell).insert(pya.Box(0, 0, lvpwell_w, lvpwell_l))
 
     # Inserting dnwell
-    dnwpw_diode_cell.shapes(dnwell).insert(pya.Box(-dnwell_lvpwell_enc, -dnwell_lvpwell_enc, lvpwell_w+dnwell_lvpwell_enc, lvpwell_l+dnwell_lvpwell_enc))
+    diode_pw2dw_diode_cell.shapes(dnwell).insert(pya.Box(-dnwell_lvpwell_enc, -dnwell_lvpwell_enc, lvpwell_w+dnwell_lvpwell_enc, lvpwell_l+dnwell_lvpwell_enc))
 
     # Inserting p diffusion
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_pcmp_enc, lvpwell_pcmp_enc , lvpwell_pcmp_enc+cmp_w, lvpwell_l-lvpwell_pcmp_enc))                                    # left
-    dnwpw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_pcmp_enc-implant_comp_enc, lvpwell_pcmp_enc-implant_comp_enc , lvpwell_pcmp_enc+cmp_w+implant_comp_enc, lvpwell_l-lvpwell_pcmp_enc+implant_comp_enc))
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_pcmp_enc, lvpwell_pcmp_enc , lvpwell_pcmp_enc+cmp_w, lvpwell_l-lvpwell_pcmp_enc))                                    # left
+    diode_pw2dw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_pcmp_enc-implant_comp_enc, lvpwell_pcmp_enc-implant_comp_enc , lvpwell_pcmp_enc+cmp_w+implant_comp_enc, lvpwell_l-lvpwell_pcmp_enc+implant_comp_enc))
 
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_w-lvpwell_pcmp_enc-cmp_w, lvpwell_pcmp_enc , lvpwell_w-lvpwell_pcmp_enc , lvpwell_l-lvpwell_pcmp_enc))               # right
-    dnwpw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_w-lvpwell_pcmp_enc-cmp_w-implant_comp_enc, lvpwell_pcmp_enc-implant_comp_enc , lvpwell_w-lvpwell_pcmp_enc+implant_comp_enc , lvpwell_l-lvpwell_pcmp_enc+implant_comp_enc))
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_w-lvpwell_pcmp_enc-cmp_w, lvpwell_pcmp_enc , lvpwell_w-lvpwell_pcmp_enc , lvpwell_l-lvpwell_pcmp_enc))               # right
+    diode_pw2dw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_w-lvpwell_pcmp_enc-cmp_w-implant_comp_enc, lvpwell_pcmp_enc-implant_comp_enc , lvpwell_w-lvpwell_pcmp_enc+implant_comp_enc , lvpwell_l-lvpwell_pcmp_enc+implant_comp_enc))
 
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_pcmp_enc+cmp_w, lvpwell_l-lvpwell_pcmp_enc-cmp_w , lvpwell_w-lvpwell_pcmp_enc-cmp_w , lvpwell_l-lvpwell_pcmp_enc))   # top
-    dnwpw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_pcmp_enc+cmp_w+implant_comp_enc, lvpwell_l-lvpwell_pcmp_enc-cmp_w-implant_comp_enc , lvpwell_w-lvpwell_pcmp_enc-cmp_w-implant_comp_enc , lvpwell_l-lvpwell_pcmp_enc+implant_comp_enc)) # top
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_pcmp_enc+cmp_w, lvpwell_l-lvpwell_pcmp_enc-cmp_w , lvpwell_w-lvpwell_pcmp_enc-cmp_w , lvpwell_l-lvpwell_pcmp_enc))   # top
+    diode_pw2dw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_pcmp_enc+cmp_w+implant_comp_enc, lvpwell_l-lvpwell_pcmp_enc-cmp_w-implant_comp_enc , lvpwell_w-lvpwell_pcmp_enc-cmp_w-implant_comp_enc , lvpwell_l-lvpwell_pcmp_enc+implant_comp_enc)) # top
 
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_pcmp_enc+cmp_w, lvpwell_pcmp_enc , lvpwell_w-lvpwell_pcmp_enc-cmp_w , lvpwell_pcmp_enc+cmp_w))                       # bottom
-    dnwpw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_pcmp_enc+cmp_w+implant_comp_enc, lvpwell_pcmp_enc-implant_comp_enc , lvpwell_w-lvpwell_pcmp_enc-cmp_w-implant_comp_enc, lvpwell_pcmp_enc+cmp_w+implant_comp_enc)) # bottom
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_pcmp_enc+cmp_w, lvpwell_pcmp_enc , lvpwell_w-lvpwell_pcmp_enc-cmp_w , lvpwell_pcmp_enc+cmp_w))                       # bottom
+    diode_pw2dw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_pcmp_enc+cmp_w+implant_comp_enc, lvpwell_pcmp_enc-implant_comp_enc , lvpwell_w-lvpwell_pcmp_enc-cmp_w-implant_comp_enc, lvpwell_pcmp_enc+cmp_w+implant_comp_enc)) # bottom
 
     # Inserting pcomp metal
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_pcmp_enc, lvpwell_pcmp_enc , lvpwell_pcmp_enc+cmp_w, lvpwell_l-lvpwell_pcmp_enc))                                  # left
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_w-lvpwell_pcmp_enc-cmp_w, lvpwell_pcmp_enc , lvpwell_w-lvpwell_pcmp_enc , lvpwell_l-lvpwell_pcmp_enc))             # right
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_pcmp_enc+cmp_w, lvpwell_l-lvpwell_pcmp_enc-cmp_w , lvpwell_w-lvpwell_pcmp_enc-cmp_w , lvpwell_l-lvpwell_pcmp_enc)) # top
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_pcmp_enc+cmp_w, lvpwell_pcmp_enc , lvpwell_w-lvpwell_pcmp_enc-cmp_w , lvpwell_pcmp_enc+cmp_w))                     # bottom
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_pcmp_enc, lvpwell_pcmp_enc , lvpwell_pcmp_enc+cmp_w, lvpwell_l-lvpwell_pcmp_enc))                                  # left
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_w-lvpwell_pcmp_enc-cmp_w, lvpwell_pcmp_enc , lvpwell_w-lvpwell_pcmp_enc , lvpwell_l-lvpwell_pcmp_enc))             # right
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_pcmp_enc+cmp_w, lvpwell_l-lvpwell_pcmp_enc-cmp_w , lvpwell_w-lvpwell_pcmp_enc-cmp_w , lvpwell_l-lvpwell_pcmp_enc)) # top
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_pcmp_enc+cmp_w, lvpwell_pcmp_enc , lvpwell_w-lvpwell_pcmp_enc-cmp_w , lvpwell_pcmp_enc+cmp_w))                     # bottom
 
     # Inserting pcomp contacts
     num_pcmp_left_con_1, pcmp_left_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -444,7 +444,7 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(lvpwell_pcmp_enc+pcmp_left_con_free_spc_1 / 2, lvpwell_pcmp_enc+pcmp_left_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_pcmp_left_con_1, num_pcmp_left_con_2)
-    dnwpw_diode_cell.insert(pcmp_left_con_arr)
+    diode_pw2dw_diode_cell.insert(pcmp_left_con_arr)
 
     num_cmp_right_con_1, cmp_right_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
     num_cmp_right_con_2, cmp_right_con_free_spc_2 = number_spc_contacts(lvpwell_l-2*lvpwell_pcmp_enc, comp_cont_enc, cont_min_spc, cont_size)
@@ -452,7 +452,7 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(lvpwell_w-lvpwell_pcmp_enc-cmp_w+cmp_right_con_free_spc_1 / 2, lvpwell_pcmp_enc+cmp_right_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_cmp_right_con_1, num_cmp_right_con_2)
-    dnwpw_diode_cell.insert(cmp_right_con_arr)
+    diode_pw2dw_diode_cell.insert(cmp_right_con_arr)
 
     num_cmp_top_con_1, cmp_top_con_free_spc_1 = number_spc_contacts(lvpwell_w-2*lvpwell_pcmp_enc-2*cmp_w-2*cont_spc_tol, comp_cont_enc, cont_min_spc, cont_size)
     num_cmp_top_con_2, cmp_top_con_free_spc_2 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -460,7 +460,7 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(lvpwell_pcmp_enc+cmp_w+cont_spc_tol+cmp_top_con_free_spc_1 / 2, lvpwell_l-lvpwell_pcmp_enc-cmp_w+cmp_top_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_cmp_top_con_1, num_cmp_top_con_2)
-    dnwpw_diode_cell.insert(cmp_top_con_arr)
+    diode_pw2dw_diode_cell.insert(cmp_top_con_arr)
 
     num_cmp_bot_con_1, cmp_bot_con_free_spc_1 = number_spc_contacts(lvpwell_w-2*lvpwell_pcmp_enc-2*cmp_w-2*cont_spc_tol, comp_cont_enc, cont_min_spc, cont_size)
     num_cmp_bot_con_2, cmp_bot_con_free_spc_2 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -468,14 +468,14 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(lvpwell_pcmp_enc+cmp_w+cont_spc_tol+cmp_bot_con_free_spc_1 / 2, lvpwell_pcmp_enc+cmp_bot_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_cmp_bot_con_1, num_cmp_bot_con_2)
-    dnwpw_diode_cell.insert(cmp_bot_con_arr)
+    diode_pw2dw_diode_cell.insert(cmp_bot_con_arr)
 
     # Inserting n diffusion
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_pcmp_enc-pcmp2ncmp_spc-cmp_w, -ncmp_ext , lvpwell_pcmp_enc-pcmp2ncmp_spc, lvpwell_l+ncmp_ext))
-    dnwpw_diode_cell.shapes(nplus).insert(pya.Box(lvpwell_pcmp_enc-pcmp2ncmp_spc-cmp_w-implant_comp_enc, -ncmp_ext-implant_comp_enc , lvpwell_pcmp_enc-pcmp2ncmp_spc+implant_comp_enc, lvpwell_l+ncmp_ext+implant_comp_enc))
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_pcmp_enc-pcmp2ncmp_spc-cmp_w, -ncmp_ext , lvpwell_pcmp_enc-pcmp2ncmp_spc, lvpwell_l+ncmp_ext))
+    diode_pw2dw_diode_cell.shapes(nplus).insert(pya.Box(lvpwell_pcmp_enc-pcmp2ncmp_spc-cmp_w-implant_comp_enc, -ncmp_ext-implant_comp_enc , lvpwell_pcmp_enc-pcmp2ncmp_spc+implant_comp_enc, lvpwell_l+ncmp_ext+implant_comp_enc))
 
     # Inserting ncomp metal
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_pcmp_enc-pcmp2ncmp_spc-cmp_w, -ncmp_ext , lvpwell_pcmp_enc-pcmp2ncmp_spc, lvpwell_l+ncmp_ext))
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_pcmp_enc-pcmp2ncmp_spc-cmp_w, -ncmp_ext , lvpwell_pcmp_enc-pcmp2ncmp_spc, lvpwell_l+ncmp_ext))
 
     # Inserting ncomp contacts
     num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -484,26 +484,26 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(lvpwell_pcmp_enc-pcmp2ncmp_spc-cmp_w+pcmp_con_free_spc_1 / 2, -ncmp_ext+pcmp_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_pcmp_con_1, num_pcmp_con_2)
-    dnwpw_diode_cell.insert(pcmp_con_arr)
+    diode_pw2dw_diode_cell.insert(pcmp_con_arr)
 
     # Inserting GR
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc+cmp_w))                     #left
-    dnwpw_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc-cmp_w-implant_comp_enc, -lvpwell_gr_spc-cmp_w-implant_comp_enc, -lvpwell_gr_spc+implant_comp_enc , lvpwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc+cmp_w))                     #left
+    diode_pw2dw_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc-cmp_w-implant_comp_enc, -lvpwell_gr_spc-cmp_w-implant_comp_enc, -lvpwell_gr_spc+implant_comp_enc , lvpwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
 
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_w+lvpwell_gr_spc, -lvpwell_gr_spc-cmp_w, lvpwell_w+lvpwell_gr_spc+cmp_w , lvpwell_l+lvpwell_gr_spc+cmp_w))   #right
-    dnwpw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_w+lvpwell_gr_spc-implant_comp_enc, -lvpwell_gr_spc-cmp_w-implant_comp_enc, lvpwell_w+lvpwell_gr_spc+cmp_w+implant_comp_enc , lvpwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(lvpwell_w+lvpwell_gr_spc, -lvpwell_gr_spc-cmp_w, lvpwell_w+lvpwell_gr_spc+cmp_w , lvpwell_l+lvpwell_gr_spc+cmp_w))   #right
+    diode_pw2dw_diode_cell.shapes(pplus).insert(pya.Box(lvpwell_w+lvpwell_gr_spc-implant_comp_enc, -lvpwell_gr_spc-cmp_w-implant_comp_enc, lvpwell_w+lvpwell_gr_spc+cmp_w+implant_comp_enc , lvpwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
 
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc , lvpwell_w+lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc+cmp_w))              #top
-    dnwpw_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc+implant_comp_enc , lvpwell_l+lvpwell_gr_spc-implant_comp_enc , lvpwell_w+lvpwell_gr_spc-implant_comp_enc , lvpwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc , lvpwell_w+lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc+cmp_w))              #top
+    diode_pw2dw_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc+implant_comp_enc , lvpwell_l+lvpwell_gr_spc-implant_comp_enc , lvpwell_w+lvpwell_gr_spc-implant_comp_enc , lvpwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
 
-    dnwpw_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc , -lvpwell_gr_spc-cmp_w , lvpwell_w+lvpwell_gr_spc , -lvpwell_gr_spc))                                #bot
-    dnwpw_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc+implant_comp_enc , -lvpwell_gr_spc-cmp_w-implant_comp_enc , lvpwell_w+lvpwell_gr_spc-implant_comp_enc , -lvpwell_gr_spc+implant_comp_enc))
+    diode_pw2dw_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc , -lvpwell_gr_spc-cmp_w , lvpwell_w+lvpwell_gr_spc , -lvpwell_gr_spc))                                #bot
+    diode_pw2dw_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc+implant_comp_enc , -lvpwell_gr_spc-cmp_w-implant_comp_enc , lvpwell_w+lvpwell_gr_spc-implant_comp_enc , -lvpwell_gr_spc+implant_comp_enc))
 
     # Inserting GR metal
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc+cmp_w))                    #left
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_w+lvpwell_gr_spc, -lvpwell_gr_spc-cmp_w, lvpwell_w+lvpwell_gr_spc+cmp_w , lvpwell_l+lvpwell_gr_spc+cmp_w))  #right
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc , lvpwell_w+lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc+cmp_w))            #top
-    dnwpw_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc , -lvpwell_gr_spc-cmp_w , lvpwell_w+lvpwell_gr_spc , -lvpwell_gr_spc))                              #bot
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc+cmp_w))                    #left
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(lvpwell_w+lvpwell_gr_spc, -lvpwell_gr_spc-cmp_w, lvpwell_w+lvpwell_gr_spc+cmp_w , lvpwell_l+lvpwell_gr_spc+cmp_w))  #right
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc , lvpwell_w+lvpwell_gr_spc , lvpwell_l+lvpwell_gr_spc+cmp_w))            #top
+    diode_pw2dw_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc , -lvpwell_gr_spc-cmp_w , lvpwell_w+lvpwell_gr_spc , -lvpwell_gr_spc))                              #bot
 
     # Inserting GR contacts
     num_gr_left_con_1, gr_left_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -512,7 +512,7 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(-lvpwell_gr_spc-cmp_w+gr_left_con_free_spc_1 / 2, -lvpwell_gr_spc-cmp_w+gr_left_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_gr_left_con_1, num_gr_left_con_2)
-    dnwpw_diode_cell.insert(gr_left_con_arr)
+    diode_pw2dw_diode_cell.insert(gr_left_con_arr)
 
     num_gr_right_con_1, gr_right_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
     num_gr_right_con_2, gr_right_con_free_spc_2 = number_spc_contacts(lvpwell_l+2*lvpwell_gr_spc+2*cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -520,7 +520,7 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(lvpwell_w+lvpwell_gr_spc+gr_right_con_free_spc_1 / 2, -lvpwell_gr_spc-cmp_w+gr_right_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_gr_right_con_1, num_gr_right_con_2)
-    dnwpw_diode_cell.insert(gr_right_con_arr)
+    diode_pw2dw_diode_cell.insert(gr_right_con_arr)
 
     num_gr_top_con_1, gr_top_con_free_spc_1 = number_spc_contacts(lvpwell_w+2*lvpwell_gr_spc-2*cont_spc_tol, comp_cont_enc, cont_min_spc, cont_size)
     num_gr_top_con_2, gr_top_con_free_spc_2 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -528,7 +528,7 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(-lvpwell_gr_spc+cont_spc_tol+gr_top_con_free_spc_1 / 2, lvpwell_l+lvpwell_gr_spc+gr_top_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_gr_top_con_1, num_gr_top_con_2)
-    dnwpw_diode_cell.insert(gr_top_con_arr)
+    diode_pw2dw_diode_cell.insert(gr_top_con_arr)
 
     num_gr_bot_con_1, gr_bot_con_free_spc_1 = number_spc_contacts(lvpwell_w+2*lvpwell_gr_spc-2*cont_spc_tol, comp_cont_enc, cont_min_spc, cont_size)
     num_gr_bot_con_2, gr_bot_con_free_spc_2 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -536,19 +536,19 @@ def draw_dnwpw_diode(layout, l, w , volt):
         pya.Point(-lvpwell_gr_spc+cont_spc_tol+gr_bot_con_free_spc_1 / 2, -lvpwell_gr_spc-cmp_w+gr_bot_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_gr_bot_con_1, num_gr_bot_con_2)
-    dnwpw_diode_cell.insert(gr_bot_con_arr)
+    diode_pw2dw_diode_cell.insert(gr_bot_con_arr)
 
     # Inserting marker
-    dnwpw_diode_cell.shapes(well_diode_mk).insert(pya.Box(0, 0, lvpwell_w, lvpwell_l))
+    diode_pw2dw_diode_cell.shapes(well_diode_mk).insert(pya.Box(0, 0, lvpwell_w, lvpwell_l))
 
     if volt == "5/6V":
         # Inserting dualgate
-        dnwpw_diode_cell.shapes(dualgate).insert(pya.Box(-dualgate_lvpwell_enc, -dualgate_lvpwell_enc, lvpwell_w+dualgate_lvpwell_enc, lvpwell_l+dualgate_lvpwell_enc))
+        diode_pw2dw_diode_cell.shapes(dualgate).insert(pya.Box(-dualgate_lvpwell_enc, -dualgate_lvpwell_enc, lvpwell_w+dualgate_lvpwell_enc, lvpwell_l+dualgate_lvpwell_enc))
 
-    dnwpw_diode_cell.flatten(True)
-    return dnwpw_diode_cell
+    diode_pw2dw_diode_cell.flatten(True)
+    return diode_pw2dw_diode_cell
 
-def draw_dnwps_diode(layout, l, w , volt):
+def draw_diode_dw2ps_diode(layout, l, w , volt):
     '''
     Usage:-
      used to draw LVPWELL/DNWELL diode by specifying parameters
@@ -591,9 +591,9 @@ def draw_dnwps_diode(layout, l, w , volt):
         dnwell_pcmp_enc     = 0.66 * dbu_PERCISION
 
 
-    # Inserting dnwps cell
-    cell_index       = layout.add_cell("dnwps_diode")
-    dnwps_diode_cell = layout.cell(cell_index)
+    # Inserting diode_dw2ps cell
+    cell_index       = layout.add_cell("diode_dw2ps_diode")
+    diode_dw2ps_diode_cell = layout.cell(cell_index)
 
     # Inserting a contact cell
     cont_cell_index = layout.add_cell("contact")
@@ -601,26 +601,26 @@ def draw_dnwps_diode(layout, l, w , volt):
     cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
 
     # Inserting dnwell
-    dnwps_diode_cell.shapes(dnwell).insert(pya.Box(0, 0, dnwell_w, dnwell_l))
+    diode_dw2ps_diode_cell.shapes(dnwell).insert(pya.Box(0, 0, dnwell_w, dnwell_l))
 
     # Inserting n diffusion
-    dnwps_diode_cell.shapes(comp).insert(pya.Box(dnwell_pcmp_enc, dnwell_pcmp_enc , dnwell_pcmp_enc+cmp_w, dnwell_l-dnwell_pcmp_enc))                                    # left
-    dnwps_diode_cell.shapes(nplus).insert(pya.Box(dnwell_pcmp_enc-implant_comp_enc, dnwell_pcmp_enc-implant_comp_enc , dnwell_pcmp_enc+cmp_w+implant_comp_enc, dnwell_l-dnwell_pcmp_enc+implant_comp_enc))
+    diode_dw2ps_diode_cell.shapes(comp).insert(pya.Box(dnwell_pcmp_enc, dnwell_pcmp_enc , dnwell_pcmp_enc+cmp_w, dnwell_l-dnwell_pcmp_enc))                                    # left
+    diode_dw2ps_diode_cell.shapes(nplus).insert(pya.Box(dnwell_pcmp_enc-implant_comp_enc, dnwell_pcmp_enc-implant_comp_enc , dnwell_pcmp_enc+cmp_w+implant_comp_enc, dnwell_l-dnwell_pcmp_enc+implant_comp_enc))
 
-    dnwps_diode_cell.shapes(comp).insert(pya.Box(dnwell_w-dnwell_pcmp_enc-cmp_w, dnwell_pcmp_enc , dnwell_w-dnwell_pcmp_enc , dnwell_l-dnwell_pcmp_enc))               # right
-    dnwps_diode_cell.shapes(nplus).insert(pya.Box(dnwell_w-dnwell_pcmp_enc-cmp_w-implant_comp_enc, dnwell_pcmp_enc-implant_comp_enc , dnwell_w-dnwell_pcmp_enc+implant_comp_enc , dnwell_l-dnwell_pcmp_enc+implant_comp_enc))
+    diode_dw2ps_diode_cell.shapes(comp).insert(pya.Box(dnwell_w-dnwell_pcmp_enc-cmp_w, dnwell_pcmp_enc , dnwell_w-dnwell_pcmp_enc , dnwell_l-dnwell_pcmp_enc))               # right
+    diode_dw2ps_diode_cell.shapes(nplus).insert(pya.Box(dnwell_w-dnwell_pcmp_enc-cmp_w-implant_comp_enc, dnwell_pcmp_enc-implant_comp_enc , dnwell_w-dnwell_pcmp_enc+implant_comp_enc , dnwell_l-dnwell_pcmp_enc+implant_comp_enc))
 
-    dnwps_diode_cell.shapes(comp).insert(pya.Box(dnwell_pcmp_enc+cmp_w, dnwell_l-dnwell_pcmp_enc-cmp_w , dnwell_w-dnwell_pcmp_enc-cmp_w , dnwell_l-dnwell_pcmp_enc))   # top
-    dnwps_diode_cell.shapes(nplus).insert(pya.Box(dnwell_pcmp_enc+cmp_w+implant_comp_enc, dnwell_l-dnwell_pcmp_enc-cmp_w-implant_comp_enc , dnwell_w-dnwell_pcmp_enc-cmp_w-implant_comp_enc , dnwell_l-dnwell_pcmp_enc+implant_comp_enc)) # top
+    diode_dw2ps_diode_cell.shapes(comp).insert(pya.Box(dnwell_pcmp_enc+cmp_w, dnwell_l-dnwell_pcmp_enc-cmp_w , dnwell_w-dnwell_pcmp_enc-cmp_w , dnwell_l-dnwell_pcmp_enc))   # top
+    diode_dw2ps_diode_cell.shapes(nplus).insert(pya.Box(dnwell_pcmp_enc+cmp_w+implant_comp_enc, dnwell_l-dnwell_pcmp_enc-cmp_w-implant_comp_enc , dnwell_w-dnwell_pcmp_enc-cmp_w-implant_comp_enc , dnwell_l-dnwell_pcmp_enc+implant_comp_enc)) # top
 
-    dnwps_diode_cell.shapes(comp).insert(pya.Box(dnwell_pcmp_enc+cmp_w, dnwell_pcmp_enc , dnwell_w-dnwell_pcmp_enc-cmp_w , dnwell_pcmp_enc+cmp_w))                       # bottom
-    dnwps_diode_cell.shapes(nplus).insert(pya.Box(dnwell_pcmp_enc+cmp_w+implant_comp_enc, dnwell_pcmp_enc-implant_comp_enc , dnwell_w-dnwell_pcmp_enc-cmp_w-implant_comp_enc, dnwell_pcmp_enc+cmp_w+implant_comp_enc)) # bottom
+    diode_dw2ps_diode_cell.shapes(comp).insert(pya.Box(dnwell_pcmp_enc+cmp_w, dnwell_pcmp_enc , dnwell_w-dnwell_pcmp_enc-cmp_w , dnwell_pcmp_enc+cmp_w))                       # bottom
+    diode_dw2ps_diode_cell.shapes(nplus).insert(pya.Box(dnwell_pcmp_enc+cmp_w+implant_comp_enc, dnwell_pcmp_enc-implant_comp_enc , dnwell_w-dnwell_pcmp_enc-cmp_w-implant_comp_enc, dnwell_pcmp_enc+cmp_w+implant_comp_enc)) # bottom
 
     # Inserting ncomp metal
-    dnwps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_pcmp_enc, dnwell_pcmp_enc , dnwell_pcmp_enc+cmp_w, dnwell_l-dnwell_pcmp_enc))                                  # left
-    dnwps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_w-dnwell_pcmp_enc-cmp_w, dnwell_pcmp_enc , dnwell_w-dnwell_pcmp_enc , dnwell_l-dnwell_pcmp_enc))             # right
-    dnwps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_pcmp_enc+cmp_w, dnwell_l-dnwell_pcmp_enc-cmp_w , dnwell_w-dnwell_pcmp_enc-cmp_w , dnwell_l-dnwell_pcmp_enc)) # top
-    dnwps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_pcmp_enc+cmp_w, dnwell_pcmp_enc , dnwell_w-dnwell_pcmp_enc-cmp_w , dnwell_pcmp_enc+cmp_w))                     # bottom
+    diode_dw2ps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_pcmp_enc, dnwell_pcmp_enc , dnwell_pcmp_enc+cmp_w, dnwell_l-dnwell_pcmp_enc))                                  # left
+    diode_dw2ps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_w-dnwell_pcmp_enc-cmp_w, dnwell_pcmp_enc , dnwell_w-dnwell_pcmp_enc , dnwell_l-dnwell_pcmp_enc))             # right
+    diode_dw2ps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_pcmp_enc+cmp_w, dnwell_l-dnwell_pcmp_enc-cmp_w , dnwell_w-dnwell_pcmp_enc-cmp_w , dnwell_l-dnwell_pcmp_enc)) # top
+    diode_dw2ps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_pcmp_enc+cmp_w, dnwell_pcmp_enc , dnwell_w-dnwell_pcmp_enc-cmp_w , dnwell_pcmp_enc+cmp_w))                     # bottom
 
     # Inserting ncomp contacts
     num_pcmp_left_con_1, pcmp_left_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -629,7 +629,7 @@ def draw_dnwps_diode(layout, l, w , volt):
         pya.Point(dnwell_pcmp_enc+pcmp_left_con_free_spc_1 / 2, dnwell_pcmp_enc+pcmp_left_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_pcmp_left_con_1, num_pcmp_left_con_2)
-    dnwps_diode_cell.insert(pcmp_left_con_arr)
+    diode_dw2ps_diode_cell.insert(pcmp_left_con_arr)
 
     num_cmp_right_con_1, cmp_right_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
     num_cmp_right_con_2, cmp_right_con_free_spc_2 = number_spc_contacts(dnwell_l-2*dnwell_pcmp_enc, comp_cont_enc, cont_min_spc, cont_size)
@@ -637,7 +637,7 @@ def draw_dnwps_diode(layout, l, w , volt):
         pya.Point(dnwell_w-dnwell_pcmp_enc-cmp_w+cmp_right_con_free_spc_1 / 2, dnwell_pcmp_enc+cmp_right_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_cmp_right_con_1, num_cmp_right_con_2)
-    dnwps_diode_cell.insert(cmp_right_con_arr)
+    diode_dw2ps_diode_cell.insert(cmp_right_con_arr)
 
     num_cmp_top_con_1, cmp_top_con_free_spc_1 = number_spc_contacts(dnwell_w-2*dnwell_pcmp_enc-2*cmp_w-2*cont_spc_tol, comp_cont_enc, cont_min_spc, cont_size)
     num_cmp_top_con_2, cmp_top_con_free_spc_2 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -645,7 +645,7 @@ def draw_dnwps_diode(layout, l, w , volt):
         pya.Point(dnwell_pcmp_enc+cmp_w+cont_spc_tol+cmp_top_con_free_spc_1 / 2, dnwell_l-dnwell_pcmp_enc-cmp_w+cmp_top_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_cmp_top_con_1, num_cmp_top_con_2)
-    dnwps_diode_cell.insert(cmp_top_con_arr)
+    diode_dw2ps_diode_cell.insert(cmp_top_con_arr)
 
     num_cmp_bot_con_1, cmp_bot_con_free_spc_1 = number_spc_contacts(dnwell_w-2*dnwell_pcmp_enc-2*cmp_w-2*cont_spc_tol, comp_cont_enc, cont_min_spc, cont_size)
     num_cmp_bot_con_2, cmp_bot_con_free_spc_2 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -653,26 +653,26 @@ def draw_dnwps_diode(layout, l, w , volt):
         pya.Point(dnwell_pcmp_enc+cmp_w+cont_spc_tol+cmp_bot_con_free_spc_1 / 2, dnwell_pcmp_enc+cmp_bot_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_cmp_bot_con_1, num_cmp_bot_con_2)
-    dnwps_diode_cell.insert(cmp_bot_con_arr)
+    diode_dw2ps_diode_cell.insert(cmp_bot_con_arr)
 
     # Inserting GR
-    dnwps_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc+cmp_w))                     #left
-    dnwps_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc-cmp_w-implant_comp_enc, -lvpwell_gr_spc-cmp_w-implant_comp_enc, -lvpwell_gr_spc+implant_comp_enc , dnwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
+    diode_dw2ps_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc+cmp_w))                     #left
+    diode_dw2ps_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc-cmp_w-implant_comp_enc, -lvpwell_gr_spc-cmp_w-implant_comp_enc, -lvpwell_gr_spc+implant_comp_enc , dnwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
 
-    dnwps_diode_cell.shapes(comp).insert(pya.Box(dnwell_w+lvpwell_gr_spc, -lvpwell_gr_spc-cmp_w, dnwell_w+lvpwell_gr_spc+cmp_w , dnwell_l+lvpwell_gr_spc+cmp_w))   #right
-    dnwps_diode_cell.shapes(pplus).insert(pya.Box(dnwell_w+lvpwell_gr_spc-implant_comp_enc, -lvpwell_gr_spc-cmp_w-implant_comp_enc, dnwell_w+lvpwell_gr_spc+cmp_w+implant_comp_enc , dnwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
+    diode_dw2ps_diode_cell.shapes(comp).insert(pya.Box(dnwell_w+lvpwell_gr_spc, -lvpwell_gr_spc-cmp_w, dnwell_w+lvpwell_gr_spc+cmp_w , dnwell_l+lvpwell_gr_spc+cmp_w))   #right
+    diode_dw2ps_diode_cell.shapes(pplus).insert(pya.Box(dnwell_w+lvpwell_gr_spc-implant_comp_enc, -lvpwell_gr_spc-cmp_w-implant_comp_enc, dnwell_w+lvpwell_gr_spc+cmp_w+implant_comp_enc , dnwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
 
-    dnwps_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc , dnwell_w+lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc+cmp_w))              #top
-    dnwps_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc+implant_comp_enc , dnwell_l+lvpwell_gr_spc-implant_comp_enc , dnwell_w+lvpwell_gr_spc-implant_comp_enc , dnwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
+    diode_dw2ps_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc , dnwell_w+lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc+cmp_w))              #top
+    diode_dw2ps_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc+implant_comp_enc , dnwell_l+lvpwell_gr_spc-implant_comp_enc , dnwell_w+lvpwell_gr_spc-implant_comp_enc , dnwell_l+lvpwell_gr_spc+cmp_w+implant_comp_enc))
 
-    dnwps_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc , -lvpwell_gr_spc-cmp_w , dnwell_w+lvpwell_gr_spc , -lvpwell_gr_spc))                                #bot
-    dnwps_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc+implant_comp_enc , -lvpwell_gr_spc-cmp_w-implant_comp_enc , dnwell_w+lvpwell_gr_spc-implant_comp_enc , -lvpwell_gr_spc+implant_comp_enc))
+    diode_dw2ps_diode_cell.shapes(comp).insert(pya.Box(-lvpwell_gr_spc , -lvpwell_gr_spc-cmp_w , dnwell_w+lvpwell_gr_spc , -lvpwell_gr_spc))                                #bot
+    diode_dw2ps_diode_cell.shapes(pplus).insert(pya.Box(-lvpwell_gr_spc+implant_comp_enc , -lvpwell_gr_spc-cmp_w-implant_comp_enc , dnwell_w+lvpwell_gr_spc-implant_comp_enc , -lvpwell_gr_spc+implant_comp_enc))
 
     # Inserting GR metal
-    dnwps_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc+cmp_w))                    #left
-    dnwps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_w+lvpwell_gr_spc, -lvpwell_gr_spc-cmp_w, dnwell_w+lvpwell_gr_spc+cmp_w , dnwell_l+lvpwell_gr_spc+cmp_w))  #right
-    dnwps_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc , dnwell_w+lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc+cmp_w))            #top
-    dnwps_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc , -lvpwell_gr_spc-cmp_w , dnwell_w+lvpwell_gr_spc , -lvpwell_gr_spc))                              #bot
+    diode_dw2ps_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc-cmp_w, -lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc+cmp_w))                    #left
+    diode_dw2ps_diode_cell.shapes(metal1).insert(pya.Box(dnwell_w+lvpwell_gr_spc, -lvpwell_gr_spc-cmp_w, dnwell_w+lvpwell_gr_spc+cmp_w , dnwell_l+lvpwell_gr_spc+cmp_w))  #right
+    diode_dw2ps_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc , dnwell_w+lvpwell_gr_spc , dnwell_l+lvpwell_gr_spc+cmp_w))            #top
+    diode_dw2ps_diode_cell.shapes(metal1).insert(pya.Box(-lvpwell_gr_spc , -lvpwell_gr_spc-cmp_w , dnwell_w+lvpwell_gr_spc , -lvpwell_gr_spc))                              #bot
 
     # Inserting GR contacts
     num_gr_left_con_1, gr_left_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -681,7 +681,7 @@ def draw_dnwps_diode(layout, l, w , volt):
         pya.Point(-lvpwell_gr_spc-cmp_w+gr_left_con_free_spc_1 / 2, -lvpwell_gr_spc-cmp_w+gr_left_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_gr_left_con_1, num_gr_left_con_2)
-    dnwps_diode_cell.insert(gr_left_con_arr)
+    diode_dw2ps_diode_cell.insert(gr_left_con_arr)
 
     num_gr_right_con_1, gr_right_con_free_spc_1 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
     num_gr_right_con_2, gr_right_con_free_spc_2 = number_spc_contacts(dnwell_l+2*lvpwell_gr_spc+2*cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -689,7 +689,7 @@ def draw_dnwps_diode(layout, l, w , volt):
         pya.Point(dnwell_w+lvpwell_gr_spc+gr_right_con_free_spc_1 / 2, -lvpwell_gr_spc-cmp_w+gr_right_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_gr_right_con_1, num_gr_right_con_2)
-    dnwps_diode_cell.insert(gr_right_con_arr)
+    diode_dw2ps_diode_cell.insert(gr_right_con_arr)
 
     num_gr_top_con_1, gr_top_con_free_spc_1 = number_spc_contacts(dnwell_w+2*lvpwell_gr_spc-2*cont_spc_tol, comp_cont_enc, cont_min_spc, cont_size)
     num_gr_top_con_2, gr_top_con_free_spc_2 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -697,7 +697,7 @@ def draw_dnwps_diode(layout, l, w , volt):
         pya.Point(-lvpwell_gr_spc+cont_spc_tol+gr_top_con_free_spc_1 / 2, dnwell_l+lvpwell_gr_spc+gr_top_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_gr_top_con_1, num_gr_top_con_2)
-    dnwps_diode_cell.insert(gr_top_con_arr)
+    diode_dw2ps_diode_cell.insert(gr_top_con_arr)
 
     num_gr_bot_con_1, gr_bot_con_free_spc_1 = number_spc_contacts(dnwell_w+2*lvpwell_gr_spc-2*cont_spc_tol, comp_cont_enc, cont_min_spc, cont_size)
     num_gr_bot_con_2, gr_bot_con_free_spc_2 = number_spc_contacts(cmp_w, comp_cont_enc, cont_min_spc, cont_size)
@@ -705,17 +705,17 @@ def draw_dnwps_diode(layout, l, w , volt):
         pya.Point(-lvpwell_gr_spc+cont_spc_tol+gr_bot_con_free_spc_1 / 2, -lvpwell_gr_spc-cmp_w+gr_bot_con_free_spc_2/2)),
         pya.Vector(cont_min_spc + cont_size, 0), pya.Vector(0,cont_min_spc + cont_size),
         num_gr_bot_con_1, num_gr_bot_con_2)
-    dnwps_diode_cell.insert(gr_bot_con_arr)
+    diode_dw2ps_diode_cell.insert(gr_bot_con_arr)
 
     # Inserting marker
-    dnwps_diode_cell.shapes(well_diode_mk).insert(pya.Box(0, 0, dnwell_w, dnwell_l))
+    diode_dw2ps_diode_cell.shapes(well_diode_mk).insert(pya.Box(0, 0, dnwell_w, dnwell_l))
 
     if volt == "5/6V":
         # Inserting dualgate
-        dnwps_diode_cell.shapes(dualgate).insert(pya.Box(-dualgate_lvpwell_enc, -dualgate_lvpwell_enc, dnwell_w+dualgate_lvpwell_enc, dnwell_l+dualgate_lvpwell_enc))
+        diode_dw2ps_diode_cell.shapes(dualgate).insert(pya.Box(-dualgate_lvpwell_enc, -dualgate_lvpwell_enc, dnwell_w+dualgate_lvpwell_enc, dnwell_l+dualgate_lvpwell_enc))
 
-    dnwps_diode_cell.flatten(True)
-    return dnwps_diode_cell
+    diode_dw2ps_diode_cell.flatten(True)
+    return diode_dw2ps_diode_cell
 
 def draw_sc_diode(layout, l, w , m, pcmpgr):
     '''

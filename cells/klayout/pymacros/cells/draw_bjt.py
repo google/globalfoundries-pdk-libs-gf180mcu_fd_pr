@@ -25,42 +25,42 @@ gds_path = f"/home/{USER}/.klayout/pymacros/cells/bjt"
 
 def draw_npn(layout, device_name):
 
-    if device_name == "vnpn_10x10":
-        layout.read(f"{gds_path}/vnpn_10x10.gds")
-        cell_name = "vnpn_10x10"
-    elif device_name == "vnpn_5x5":
-        layout.read(f"{gds_path}/vnpn_5x5.gds")
-        cell_name = "vnpn_5x5"
-    elif device_name == "vnpn_0p54x16":
-        layout.read(f"{gds_path}/vnpn_0p54x16.gds")
-        cell_name = "vnpn_0p54x16"
-    elif device_name == "vnpn_0p54x8":
-        layout.read(f"{gds_path}/vnpn_0p54x8.gds")
-        cell_name = "vnpn_0p54x8"
-    elif device_name == "vnpn_0p54x4":
-        layout.read(f"{gds_path}/vnpn_0p54x4.gds")
-        cell_name = "vnpn_0p54x4"
-    elif device_name == "vnpn_0p54x2":
-        layout.read(f"{gds_path}/vnpn_0p54x2.gds")
-        cell_name = "vnpn_0p54x2"
+    if device_name == "npn_10p00x10p00":
+        layout.read(f"{gds_path}/npn_10p00x10p00.gds")
+        cell_name = "npn_10p00x10p00"
+    elif device_name == "npn_05p00x05p00":
+        layout.read(f"{gds_path}/npn_05p00x05p00.gds")
+        cell_name = "npn_05p00x05p00"
+    elif device_name == "npn_00p54x16p00":
+        layout.read(f"{gds_path}/npn_00p54x16p00.gds")
+        cell_name = "npn_00p54x16p00"
+    elif device_name == "npn_00p54x08p00":
+        layout.read(f"{gds_path}/npn_00p54x08p00.gds")
+        cell_name = "npn_00p54x08p00"
+    elif device_name == "npn_00p54x04p00":
+        layout.read(f"{gds_path}/npn_00p54x04p00.gds")
+        cell_name = "npn_00p54x04p00"
+    elif device_name == "npn_00p54x02p00":
+        layout.read(f"{gds_path}/npn_00p54x02p00.gds")
+        cell_name = "npn_00p54x02p00"
 
     return layout.cell(cell_name)
 
 
 def draw_pnp(layout, device_name):
 
-    if device_name == "vpnp_10x10":
-        layout.read(f"{gds_path}/vpnp_10x10.gds")
-        cell_name = "vpnp_10x10"
-    elif device_name == "vpnp_5x5":
-        layout.read(f"{gds_path}/vpnp_5x5.gds")
-        cell_name = "vpnp_5x5"
-    elif device_name == "vpnp_0p42x10":
-        layout.read(f"{gds_path}/vpnp_0p42x10.gds")
-        cell_name = "vpnp_0p42x10"
-    elif device_name == "vpnp_0p42x5":
-        layout.read(f"{gds_path}/vpnp_0p42x5.gds")
-        cell_name = "vpnp_0p42x5"
+    if device_name == "pnp_10p00x10p00":
+        layout.read(f"{gds_path}/pnp_10p00x10p00.gds")
+        cell_name = "pnp_10p00x10p00"
+    elif device_name == "pnp_05p00x05p00":
+        layout.read(f"{gds_path}/pnp_05p00x05p00.gds")
+        cell_name = "pnp_05p00x05p00"
+    elif device_name == "pnp_10p00x00p42":
+        layout.read(f"{gds_path}/pnp_10p00x00p42.gds")
+        cell_name = "pnp_10p00x00p42"
+    elif device_name == "pnp_05p00x00p42":
+        layout.read(f"{gds_path}/pnp_05p00x00p42.gds")
+        cell_name = "pnp_05p00x00p42"
 
     return layout.cell(cell_name)
 
