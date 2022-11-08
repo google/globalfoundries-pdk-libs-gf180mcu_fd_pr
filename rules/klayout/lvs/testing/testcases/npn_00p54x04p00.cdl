@@ -1,0 +1,33 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: npn_00p54x04p00
+* View Name:     schematic
+* Netlisted on:  Nov 24 10:22:13 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    npn_00p54x04p00
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT npn_00p54x04p00 I1_default_B I1_default_C I1_default_E I1_default_S
+*.PININFO I1_default_B:I I1_default_C:I I1_default_E:I I1_default_S:I
+QI1_default I1_default_C I1_default_B I1_default_E I1_default_S npn_00p54x04p00 m=1
+.ENDS
+
