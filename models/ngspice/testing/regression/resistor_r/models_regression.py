@@ -227,10 +227,10 @@ def main():
         
         print("# Device {} number of measured_datapoints : ".format(dev), len(meas_df))
 
-        sim_df_room_temp = run_sims(meas_df_room_temp, dev_path, 3)
-        print("# Device {} number of simulated datapoints : ".format(dev), len(sim_df_room_temp))
+        sim_df = run_sims(meas_df, dev_path, 3)
+        print("# Device {} number of simulated datapoints : ".format(dev), len(sim_df))
         
-        merged_df = meas_df_room_temp.merge(sim_df_room_temp, on=["device", "corner", "length", "width", "temp"], how="left")
+        merged_df = meas_df.merge(sim_df, on=["device", "corner", "length", "width", "temp"], how="left")
         merged_df["error"] = np.abs(merged_df["res_sim"] - merged_df["res_measured"]) * 100.0 / merged_df["res_measured"]
         
         merged_df.to_csv(f"{dev_path}/error_analysis.csv", index=False)
