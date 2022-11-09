@@ -52,7 +52,7 @@ def ext_measured(device,vgs,vbs):
         # Special case for 1st measured values 
         if i == 0 :
             # measured Id
-            if device in ["pmos_3p3_iv" , "pmos_6p0_iv"]:
+            if device in ["pfet_03v3_iv" , "pfet_06v0_iv"]:
                 col_list = ['-vgs ',f"vbs ={vbs[0]}",f"vbs ={vbs[1]}",f"vbs ={vbs[2]}",f"vbs ={vbs[3]}",f"vbs ={vbs[4]}"]
             else:
                 col_list = ['vgs ',f"vbs ={vbs[0]}",f"vbs ={vbs[1]}",f"vbs ={vbs[2]}",f"vbs ={vbs[3]}",f"vbs ={vbs[4]}"]                
@@ -160,7 +160,7 @@ def error_cal(device,vgs,vbs,sim_val):
 
 def main():
         
-    devices = ["nmos_3p3_iv" , "pmos_3p3_iv" , "nmos_6p0_iv" , "pmos_6p0_iv" , "nmos_6p0_nat_iv"] #"nmos_3p3_sab_iv"
+    devices = ["nfet_03v3_iv" , "pfet_03v3_iv" , "nfet_06v0_iv" , "pfet_06v0_iv" , "nfet_06v0_nvt_iv"] #"nfet_03v3_dss_iv"
     nmos_vgs = "vgs (V)"
     pmos_vgs = "-vgs (V)"
     nmos_rds = "Rds"
@@ -193,35 +193,35 @@ def main():
         os.makedirs(f"{device}/error_{Id_sim}",exist_ok=False)
         # os.makedirs(f"{device}/error_{Rds_sim}",exist_ok=False)
 
-    # =========== nmos_3p3_iv ==============      
-    ext_measured ("nmos_3p3_iv",nmos_vgs,nmos3p3_vbs)
-    ext_simulated("nmos_3p3_iv",nmos_vgs,nmos3p3_vbs,mos_3p3_vbs_sweep,Id_sim)
-    error_cal    ("nmos_3p3_iv",nmos_vgs,nmos3p3_vbs,Id_sim)
+    # =========== nfet_03v3_iv ==============      
+    ext_measured ("nfet_03v3_iv",nmos_vgs,nmos3p3_vbs)
+    ext_simulated("nfet_03v3_iv",nmos_vgs,nmos3p3_vbs,mos_3p3_vbs_sweep,Id_sim)
+    error_cal    ("nfet_03v3_iv",nmos_vgs,nmos3p3_vbs,Id_sim)
 
-    # =========== pmos_3p3_iv ==============      
-    ext_measured ("pmos_3p3_iv",pmos_vgs,pmos3p3_vbs)
-    ext_simulated("pmos_3p3_iv",pmos_vgs,pmos3p3_vbs,mos_3p3_vbs_sweep,Id_sim)
-    error_cal    ("pmos_3p3_iv",pmos_vgs,pmos3p3_vbs,Id_sim)
+    # =========== pfet_03v3_iv ==============      
+    ext_measured ("pfet_03v3_iv",pmos_vgs,pmos3p3_vbs)
+    ext_simulated("pfet_03v3_iv",pmos_vgs,pmos3p3_vbs,mos_3p3_vbs_sweep,Id_sim)
+    error_cal    ("pfet_03v3_iv",pmos_vgs,pmos3p3_vbs,Id_sim)
 
-    # =========== nmos_6p0_iv ==============      
-    ext_measured ("nmos_6p0_iv",nmos_vgs,nmos6p0_vbs)   
-    ext_simulated("nmos_6p0_iv",nmos_vgs,nmos6p0_vbs,mos_6p0_vbs_sweep,Id_sim)
-    error_cal    ("nmos_6p0_iv",nmos_vgs,nmos6p0_vbs,Id_sim)    
+    # =========== nfet_06v0_iv ==============      
+    ext_measured ("nfet_06v0_iv",nmos_vgs,nmos6p0_vbs)   
+    ext_simulated("nfet_06v0_iv",nmos_vgs,nmos6p0_vbs,mos_6p0_vbs_sweep,Id_sim)
+    error_cal    ("nfet_06v0_iv",nmos_vgs,nmos6p0_vbs,Id_sim)    
          
-    # =========== pmos_6p0_iv ==============      
-    ext_measured ("pmos_6p0_iv",pmos_vgs,pmos6p0_vbs)
-    ext_simulated("pmos_6p0_iv",pmos_vgs,pmos6p0_vbs,mos_6p0_vbs_sweep,Id_sim)
-    error_cal    ("pmos_6p0_iv",pmos_vgs,pmos6p0_vbs,Id_sim) 
+    # =========== pfet_06v0_iv ==============      
+    ext_measured ("pfet_06v0_iv",pmos_vgs,pmos6p0_vbs)
+    ext_simulated("pfet_06v0_iv",pmos_vgs,pmos6p0_vbs,mos_6p0_vbs_sweep,Id_sim)
+    error_cal    ("pfet_06v0_iv",pmos_vgs,pmos6p0_vbs,Id_sim) 
           
-    # ============ nmos_3p3_sab_iv =============                                # Error in ngspice 
-    # ext_measured ("nmos_3p3_sab_iv",nmos_vgs,nmos3p3_vbs)    
-    # ext_simulated("nmos_3p3_sab_iv",nmos_vgs,nmos3p3_vbs,mos_3p3_vbs_sweep,Id_sim)
-    # error_cal    ("nmos_3p3_sab_iv",nmos_vgs,nmos3p3_vbs,Rds_sim)
+    # ============ nfet_03v3_dss_iv =============                                # Error in ngspice 
+    # ext_measured ("nfet_03v3_dss_iv",nmos_vgs,nmos3p3_vbs)    
+    # ext_simulated("nfet_03v3_dss_iv",nmos_vgs,nmos3p3_vbs,mos_3p3_vbs_sweep,Id_sim)
+    # error_cal    ("nfet_03v3_dss_iv",nmos_vgs,nmos3p3_vbs,Rds_sim)
 
-    # ============ nmos_6p0_nat_iv =============              
-    ext_measured ("nmos_6p0_nat_iv",nmos_vgs,nmos6p0_nat_vbs)
-    ext_simulated("nmos_6p0_nat_iv",nmos_vgs,nmos6p0_nat_vbs,mos_6p0_nat_vbs_sweep,Id_sim)
-    error_cal    ("nmos_6p0_nat_iv",nmos_vgs,nmos6p0_nat_vbs,Id_sim)     
+    # ============ nfet_06v0_nvt_iv =============              
+    ext_measured ("nfet_06v0_nvt_iv",nmos_vgs,nmos6p0_nat_vbs)
+    ext_simulated("nfet_06v0_nvt_iv",nmos_vgs,nmos6p0_nat_vbs,mos_6p0_nat_vbs_sweep,Id_sim)
+    error_cal    ("nfet_06v0_nvt_iv",nmos_vgs,nmos6p0_nat_vbs,Id_sim)     
 
 # # ================================================================
 # -------------------------- MAIN --------------------------------

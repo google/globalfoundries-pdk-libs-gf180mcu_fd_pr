@@ -1,5 +1,5 @@
 ***************************
-** nmos_3p3_t_id
+** nfet_03v3_t_id
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -30,7 +30,7 @@ vgs G_tn 0 dc=6
 .options tnom={{temp}}
 
 * circuit
-xmn1 D_tn G_tn 0 0 nmos_6p0_sab W = {{width}}u L = {{length}}u 
+xmn1 D_tn G_tn 0 0 nfet_06v0_dss W = {{width}}u L = {{length}}u 
 
 .control
 set filetype=ascii
@@ -59,7 +59,7 @@ foreach t {{temp}}
         * ** parameters calculation
         let Rds = @m.xmn1.m0[gds]
         print Rds
-        wrdata nmos_6p0_sab_iv/simulated_Rds/{{i}}_simulated_W{{width}}_L{{length}}.csv Rds 
+        wrdata nfet_06v0_dss_iv/simulated_Rds/{{i}}_simulated_W{{width}}_L{{length}}.csv Rds 
         reset
         let vgs_counter = vgs_counter + 1
     end

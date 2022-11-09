@@ -167,7 +167,7 @@ def error_cal(device,vds,vgs,sim_val):
 
 def main():
         
-    devices = ["nmos_3p3_iv" , "pmos_3p3_iv" , "nmos_6p0_iv" , "pmos_6p0_iv" , "nmos_6p0_nat_iv", "nmos_3p3_sab_iv", "pmos_3p3_sab_iv" , "nmos_6p0_sab_iv" , "pmos_6p0_sab_iv"] 
+    devices = ["nfet_03v3_iv" , "pfet_03v3_iv" , "nfet_06v0_iv" , "pfet_06v0_iv" , "nfet_06v0_nvt_iv", "nfet_03v3_dss_iv", "pfet_03v3_dss_iv" , "nfet_06v0_dss_iv" , "pfet_06v0_dss_iv"] 
     nmos_vds = "vds (V)"
     pmos_vds = "-vds (V)"
     nmos_rds = "Rds"
@@ -199,86 +199,86 @@ def main():
         os.makedirs(f"{device}/error_{Id_sim}",exist_ok=False)
         os.makedirs(f"{device}/error_{Rds_sim}",exist_ok=False)
 
-    # =========== nmos_3p3_iv ==============      
-    ext_measured ("nmos_3p3_iv",nmos_vds,nmos3p3_vgs)
+    # =========== nfet_03v3_iv ==============      
+    ext_measured ("nfet_03v3_iv",nmos_vds,nmos3p3_vgs)
 
-    ext_simulated("nmos_3p3_iv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,Id_sim)
-    error_cal    ("nmos_3p3_iv",nmos_vds,nmos3p3_vgs,Id_sim)
+    ext_simulated("nfet_03v3_iv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,Id_sim)
+    error_cal    ("nfet_03v3_iv",nmos_vds,nmos3p3_vgs,Id_sim)
 
-    ext_simulated("nmos_3p3_iv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,Rds_sim)
-    error_cal    ("nmos_3p3_iv",nmos_vds,nmos3p3_vgs,Rds_sim)
+    ext_simulated("nfet_03v3_iv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,Rds_sim)
+    error_cal    ("nfet_03v3_iv",nmos_vds,nmos3p3_vgs,Rds_sim)
 
-    # =========== pmos_3p3_iv ==============      
-    ext_measured ("pmos_3p3_iv",pmos_vds,pmos3p3_vgs)
+    # =========== pfet_03v3_iv ==============      
+    ext_measured ("pfet_03v3_iv",pmos_vds,pmos3p3_vgs)
 
-    ext_simulated("pmos_3p3_iv",pmos_vds,pmos3p3_vgs,mos_3p3_vgs_sweep,Id_sim)
-    error_cal    ("pmos_3p3_iv",pmos_vds,pmos3p3_vgs,Id_sim)
+    ext_simulated("pfet_03v3_iv",pmos_vds,pmos3p3_vgs,mos_3p3_vgs_sweep,Id_sim)
+    error_cal    ("pfet_03v3_iv",pmos_vds,pmos3p3_vgs,Id_sim)
     
-    ext_simulated("pmos_3p3_iv",pmos_vds,pmos3p3_vgs,mos_3p3_vgs_sweep,Rds_sim)    
-    error_cal    ("pmos_3p3_iv",pmos_vds,pmos3p3_vgs,Rds_sim)
+    ext_simulated("pfet_03v3_iv",pmos_vds,pmos3p3_vgs,mos_3p3_vgs_sweep,Rds_sim)    
+    error_cal    ("pfet_03v3_iv",pmos_vds,pmos3p3_vgs,Rds_sim)
 
-    # =========== nmos_6p0_iv ==============      
-    ext_measured ("nmos_6p0_iv",nmos_vds,nmos6p0_vgs)
+    # =========== nfet_06v0_iv ==============      
+    ext_measured ("nfet_06v0_iv",nmos_vds,nmos6p0_vgs)
    
-    ext_simulated("nmos_6p0_iv",nmos_vds,nmos6p0_vgs,mos_6p0_vgs_sweep,Id_sim)
-    error_cal    ("nmos_6p0_iv",nmos_vds,nmos6p0_vgs,Id_sim)    
+    ext_simulated("nfet_06v0_iv",nmos_vds,nmos6p0_vgs,mos_6p0_vgs_sweep,Id_sim)
+    error_cal    ("nfet_06v0_iv",nmos_vds,nmos6p0_vgs,Id_sim)    
     
-    ext_simulated("nmos_6p0_iv",nmos_vds,nmos6p0_vgs,mos_6p0_vgs_sweep,Rds_sim)
-    error_cal    ("nmos_6p0_iv",nmos_vds,nmos6p0_vgs,Rds_sim)    
+    ext_simulated("nfet_06v0_iv",nmos_vds,nmos6p0_vgs,mos_6p0_vgs_sweep,Rds_sim)
+    error_cal    ("nfet_06v0_iv",nmos_vds,nmos6p0_vgs,Rds_sim)    
          
-    # =========== pmos_6p0_iv ==============      
-    ext_measured ("pmos_6p0_iv",pmos_vds,pmos6p0_vgs)
+    # =========== pfet_06v0_iv ==============      
+    ext_measured ("pfet_06v0_iv",pmos_vds,pmos6p0_vgs)
 
-    ext_simulated("pmos_6p0_iv",pmos_vds,pmos6p0_vgs,mos_6p0_vgs_sweep,Id_sim)
-    error_cal    ("pmos_6p0_iv",pmos_vds,pmos6p0_vgs,Id_sim) 
+    ext_simulated("pfet_06v0_iv",pmos_vds,pmos6p0_vgs,mos_6p0_vgs_sweep,Id_sim)
+    error_cal    ("pfet_06v0_iv",pmos_vds,pmos6p0_vgs,Id_sim) 
     
-    ext_simulated("pmos_6p0_iv",pmos_vds,pmos6p0_vgs,mos_6p0_vgs_sweep,Rds_sim)    
-    error_cal    ("pmos_6p0_iv",pmos_vds,pmos6p0_vgs,Rds_sim)              
+    ext_simulated("pfet_06v0_iv",pmos_vds,pmos6p0_vgs,mos_6p0_vgs_sweep,Rds_sim)    
+    error_cal    ("pfet_06v0_iv",pmos_vds,pmos6p0_vgs,Rds_sim)              
 
-    # ============ nmos_6p0_nat_iv =============              
-    ext_measured ("nmos_6p0_nat_iv",nmos_vds,nmos6p0_nat_vgs)
+    # ============ nfet_06v0_nvt_iv =============              
+    ext_measured ("nfet_06v0_nvt_iv",nmos_vds,nmos6p0_nat_vgs)
 
-    ext_simulated("nmos_6p0_nat_iv",nmos_vds,nmos6p0_nat_vgs,mos_6p0_vgs_sweep,Id_sim)
-    error_cal    ("nmos_6p0_nat_iv",nmos_vds,nmos6p0_nat_vgs,Id_sim)     
+    ext_simulated("nfet_06v0_nvt_iv",nmos_vds,nmos6p0_nat_vgs,mos_6p0_vgs_sweep,Id_sim)
+    error_cal    ("nfet_06v0_nvt_iv",nmos_vds,nmos6p0_nat_vgs,Id_sim)     
     
-    ext_simulated("nmos_6p0_nat_iv",nmos_vds,nmos6p0_nat_vgs,mos_6p0_vgs_sweep,Rds_sim)    
-    error_cal    ("nmos_6p0_nat_iv",nmos_vds,nmos6p0_nat_vgs,Rds_sim)    
+    ext_simulated("nfet_06v0_nvt_iv",nmos_vds,nmos6p0_nat_vgs,mos_6p0_vgs_sweep,Rds_sim)    
+    error_cal    ("nfet_06v0_nvt_iv",nmos_vds,nmos6p0_nat_vgs,Rds_sim)    
     
-    # ============ nmos_3p3_sab_iv =============                                
-    ext_measured ("nmos_3p3_sab_iv",nmos_vds,nmos3p3_vgs)
+    # ============ nfet_03v3_dss_iv =============                                
+    ext_measured ("nfet_03v3_dss_iv",nmos_vds,nmos3p3_vgs)
     
-    ext_simulated("nmos_3p3_sab_iv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,Id_sim)
-    error_cal    ("nmos_3p3_sab_iv",nmos_vds,nmos3p3_vgs,Id_sim)
+    ext_simulated("nfet_03v3_dss_iv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,Id_sim)
+    error_cal    ("nfet_03v3_dss_iv",nmos_vds,nmos3p3_vgs,Id_sim)
     
-    ext_simulated("nmos_3p3_sab_iv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,Rds_sim)
-    error_cal    ("nmos_3p3_sab_iv",nmos_vds,nmos3p3_vgs,Rds_sim)
+    ext_simulated("nfet_03v3_dss_iv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,Rds_sim)
+    error_cal    ("nfet_03v3_dss_iv",nmos_vds,nmos3p3_vgs,Rds_sim)
 
-    # =========== pmos_3p3_sab_iv ==============      
-    ext_measured ("pmos_3p3_sab_iv",pmos_vds,pmos3p3_vgs)
+    # =========== pfet_03v3_dss_iv ==============      
+    ext_measured ("pfet_03v3_dss_iv",pmos_vds,pmos3p3_vgs)
 
-    ext_simulated("pmos_3p3_sab_iv",pmos_vds,pmos3p3_vgs,mos_3p3_vgs_sweep,Id_sim)
-    error_cal    ("pmos_3p3_sab_iv",pmos_vds,pmos3p3_vgs,Id_sim)
+    ext_simulated("pfet_03v3_dss_iv",pmos_vds,pmos3p3_vgs,mos_3p3_vgs_sweep,Id_sim)
+    error_cal    ("pfet_03v3_dss_iv",pmos_vds,pmos3p3_vgs,Id_sim)
     
-    ext_simulated("pmos_3p3_sab_iv",pmos_vds,pmos3p3_vgs,mos_3p3_vgs_sweep,Rds_sim)    
-    error_cal    ("pmos_3p3_sab_iv",pmos_vds,pmos3p3_vgs,Rds_sim)
+    ext_simulated("pfet_03v3_dss_iv",pmos_vds,pmos3p3_vgs,mos_3p3_vgs_sweep,Rds_sim)    
+    error_cal    ("pfet_03v3_dss_iv",pmos_vds,pmos3p3_vgs,Rds_sim)
 
-    # =========== nmos_6p0_sab_iv ==============      
-    ext_measured ("nmos_6p0_sab_iv",nmos_vds,nmos6p0_vgs)
+    # =========== nfet_06v0_dss_iv ==============      
+    ext_measured ("nfet_06v0_dss_iv",nmos_vds,nmos6p0_vgs)
    
-    ext_simulated("nmos_6p0_sab_iv",nmos_vds,nmos6p0_vgs,mos_6p0_vgs_sweep,Id_sim)
-    error_cal    ("nmos_6p0_sab_iv",nmos_vds,nmos6p0_vgs,Id_sim)    
+    ext_simulated("nfet_06v0_dss_iv",nmos_vds,nmos6p0_vgs,mos_6p0_vgs_sweep,Id_sim)
+    error_cal    ("nfet_06v0_dss_iv",nmos_vds,nmos6p0_vgs,Id_sim)    
     
-    ext_simulated("nmos_6p0_sab_iv",nmos_vds,nmos6p0_vgs,mos_6p0_vgs_sweep,Rds_sim)
-    error_cal    ("nmos_6p0_sab_iv",nmos_vds,nmos6p0_vgs,Rds_sim)    
+    ext_simulated("nfet_06v0_dss_iv",nmos_vds,nmos6p0_vgs,mos_6p0_vgs_sweep,Rds_sim)
+    error_cal    ("nfet_06v0_dss_iv",nmos_vds,nmos6p0_vgs,Rds_sim)    
          
-    # =========== pmos_6p0_sab_iv ==============      
-    ext_measured ("pmos_6p0_sab_iv",pmos_vds,pmos6p0_vgs)
+    # =========== pfet_06v0_dss_iv ==============      
+    ext_measured ("pfet_06v0_dss_iv",pmos_vds,pmos6p0_vgs)
 
-    ext_simulated("pmos_6p0_sab_iv",pmos_vds,pmos6p0_vgs,mos_6p0_vgs_sweep,Id_sim)
-    error_cal    ("pmos_6p0_sab_iv",pmos_vds,pmos6p0_vgs,Id_sim) 
+    ext_simulated("pfet_06v0_dss_iv",pmos_vds,pmos6p0_vgs,mos_6p0_vgs_sweep,Id_sim)
+    error_cal    ("pfet_06v0_dss_iv",pmos_vds,pmos6p0_vgs,Id_sim) 
     
-    ext_simulated("pmos_6p0_sab_iv",pmos_vds,pmos6p0_vgs,mos_6p0_vgs_sweep,Rds_sim)    
-    error_cal    ("pmos_6p0_sab_iv",pmos_vds,pmos6p0_vgs,Rds_sim) 
+    ext_simulated("pfet_06v0_dss_iv",pmos_vds,pmos6p0_vgs,mos_6p0_vgs_sweep,Rds_sim)    
+    error_cal    ("pfet_06v0_dss_iv",pmos_vds,pmos6p0_vgs,Rds_sim) 
     
 # # ================================================================
 # -------------------------- MAIN --------------------------------

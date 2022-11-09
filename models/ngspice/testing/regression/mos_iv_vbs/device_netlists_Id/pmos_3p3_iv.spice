@@ -1,5 +1,5 @@
 ***************************
-** pmos_3p3_t_id
+** pfet_03v3_t_id
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -22,7 +22,7 @@ Vbs S_tn 0 dc=0
 .temp {{temp}}
 .options tnom={{temp}}
 
-xmn1 D_tn G_tn 0 S_tn pmos_3p3 W = {{width}}u L = {{length}}u
+xmn1 D_tn G_tn 0 S_tn pfet_03v3 W = {{width}}u L = {{length}}u
 
 **** begin architecture code
 
@@ -32,7 +32,7 @@ set filetype=ascii
 
 dc Vgs 0 -3.3 -0.05 Vbs 0 3.3 0.825
 print -i(Vds)
-wrdata pmos_3p3_iv/simulated_Id/{{i}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
+wrdata pfet_03v3_iv/simulated_Id/{{i}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
 .endc
 
 

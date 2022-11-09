@@ -1,5 +1,5 @@
 ***************************
-** nmos_6p0_t_id
+** nfet_06v0_t_id
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -20,7 +20,7 @@ Vgs G_tn 0 6
 .temp {{temp}}
 .options tnom={{temp}}
 
-xmn1 D_tn G_tn 0 0 nmos_6p0 W = {{width}}u L = {{length}}u ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+xmn1 D_tn G_tn 0 0 nfet_06v0 W = {{width}}u L = {{length}}u ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
 
 **** begin architecture code
 
@@ -30,7 +30,7 @@ set filetype=ascii
 
 dc Vds 0 6.6 0.05 Vgs 1 6 1
 print -i(Vds)
-wrdata nmos_6p0_iv/simulated_Id/{{i}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
+wrdata nfet_06v0_iv/simulated_Id/{{i}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
 .endc
 
 

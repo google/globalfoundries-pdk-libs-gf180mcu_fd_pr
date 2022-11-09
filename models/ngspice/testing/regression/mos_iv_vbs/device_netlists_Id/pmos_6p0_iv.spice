@@ -1,5 +1,5 @@
 ***************************
-** pmos_6p0_t_id
+** pfet_06v0_t_id
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -23,7 +23,7 @@ Vbs S_tn 0 dc=0
 .temp {{temp}}
 .options tnom={{temp}}
 
-xmn1 D_tn G_tn 0 S_tn pmos_6p0 W = {{width}}u L = {{length}}u
+xmn1 D_tn G_tn 0 S_tn pfet_06v0 W = {{width}}u L = {{length}}u
 
 **** begin architecture code
 
@@ -33,7 +33,7 @@ set filetype=ascii
 
 dc Vgs 0 -6 -0.05 Vbs 0 3 0.75
 print -i(Vds)
-wrdata pmos_6p0_iv/simulated_Id/{{i}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
+wrdata pfet_06v0_iv/simulated_Id/{{i}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
 .endc
 
 

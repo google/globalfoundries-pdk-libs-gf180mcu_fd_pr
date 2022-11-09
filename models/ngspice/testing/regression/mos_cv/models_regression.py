@@ -180,7 +180,7 @@ def error_cal(device,sweep_x,sweep_y,sim_val):
 
 def main():
         
-    devices = ["nmos_3p3_cv" , "pmos_3p3_cv" ]
+    devices = ["nfet_03v3_cv" , "pfet_03v3_cv" ]
     measured_data = ["3p3_cv"]
     nmos_vds = "Vds (V)"
     pmos_vds = "-Vds (V)"
@@ -231,52 +231,52 @@ def main():
         os.makedirs(f"{device}/error_{cgd_sim}",exist_ok=False)
 
 
-    # =========== nmos_3p3_cv ==============      
+    # =========== nfet_03v3_cv ==============      
     # Cgc 
-    ext_measured ("nmos_3p3_cv",nmos_vgs,nmos3p3_vbs,cgc_sim)
-    ext_simulated("nmos_3p3_cv",nmos_vgs,nmos3p3_vbs,mos_3p3_vbs_sweep,cgc_sim)
-    error_cal    ("nmos_3p3_cv",nmos_vgs,nmos3p3_vbs,cgc_sim)
+    ext_measured ("nfet_03v3_cv",nmos_vgs,nmos3p3_vbs,cgc_sim)
+    ext_simulated("nfet_03v3_cv",nmos_vgs,nmos3p3_vbs,mos_3p3_vbs_sweep,cgc_sim)
+    error_cal    ("nfet_03v3_cv",nmos_vgs,nmos3p3_vbs,cgc_sim)
 
     # Cgs
-    ext_measured ("nmos_3p3_cv",nmos_vds,nmos3p3_vgs,cgs_sim)
-    ext_simulated("nmos_3p3_cv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,cgs_sim)
-    error_cal    ("nmos_3p3_cv",nmos_vds,nmos3p3_vgs,cgs_sim)
+    ext_measured ("nfet_03v3_cv",nmos_vds,nmos3p3_vgs,cgs_sim)
+    ext_simulated("nfet_03v3_cv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,cgs_sim)
+    error_cal    ("nfet_03v3_cv",nmos_vds,nmos3p3_vgs,cgs_sim)
 
     # Cgd
-    ext_measured ("nmos_3p3_cv",nmos_vds,nmos3p3_vgs,cgd_sim)
-    ext_simulated("nmos_3p3_cv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,cgd_sim)
-    error_cal    ("nmos_3p3_cv",nmos_vds,nmos3p3_vgs,cgd_sim)
+    ext_measured ("nfet_03v3_cv",nmos_vds,nmos3p3_vgs,cgd_sim)
+    ext_simulated("nfet_03v3_cv",nmos_vds,nmos3p3_vgs,mos_3p3_vgs_sweep,cgd_sim)
+    error_cal    ("nfet_03v3_cv",nmos_vds,nmos3p3_vgs,cgd_sim)
     
     
-    # =========== nmos_3p3_cv ==============      
+    # =========== nfet_03v3_cv ==============      
     # Cgc
-    ext_measured ("pmos_3p3_cv",pmos_vgs,pmos3p3_vbs,cgc_sim)
-    ext_simulated("pmos_3p3_cv",pmos_vgs,pmos3p3_vbs,mos_3p3_vbs_sweep,cgc_sim)
-    error_cal    ("pmos_3p3_cv",pmos_vgs,pmos3p3_vbs,cgc_sim)
+    ext_measured ("pfet_03v3_cv",pmos_vgs,pmos3p3_vbs,cgc_sim)
+    ext_simulated("pfet_03v3_cv",pmos_vgs,pmos3p3_vbs,mos_3p3_vbs_sweep,cgc_sim)
+    error_cal    ("pfet_03v3_cv",pmos_vgs,pmos3p3_vbs,cgc_sim)
     
     # Cgs
-    ext_measured ("pmos_3p3_cv",pmos_vgs,pmos3p3_vgs,cgs_sim)
-    ext_simulated("pmos_3p3_cv",pmos_vgs,pmos3p3_vgs,mos_3p3_vgs_sweep,cgs_sim)
-    error_cal    ("pmos_3p3_cv",pmos_vgs,pmos3p3_vgs,cgs_sim)
+    ext_measured ("pfet_03v3_cv",pmos_vgs,pmos3p3_vgs,cgs_sim)
+    ext_simulated("pfet_03v3_cv",pmos_vgs,pmos3p3_vgs,mos_3p3_vgs_sweep,cgs_sim)
+    error_cal    ("pfet_03v3_cv",pmos_vgs,pmos3p3_vgs,cgs_sim)
      
     # Cgd   
-    ext_measured ("pmos_3p3_cv",pmos_vgs,pmos3p3_vgs,cgd_sim)
-    ext_simulated("pmos_3p3_cv",pmos_vgs,pmos3p3_vgs,mos_3p3_vgs_sweep,cgd_sim)
-    error_cal    ("pmos_3p3_cv",pmos_vgs,pmos3p3_vgs,cgd_sim)
+    ext_measured ("pfet_03v3_cv",pmos_vgs,pmos3p3_vgs,cgd_sim)
+    ext_simulated("pfet_03v3_cv",pmos_vgs,pmos3p3_vgs,mos_3p3_vgs_sweep,cgd_sim)
+    error_cal    ("pfet_03v3_cv",pmos_vgs,pmos3p3_vgs,cgd_sim)
             
-    # =========== pmos_3p3_iv ==============      
+    # =========== pfet_03v3_iv ==============      
 
 
-    # =========== nmos_6p0_iv ==============      
+    # =========== nfet_06v0_iv ==============      
 
          
-    # =========== pmos_6p0_iv ==============      
+    # =========== pfet_06v0_iv ==============      
       
           
-    # ============ nmos_3p3_sab_iv =============                                # Error in ngspice 
+    # ============ nfet_03v3_dss_iv =============                                # Error in ngspice 
 
 
-    # ============ nmos_6p0_nat_iv =============              
+    # ============ nfet_06v0_nvt_iv =============              
  
  
 # # ================================================================

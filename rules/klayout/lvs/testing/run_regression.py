@@ -61,7 +61,7 @@ def lvs_check(table,files):
         layout = file[0]
 
         # Get switches
-        if layout == "sample_ggnmos_6p0_sab":
+        if layout == "sample_ggnfet_06v0_dss":
             switches = ' -rd lvs_sub=sub!'
         else:
             switches = ' -rd lvs_sub=vdd!'

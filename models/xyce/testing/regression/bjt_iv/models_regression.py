@@ -163,8 +163,8 @@ def error_cal(device,vc,step,Id_sim,list_devices,ib):
 def main():
 
     devices = ["npn","pnp"]
-    list_devices = [["vnpn_10x10" , "vnpn_5x5" , "vnpn_0p54x16" , "vnpn_0p54x8" , "vnpn_0p54x4", "vnpn_0p54x2"],
-                    ["vpnp_0p42x10" , "vpnp_0p42x5", "vpnp_10x10" , "vpnp_5x5"]]
+    list_devices = [["npn_10p00x10p00" , "npn_05p00x05p00" , "npn_00p54x16p00" , "npn_00p54x08p00" , "npn_00p54x04p00", "npn_00p54x02p00"],
+                    ["pnp_10p00x00p42" , "pnp_05p00x00p42", "pnp_10p00x10p00" , "pnp_05p00x05p00"]]
     vc = ["vcp ","-vc (A)"]
     ib = ["ibp =","ib =-"]
     Id_sim  = "IcVc"

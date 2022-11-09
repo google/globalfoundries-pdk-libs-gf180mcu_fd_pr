@@ -164,7 +164,7 @@ def main():
     cv_sim, bjt_vn, bjt_in = measure[0], measure[1], measure[2] 
     
     #vnpn
-    npn_devices = ["vnpn_10x10" , "vnpn_5x5" , "vnpn_0p54x16" , "vnpn_0p54x8" , "vnpn_0p54x4" , "vnpn_0p54x2"]
+    npn_devices = ["npn_10p00x10p00" , "npn_05p00x05p00" , "npn_00p54x16p00" , "npn_00p54x08p00" , "npn_00p54x04p00" , "npn_00p54x02p00"]
     npn_start = 0 
     
     for corner in corners:
@@ -192,7 +192,7 @@ def main():
         npn_start = 0
 
     # vpnp
-    pnp_devices = ["vpnp_0p42x10" , "vpnp_0p42x5" , "vpnp_10x10" , "vpnp_5x5"]
+    pnp_devices = ["pnp_10p00x00p42" , "pnp_05p00x00p42" , "pnp_10p00x10p00" , "pnp_05p00x05p00"]
     pnp_start = 0 
     
     for corner in corners:
@@ -230,7 +230,7 @@ def main():
         npn_start = 0
 
     # vpnp
-    pnp_devices = ["vpnp_0p42x10" , "vpnp_0p42x5" , "vpnp_10x10" , "vpnp_5x5"]
+    pnp_devices = ["pnp_10p00x00p42" , "pnp_05p00x00p42" , "pnp_10p00x10p00" , "pnp_05p00x05p00"]
     pnp_start = 0 
     
     for corner in corners:

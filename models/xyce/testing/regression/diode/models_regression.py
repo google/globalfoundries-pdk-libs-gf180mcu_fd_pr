@@ -137,7 +137,7 @@ def error_cal(device,vn,d_in,Id_sim, corner):
 
 def main():
         
-    devices = ["np_3p3","dnwpw","dnwps","np_6p0", "nwp_3p3","nwp_6p0","pn_3p3","pn_6p0","sc_diode"]
+    devices = ["diode_nd2ps_03v3","diode_pw2dw_06v0","diode_dw2ps_06v0","diode_nd2ps_06v0", "diode_nw2ps_03v3","diode_nw2ps_06v0","diode_pd2nw_03v3","diode_pd2nw_06v0","sc_diode"]
     corners = ["typical","ff","ss"]
     measures = [["iv","Vn1 (V)", " |In1(A)| diode", 103]]#,
                 # ["cv","Vj", "diode", 17]]

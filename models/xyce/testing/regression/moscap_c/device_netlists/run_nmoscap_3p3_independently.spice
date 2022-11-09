@@ -8,7 +8,7 @@
 Ich 0 p dc 10u
 
 
-xcn p 0 nmoscap_3p3 L=50u W=50u
+xcn p 0 cap_nmos_03v3 L=50u W=50u
 * PJ=40u
 
 

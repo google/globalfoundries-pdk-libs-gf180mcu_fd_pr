@@ -123,7 +123,7 @@ def main():
 
     # 3p3
     corners = ["typical","ff","ss"]        
-    devices = ["nmoscap_3p3" , "pmoscap_3p3" , "nmoscap_3p3_b" , "pmoscap_3p3_b"]
+    devices = ["cap_nmos_03v3" , "cap_pmos_03v3" , "cap_nmos_03v3_b" , "cap_pmos_03v3_b"]
     measure = ["cv","corners", "CV (fF)"]
     start = 0
     for corner in corners: 
@@ -151,7 +151,7 @@ def main():
 
     # 6p0 
     corners = ["typical","ff","ss"]        
-    devices = ["nmoscap_6p0" , "pmoscap_6p0" , "nmoscap_6p0_b" , "pmoscap_6p0_b"]
+    devices = ["cap_nmos_06v0" , "cap_pmos_06v0" , "cap_nmos_06v0_b" , "cap_pmos_06v0_b"]
     measure = ["cv","corners", "CV (fF)"]
     start = 0
     for corner in corners: 

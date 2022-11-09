@@ -30,7 +30,7 @@ def get_sizes(models_path):
         device_model = f.read()
         # for j, corner in enumerate(corners):
         for i in range(16):
-            data = device_model.split(f".MODEL nmos_3p3.{i} NMOS")
+            data = device_model.split(f".MODEL nfet_03v3.{i} NMOS")
             data = data[1].split("+ LEVEL=14")
             dimensions = re.findall("LMAX=([0-9e.-]+)[\w+\s=.{}-]+LMIN=([0-9e.-]+)[\w+\s=.{}-]+WMAX=([0-9e.-]+)[\w+\s=.{}-]+WMIN=([0-9e.-]+)[\w+\s=.{}-]+", data[0])
             sizes.append(dimensions)

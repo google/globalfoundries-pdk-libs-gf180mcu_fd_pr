@@ -1,5 +1,5 @@
 ***************************
-** pmos_3p3_cv
+** pfet_03v3_cv
 ***************************
 
 ** library calling
@@ -22,7 +22,7 @@ vs S_tn 0 dc=0.1
 * pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
 
 * circuit
-mn D_tn G_tn S_tn S_tn pmos_3p3 W = 200u L = 0.28u nf=20 ad= 24u pd=200.48u as=24u ps=200.48u
+mn D_tn G_tn S_tn S_tn pfet_03v3 W = 200u L = 0.28u nf=20 ad= 24u pd=200.48u as=24u ps=200.48u
 
 .control
 set filetype=ascii
@@ -52,7 +52,7 @@ foreach t 25
 	
 	print @mn[cgs]
         
-        wrdata pmos_3p3_cv/simulated_Cgs/{{i}}_simulated_W{{width}}_L{{length}}.csv @mn[cgs] 
+        wrdata pfet_03v3_cv/simulated_Cgs/{{i}}_simulated_W{{width}}_L{{length}}.csv @mn[cgs] 
         
         reset
         let vgs_counter = vgs_counter + 1

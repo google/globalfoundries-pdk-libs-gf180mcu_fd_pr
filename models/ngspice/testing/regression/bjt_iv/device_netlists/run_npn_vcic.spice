@@ -9,7 +9,7 @@ Ib 0 b 9u
 .temp 25
 .options tnom=25
 
-xq1 c b 0 0 vnpn_10x10
+xq1 c b 0 0 npn_10p00x10p00
 
 
 *****************

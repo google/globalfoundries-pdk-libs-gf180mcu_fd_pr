@@ -10,7 +10,7 @@ Vds D_tn 0 dc 3.3
 Vgs G_tn 0 dc 3.3
 
 
-xmn1 D_tn G_tn 0 0 nmos_3p3 W=10u L=10u ad=2.4u pd=20.48u as=2.4u ps=20.48u
+xmn1 D_tn G_tn 0 0 nfet_03v3 W=10u L=10u ad=2.4u pd=20.48u as=2.4u ps=20.48u
 
 
 
