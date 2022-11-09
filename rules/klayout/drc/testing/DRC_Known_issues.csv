@@ -1,0 +1,54 @@
+Rule ,Issues
+DN.2a ,connectivity
+DN.2b ,connectivity
+LPW.2a ,connectivity
+LPW.2b ,connectivity
+NW.2a,connectivity
+NW.2b,connectivity
+PL.1,Tolerance
+PL.1a,Tolerance
+PL.5b,Tolerance (5v case)
+PL.8,Covered in Manual testcase
+NP.1,Tolerance
+NP.3a,Tolerance
+NP.3b,Tolerance
+NP.3c,Tolerance
+NP.5a,Tolerance
+NP.7,Tolerance
+PP.1,Tolerance
+PP.3a,Tolerance
+PP.3b,Tolerance
+PP.3c,Tolerance
+PP.5a,Tolerance
+PP.7,Tolerance
+SB.1,Tolerance
+SB.5a,Tolerance
+SB.6,Tolerance
+SB.7,Tolerance
+CO.2b,Covered in Manual testcase
+CO.5a,Covered in Manual testcase
+CO.5b,Covered in Manual testcase
+Mn.4,Covered in Manual testcase
+Vn.2b,Discussion/ Revisit
+MT.3,Covered in Manual testcase
+MT30.7,Covered in Manual testcase
+MC.1,Tolerance
+ANT.16,Covered in Manual testcase
+PRES.2,Tolerance 
+PRES.7,Tolerance 
+LRES.2,Tolerance 
+LRES.7,Tolerance 
+HRES.2,Tolerance 
+HRES.5,Tolerance 
+HRES.6,Tolerance 
+HRES.12b,Missing test case
+O.PL.3a,Tolerance
+EF.04c,Covered in Manual testcase
+EF.04d,Covered in Manual testcase
+EF.20,Tolerance
+MDN.2a,Tolerance
+MDN.8a,Tolerance
+MDP.17c,Testcase issue [Not matching with drm]
+Y.PL.1,Tolerance
+S.CO.4_LV,Tolerance
+S.CO.6_ii_LV,Testcase issue (different measured values)
