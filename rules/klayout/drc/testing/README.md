@@ -6,39 +6,40 @@ Explains how to test GF180nm DRC rule deck.
 
 ```text
 📦testing
- ┣ 📜Makefile
- ┣ 📜README.md
- ┣ 📜run_regression.py
- ┣ 📜run_sc_regression.py
- ┣ 📜sc_testcases
- ┣ 📜switch_checking
- ┗ 📜testcases
+ ┣ 📜Makefile                        (Makefile to define testing targets)
+ ┣ 📜README.md                       (This file to document the regression)
+ ┣ 📜run_regression.py               (Main regression script that runs the regression.)
+ ┣ 📜run_sc_regression.py            (Regression scripts for all IPs: standard cells, I/Os and sram)
+ ┣ 📜run_switch_checking.py          (Regression script for switch checking.)
+ ┣ 📜sc_testcases                    (Standard Cells testcases, the GDS files has collective of all standard cells for DRC testing.)
+ ┣ 📜ip_testcases                    (IP testcases that include all the IPs that we need for DRC testing including: I/Os and SRAM.)
+ ┣ 📜switch_checking                 (Switch Checking test case)
+ ┗ 📜testcases                       (Unit test per rule.)
  ```
 
 ## Prerequisites
-
-At a minimum:
-
-- Git 2.35+
+You need the following set of tools installed to be able to run the regression:
 - Python 3.6+
 - KLayout 0.27.8+
 
-### On Ubuntu, you can just
+We have tested this using the following setup:
+- Python 3.9.12
+- KLayout 0.27.11
 
-`apt install -y build-essential python3`
-
-- Check this [Klayout](https://www.klayout.de/) for klayout installation.
+Please make sure to install python packages before running regerssion using the requirements:
+```bash
+pip install -r ../../requirements.test.txt
+```
+Also, please make sure to follow the instructions outlined in the DRC document for running.
 
 ## Regression Usage
 
-To make a full test for GF180nm DRC rule deck, you could use the following command in testing directory:
-
-```bash
-make all
-```
+- To make a full test for GF180nm DRC rule deck, you could use the following command in testing directory:
+    ```bash
+    make all
+    ```
 
 - You could also check allowed targets in the Makefile, using the following command:
-
     ```bash
     make help
     ```

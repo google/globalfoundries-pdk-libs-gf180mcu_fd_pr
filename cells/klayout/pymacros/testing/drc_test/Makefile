@@ -26,7 +26,7 @@ run_folder   := $(shell date +'run_%Y_%m_%d_%H_%M')
 
 all : test-DRC-pcell
 
-test-DRC-pcell: Add_run-dir  test-DRC-bjt  test-DRC-diode  test-DRC-MIM  test-DRC-MOSCAP  test-DRC-MOS  test-DRC-RES
+test-DRC-pcell: Add_run-dir  test-DRC-bjt  test-DRC-diode  test-DRC-MIM  test-DRC-cap_mos  test-DRC-MOS  test-DRC-RES
 
 #=================================
 # --------- RUN FOLDER ----------
@@ -35,7 +35,7 @@ test-DRC-pcell: Add_run-dir  test-DRC-bjt  test-DRC-diode  test-DRC-MIM  test-DR
 .ONESHELL:
 Add_run-dir:
 	@cd $(Testing_DIR)
-	@ mkdir -p $(run_folder)/bjt_drc  $(run_folder)/diode_drc  $(run_folder)/mimcap_drc  $(run_folder)/mosfet_drc  $(run_folder)/moscap_drc  $(run_folder)/res_drc
+	@ mkdir -p $(run_folder)/bjt_drc  $(run_folder)/diode_drc  $(run_folder)/cap_mim_drc  $(run_folder)/mosfet_drc  $(run_folder)/cap_mos_drc  $(run_folder)/res_drc
 
 
 #=================================
@@ -55,22 +55,22 @@ test-DRC-bjt: Add_run-dir
 #=================================
 
 .ONESHELL:
-test-DRC-diode: test-DRC-np_diode  test-DRC-pn_diode test-DRC-np_dw_diode  test-DRC-pn_dw_diode  test-DRC-nwp_diode  test-DRC-diode_pw2dw_diode  test-DRC-diode_dw2ps_diode  test-DRC-sc_diode
+test-DRC-diode: test-DRC-diode_np  test-DRC-diode_pn test-DRC-np_dw_diode  test-DRC-pn_dw_diode  test-DRC-diode_nw2ps  test-DRC-diode_pw2dw  test-DRC-diode_dw2ps  test-DRC-sc_diode
 
 .ONESHELL:
-test-DRC-np_diode: Add_run-dir	
+test-DRC-diode_np: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for np_diode pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/np_diode_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/np_diode.log
-	@mv -f ../testcases/np_diode_pcells*.lyrdb $(run_folder)/diode_drc
+	@echo "===== test-DRC for diode_np pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_np_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_np.log
+	@mv -f ../testcases/diode_np_pcells*.lyrdb $(run_folder)/diode_drc
 
 
 .ONESHELL:
-test-DRC-pn_diode: Add_run-dir
+test-DRC-diode_pn: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pn_diode pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pn_diode_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/pn_diode.log
-	@mv -f ../testcases/pn_diode_pcells*.lyrdb $(run_folder)/diode_drc
+	@echo "===== test-DRC for diode_pn pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_pn_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_pn.log
+	@mv -f ../testcases/diode_pn_pcells*.lyrdb $(run_folder)/diode_drc
 
 
 .ONESHELL:
@@ -90,27 +90,27 @@ test-DRC-pn_dw_diode: Add_run-dir
 
 
 .ONESHELL:
-test-DRC-nwp_diode: Add_run-dir	
+test-DRC-diode_nw2ps: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nwp_diode pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nwp_diode_pcells.gds   --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/nwp_diode.log
-	@mv -f ../testcases/nwp_diode_pcells*.lyrdb $(run_folder)/diode_drc
+	@echo "===== test-DRC for diode_nw2ps pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_nw2ps_pcells.gds   --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_nw2ps.log
+	@mv -f ../testcases/diode_nw2ps_pcells*.lyrdb $(run_folder)/diode_drc
 
 
 .ONESHELL:
-test-DRC-diode_pw2dw_diode: Add_run-dir	
+test-DRC-diode_pw2dw: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for diode_pw2dw_diode pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_pw2dw_diode_pcells.gds --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_pw2dw_diode.log 
-	@mv -f ../testcases/diode_pw2dw_diode_pcells*.lyrdb $(run_folder)/diode_drc
+	@echo "===== test-DRC for diode_pw2dw pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_pw2dw_pcells.gds --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_pw2dw.log 
+	@mv -f ../testcases/diode_pw2dw_pcells*.lyrdb $(run_folder)/diode_drc
 
 
 .ONESHELL:
-test-DRC-diode_dw2ps_diode: Add_run-dir	
+test-DRC-diode_dw2ps: Add_run-dir	
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for diode_dw2ps_diode pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_dw2ps_diode_pcells.gds --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_dw2ps_diode.log
-	@mv -f ../testcases/diode_dw2ps_diode_pcells*.lyrdb $(run_folder)/diode_drc
+	@echo "===== test-DRC for diode_dw2ps pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/diode_dw2ps_pcells.gds --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/diode_drc/diode_dw2ps.log
+	@mv -f ../testcases/diode_dw2ps_pcells*.lyrdb $(run_folder)/diode_drc
 
 
 .ONESHELL:
@@ -132,17 +132,17 @@ test-DRC-MIM: test-DRC-MIM-A  test-DRC-MIM-B
 test-DRC-MIM-A: Add_run-dir
 	@cd $(Testing_DIR)
 	@echo "===== test-DRC for MIM-A pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/MIM-A_pcells.gds        --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/mimcap_drc/mim_a_gfA.log
-	@mv -f ../testcases/MIM-A_pcells*.lyrdb $(run_folder)/mimcap_drc
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/MIM-A_pcells.gds        --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/cap_mim_drc/mim_a_gfA.log
+	@mv -f ../testcases/MIM-A_pcells*.lyrdb $(run_folder)/cap_mim_drc
 
 
 .ONESHELL:
 test-DRC-MIM-B: Add_run-dir
 	@cd $(Testing_DIR)
 	@echo "===== test-DRC for MIM-B pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/MIM-B_gfB_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/mimcap_drc/mim_b_gfB.log
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/MIM-B_gfC_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/mimcap_drc/mim_b_gfC.log
-	@mv -f ../testcases/MIM-B_gfB_pcells*.lyrdb $(run_folder)/mimcap_drc
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/MIM-B_gfB_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/cap_mim_drc/mim_b_gfB.log
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/MIM-B_gfC_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/cap_mim_drc/mim_b_gfC.log
+	@mv -f ../testcases/MIM-B_gfB_pcells*.lyrdb $(run_folder)/cap_mim_drc
 
 
 
@@ -304,70 +304,70 @@ test-DRC-pfet_10v0_asym: Add_run-dir
 
 
 #=================================
-# ------- test-DRC-MOSCAP --------
+# ------- test-DRC-cap_mos --------
 #=================================
 
 .ONESHELL:
-test-DRC-MOSCAP: test-DRC-nmoscap  test-DRC-pmoscap test-DRC-nmoscap_dw  test-DRC-pmoscap_dw  test-DRC-nmoscap_b  test-DRC-pmoscap
+test-DRC-cap_mos: test-DRC-cap_nmos  test-DRC-cap_pmos test-DRC-cap_nmos_dw  test-DRC-cap_pmos_dw  test-DRC-cap_nmos_b  test-DRC-cap_pmos
 
 .ONESHELL:
-test-DRC-nmoscap: Add_run-dir
+test-DRC-cap_nmos: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmoscap pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_gfA.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_gfB.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_gfC.log 
-	@mv -f ../testcases/nmoscap_pcells*.lyrdb $(run_folder)/moscap_drc
-
-
-.ONESHELL:
-test-DRC-pmoscap: Add_run-dir
-	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmoscap pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_gfA.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_gfB.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_gfC.log 
-	@mv -f ../testcases/pmoscap_pcells*.lyrdb $(run_folder)/moscap_drc
+	@echo "===== test-DRC for cap_nmos pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_gfA.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_gfB.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_gfC.log 
+	@mv -f ../testcases/cap_nmos_pcells*.lyrdb $(run_folder)/cap_mos_drc
 
 
 .ONESHELL:
-test-DRC-nmoscap_dw: Add_run-dir
+test-DRC-cap_pmos: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmoscap_dw pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_dw_gfA.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_dw_gfB.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_dw_gfC.log 
-	@mv -f ../testcases/nmoscap_dw_pcells*.lyrdb $(run_folder)/moscap_drc
+	@echo "===== test-DRC for cap_pmos pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_gfA.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_gfB.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_gfC.log 
+	@mv -f ../testcases/cap_pmos_pcells*.lyrdb $(run_folder)/cap_mos_drc
 
 
 .ONESHELL:
-test-DRC-pmoscap_dw: Add_run-dir
+test-DRC-cap_nmos_dw: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmoscap_dw pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_dw_gfA.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_dw_gfB.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_dw_gfC.log 
-	@mv -f ../testcases/pmoscap_dw_pcells*.lyrdb $(run_folder)/moscap_drc
+	@echo "===== test-DRC for cap_nmos_dw pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_dw_gfA.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_dw_gfB.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_dw_gfC.log 
+	@mv -f ../testcases/cap_nmos_dw_pcells*.lyrdb $(run_folder)/cap_mos_drc
 
 
 .ONESHELL:
-test-DRC-nmoscap_b: Add_run-dir
+test-DRC-cap_pmos_dw: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for nmoscap_b pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_b_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_b_gfA.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_b_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_b_gfB.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/nmoscap_b_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/nmoscap_b_gfC.log 
-	@mv -f ../testcases/nmoscap_b_pcells*.lyrdb $(run_folder)/moscap_drc
+	@echo "===== test-DRC for cap_pmos_dw pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_dw_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_dw_gfA.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_dw_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_dw_gfB.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_dw_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_dw_gfC.log 
+	@mv -f ../testcases/cap_pmos_dw_pcells*.lyrdb $(run_folder)/cap_mos_drc
 
 
 .ONESHELL:
-test-DRC-pmoscap_b: Add_run-dir
+test-DRC-cap_nmos_b: Add_run-dir
 	@cd $(Testing_DIR)
-	@echo "===== test-DRC for pmoscap_b pcells ====="
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_b_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_b_gfA.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_b_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_b_gfB.log 
-	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/pmoscap_b_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/moscap_drc/pmoscap_b_gfC.log 
-	@mv -f ../testcases/pmoscap_b_pcells*.lyrdb $(run_folder)/moscap_drc
+	@echo "===== test-DRC for cap_nmos_b pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_b_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_b_gfA.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_b_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_b_gfB.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_nmos_b_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_nmos_b_gfC.log 
+	@mv -f ../testcases/cap_nmos_b_pcells*.lyrdb $(run_folder)/cap_mos_drc
+
+
+.ONESHELL:
+test-DRC-cap_pmos_b: Add_run-dir
+	@cd $(Testing_DIR)
+	@echo "===== test-DRC for cap_pmos_b pcells ====="
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_b_pcells.gds    --gf180mcu=A --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_b_gfA.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_b_pcells.gds    --gf180mcu=B --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_b_gfB.log 
+	@python3 $(PDK_ROOT)/$(PDK)/run_drc.py --path=../testcases/cap_pmos_b_pcells.gds    --gf180mcu=C --antenna  --no_offgrid  |& tee $(run_folder)/cap_mos_drc/cap_pmos_b_gfC.log 
+	@mv -f ../testcases/cap_pmos_b_pcells*.lyrdb $(run_folder)/cap_mos_drc
 
 
 #=================================
@@ -517,6 +517,6 @@ help:
 	@echo "... test-DRC-diode             (To run DRC for on diode pcells                   )"
 	@echo "... test-DRC-MIM               (To run DRC for on MIM pcells                     )"
 	@echo "... test-DRC-MOS               (To run DRC for on MOS pcells                     )"
-	@echo "... test-DRC-MOSCAP            (To run DRC for on MOSCAP pcells                  )"
+	@echo "... test-DRC-cap_mos            (To run DRC for on cap_mos pcells                  )"
 	@echo "... test-DRC-RES               (To run DRC for on RES pcells                     )"
 
