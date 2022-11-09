@@ -32,13 +32,11 @@ pip install -r ../../requirements.test.txt
 ## Regression Usage
 
 - To make a full test for GF180nm DRC rule deck, you could use the following command in testing directory:
-
-```bash
-make all
-```
+    ```bash
+    make all
+    ```
 
 - You could also check allowed targets in the Makefile, using the following command:
-
     ```bash
     make help
     ```
