@@ -30,6 +30,7 @@ Please make sure to install python packages before running regerssion using the 
 ```bash
 pip install -r ../../requirements.test.txt
 ```
+Also, please make sure to follow the instructions outlined in the DRC document for running.
 
 ## Regression Usage
 
