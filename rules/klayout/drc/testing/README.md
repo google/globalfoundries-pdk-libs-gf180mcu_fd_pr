@@ -24,7 +24,7 @@ We have tested this using the following setup:
 - Python 3.9.12
 - KLayout 0.27.11
 
-Please make sure to install python packages using the requirements:
+Please make sure to install python packages before running regerssion using the requirements:
 ```bash
 pip install -r ../../requirements.test.txt
 ```
