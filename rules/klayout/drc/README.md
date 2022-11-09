@@ -17,14 +17,21 @@ Explains how to use the runset.
 
 ## Rule Deck Usage
 
-The `run_drc.py` script takes a gds file to run DRC rule decks of GF180 technology with switches to select subsets of all checks. Please make sure to define PDK_ROOT and PDK environment variables to make it work. Example definition would be to work for this repo, go to the `rules/klayout` directory and run:
+The `run_drc.py` script takes a gds file to run DRC rule decks of GF180 technology with switches to select subsets of all checks. 
+
+### Requirements
+Please make sure to define PDK_ROOT and PDK environment variables to make it work. Example definition would be to work for this repo, go to the `rules/klayout` directory and run:
 ```bash
 export PDK_ROOT=`pwd`
 export PDK="drc"
 ```
+Also, please make sure to install the required python packages at `../requirements.test.txt` by using
+```bash
+pip install -r ../requirements.test.txt
+```
 
 
-### **Switches**
+### Switches
 
 1. **FEOL**          : Default is on. Use it for checking Front End Of Line layers (wells, diffusion, polys, contacts).
 2. **BEOL**          : Default is on. Use it for checking Back End Of Line layers (metal layers, top metal layer, vias).
