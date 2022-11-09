@@ -10,7 +10,9 @@ Explains how to test GF180nm DRC rule deck.
  ┣ 📜README.md                       (This file to document the regression)
  ┣ 📜run_regression.py               (Main regression script that runs the regression.)
  ┣ 📜run_sc_regression.py            (Regression scripts for all IPs: standard cells, I/Os and sram)
+ ┣ 📜run_switch_checking.py          (Regression script for switch checking.)
  ┣ 📜sc_testcases                    (Standard Cells testcases, the GDS files has collective of all standard cells for DRC testing.)
+ ┣ 📜ip_testcases                    (IP testcases that include all the IPs that we need for DRC testing including: I/Os and SRAM.)
  ┣ 📜switch_checking                 (Switch Checking test case)
  ┗ 📜testcases                       (Unit test per rule.)
  ```
