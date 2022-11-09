@@ -56,7 +56,7 @@ pip install -r ../requirements.test.txt
 Example:
 
 ```bash
-    python3 run_drc.py --path=testing/switch_checking/switch_checking.gds --thr=16 --run_mode=flat --gf180mcu=A --antenna --no_offgrid
+    python3 run_drc.py --path=testing/switch_checking/simple_por.gds.gz --thr=16 --run_mode=flat --gf180mcu=A --antenna --no_offgrid
 ```
 
 ### Options
