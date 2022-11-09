@@ -28,7 +28,7 @@ def call_simulator(file_name):
 def ext_measured(device,vn,d_in, cv_sim, corner,start,dirpath):
     
     # Get dimensions used for each device 
-    if "vnpn" in device:
+    if "npn" in device:
         loops = 3
     else:
         loops = 2 
@@ -57,14 +57,14 @@ def ext_simulated(device,vn,d_in,cv_sim, corner,temp,dirpath,cap):
     
     if "EBJ" in cap: 
         i = 0
-        if "vnpn" in device:
+        if "npn" in device:
             connection = "0 out 0 0"
         else:
             connection = "0 0 out" 
         Iopen = ""
     elif "CBJ" in cap: 
         i = 1
-        if "vnpn" in device:
+        if "npn" in device:
             connection = "0 out open 0"
             Iopen = "Iopen open 0 0"
         else:
@@ -120,7 +120,7 @@ def ext_simulated(device,vn,d_in,cv_sim, corner,temp,dirpath,cap):
 def error_cal(device,vn,d_in,cv_sim, corner,temp,dirpath):
     
     # Get dimensions used for each device
-    if "vnpn" in device:
+    if "npn" in device:
         loops = 3
     else:
         loops = 2     
@@ -163,7 +163,7 @@ def main():
     measure = ["cv","Vj", "bjt", 31]
     cv_sim, bjt_vn, bjt_in = measure[0], measure[1], measure[2] 
     
-    #vnpn
+    #npn
     npn_devices = ["npn_10p00x10p00" , "npn_05p00x05p00" , "npn_00p54x16p00" , "npn_00p54x08p00" , "npn_00p54x04p00" , "npn_00p54x02p00"]
     npn_start = 0 
     
@@ -191,7 +191,7 @@ def main():
                 npn_start = npn_start + 3
         npn_start = 0
 
-    # vpnp
+    # pnp
     pnp_devices = ["pnp_10p00x00p42" , "pnp_05p00x00p42" , "pnp_10p00x10p00" , "pnp_05p00x05p00"]
     pnp_start = 0 
     
@@ -229,7 +229,7 @@ def main():
                 npn_start = npn_start + 3
         npn_start = 0
 
-    # vpnp
+    # pnp
     pnp_devices = ["pnp_10p00x00p42" , "pnp_05p00x00p42" , "pnp_10p00x10p00" , "pnp_05p00x05p00"]
     pnp_start = 0 
     
