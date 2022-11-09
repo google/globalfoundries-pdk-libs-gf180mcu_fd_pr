@@ -16,7 +16,6 @@ Explains how to use the runset.
  ```
 
 ## Rule Deck Usage
-
 The `run_drc.py` script takes a gds file to run DRC rule decks of GF180 technology with switches to select subsets of all checks. 
 
 ### Requirements
@@ -32,6 +31,7 @@ pip install -r ../requirements.test.txt
 
 
 ### Switches
+The list of switches used for running DRC:
 
 1. **FEOL**          : Default is on. Use it for checking Front End Of Line layers (wells, diffusion, polys, contacts).
 2. **BEOL**          : Default is on. Use it for checking Back End Of Line layers (metal layers, top metal layer, vias).
