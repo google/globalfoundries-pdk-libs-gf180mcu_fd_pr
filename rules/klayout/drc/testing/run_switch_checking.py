@@ -27,7 +27,7 @@ def gen_patterns():
                  "base_A_variant",
                  "base_B_variant",
                  "base_C_variant",
-                 "connectivity_disabled",
+                 "connectivity_enabled",
                  "no_offgrid"]
 
     switches = [ "--gf180mcu=A --no_feol"
@@ -128,6 +128,7 @@ mv -f {RUN_DIRECTORY}temp.log {RUN_DIRECTORY}{LOG_FILE_NAME}
     )
 
     run_status = []
+    sw_failed = False
 
     for test_case_index in range(0,len(test_cases)):
         test_case_switches = switches[test_case_index]
@@ -139,16 +140,18 @@ mv -f {RUN_DIRECTORY}temp.log {RUN_DIRECTORY}{LOG_FILE_NAME}
         case_res = run_test_case(test_cases[test_case_index], test_case_switches, expected_results[test_case_index],expected_log[test_case_index])
         run_status.append(case_res)
 
+        if not case_res:
+            sw_failed = True
+
     df["run_status"] = run_status
     
-    if not (df["run_status"] == False).any():
-        logging.error("## One of the test cases failed. Exit with failure.")
-        print("## All Switch checking patterns:")
+    if sw_failed:
+        logging.error("## One of the test cases failed. Exit with failure:")
         print(df)
         exit(1)
     else:
         logging.info("## All test cases passed.")
-        print("## All Switch checking patterns:")
+        logging.info("## All Switch checking patterns:")
         print(df)
 
 def main():
