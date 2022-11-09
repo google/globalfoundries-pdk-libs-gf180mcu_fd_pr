@@ -16,18 +16,18 @@ Explains how to test GF180nm DRC rule deck.
  ```
 
 ## Prerequisites
-
-At a minimum:
-
-- Git 2.35+
+You need the following set of tools installed to be able to run the regression:
 - Python 3.6+
 - KLayout 0.27.8+
 
-### On Ubuntu, you can just
+We have tested this using the following setup:
+- Python 3.9.12
+- KLayout 0.27.11
 
-`apt install -y build-essential python3`
-
-- Check this [Klayout](https://www.klayout.de/) for klayout installation.
+Please make sure to install python packages using the requirements:
+```bash
+pip install -r ../../requirements.test.txt
+```
 
 ## Regression Usage
 
