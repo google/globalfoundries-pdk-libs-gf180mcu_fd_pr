@@ -31,7 +31,7 @@ pip install -r ../../requirements.test.txt
 
 ## Regression Usage
 
-To make a full test for GF180nm DRC rule deck, you could use the following command in testing directory:
+- To make a full test for GF180nm DRC rule deck, you could use the following command in testing directory:
 
 ```bash
 make all
