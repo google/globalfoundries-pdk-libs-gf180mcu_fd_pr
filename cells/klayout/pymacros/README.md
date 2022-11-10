@@ -13,7 +13,24 @@ To use the PDK from this repo directly, you need to do the following:
 ```bash
 export KLAYOUT_HOME=`pwd`
 ```
-2.(optional step to enable GUI): 
+2.(optional step to enable GUI menu for running DRC/LVS) You will need to run the following commands as well from inside `cells/klayout` folder:
+```bash
+ln -s ../../rules/klayout/drc 
+ln -s ../../rules/klayout/lvs
+ln -s ../../rules/klayout/macros
+ln -s ../../tech/klayout/gf180mcu.lyt
+ln -s ../../tech/klayout/gf180mcu.lyp
+```
+3. Go to any location where you want to start designing, and open klayout using the following command:
+```bash
+klayout -e
+```
+4. Create a new layout for testing.
+5. Press on insert instance.
+6. Go to the instance menu and select "GF180MCU" library from the library list.
+7. Select the search botton and it will give the list of PCells that is available in the library.
+8. Select any cell and it will show the cell.
+9. Go to the PCell tap and change the parameters as needed to change the layout of the PCells.
 
 
 
