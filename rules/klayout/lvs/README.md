@@ -31,9 +31,9 @@ The `run_lvs.py` script takes a gds file and a netlist to run LVS rule deck of G
 ```
 
 Example:
-
+os.system
 ```bash
-    python3 run_lvs.py --path=testing/extraction_checking/sample_nfet_03v3.gds --net=sample_nfet_03v3.spice --thr=16 --gf180mcu=B --set_verbose --set_spice_comments
+    python3 run_lvs.py --design=testing/extraction_checking/sample_nfet_03v3.gds --net=sample_nfet_03v3.spice --thr=16 --gf180mcu=B --set_verbose --set_spice_comments
 ```
 
 ### Options
