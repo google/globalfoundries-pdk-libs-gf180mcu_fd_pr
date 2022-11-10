@@ -40,9 +40,51 @@ Our test environment has the following:
 
 ## **Regression Outputs**
 
-- The resulting files are in `regression/<device_folder>/` with name of `<device_name><options>` that contains:
+After running regression, you should find the following in the folder `run_<date>_<time>` under that folder you will find the folder structure:
+```text
+run_<date_time>/
+├── bjt_beta
+│   ├── device_netlists                (Template Netlists)
+│   └── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+├── bjt_cj
+│   ├── device_netlists                (Template Netlists)
+│   ├── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+├── bjt_iv
+│   ├── device_netlists                (Template Netlists)
+│   └── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+├── diode
+│   ├── 0_measured_data
+│   ├── device_netlists                (Template Netlists)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+│   ├── models_regression.py           (Regression script for device)
+├── mimcap_c
+│   ├── device_netlists                (Template Netlists)
+│   └── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+├── moscap_c
+│   ├── device_netlists                (Template Netlists)
+│   └── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+├── mos_cv
+│   ├── device_netlists                (Template Netlists)
+│   └── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+├── mos_iv_vbs
+│   ├── device_netlists                (Template Netlists)
+│   └── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+├── mos_iv_vgs
+│   ├── device_netlists                (Template Netlists)
+│   └── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+├── resistor_r
+│   ├── device_netlists                (Template Netlists)
+│   └── models_regression.py           (Regression script for device)
+│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+└── run_log.log                        (Summary of all runs for all devices)
+```
 
-    1. A final report file of all results.
-    2. measured folder that contains measured data used in regression.
-    3. simulated folder that contains simulated data used in regression.
-    4. netlists folder that contains spice files used in simulation.
+It's important to check the `run_log.log` to see the error per device.
