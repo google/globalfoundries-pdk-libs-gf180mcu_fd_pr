@@ -16,4 +16,9 @@ python generate_pcell.py -h
 
 After generating the PCells, you could run DRC on those cells using the make file in `drc_test`. 
 
+To run all DRC tests, you need to run the following command inside `drc_test` folder:
+```bash
+make all
+```
+
 
