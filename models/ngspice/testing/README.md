@@ -6,11 +6,12 @@ Explains how to run GF180nm models-ngspice regression.
 
 ```text
 📦testing
- ┣ 📜Makefile
- ┣ 📜README.md
- ┣ 📦regression
- ┣ 📦smoke_test
- ┣ 📦180MCU_SPICE_Models
+ ┣ 📜Makefile                                   (Makefile to setup test cases)
+ ┣ 📜README.md                                  (This file)
+ ┣ 📦sc_regression/gf180mcu_fd_sc_mcu7t5v0      (Standard cells regression that simulates the standard cells using different voltage stimulus.)
+ ┣ 📦regression                                 (This is the regression folder that has a test case per device.)
+ ┣ 📦smoke_test                                 (An inverter design that simulates in all corners to make sure that all corners will work with no issue.)
+ ┣ 📦180MCU_SPICE_Models                        (Foundry measurement data used for model calibration.)
  ```
 
 ## Prerequisites
