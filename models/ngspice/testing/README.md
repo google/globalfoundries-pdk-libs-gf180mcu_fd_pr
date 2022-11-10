@@ -16,24 +16,20 @@ Explains how to run GF180nm models-ngspice regression.
 ## Prerequisites
 
 At a minimum:
-
-- Git 2.35+
 - Python 3.6+
-- ngspice-36+
+- ngspice-37+
 
-### On Ubuntu, you can just
-
-`apt install -y build-essential python3`
-
-- Check this [ngspice](http://ngspice.sourceforge.net/download.html) for ngspice installation.
+Our test environment has the following:
+- Python 3.9.12
+- ngspice-37
 
 ## Regression Usage
 
-To make a full test for GF180nm models-ngspice, you could use the following command in testing directory:
+- To make a full test for GF180nm models-ngspice, you could use the following command in testing directory:
 
-```bash
-make all
-```
+    ```bash
+    make all
+    ```
 
 - You could also check allowed targets in the Makefile, using the following command:
 
