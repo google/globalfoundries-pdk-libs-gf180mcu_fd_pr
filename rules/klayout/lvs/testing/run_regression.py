@@ -30,7 +30,6 @@ import os
 import time
 import datetime
 import logging
-
 from subprocess import check_call
 
 
@@ -129,6 +128,10 @@ def lvs_check(table,files):
     logging.info(f"NO. OF FAILED {table} : {fail_count}")
     logging.info("==================================\n")
 
+    if fail_count > 0:
+        return False
+    else:
+        return True
 
 def main():
 
@@ -173,31 +176,36 @@ def main():
     logging.info("Running LVS regression")
     logging.info("================================\n")
 
+    status = True
     if arguments["--device"] == "MOS":
-        lvs_check ("MOS DEVICES" , mosfet_files)
+        status = lvs_check ("MOS DEVICES" , mosfet_files)
     elif arguments["--device"] == "BJT":
-        lvs_check ("BJT DEVICES"   , bjt_files)
+        status = lvs_check ("BJT DEVICES"   , bjt_files)
     elif arguments["--device"] == "DIODE":
-        lvs_check ("DIODE DEVICES" , diode_files)
+        status = lvs_check ("DIODE DEVICES" , diode_files)
     elif arguments["--device"] == "RES":
-       lvs_check ("RES DEVICES" , resistor_files)
+        status = lvs_check ("RES DEVICES" , resistor_files)
     elif arguments["--device"] == "MIMCAP":
-        lvs_check ("MIMCAP DEVICES" , mim_files)
+        status = lvs_check ("MIMCAP DEVICES" , mim_files)
     elif arguments["--device"] == "MOSCAP":
-        lvs_check ("MOSCAP DEVICES" , moscap_files)
+        status = lvs_check ("MOSCAP DEVICES" , moscap_files)
     elif arguments["--device"] == "MOS-SAB":
-        lvs_check ("MOS-SAB DEVICES" , esd_files)
+        status = lvs_check ("MOS-SAB DEVICES" , esd_files)
     elif arguments["--device"] == "EFUSE":
-        lvs_check ("EFUSE DEVICES" , efuse_files)
+        status = lvs_check ("EFUSE DEVICES" , efuse_files)
     else:
-        lvs_check ("MOS DEVICES" , mosfet_files)
-        lvs_check ("BJT DEVICES"   , bjt_files)
-        lvs_check ("DIODE DEVICES" , diode_files)
-        lvs_check ("RES DEVICES" , resistor_files)
-        lvs_check ("MIM DEVICES" , mim_files)
-        lvs_check ("MOSCAP DEVICES" , moscap_files)
-        lvs_check ("ESD DEVICES" , esd_files)
-        lvs_check ("EFUSE DEVICES" , efuse_files)
+        status = lvs_check ("MOS DEVICES" , mosfet_files)
+        status = lvs_check ("BJT DEVICES"   , bjt_files)
+        status = lvs_check ("DIODE DEVICES" , diode_files)
+        status = lvs_check ("RES DEVICES" , resistor_files)
+        status = lvs_check ("MIM DEVICES" , mim_files)
+        status = lvs_check ("MOSCAP DEVICES" , moscap_files)
+        status = lvs_check ("ESD DEVICES" , esd_files)
+        status = lvs_check ("EFUSE DEVICES" , efuse_files)
+    
+    if status:
+        logging.error("## There are failed cases will exit with 1.")
+        exit(1)
 
 if __name__ == "__main__":
 

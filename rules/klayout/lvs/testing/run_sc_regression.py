@@ -94,12 +94,12 @@ def lvs_check(sc_input):
     # check_call(f"mv -f sc_testcases/{sc_input}.lvsdb sc_testcases/*/{cdl_input_clean}_extracted.cir sc_testcases/*/{cdl_input_clean}_modified.cdl {out_dir}/{sc_input_clean}/")
 
     if "INFO : Congratulations! Netlists match." in result:
-        logging.info("Extraction of {:<25s} is passed".format(sc_input_clean))
+        logging.info("Extraction of {:<25s} has passed".format(sc_input_clean))
 
         with open (f"{dir}_testcases/{dir}_report.csv","a+") as rep:
             rep.write(f"{sc_input_clean},passed\n")
     else:
-        logging.info("Extraction of {:<25s} is failed".format(sc_input_clean))
+        logging.info("Extraction of {:<25s} has failed".format(sc_input_clean))
 
         with open (f"{dir}_testcases/{dir}_report.csv","a+") as rep:
             rep.write(f"{sc_input_clean},failed\n")
@@ -175,6 +175,11 @@ def main():
                     sc_clean = sc.split('.gds')[0].split ('sc_testcases/')[-1]    
                     executor.submit(lvs_check, sc_clean)
 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+
     if os.path.isfile("sc_testcases/sc_report.csv"):
         df = pd.read_csv("sc_testcases/sc_report.csv")
         df.columns = ["CELL NAME","RESULT"]
@@ -182,6 +187,8 @@ def main():
         df = pd.read_csv("sc_testcases/sc_report.csv")
         pass_count = df["RESULT"].str.count("passed").sum()
         fail_count = df["RESULT"].str.count("failed").sum()
+
+        print(df)
         
         logging.info("\n==================================")
         logging.info(f"NO. OF PASSED SC CELLS : {pass_count}")
@@ -192,6 +199,11 @@ def main():
         shutil.move("sc_testcases/sc_report.csv", out_dir)
         shutil.move("sc_testcases/sc_split/", out_dir)
 
+        if fail_count > 0:
+            logging.info("## There are failed cases will exit with 1.")
+            print(df[df["RESULT"] == "failed"])
+            exit(1)
+
     elif os.path.isfile("ip_testcases/ip_report.csv"):
         df = pd.read_csv("ip_testcases/ip_report.csv")
         df.columns = ["CELL NAME","RESULT"]
@@ -199,6 +211,8 @@ def main():
         df = pd.read_csv("ip_testcases/ip_report.csv")
         pass_count = df["RESULT"].str.count("passed").sum()
         fail_count = df["RESULT"].str.count("failed").sum()
+
+        print(df)
         
         logging.info("\n==================================")
         logging.info(f"NO. OF PASSED IP CELLS : {pass_count}")
@@ -207,6 +221,11 @@ def main():
         
         # Move files into run dir
         shutil.move("ip_testcases/ip_report.csv", out_dir)
+
+        if fail_count > 0:
+            logging.info("## There are failed cases will exit with 1.")
+            print(df[df["RESULT"] == "failed"])
+            exit(1)
 
     else:
         logging.info("\n==================================")
