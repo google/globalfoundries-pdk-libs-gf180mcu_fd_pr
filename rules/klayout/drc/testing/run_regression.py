@@ -41,6 +41,7 @@ import xml.etree.ElementTree as ET
 import csv
 import time
 import re
+import pandas as pd
 
 from sympy import arg
 
@@ -199,6 +200,22 @@ def call_regression(rule_deck_path, path):
     t1 = time.time()
 
     print(f'Execution time {t1 - t0} s')
+
+    if failed > 0:
+        print("Some unit tests has failed. Failing regression:")
+        df = pd.read_csv(f'run_{x}_{name_ext}/conclusion.csv')
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.max_rows', None)
+        pd.set_option("max_colwidth", None)
+        pd.set_option('display.width', 1000)
+        print("## Full report:")
+        print(df)
+
+        print("\n")
+        print("## Only failed")
+        print(df[df["Status"] == "Fail"])
+
+        exit(1)
     return report
 
 if __name__ == "__main__":

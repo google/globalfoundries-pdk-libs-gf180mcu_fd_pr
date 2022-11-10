@@ -845,7 +845,7 @@ nw1a_l1  = nwell.width(0.86.um, euclidian).polygons(0.001).overlapping(dualgate)
 nw1a_l1.output("NW.1a_5V", "NW.1a_5V : Min. Nwell Width (This is only for litho purpose on the generated area). : 0.86µm")
 nw1a_l1.forget
 
-nw_1b = nwell.outside(dnwell).and(res_mk).not(comp).not(poly2)
+nw_1b = nwell.outside(dnwell).and(res_mk)
 # Rule NW.1b_3.3V: Min. Nwell Width as a resistor (Outside DNWELL only). is 2µm
 logger.info("Executing rule NW.1b_3.3V")
 nw1b_l1  = nw_1b.width(2.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
