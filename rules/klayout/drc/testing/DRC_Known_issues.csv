@@ -1,54 +1,57 @@
-Rule ,Issues
-DN.2a ,connectivity
-DN.2b ,connectivity
-LPW.2a ,connectivity
-LPW.2b ,connectivity
-NW.2a,connectivity
-NW.2b,connectivity
-PL.1,Tolerance
-PL.1a,Tolerance
-PL.5b,Tolerance (5v case)
-PL.8,Covered in Manual testcase
-NP.1,Tolerance
-NP.3a,Tolerance
-NP.3b,Tolerance
-NP.3c,Tolerance
-NP.5a,Tolerance
-NP.7,Tolerance
-PP.1,Tolerance
-PP.3a,Tolerance
-PP.3b,Tolerance
-PP.3c,Tolerance
-PP.5a,Tolerance
-PP.7,Tolerance
-SB.1,Tolerance
-SB.5a,Tolerance
-SB.6,Tolerance
-SB.7,Tolerance
-CO.2b,Covered in Manual testcase
-CO.5a,Covered in Manual testcase
-CO.5b,Covered in Manual testcase
-Mn.4,Covered in Manual testcase
-Vn.2b,Discussion/ Revisit
-MT.3,Covered in Manual testcase
-MT30.7,Covered in Manual testcase
-MC.1,Tolerance
-ANT.16,Covered in Manual testcase
-PRES.2,Tolerance 
-PRES.7,Tolerance 
-LRES.2,Tolerance 
-LRES.7,Tolerance 
-HRES.2,Tolerance 
-HRES.5,Tolerance 
-HRES.6,Tolerance 
-HRES.12b,Missing test case
-O.PL.3a,Tolerance
-EF.04c,Covered in Manual testcase
-EF.04d,Covered in Manual testcase
-EF.20,Tolerance
-MDN.2a,Tolerance
-MDN.8a,Tolerance
-MDP.17c,Testcase issue [Not matching with drm]
-Y.PL.1,Tolerance
-S.CO.4_LV,Tolerance
-S.CO.6_ii_LV,Testcase issue (different measured values)
+Rule ,Issues,Link to Issue
+DN.2a ,connectivity,
+DN.2b ,connectivity,
+LPW.2a ,connectivity,
+LPW.2b ,connectivity,
+NW.2a,connectivity,
+NW.2b,connectivity,
+DF.3a,Foundry Test Case Issue,https://docs.google.com/presentation/d/1jMYQMGoihTglgvgFRTApGS_z6e_hdlRhD-zFyHu-65c/edit?usp=sharing
+DF.14,,https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_io/issues/6
+PL.1,Foundry Test Case Issue,https://docs.google.com/presentation/d/1jMYQMGoihTglgvgFRTApGS_z6e_hdlRhD-zFyHu-65c/edit?usp=sharing
+PL.1a,Foundry Test Case Issue,https://docs.google.com/presentation/d/1jMYQMGoihTglgvgFRTApGS_z6e_hdlRhD-zFyHu-65c/edit?usp=sharing
+PL.5b,Tolerance (5v case),This is an issue in klayout corner to corner check.
+PL.8,Covered in Manual testcase,
+NP.1,Tolerance,This is an issue in klayout corner to corner check.
+NP.3a,Tolerance,This is an issue in klayout corner to corner check.
+NP.3b,Tolerance,This is an issue in klayout corner to corner check.
+NP.3c,Tolerance,This is an issue in klayout corner to corner check.
+NP.5a,Tolerance,This is an issue in klayout corner to corner check.
+NP.7,Tolerance,This is an issue in klayout corner to corner check.
+PP.1,Tolerance,This is an issue in klayout corner to corner check.
+PP.3a,Tolerance,This is an issue in klayout corner to corner check.
+PP.3b,Tolerance,This is an issue in klayout corner to corner check.
+PP.3c,Tolerance,This is an issue in klayout corner to corner check.
+PP.5a,Tolerance,This is an issue in klayout corner to corner check.
+PP.7,Tolerance,This is an issue in klayout corner to corner check.
+SB.1,Tolerance,This is an issue in klayout corner to corner check.
+SB.5a,Tolerance,This is an issue in klayout corner to corner check.
+SB.6,Tolerance,This is an issue in klayout corner to corner check.
+SB.7,Tolerance,This is an issue in klayout corner to corner check.
+CO.2b,Covered in Manual testcase,https://gitlab.com/efabless/foundry/gf-180mcu-working/-/issues/3
+CO.5a,Covered in Manual testcase,https://gitlab.com/efabless/foundry/gf-180mcu-working/-/issues/11
+CO.5b,Covered in Manual testcase,https://gitlab.com/efabless/foundry/gf-180mcu-working/-/issues/11
+Mn.4,Covered in Manual testcase,https://gitlab.com/efabless/foundry/gf-180mcu-working/-/issues/5
+Vn.2b,Discussion/ Revisit,
+MT.3,Covered in Manual testcase,
+MT30.7,Covered in Manual testcase,
+MC.1,Tolerance,This is an issue in klayout corner to corner check.
+ANT.16,Covered in Manual testcase,https://gitlab.com/efabless/foundry/gf-180mcu-working/-/issues/13
+PRES.2,Tolerance ,This is an issue in klayout corner to corner check.
+PRES.7,Tolerance ,This is an issue in klayout corner to corner check.
+LRES.2,Tolerance ,This is an issue in klayout corner to corner check.
+LRES.7,Tolerance ,This is an issue in klayout corner to corner check.
+HRES.2,Tolerance ,This is an issue in klayout corner to corner check.
+HRES.5,Tolerance ,This is an issue in klayout corner to corner check.
+HRES.6,Tolerance ,This is an issue in klayout corner to corner check.
+HRES.12b,Missing test case,
+O.PL.3a,Tolerance,This is an issue in klayout corner to corner check.
+EF.04c,Covered in Manual testcase,https://gitlab.com/efabless/foundry/gf-180mcu-working/-/issues/17
+EF.04d,Covered in Manual testcase,https://gitlab.com/efabless/foundry/gf-180mcu-working/-/issues/17
+EF.20,Tolerance,This is an issue in klayout corner to corner check.
+MDN.2a,Tolerance,This is an issue in klayout corner to corner check.
+MDN.8a,Tolerance,This is an issue in klayout corner to corner check.
+MDP.17c,Testcase issue [Not matching with drm],https://docs.google.com/presentation/d/1jMYQMGoihTglgvgFRTApGS_z6e_hdlRhD-zFyHu-65c/edit?usp=sharing https://docs.google.com/presentation/d/1dmM19jXz1AyYz_-JTpomD9hVx87cd8V5PjW5EYrseQk/edit?usp=sharing
+Y.PL.1,Tolerance,This is an issue in klayout corner to corner check.
+S.CO.4_LV,Tolerance,This is an issue in klayout corner to corner check.
+S.CO.6_ii_LV,Testcase issue (different measured values),https://docs.google.com/presentation/d/1dmM19jXz1AyYz_-JTpomD9hVx87cd8V5PjW5EYrseQk/edit?usp=sharing
+ANT.16_i_ANT.9,Testcase issue (different measured values),https://docs.google.com/presentation/d/1dmM19jXz1AyYz_-JTpomD9hVx87cd8V5PjW5EYrseQk/edit#slide=id.g13686f1c7e5_0_1296

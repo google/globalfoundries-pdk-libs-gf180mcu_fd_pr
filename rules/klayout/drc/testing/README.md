@@ -54,4 +54,6 @@ Also, please make sure to follow the instructions outlined in the DRC document f
 
 - The final report for rules DRC-regression will be generated in the current directory with the name of  `final_report.csv`, also you could find the detailed one with the name of `final_detailed_report.csv`.
 
+- There are some expected violations will be marked in the final report as `known issues`. Check known [DRC issues](https://docs.google.com/spreadsheets/d/117Djoc7bjs09jyru4CYNuxXDeraHz8717UGPKOaBA14/edit#gid=0)
+
 - The final report for standard cells DRC-regression will be generated in the current directory with the name of `sc_drc_report.csv`.
