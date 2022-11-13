@@ -3082,7 +3082,7 @@ mt2a_l1.forget
 
 # Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.5µm
 logger.info("Executing rule MT.2b")
-mt2b_l1  = metaltop.separation(metaltop.not_interacting(metal2.edges.with_length(nil, 10.um)), 0.5.um, euclidian).polygons(0.001)
+mt2b_l1  = metaltop.separation(metal2.not_interacting(metal2.edges.with_length(nil, 10.um)), 0.5.um, euclidian).polygons(0.001)
 mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.5µm")
 mt2b_l1.forget 
 
