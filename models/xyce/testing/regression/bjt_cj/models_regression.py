@@ -68,7 +68,7 @@ def ext_simulated(device,vn,d_in,cv_sim, corner,temp,dirpath,cap):
             connection = "0 out open 0"
             Iopen = "Iopen open 0 0"
         else:
-            connection = "out 0 0" 
+            connection = "0 0 out" 
             Iopen = ""
     else: 
         i =2
@@ -90,7 +90,11 @@ def ext_simulated(device,vn,d_in,cv_sim, corner,temp,dirpath,cap):
         # Writing simulated data 
         for j in range(len([x for x in os.listdir(f"{dirpath}/{device}_netlists_{cv_sim}") if f"{i}_{device}_netlist_{device}.spice.ma" in x])):
             with open(f"{dirpath}/{device}_netlists_{cv_sim}/{i}_{device}_netlist_{device}.spice.ma{j}") as f:
-                caps = 1000000/(float(next(f).replace("FREQ = ", ""))*2*np.pi)
+                freq = next(f).replace("FREQ = ", "")
+                if "FAILED" in freq:
+                    caps = 0
+                else :
+                    caps = 1000000/(float(freq)*2*np.pi)
                 df_simulated.append(caps) 
         
         # zero array to append in it shaped (vn_sweeps, number of trials + 1)
@@ -157,9 +161,15 @@ def error_cal(device,vn,d_in,cv_sim, corner,temp,dirpath):
     print ("=====================================================================================================================================================")
 
 def main():
+    
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
 
     corners = ["typical","ff","ss"]
-    temps   = [ 25 , -40 , 175 ]
+    temps   = [ 25 , -40 , 100 ]
     measure = ["cv","Vj", "bjt", 31]
     cv_sim, bjt_vn, bjt_in = measure[0], measure[1], measure[2] 
     
@@ -187,6 +197,7 @@ def main():
                 ext_simulated(device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath,"npn_CBJ")
                 ext_simulated(device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath,"npn_EBJ")
                 ext_simulated(device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath,"npn_CSJ")
+                error_cal(device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath)                
 
                 npn_start = npn_start + 3
         npn_start = 0
@@ -214,35 +225,11 @@ def main():
                 ext_measured (device,bjt_vn,bjt_in, cv_sim, corner,pnp_start,dirpath)
                 ext_simulated(device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath,"pnp_EBJ")
                 ext_simulated(device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath,"pnp_CBJ")
-                error_cal    (device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath)
+                error_cal(device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath)                
                 
                 pnp_start = pnp_start + 2
         pnp_start = 0
-
-    for corner in corners:
-        for temp in temps:
-            for device in npn_devices: 
-                # Folder structure of measured values
-                dirpath = f"{device}_{cv_sim}_{corner}_T{temp}"
-                error_cal    (device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath)
                 
-                npn_start = npn_start + 3
-        npn_start = 0
-
-    # pnp
-    pnp_devices = ["pnp_10p00x00p42" , "pnp_05p00x00p42" , "pnp_10p00x10p00" , "pnp_05p00x05p00"]
-    pnp_start = 0 
-    
-    for corner in corners:
-        for temp in temps:
-            for device in pnp_devices: 
-                # Folder structure of measured values
-                dirpath = f"{device}_{cv_sim}_{corner}_T{temp}"
-                error_cal    (device,bjt_vn,bjt_in,cv_sim, corner,temp,dirpath)
-                
-                pnp_start = pnp_start + 2
-        pnp_start = 0
-        
 # # ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================

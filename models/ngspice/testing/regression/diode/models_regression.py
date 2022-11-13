@@ -151,7 +151,13 @@ def error_cal(device,vn,d_in,Id_sim, corner):
     print ("=====================================================================================================================================================")
 
 def main():
-        
+
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)        
+    
     devices = ["diode_dw2ps","diode_pw2dw","diode_nd2ps_03v3","diode_nd2ps_06v0", "diode_nw2ps_03v3","diode_nw2ps_06v0","diode_pd2nw_03v3","diode_pd2nw_06v0","sc_diode"]
     corners = ["typical","ff","ss"]
     measures = [["iv","Vn1 (V)", " |In1(A)| diode", 103],

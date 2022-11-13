@@ -42,9 +42,9 @@ Add_run-dir:
 
 .ONESHELL:
 smoke-test:
+	@echo "========== Runing models_xyce SMOKE TEST regression =========="
 	@cd $(Testing_DIR)/smoke_test
 	@python3 ng_smoke_test.py
-
 
 #================================
 # ---------- models-MOS----------

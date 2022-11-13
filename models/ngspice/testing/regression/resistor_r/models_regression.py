@@ -168,6 +168,13 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
 
 
 def main():
+
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+    
     main_regr_dir = "res_regr"
 
     # res W&L var. 

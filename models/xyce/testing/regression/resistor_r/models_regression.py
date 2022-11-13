@@ -225,6 +225,12 @@ def error_cal_b(device,vn,d_in,r_sim, corner):
 
 def main():
 
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+    
     # res W&L var. 
     corners_a  = ["typical","ff","ss"]        
     

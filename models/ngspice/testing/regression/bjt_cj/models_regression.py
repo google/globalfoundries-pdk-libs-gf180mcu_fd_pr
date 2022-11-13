@@ -126,6 +126,12 @@ def error_cal(device,vn,d_in,cv_sim, corner,temp,dirpath):
 
 def main():
 
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+    
     corners = ["typical","ff","ss"]
     temps   = [ 25 , -40 , 175 ]
     measure = ["cv","Vj", "bjt", 31]

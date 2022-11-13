@@ -42,63 +42,63 @@
 *      pfet_06v0_dss       Subcircuit model for 6.0V PMOS with Drain side SAB
 *      nfet_06v0_nvt       Subcircuit model for 6.0V native NMOS
 *
-*      diode_nd2ps_03v3             Model for 3.3V N+/Psub diode
-*      diode_pd2nw_03v3             Model for 3.3V P+/Nwell diode
-*      diode_nd2ps_06v0             Model for 6.0V N+/Psub diode
-*      diode_pd2nw_06v0             Model for 6.0V P+/Nwell diode
-*      diode_nw2ps_03v3            Model for 3.3V Nwell/Psub diode
-*      diode_nw2ps_06v0            Model for 6.0V Nwell/Psub diode
-*      diode_pw2dw              Model for PWELL/DNWELL diode
-*      diode_dw2ps	          Model for DNWELL/Psub diode
-*      sc_diode           Model for Schottky Diode
+*      diode_nd2ps_03v3    Model for 3.3V N+/Psub diode
+*      diode_pd2nw_03v3    Model for 3.3V P+/Nwell diode
+*      diode_nd2ps_06v0    Model for 6.0V N+/Psub diode
+*      diode_pd2nw_06v0    Model for 6.0V P+/Nwell diode
+*      diode_nw2ps_03v3    Model for 3.3V Nwell/Psub diode
+*      diode_nw2ps_06v0    Model for 6.0V Nwell/Psub diode
+*      diode_pw2dw         Model for PWELL/DNWELL diode
+*      diode_dw2ps         Model for DNWELL/Psub diode
+*      sc_diode            Model for Schottky Diode
 *
-*      pnp_10p00x00p42       Subcircuit GP model for VPNP with emitter size of 10umx0.42um
-*      pnp_05p00x00p42        Subcircuit GP model for VPNP with emitter size of 5umx0.42um
-*      pnp_10p00x10p00         Subcircuit GP model for VPNP with emitter size of 10umx10um
-*      pnp_05p00x05p00           Subcircuit GP model for VPNP with emitter size of 5umx5um
-*      npn_10p00x10p00         Subcircuit GP model for VNPN with emitter size of 10umx10um(four terminal)
-*      npn_05p00x05p00        	  Subcircuit GP model for VNPN with emitter size of 5umx5um(four terminal)
-*      npn_00p54x16p00       Subcircuit GP model for VNPN with emitter size of 0.54umx16um(four terminal)
-*      npn_00p54x08p00        Subcircuit GP model for VNPN with emitter size of 0.54umx8um(four terminal)
-*      npn_00p54x04p00        Subcircuit GP model for VNPN with emitter size of 0.54umx4um(four terminal)
-*      npn_00p54x02p00        Subcircuit GP model for VNPN with emitter size of 0.54umx2um(four terminal)
+*      pnp_10p00x00p42     Subcircuit GP model for VPNP with emitter size of 10umx0.42um
+*      pnp_05p00x00p42     Subcircuit GP model for VPNP with emitter size of 5umx0.42um
+*      pnp_10p00x10p00     Subcircuit GP model for VPNP with emitter size of 10umx10um
+*      pnp_05p00x05p00     Subcircuit GP model for VPNP with emitter size of 5umx5um
+*      npn_10p00x10p00     Subcircuit GP model for VNPN with emitter size of 10umx10um(four terminal)
+*      npn_05p00x05p00     Subcircuit GP model for VNPN with emitter size of 5umx5um(four terminal)
+*      npn_00p54x16p00     Subcircuit GP model for VNPN with emitter size of 0.54umx16um(four terminal)
+*      npn_00p54x08p00     Subcircuit GP model for VNPN with emitter size of 0.54umx8um(four terminal)
+*      npn_00p54x04p00     Subcircuit GP model for VNPN with emitter size of 0.54umx4um(four terminal)
+*      npn_00p54x02p00     Subcircuit GP model for VNPN with emitter size of 0.54umx2um(four terminal)
 *
-*      nplus_u            Subcircuit Model for 3-terminal unsalicided n+ diffusion resistor
-*      pplus_u            Subcircuit Model for 3-terminal unsalicided P+ diffusion resistor
-*      nplus_s            Subcircuit Model for 3-terminal salicided N+ diffusion resistor
-*      pplus_s            Subcircuit Model for 3-terminal salicided P+ diffusion resistor
-*      nwell              Subcircuit Model for 3-terminal nwell resistor under STI
-*      npolyf_u           Subcircuit Model for 3-terminal unsalicided n+ poly resistor
-*      ppolyf_u           Subcircuit Model for 3-terminal unsalicided p+ poly resistor
-*      npolyf_s           Subcircuit Model for 3-terminal salicided n+ poly resistor
-*      ppolyf_s           Subcircuit Model for 3-terminal salicided p+ poly resistor
-*      ppolyf_u_1k        Subcircuit Model for 3-terminal 1k high-Rs p+ poly resistor on field oxide (3.3V area)
-*      ppolyf_u_2k        Subcircuit Model for 3-terminal 2k high-Rs p+ poly resistor on field oxide (3.3V area)
-*      ppolyf_u_1k_6p0    Subcircuit Model for 3-terminal 1k high-Rs p+ poly resistor on field oxide (6.0V area)
-*      ppolyf_u_2k_6p0    Subcircuit Model for 3-terminal 2k high-Rs p+ poly resistor on field oxide (6.0V area)
-*      ppolyf_u_3k        Subcircuit Model for 3-terminal 3k high-Rs p+ poly resistor on field oxide (both 3.3V & 6.0V area)
-*      rm1                Subcircuit Model for 2-terminal metal 1 resistor
-*      rm2                Subcircuit Model for 2-terminal metal 2 resistor
-*      rm3                Subcircuit Model for 2-terminal metal 3 resistor
-*      tm6k               Subcircuit Model for 2-terminal top metal 6k resistor
-*      tm9k               Subcircuit Model for 2-terminal top metal 9k resistor
-*      tm11k              Subcircuit Model for 2-terminal top metal 11k resistor
-*      tm30k              Subcircuit Model for 2-terminal top metal 30k resistor
+*      nplus_u             Subcircuit Model for 3-terminal unsalicided n+ diffusion resistor
+*      pplus_u             Subcircuit Model for 3-terminal unsalicided P+ diffusion resistor
+*      nplus_s             Subcircuit Model for 3-terminal salicided N+ diffusion resistor
+*      pplus_s             Subcircuit Model for 3-terminal salicided P+ diffusion resistor
+*      nwell               Subcircuit Model for 3-terminal nwell resistor under STI
+*      npolyf_u            Subcircuit Model for 3-terminal unsalicided n+ poly resistor
+*      ppolyf_u            Subcircuit Model for 3-terminal unsalicided p+ poly resistor
+*      npolyf_s            Subcircuit Model for 3-terminal salicided n+ poly resistor
+*      ppolyf_s            Subcircuit Model for 3-terminal salicided p+ poly resistor
+*      ppolyf_u_1k         Subcircuit Model for 3-terminal 1k high-Rs p+ poly resistor on field oxide (3.3V area)
+*      ppolyf_u_2k         Subcircuit Model for 3-terminal 2k high-Rs p+ poly resistor on field oxide (3.3V area)
+*      ppolyf_u_1k_6p0     Subcircuit Model for 3-terminal 1k high-Rs p+ poly resistor on field oxide (6.0V area)
+*      ppolyf_u_2k_6p0     Subcircuit Model for 3-terminal 2k high-Rs p+ poly resistor on field oxide (6.0V area)
+*      ppolyf_u_3k         Subcircuit Model for 3-terminal 3k high-Rs p+ poly resistor on field oxide (both 3.3V & 6.0V area)
+*      rm1                 Subcircuit Model for 2-terminal metal 1 resistor
+*      rm2                 Subcircuit Model for 2-terminal metal 2 resistor
+*      rm3                 Subcircuit Model for 2-terminal metal 3 resistor
+*      tm6k                Subcircuit Model for 2-terminal top metal 6k resistor
+*      tm9k                Subcircuit Model for 2-terminal top metal 9k resistor
+*      tm11k               Subcircuit Model for 2-terminal top metal 11k resistor
+*      tm30k               Subcircuit Model for 2-terminal top metal 30k resistor
 *
-*      cap_mim_1f5fF          Subcircuit Model for 1.5fF/um2 MIM (*)-usable for Volt <=6V across capacitor
-*      cap_mim_1f0fF          Subcircuit Model for 1.0fF/um2 MIM (*)-usable for Volt <=20V across capacitor 
-*      cap_mim_2f0fF          Subcircuit Model for 2fF/um2 MIM      -usable for Volt <=6V across capacitor
+*      cap_mim_1f5fF       Subcircuit Model for 1.5fF/um2 MIM (*)-usable for Volt <=6V across capacitor
+*      cap_mim_1f0fF       Subcircuit Model for 1.0fF/um2 MIM (*)-usable for Volt <=20V across capacitor 
+*      cap_mim_2f0fF       Subcircuit Model for 2fF/um2 MIM      -usable for Volt <=6V across capacitor
 * 	
-*      cap_nmos_03v3        Subcircuit Model for 3.3v inversion-mode  NMOS capacitor
-*      cap_pmos_03v3	 	  Subcircuit Model for 3.3v inversion-mode  PMOS capacitor     
-*      cap_nmos_06v0        Subcircuit Model for 6.0V inversion-mode  NMOS capacitor
-*      cap_pmos_06v0	  	  Subcircuit Model for 6.0V inversion-mode  PMOS capacitor     
-*      cap_nmos_03v3_b      Subcircuit Model for 3.3v NMOS in Nwell capacitor
-*      cap_pmos_03v3_b	  Subcircuit Model for 3.3v PMOS in Pwell capacitor     
-*      cap_nmos_06v0_b      Subcircuit Model for 6.0V NMOS in Nwell capacitor
-*      cap_pmos_06v0_b	  Subcircuit Model for 6.0V PMOS in Pwell capacitor 
+*      cap_nmos_03v3       Subcircuit Model for 3.3v inversion-mode  NMOS capacitor
+*      cap_pmos_03v3	   Subcircuit Model for 3.3v inversion-mode  PMOS capacitor     
+*      cap_nmos_06v0       Subcircuit Model for 6.0V inversion-mode  NMOS capacitor
+*      cap_pmos_06v0	   Subcircuit Model for 6.0V inversion-mode  PMOS capacitor     
+*      cap_nmos_03v3_b     Subcircuit Model for 3.3v NMOS in Nwell capacitor
+*      cap_pmos_03v3_b	   Subcircuit Model for 3.3v PMOS in Pwell capacitor     
+*      cap_nmos_06v0_b     Subcircuit Model for 6.0V NMOS in Nwell capacitor
+*      cap_pmos_06v0_b	   Subcircuit Model for 6.0V PMOS in Pwell capacitor 
 *
-*      efuse    	      Subcircuit model for 6V/(5V) efuse
+*      efuse    	       Subcircuit model for 6V/(5V) efuse
 ************************************************************************************************
 *
 .LIB typical

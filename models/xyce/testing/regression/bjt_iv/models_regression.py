@@ -162,6 +162,12 @@ def error_cal(device,vc,step,Id_sim,list_devices,ib):
 
 def main():
 
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+    
     devices = ["npn","pnp"]
     list_devices = [["npn_10p00x10p00" , "npn_05p00x05p00" , "npn_00p54x16p00" , "npn_00p54x08p00" , "npn_00p54x04p00", "npn_00p54x02p00"],
                     ["pnp_10p00x00p42" , "pnp_05p00x00p42", "pnp_10p00x10p00" , "pnp_05p00x05p00"]]

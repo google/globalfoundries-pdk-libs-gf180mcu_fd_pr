@@ -121,7 +121,12 @@ def error_cal(device,vn,d_in,Id_sim, corner,start):
 
 def main():
 
-    # 3p3
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+
     corners = ["typical","ff","ss"]        
     devices = ["cap_nmos_03v3" , "cap_pmos_03v3" , "cap_nmos_03v3_b" , "cap_pmos_03v3_b"]
     measure = ["cv","corners", "CV (fF)"]

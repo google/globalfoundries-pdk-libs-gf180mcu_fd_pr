@@ -166,7 +166,13 @@ def error_cal(device,sweep_x,sweep_y,sim_val):
     print ("=====================================================================================================================================================")
 
 def main():
-        
+
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)        
+    
     devices = ["nfet_03v3_cv" , "pfet_03v3_cv" ]
     measured_data = ["3p3_cv"]
     nmos_vds = "Vds (V)"

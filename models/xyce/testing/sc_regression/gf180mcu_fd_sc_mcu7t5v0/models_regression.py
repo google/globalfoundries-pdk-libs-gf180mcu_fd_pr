@@ -80,6 +80,12 @@ def error_cal(device, processes, volts, temps):
 
 def main():
 
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+    
     devices = ["inv","nand2","or3"]
 
     # Generate truth tables data

@@ -159,7 +159,13 @@ def error_cal(device,vgs,vbs,sim_val):
     print ("=====================================================================================================================================================")
 
 def main():
-        
+
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)        
+    
     devices = ["nfet_03v3_iv" , "pfet_03v3_iv" , "nfet_06v0_iv" , "pfet_06v0_iv" , "nfet_06v0_nvt_iv"] #"nfet_03v3_dss_iv"
     nmos_vgs = "vgs (V)"
     pmos_vgs = "-vgs (V)"

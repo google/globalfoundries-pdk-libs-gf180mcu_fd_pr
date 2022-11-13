@@ -121,6 +121,12 @@ def error_cal(device,vn,d_in,Id_sim, corner,start):
 
 def main():
 
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+    
     # mim
     corners = ["ss" , "typical","ff"]        
     devices = ["cap_mim_1f5_m2m3_noshield" , "cap_mim_1f0_m3m4_noshield" , "cap_mim_2f0_m4m5_noshield" ]

@@ -30,12 +30,19 @@ def ext_measured(device,vn,d_in, Id_sim, corner):
     # Get dimensions used for each device 
     dirpath = f"{device}_{Id_sim}_{corner}"
     dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["W (um)" , "L (um)"])
-    loops = dimensions["L (um)"].count()
+    if device == "sc_diode":
+        loops = 7
+    else:
+        loops = dimensions["L (um)"].count() 
     
     # Extracting measured values for each W & L 
     for i in range (0,loops):
-        width  = dimensions["W (um)"].iloc[i]
-        length = dimensions["L (um)"].iloc[i]
+        if device == "sc_diode": 
+            width  = i
+            length = i        
+        else:
+            width  = dimensions["W (um)"].iloc[i]
+            length = dimensions["L (um)"].iloc[i]
         
         # Special case for 1st measured values 
         if i == 0 :
@@ -56,11 +63,18 @@ def ext_simulated(device,vn,d_in,vn_sweeps,Id_sim, corner):
     # Get dimensions used for each device 
     dirpath = f"{device}_{Id_sim}_{corner}"
     dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["W (um)" , "L (um)"])
-    loops = dimensions["L (um)"].count()
+    if device == "sc_diode":
+        loops = 7
+    else:
+        loops = dimensions["L (um)"].count() 
     netlist_tmp = f"./device_netlists/{Id_sim}.spice"
     for i in range (0,loops):
-        width  = dimensions["W (um)"].iloc[int(i)]
-        length = dimensions["L (um)"].iloc[int(i)]
+        if device == "sc_diode": 
+            width  = i
+            length = i        
+        else:
+            width  = dimensions["W (um)"].iloc[i]
+            length = dimensions["L (um)"].iloc[i]
 
         if i % 4 == 0: temp = -40 
         elif i % 4 == 1: temp = 25 
@@ -98,11 +112,18 @@ def error_cal(device,vn,d_in,Id_sim, corner):
     # Get dimensions used for each device 
     dirpath = f"{device}_{Id_sim}_{corner}"
     dimensions = pd.read_csv(f"{dirpath}/{device}.csv",usecols=["W (um)" , "L (um)"])
-    loops = dimensions["L (um)"].count()    
+    if device == "sc_diode":
+        loops = 7
+    else:
+        loops = dimensions["L (um)"].count()     
     df_final = pd.DataFrame()
     for i in range (0,loops):  
-        width  = dimensions["W (um)"].iloc[int(i)]
-        length = dimensions["L (um)"].iloc[int(i)]
+        if device == "sc_diode": 
+            width  = i
+            length = i        
+        else:
+            width  = dimensions["W (um)"].iloc[i]
+            length = dimensions["L (um)"].iloc[i]
         if i % 4 == 0: temp = -40 
         elif i % 4 == 1: temp = 25 
         elif i % 4 == 2: temp = 125
@@ -136,7 +157,13 @@ def error_cal(device,vn,d_in,Id_sim, corner):
     print ("=====================================================================================================================================================")
 
 def main():
-        
+
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+            
     devices = ["diode_nd2ps_03v3","diode_pw2dw","diode_dw2ps","diode_nd2ps_06v0", "diode_nw2ps_03v3","diode_nw2ps_06v0","diode_pd2nw_03v3","diode_pd2nw_06v0","sc_diode"]
     corners = ["typical","ff","ss"]
     measures = [["iv","Vn1 (V)", " |In1(A)| diode", 103]]#,

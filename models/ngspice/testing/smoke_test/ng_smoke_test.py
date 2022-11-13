@@ -74,7 +74,13 @@ def get_results(run_path, sizes, temp, corner):
     return [f"W{width}_L{length}_T{temp}_{corner}",df_simulated.iloc[-1, -1]]  
 
 def main():
-        
+
+    # pandas setup 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+            
     models_path = "../../sm141064.ngspice"
     temps = ["25","-40","125"]
     corners = ["typical","ff","ss","fs","sf"]#,"stat"]
