@@ -15,8 +15,6 @@ Explains how to run GF180nm models-xyce regression.
 
 ## Prerequisites
 
-At a minimum:
-
 - Git 2.35+
 - Python 3.6+
 - Xyce 7.5+
