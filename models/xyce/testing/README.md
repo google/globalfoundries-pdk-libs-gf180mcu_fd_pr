@@ -51,7 +51,8 @@ run_<date_time>/
 ├── bjt_iv
 │   ├── device_netlists                (Template Netlists)
 │   └── models_regression.py           (Regression script for device)
-│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
+│   ├── npn                            (Output folder after runing with run logs and actual netlists)
+│   ├── pnp                            (Output folder after runing with run logs and actual netlists)
 ├── diode
 │   ├── 0_measured_data
 │   ├── device_netlists                (Template Netlists)
@@ -66,10 +67,6 @@ run_<date_time>/
 │   └── models_regression.py           (Regression script for device)
 │   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
 ├── mos_cv
-│   ├── device_netlists                (Template Netlists)
-│   └── models_regression.py           (Regression script for device)
-│   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
-├── mos_iv_vbs
 │   ├── device_netlists                (Template Netlists)
 │   └── models_regression.py           (Regression script for device)
 │   ├── <dev>_...                      (Output folder after runing with run logs and actual netlists)
