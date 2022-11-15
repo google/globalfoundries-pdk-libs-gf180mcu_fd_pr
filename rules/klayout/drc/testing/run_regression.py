@@ -226,7 +226,7 @@ def call_regression(rule_deck_path, path):
         print(df)
 
         print("\n")
-        logging.info("## Only failed")
+        logging.info("## Only failed") 
         print(df[df["Status"] == "Fail"])
 
         exit(1)
