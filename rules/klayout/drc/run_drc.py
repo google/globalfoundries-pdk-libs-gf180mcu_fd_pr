@@ -70,11 +70,6 @@ def get_results(rule_deck,rules,lyrdb, type):
         logging.info("Klayout GDS DRC Clean\n")
 
 def get_top_cell_names(gds_path):
-    # klayout -b -r script.rb -rd infile=./layouts/caravel.gds.gz
-
-    pdk_root = os.environ['PDK_ROOT']
-    pdk      = os.environ['PDK']
-
     curr_path = os.path.dirname(os.path.abspath(__file__))
 
     top_cell_names = list()
@@ -89,9 +84,6 @@ def get_top_cell_names(gds_path):
 
 def clean_gds_from_many_top_cells(gds_path, topcell):
     # klayout -b -r keep_single_top_cell.rb -rd infile=./layouts/caravel.gds.gz -rd topcell=chip_io -rd outfile=test.gds.gz
-
-    pdk_root = os.environ['PDK_ROOT']
-    pdk      = os.environ['PDK']
 
     curr_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -118,16 +110,16 @@ def main():
         logging.error("The input GDS file path doesn't exist, please recheck.")
         exit()
 
-    # Env. variables
-    pdk_root = os.environ['PDK_ROOT']
-    pdk      = os.environ['PDK']
-    
     curr_path = os.path.dirname(os.path.abspath(__file__))
     
     # ======= Checking Klayout version =======
     klayout_v_ = os.popen("klayout -v").read()
     klayout_v_ = klayout_v_.split("\n")[0]
-    klayout_v  = int (klayout_v_.split(".") [-1])
+    if klayout_v_ == "":
+        logging.error("Klayout is not found. Please make sure klayout is installed.")
+        exit(1)
+    else:
+        klayout_v  = int (klayout_v_.split(".") [-1])
 
     logging.info(f"Your Klayout version is: {klayout_v_}"  )
 
