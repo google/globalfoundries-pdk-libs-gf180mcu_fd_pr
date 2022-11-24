@@ -49,16 +49,25 @@ if $report
     logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
     report("DRC Run Report at", $report)
 else
-    logger.info("GF180MCU Klayout DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180_drc.lyrdb").path])
+    logger.info("GF180MCU Klayout DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180_drc.lyrdb")])
     report("DRC Run Report at", File.join(File.dirname(RBA::CellView::active.filename), "gf180_drc.lyrdb"))
 end
 
 if $thr
-    logger.info("Number of threads to use %s" % [$thr])
     threads($thr)
+    logger.info("Number of threads to use %s" % [$thr])
 else
-    logger.info("Number of threads to use 16")
-    threads(16)
+    threads(%x("nproc"))
+    logger.info("Number of threads to use #{%x("nproc")}")
+end
+
+#=== PRINT DETAILS ===
+if $verbose == "true"
+  logger.info("Verbose mode: #{$verbose}")
+  verbose(true)
+else
+  verbose(false)
+  logger.info("Verbose mode: false")
 end
 
 # === TILING MODE ===
@@ -95,112 +104,112 @@ end # run_mode
 logger.info("Read in polygons from layers.")
 
 
-comp           = polygons(22 , 0 )
-dnwell         = polygons(12 , 0 )
-nwell          = polygons(21 , 0 )
-lvpwell        = polygons(204, 0 )
-dualgate       = polygons(55 , 0 )
-poly2          = polygons(30 , 0 )
-nplus          = polygons(32 , 0 )
-pplus          = polygons(31 , 0 )
-sab            = polygons(49 , 0 )
-esd            = polygons(24 , 0 )
-contact        = polygons(33 , 0 )
-metal1         = polygons(34 , 0 )
-via1           = polygons(35 , 0 )
-metal2         = polygons(36 , 0 )
-via2           = polygons(38 , 0 )
-metal3         = polygons(42 , 0 )
-via3           = polygons(40 , 0 )
-metal4         = polygons(46 , 0 )
-via4           = polygons(41 , 0 )
-metal5         = polygons(81 , 0 )
-via5           = polygons(82 , 0 )
-metaltop       = polygons(53 , 0 )
-pad            = polygons(37 , 0 )
-resistor       = polygons(62 , 0 )
-fhres          = polygons(227, 0 )
-fusetop        = polygons(75 , 0 )
-fusewindow_d   = polygons(96 , 1 )
-polyfuse       = polygons(220, 0 )
-mvsd           = polygons(210, 0 )
-mvpsd          = polygons(11 , 39)
-nat            = polygons(5  , 0 )
-comp_dummy     = polygons(22 , 4 )
-poly2_dummy    = polygons(30 , 4 )
-metal1_dummy   = polygons(34 , 4 )
-metal2_dummy   = polygons(36 , 4 )
-metal3_dummy   = polygons(42 , 4 )
-metal4_dummy   = polygons(46 , 4 )
-metal5_dummy   = polygons(81 , 4 )
-metaltop_dummy = polygons(53 , 4 )
-comp_label     = polygons(22 , 10)
-poly2_label    = polygons(30 , 10)
-metal1_label   = polygons(34 , 10)
-metal2_label   = polygons(36 , 10)
-metal3_label   = polygons(42 , 10)
-metal4_label   = polygons(46 , 10)
-metal5_label   = polygons(81 , 10)
-metaltop_label = polygons(53 , 10)
-metal1_slot    = polygons(34 , 3 )
-metal2_slot    = polygons(36 , 3 )
-metal3_slot    = polygons(42 , 3 )
-metal4_slot    = polygons(46 , 3 )
-metal5_slot    = polygons(81 , 3 )
-metaltop_slot  = polygons(53 , 3 )
-ubmpperi       = polygons(183, 0 )
-ubmparray      = polygons(184, 0 )
-ubmeplate      = polygons(185, 0 )
-schottky_diode = polygons(241, 0 )
-zener          = polygons(178, 0 )
-res_mk         = polygons(110, 5 )
-opc_drc        = polygons(124, 5 )
-ndmy           = polygons(111, 5 )
-pmndmy         = polygons(152, 5 )
-v5_xtor        = polygons(112, 1 )
-cap_mk         = polygons(117, 5 )
-mos_cap_mk     = polygons(166, 5 )
-ind_mk         = polygons(151, 5 )
-diode_mk       = polygons(115, 5 )
-drc_bjt        = polygons(127, 5 )
-lvs_bjt        = polygons(118, 5 )
-mim_l_mk       = polygons(117, 10)
-latchup_mk     = polygons(137, 5 )
-guard_ring_mk  = polygons(167, 5 )
-otp_mk         = polygons(173, 5 )
-mtpmark        = polygons(122, 5 )
-neo_ee_mk      = polygons(88 , 17)
-sramcore       = polygons(108, 5 )
-lvs_rf         = polygons(100, 5 )
-lvs_drain      = polygons(100, 7 )
-ind_mk         = polygons(151, 5 )
-hvpolyrs       = polygons(123, 5 )
-lvs_io         = polygons(119, 5 )
-probe_mk       = polygons(13 , 17)
-esd_mk         = polygons(24 , 5 )
-lvs_source     = polygons(100, 8 )
-well_diode_mk  = polygons(153, 51)
-ldmos_xtor     = polygons(226, 0 )
-plfuse         = polygons(125, 5 )
-efuse_mk       = polygons(80 , 5 )
-mcell_feol_mk  = polygons(11 , 17)
-ymtp_mk        = polygons(86 , 17)
-dev_wf_mk      = polygons(128, 17)
-metal1_blk     = polygons(34 , 5 )
-metal2_blk     = polygons(36 , 5 )
-metal3_blk     = polygons(42 , 5 )
-metal4_blk     = polygons(46 , 5 )
-metal5_blk     = polygons(81 , 5 )
-metalt_blk     = polygons(53 , 5 )
-pr_bndry       = polygons(0  , 0 )
-mdiode         = polygons(116, 5 )
-metal1_res     = polygons(110, 11)
-metal2_res     = polygons(110, 12)
-metal3_res     = polygons(110, 13)
-metal4_res     = polygons(110, 14)
-metal5_res     = polygons(110, 15)
-metal6_res     = polygons(110, 16)
-border         = polygons(63 , 0 )
+comp           = polygons(22 , 0 ).merged
+dnwell         = polygons(12 , 0 ).merged
+nwell          = polygons(21 , 0 ).merged
+lvpwell        = polygons(204, 0 ).merged
+dualgate       = polygons(55 , 0 ).merged
+poly2          = polygons(30 , 0 ).merged
+nplus          = polygons(32 , 0 ).merged
+pplus          = polygons(31 , 0 ).merged
+sab            = polygons(49 , 0 ).merged
+esd            = polygons(24 , 0 ).merged
+contact        = polygons(33 , 0 ).merged
+metal1         = polygons(34 , 0 ).merged
+via1           = polygons(35 , 0 ).merged
+metal2         = polygons(36 , 0 ).merged
+via2           = polygons(38 , 0 ).merged
+metal3         = polygons(42 , 0 ).merged
+via3           = polygons(40 , 0 ).merged
+metal4         = polygons(46 , 0 ).merged
+via4           = polygons(41 , 0 ).merged
+metal5         = polygons(81 , 0 ).merged
+via5           = polygons(82 , 0 ).merged
+metaltop       = polygons(53 , 0 ).merged
+pad            = polygons(37 , 0 ).merged
+resistor       = polygons(62 , 0 ).merged
+fhres          = polygons(227, 0 ).merged
+fusetop        = polygons(75 , 0 ).merged
+fusewindow_d   = polygons(96 , 1 ).merged
+polyfuse       = polygons(220, 0 ).merged
+mvsd           = polygons(210, 0 ).merged
+mvpsd          = polygons(11 , 39).merged
+nat            = polygons(5  , 0 ).merged
+comp_dummy     = polygons(22 , 4 ).merged
+poly2_dummy    = polygons(30 , 4 ).merged
+metal1_dummy   = polygons(34 , 4 ).merged
+metal2_dummy   = polygons(36 , 4 ).merged
+metal3_dummy   = polygons(42 , 4 ).merged
+metal4_dummy   = polygons(46 , 4 ).merged
+metal5_dummy   = polygons(81 , 4 ).merged
+metaltop_dummy = polygons(53 , 4 ).merged
+comp_label     = polygons(22 , 10).merged
+poly2_label    = polygons(30 , 10).merged
+metal1_label   = polygons(34 , 10).merged
+metal2_label   = polygons(36 , 10).merged
+metal3_label   = polygons(42 , 10).merged
+metal4_label   = polygons(46 , 10).merged
+metal5_label   = polygons(81 , 10).merged
+metaltop_label = polygons(53 , 10).merged
+metal1_slot    = polygons(34 , 3 ).merged
+metal2_slot    = polygons(36 , 3 ).merged
+metal3_slot    = polygons(42 , 3 ).merged
+metal4_slot    = polygons(46 , 3 ).merged
+metal5_slot    = polygons(81 , 3 ).merged
+metaltop_slot  = polygons(53 , 3 ).merged
+ubmpperi       = polygons(183, 0 ).merged
+ubmparray      = polygons(184, 0 ).merged
+ubmeplate      = polygons(185, 0 ).merged
+schottky_diode = polygons(241, 0 ).merged
+zener          = polygons(178, 0 ).merged
+res_mk         = polygons(110, 5 ).merged
+opc_drc        = polygons(124, 5 ).merged
+ndmy           = polygons(111, 5 ).merged
+pmndmy         = polygons(152, 5 ).merged
+v5_xtor        = polygons(112, 1 ).merged
+cap_mk         = polygons(117, 5 ).merged
+mos_cap_mk     = polygons(166, 5 ).merged
+ind_mk         = polygons(151, 5 ).merged
+diode_mk       = polygons(115, 5 ).merged
+drc_bjt        = polygons(127, 5 ).merged
+lvs_bjt        = polygons(118, 5 ).merged
+mim_l_mk       = polygons(117, 10).merged
+latchup_mk     = polygons(137, 5 ).merged
+guard_ring_mk  = polygons(167, 5 ).merged
+otp_mk         = polygons(173, 5 ).merged
+mtpmark        = polygons(122, 5 ).merged
+neo_ee_mk      = polygons(88 , 17).merged
+sramcore       = polygons(108, 5 ).merged
+lvs_rf         = polygons(100, 5 ).merged
+lvs_drain      = polygons(100, 7 ).merged
+ind_mk         = polygons(151, 5 ).merged
+hvpolyrs       = polygons(123, 5 ).merged
+lvs_io         = polygons(119, 5 ).merged
+probe_mk       = polygons(13 , 17).merged
+esd_mk         = polygons(24 , 5 ).merged
+lvs_source     = polygons(100, 8 ).merged
+well_diode_mk  = polygons(153, 51).merged
+ldmos_xtor     = polygons(226, 0 ).merged
+plfuse         = polygons(125, 5 ).merged
+efuse_mk       = polygons(80 , 5 ).merged
+mcell_feol_mk  = polygons(11 , 17).merged
+ymtp_mk        = polygons(86 , 17).merged
+dev_wf_mk      = polygons(128, 17).merged
+metal1_blk     = polygons(34 , 5 ).merged
+metal2_blk     = polygons(36 , 5 ).merged
+metal3_blk     = polygons(42 , 5 ).merged
+metal4_blk     = polygons(46 , 5 ).merged
+metal5_blk     = polygons(81 , 5 ).merged
+metalt_blk     = polygons(53 , 5 ).merged
+pr_bndry       = polygons(0  , 0 ).merged
+mdiode         = polygons(116, 5 ).merged
+metal1_res     = polygons(110, 11).merged
+metal2_res     = polygons(110, 12).merged
+metal3_res     = polygons(110, 13).merged
+metal4_res     = polygons(110, 14).merged
+metal5_res     = polygons(110, 15).merged
+metal6_res     = polygons(110, 16).merged
+border         = polygons(63 , 0 ).merged
 
 # ================= COUNT POLYGONS =================
 poly_count = 0
@@ -474,7 +483,7 @@ logger.info("METAL_TOP Selected is %s" % [METAL_TOP])
 if $metal_level
   METAL_LEVEL = $metal_level
 else
-  METAL_LEVEL = "6LM"
+  METAL_LEVEL = "5LM"
 end # METAL_LEVEL
 
 logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
@@ -509,7 +518,7 @@ logger.info("Gold enabled  %s" % [GOLD])
 if $mim_option
   MIM_OPTION = $mim_option
 else
-  MIM_OPTION = "Nan"
+  MIM_OPTION = "B"
 end
 
 logger.info("MIM Option selected %s" % [MIM_OPTION])
@@ -836,7 +845,7 @@ nw1a_l1  = nwell.width(0.86.um, euclidian).polygons(0.001).overlapping(dualgate)
 nw1a_l1.output("NW.1a_5V", "NW.1a_5V : Min. Nwell Width (This is only for litho purpose on the generated area). : 0.86µm")
 nw1a_l1.forget
 
-nw_1b = nwell.outside(dnwell).and(res_mk).not(comp).not(poly2)
+nw_1b = nwell.outside(dnwell).and(res_mk)
 # Rule NW.1b_3.3V: Min. Nwell Width as a resistor (Outside DNWELL only). is 2µm
 logger.info("Executing rule NW.1b_3.3V")
 nw1b_l1  = nw_1b.width(2.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
@@ -3071,6 +3080,12 @@ mt2a_l1  = metaltop.space(0.38.um, euclidian).polygons(0.001)
 mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.38µm")
 mt2a_l1.forget
 
+# Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.5µm
+logger.info("Executing rule MT.2b")
+mt2b_l1  = metaltop.separation(metal2.not_interacting(metal2.edges.with_length(nil, 10.um)), 0.5.um, euclidian).polygons(0.001)
+mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.5µm")
+mt2b_l1.forget 
+
 # Rule MT.4: Minimum MetalTop area is 0.5625µm²
 logger.info("Executing rule MT.4")
 mt4_l1  = metaltop.with_area(nil, 0.5625.um)
@@ -3091,6 +3106,12 @@ logger.info("Executing rule MT.2a")
 mt2a_l1  = metaltop.space(0.46.um, euclidian).polygons(0.001)
 mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.46µm")
 mt2a_l1.forget
+
+# Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.6µm
+logger.info("Executing rule MT.2b")
+mt2b_l1  = metaltop.separation(metaltop.not_interacting(metal2.edges.with_length(nil, 10.um)), 0.6.um, euclidian).polygons(0.001)
+mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.6µm")
+mt2b_l1.forget 
 
 # Rule MT.4: Minimum MetalTop area is 0.5625µm²
 logger.info("Executing rule MT.4")
@@ -3137,8 +3158,8 @@ mt305_l1 = top_metal.enclosing(top_via, 0.12.um, euclidian).polygons(0.001).or(t
 mt305_l1.output("MT30.5", "MT30.5 : Minimum thick MetalTop enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].")
 mt305_l1.forget
 
-mt30p6_cond = top_metal.drc( width <= 0.34.um)
-mt30p6_eol = top_metal.edges.with_length(nil, 0.34.um).interacting(mt30p6_cond.first_edges).interacting(mt30p6_cond.second_edges).not(mt30p6_cond.first_edges).not(mt30p6_cond.second_edges)
+mt30p6_cond = top_metal.drc( width < 2.5.um)
+mt30p6_eol = top_metal.edges.with_length(nil, 2.5.um).interacting(mt30p6_cond.first_edges).interacting(mt30p6_cond.second_edges).not(mt30p6_cond.first_edges).not(mt30p6_cond.second_edges)
 # Rule MT30.6: Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
 logger.info("Executing rule MT30.6")
 mt306_l1 = mt30p6_eol.enclosing(top_via.edges,0.25.um, projection).polygons(0.001).or(top_via.not_inside(top_metal))
