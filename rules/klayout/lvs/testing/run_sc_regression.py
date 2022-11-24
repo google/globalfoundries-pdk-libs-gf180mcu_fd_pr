@@ -25,6 +25,8 @@ Options:
     --num_cores=<num>       Number of cores to be used by LVS checker 
 """
 
+from subprocess import check_call
+
 from docopt import docopt
 import os
 import concurrent.futures
@@ -88,16 +90,16 @@ def lvs_check(sc_input):
 
     # moving all reports to run dir
     out_dir = arguments["--run_dir"]
-    # os.system(f"cd {out_dir} && mkdir {sc_input_clean}")
-    # os.system(f"mv -f sc_testcases/{sc_input}.lvsdb sc_testcases/*/{cdl_input_clean}_extracted.cir sc_testcases/*/{cdl_input_clean}_modified.cdl {out_dir}/{sc_input_clean}/")
+    # check_call(f"cd {out_dir} && mkdir {sc_input_clean}")
+    # check_call(f"mv -f sc_testcases/{sc_input}.lvsdb sc_testcases/*/{cdl_input_clean}_extracted.cir sc_testcases/*/{cdl_input_clean}_modified.cdl {out_dir}/{sc_input_clean}/")
 
     if "INFO : Congratulations! Netlists match." in result:
-        logging.info("Extraction of {:<25s} is passed".format(sc_input_clean))
+        logging.info("Extraction of {:<25s} has passed".format(sc_input_clean))
 
         with open (f"{dir}_testcases/{dir}_report.csv","a+") as rep:
             rep.write(f"{sc_input_clean},passed\n")
     else:
-        logging.info("Extraction of {:<25s} is failed".format(sc_input_clean))
+        logging.info("Extraction of {:<25s} has failed".format(sc_input_clean))
 
         with open (f"{dir}_testcases/{dir}_report.csv","a+") as rep:
             rep.write(f"{sc_input_clean},failed\n")
@@ -105,8 +107,8 @@ def lvs_check(sc_input):
 def main():
 
     # Remove old reports
-    os.system(f"rm -rf sc_testcases/sc_report.csv")
-    os.system(f"rm -rf ip_testcases/ip_report.csv")
+    check_call(f"rm -rf sc_testcases/sc_report.csv", shell=True)
+    check_call(f"rm -rf ip_testcases/ip_report.csv", shell=True)
 
     cell_list = arguments["--path"]
     if isinstance(cell_list, str): cell_list = [cell_list]
@@ -133,8 +135,8 @@ def main():
                                 ly2.cell(new_top).copy_tree(layout.cell("#{cell.name}"))
                                 ly2.write("sc_testcases/sc_split/#{cell.name}.gds")
                             end''')
-            os.system(f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds")
-            os.system(f"rm -rf sc_testcases/split_gds.rb")
+            check_call(f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds", shell=True)
+            check_call(f"rm -rf sc_testcases/split_gds.rb", shell=True)
 
             # Create cdl splitter script
             cdl = cell.split("/")[-1]
@@ -173,6 +175,11 @@ def main():
                     sc_clean = sc.split('.gds')[0].split ('sc_testcases/')[-1]    
                     executor.submit(lvs_check, sc_clean)
 
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option('display.width', 1000)
+
     if os.path.isfile("sc_testcases/sc_report.csv"):
         df = pd.read_csv("sc_testcases/sc_report.csv")
         df.columns = ["CELL NAME","RESULT"]
@@ -180,6 +187,8 @@ def main():
         df = pd.read_csv("sc_testcases/sc_report.csv")
         pass_count = df["RESULT"].str.count("passed").sum()
         fail_count = df["RESULT"].str.count("failed").sum()
+
+        print(df)
         
         logging.info("\n==================================")
         logging.info(f"NO. OF PASSED SC CELLS : {pass_count}")
@@ -190,6 +199,11 @@ def main():
         shutil.move("sc_testcases/sc_report.csv", out_dir)
         shutil.move("sc_testcases/sc_split/", out_dir)
 
+        if fail_count > 0:
+            logging.info("## There are failed cases will exit with 1.")
+            print(df[df["RESULT"] == "failed"])
+            exit(1)
+
     elif os.path.isfile("ip_testcases/ip_report.csv"):
         df = pd.read_csv("ip_testcases/ip_report.csv")
         df.columns = ["CELL NAME","RESULT"]
@@ -197,6 +211,8 @@ def main():
         df = pd.read_csv("ip_testcases/ip_report.csv")
         pass_count = df["RESULT"].str.count("passed").sum()
         fail_count = df["RESULT"].str.count("failed").sum()
+
+        print(df)
         
         logging.info("\n==================================")
         logging.info(f"NO. OF PASSED IP CELLS : {pass_count}")
@@ -205,6 +221,11 @@ def main():
         
         # Move files into run dir
         shutil.move("ip_testcases/ip_report.csv", out_dir)
+
+        if fail_count > 0:
+            logging.info("## There are failed cases will exit with 1.")
+            print(df[df["RESULT"] == "failed"])
+            exit(1)
 
     else:
         logging.info("\n==================================")
