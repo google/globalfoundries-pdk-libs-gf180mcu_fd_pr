@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report-database>
+ <description>XOR Run Report at </description>
+ <original-file/>
+ <generator>drc: script='xor.drc'</generator>
+ <top-cell>a</top-cell>
+ <tags>
+ </tags>
+ <categories>
+  <category>
+   <name>Layout1_not_Layout2_32_0</name>
+   <description>Layout 1 not in layout 2 for layer 32,0</description>
+   <categories>
+   </categories>
+  </category>
+  <category>
+   <name>Layout2_not_Layout1_32_0</name>
+   <description>Layout 2 not in layout 1 for layer 32,0</description>
+   <categories>
+   </categories>
+  </category>
+ </categories>
+ <cells>
+  <cell>
+   <name>a</name>
+   <variant/>
+   <references>
+   </references>
+  </cell>
+ </cells>
+ <items>
+ </items>
+</report-database>
