@@ -87,13 +87,13 @@ end # run_mode
 #--------------------------------------- LAYER DEFINITIONS --------------------------------------------
 #======================================================================================================
 
-poly2           = polygons(30,  0)
-metal1          = polygons(34,  0)
-metal2          = polygons(36,  0)
-metal3          = polygons(42,  0)
-metal4          = polygons(46,  0)
-metal5          = polygons(81,  0)
-metaltop        = polygons(53,  0)
+poly2           = polygons(30,  0).merged
+metal1          = polygons(34,  0).merged
+metal2          = polygons(36,  0).merged
+metal3          = polygons(42,  0).merged
+metal4          = polygons(46,  0).merged
+metal5          = polygons(81,  0).merged
+metaltop        = polygons(53,  0).merged
 
 #======================================================================================================
 #--------------------------------------- LAYER DERIVATIONS --------------------------------------------

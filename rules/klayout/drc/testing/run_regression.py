@@ -32,6 +32,8 @@ Options:
     --run_name=<run_name>               Select your run name.
 """
 
+from subprocess import check_call
+
 from docopt import docopt
 import os
 import datetime
@@ -39,21 +41,21 @@ import xml.etree.ElementTree as ET
 import csv
 import time
 import re
-
-from sympy import arg
+import pandas as pd
+import logging
 
 def call_regression(rule_deck_path, path):
+
     t0 = time.time()
     marker_gen = []
-    rules =[]
-    ly = 0
+    rules      = []
+    ly         = 0
 
     # set folder structure for each run
     x = f"{datetime.datetime.now()}"
     x = x.replace(" ", "_")
-
     name_ext = str(rule_deck_path).replace(".drc","").split("/")[-1]
-    os.system(f"mkdir run_{x}_{name_ext}")
+    check_call(f"mkdir run_{x}_{name_ext}", shell=True)
 
     # Get the same rule deck with gds output
     with open(rule_deck_path, 'r') as f:
@@ -86,13 +88,13 @@ def call_regression(rule_deck_path, path):
     iname = path.split('.gds')
     if '/' in iname[0]:
         file = iname[0].split('/')
-        os.system(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={file[-1]}.lyrdb -rd thr={thrCount} {switches} ")
+        check_call(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={file[-1]}.lyrdb -rd thr={thrCount} {switches} ", shell=True)
     else:
-        os.system(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={iname[0]}.lyrdb -rd thr={thrCount} {switches} ")
+        check_call(f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={iname[0]}.lyrdb -rd thr={thrCount} {switches} ", shell=True)
 
     marker_gen = []
-    ly = 0
-    remove_if = False
+    ly         = 0
+    remove_if  = False
 
     # Get the small rule deck with gds output
     with open(rule_deck_path, 'r') as f:
@@ -132,27 +134,32 @@ def call_regression(rule_deck_path, path):
     marker_file.close()
 
     # Generate databases
-    os.system(f"klayout -b -r run_{x}_{name_ext}/regression.drc -rd input=run_{x}_{name_ext}/merged_output.gds -rd report=database.lyrdb -rd thr={thrCount} {switches}")
-
-    # Cleaning directories
-    # os.system(f"rm -rf regression.drc markers.drc merged_output.gds")
+    check_call(f"klayout -b -r run_{x}_{name_ext}/regression.drc -rd input=run_{x}_{name_ext}/merged_output.gds -rd report=database.lyrdb -rd thr={thrCount} {switches}", shell=True)
 
     mytree = ET.parse(f'run_{x}_{name_ext}/database.lyrdb')
     myroot = mytree.getroot()
 
-    report = [["Rule_Name", "False_Positive", "False_Negative", "Total_Violations", "Not_Tested"]]
+    report = [["Rule_Name", "False_Positive", "False_Negative", "Total_Violations", "Not_Tested" , "Known_issues"]]
     conc = [["Rule_Name", "Status"]]
 
-    passed = 0
-    failed = 0
-    not_tested_counter = 0
+    # Initial counters 
+    not_tested_c = 0
+    passed       = 0
+    failed       = 0
+    known_issues = 0
+
+    # Get known issues list
+    known_issues_df = pd.read_csv("DRC_Known_issues.csv", usecols=["Rule "])
+    known_issues_list = known_issues_df["Rule "].tolist()
+
     for lrule in rules:
+
         # Values of each rule in results
-        falseNeg = 0
-        falsePos = 0
-        not_tested = 0
-        not_run = 1
-        total = 0
+        not_run         = 1        
+        not_tested      = 0        
+        falseNeg        = 0
+        falsePos        = 0
+        total_violation = 0
 
         # Check whether the rule was run or not
         for z in myroot[5]:
@@ -170,19 +177,23 @@ def call_regression(rule_deck_path, path):
                     falsePos += 1
                 if f"'{lrule}_false_negative'" == f"{z[1].text}":#(f"{rule}" in f"{z[1].text}") and ("negative" in f"{z[1].text}"):
                     falseNeg += 1
-
-        total = falsePos + falseNeg
-        report.append([lrule, falsePos, falseNeg, total, not_tested])
-        if total == 0 and not_tested == 0:
+        
+        # failed rules 
+        total_violation = falsePos + falseNeg
+        
+        report.append([lrule, falsePos, falseNeg, total_violation, not_tested , known_issues])
+        if total_violation == 0 and not_tested == 0:
             conc.append([lrule, "Pass"])
             passed += 1
         elif not_tested != 0:
             conc.append([lrule, "Not_Tested"])
-            not_tested_counter += 1
+            not_tested_c += 1
+        elif lrule in known_issues_list:
+            conc.append([lrule, "known_issues"])
+            known_issues +=1
         else:
             conc.append([lrule, "Fail"])
             failed += 1
-
 
     # Create final reports files
     with open(f'run_{x}_{name_ext}/report.csv', 'w') as f:
@@ -193,26 +204,52 @@ def call_regression(rule_deck_path, path):
         writer = csv.writer(f, delimiter=',')
         writer.writerows(conc)
 
-    print(f"\n Total rules in {name_ext} for {path}: {len(conc)} \n")
-    print(f"{passed} passed rules ")
-    print(f"{failed} failed rules ")
-    print(f"{not_tested_counter} Not tested rules \n")
+    logging.info(f"========= Summary Report in {name_ext} for {path} =========")
+    logging.info(f"Total rules: {len(conc)}")
+    logging.info(f"{not_tested_c} not tested rules")    
+    logging.info(f"{passed} passed rules ")
+    logging.info(f"{known_issues} known_issues rules ")
+    logging.info(f"{failed} failed rules ")
+    
     t1 = time.time()
+    logging.info(f'Execution time {t1 - t0} s')
+    logging.info(f"===============================================================")
 
-    print(f'Execution time {t1 - t0} s')
+    if failed > 0:
+        logging.info("Some unit tests has failed. Failing regression:")
+        df = pd.read_csv(f'run_{x}_{name_ext}/conclusion.csv')
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.max_rows', None)
+        pd.set_option("max_colwidth", None)
+        pd.set_option('display.width', 1000)
+        logging.info("## Full report:")
+        print(df)
+
+        print("\n")
+        logging.info("## Only failed")
+        print(df[df["Status"] == "Fail"])
+
+        exit(1)
     return report
 
 if __name__ == "__main__":
 
-    sub_report = []
-    full_report = []
-    final_report = [["Rule_Name", "Status"]]
-    final_detailed_report = [["Rule_Name", "False_Postive", "False_Negative", "Total_Violations", "Not_Tested"]]
+    # logs format
+    logging.basicConfig(level=logging.DEBUG, format=f"%(asctime)s | %(levelname)-7s | %(message)s", datefmt='%d-%b-%Y %H:%M:%S')
 
+    # Initial values for DRC report
+    sub_report   = []
+    full_report  = []
+    final_report = [["Rule_Name", "Status"]]
+    final_detailed_report = [["Rule_Name", "False_Postive", "False_Negative", "Total_Violations", "Not_Tested" , "Known_issues"]]
+
+    # Start of execution time 
     t0 = time.time()
 
+    # Reading docopt arguments
     args = docopt(__doc__)
 
+    # DRC switches definitions 
     switches = ''
 
     if args["--no_feol"]:
@@ -230,48 +267,39 @@ if __name__ == "__main__":
     else:
         switches = switches + '-rd offgrid=true '
 
-    # Getting threads count
-    if args["--thr"]:
-        thrCount = args["--thr"]
-    else:
-        thrCount = os.cpu_count() * 2
-
     if args["--metal_top"] in ["6K" , "9K", "11K", "30K"]:
         switches = switches + f'-rd metal_top={args["--metal_top"]} '
     else:
-        print("Top metal thickness allowed values are (6K , 9K, 11K, 30K) only")
+        logging.error("Top metal thickness allowed values are (6K , 9K, 11K, 30K) only")
         exit()
 
     if args["--mim_option"] in ["A" , "B", "NO_MIM"]:
         switches = switches + f'-rd mim_option={args["--mim_option"]} '
     else:
-        print("MIM capacitor option allowed values are (A, B, NO_MIM) only")
+        logging.error("MIM capacitor option allowed values are (A, B, NO_MIM) only")
         exit()
 
     if args["--metal_level"] in ["2" , "3", "4", "5" , "6"]:
         switches = switches + f'-rd metal_level={args["--metal_level"]}LM '
     else:
-        print("The number of metal layers in stack allowed values are (2, 3, 4, 5, 6) only")
+        logging.error("The number of metal layers in stack allowed values are (2, 3, 4, 5, 6) only")
         exit()
 
-
-    os.system("klayout -v")
-
+    # Starting regression     
+    # Getting drc rule decks
     rule_deck_path = []
-
     files = os.listdir(f'..')
-
     for file in files:
         if ".drc" in file:
             rule_deck_path.append(f"../{file}")
 
+    # Running regression
     for path in args["--path"]:
         for runset in rule_deck_path:
             return_report = call_regression(runset, path)
             sub_report += return_report[1:]
         full_report.append(sub_report)
         sub_report = []
-
 
     rule_num = 0
 
@@ -306,6 +334,6 @@ if __name__ == "__main__":
         writer = csv.writer(f, delimiter=',')
         writer.writerows(final_report)
 
+    #  End of execution time 
     t1 = time.time()
-
-    print(f'Total execution time {t1 - t0} s')
+    logging.error(f'Total execution time {t1 - t0} s')

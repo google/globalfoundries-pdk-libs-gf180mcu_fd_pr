@@ -87,24 +87,24 @@ end # run_mode
 #--------------------------------------- LAYER DEFINITIONS --------------------------------------------
 #======================================================================================================
 
-comp            = polygons(22,  0)
-dualgate        = polygons(55,  0)
-poly2           = polygons(30,  0)
-nplus           = polygons(32,  0)
-pplus           = polygons(31,  0)
-contact         = polygons(33,  0)
-metal1          = polygons(34,  0)
-via1            = polygons(35,  0)
-metal2          = polygons(36,  0)
-via2            = polygons(38,  0)
-metal3          = polygons(42,  0)
-via3            = polygons(40,  0)
-metal4          = polygons(46,  0)
-via4            = polygons(41,  0)
-metal5          = polygons(81,  0)
-via5            = polygons(82,  0)
-metaltop        = polygons(53,  0)
-fusetop         = polygons(75,  0)
+comp            = polygons(22,  0).merged
+dualgate        = polygons(55,  0).merged
+poly2           = polygons(30,  0).merged
+nplus           = polygons(32,  0).merged
+pplus           = polygons(31,  0).merged
+contact         = polygons(33,  0).merged
+metal1          = polygons(34,  0).merged
+via1            = polygons(35,  0).merged
+metal2          = polygons(36,  0).merged
+via2            = polygons(38,  0).merged
+metal3          = polygons(42,  0).merged
+via3            = polygons(40,  0).merged
+metal4          = polygons(46,  0).merged
+via4            = polygons(41,  0).merged
+metal5          = polygons(81,  0).merged
+via5            = polygons(82,  0).merged
+metaltop        = polygons(53,  0).merged
+fusetop         = polygons(75,  0).merged
 
 #======================================================================================================
 #--------------------------------------- LAYER DERIVATIONS --------------------------------------------

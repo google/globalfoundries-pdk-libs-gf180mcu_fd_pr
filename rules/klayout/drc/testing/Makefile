@@ -29,13 +29,16 @@ test-DRC: test-DRC-switch  test-DRC-SC  test-DRC-main
 #=================================
 # --------- test-DRC-SC ----------
 #=================================
+.ONESHELL:
+print_klayout_version:
+	@klayout -v
 
 .ONESHELL:
 test-DRC-SC : test-DRC-gf180mcu_fd_ip_sram test-DRC-gf180mcu_fd_io test-DRC-gf180mcu_fd_sc_mcu7t5v0 test-DRC-gf180mcu_fd_sc_mcu9t5v0
 	@echo "========== DRC-DRC-SC is done =========="
 
 .ONESHELL:
-test-DRC-gf180mcu_fd_ip_sram:
+test-DRC-gf180mcu_fd_ip_sram: print_klayout_version
 	@cd $(Testing_DIR)
 	@echo "========== DRC-gf180mcu_fd_ip_sram testing =========="
 	@ python3 run_sc_regression.py 									\
@@ -45,7 +48,7 @@ test-DRC-gf180mcu_fd_ip_sram:
 		--path=ip_testcases/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds
 
 .ONESHELL:
-test-DRC-gf180mcu_fd_io:
+test-DRC-gf180mcu_fd_io: print_klayout_version
 	@cd $(Testing_DIR)
 	@echo "========== DRC-gf180mcu_fd_io testing =========="
 	@ python3 run_sc_regression.py 					\
@@ -54,13 +57,13 @@ test-DRC-gf180mcu_fd_io:
 		--path=ip_testcases/gf180mcu_fd_io_5lm.gds
 
 .ONESHELL:
-test-DRC-gf180mcu_fd_sc_mcu7t5v0:
+test-DRC-gf180mcu_fd_sc_mcu7t5v0: print_klayout_version
 	@cd $(Testing_DIR)
 	@echo "========== DRC-gf180mcu_fd_sc_mcu7t5v0 testing =========="
 	@ python3 run_sc_regression.py --path=sc_testcases/gf180mcu_fd_sc_mcu7t5v0.gds
 
 .ONESHELL:
-test-DRC-gf180mcu_fd_sc_mcu9t5v0:
+test-DRC-gf180mcu_fd_sc_mcu9t5v0: print_klayout_version
 	@cd $(Testing_DIR)
 	@echo "========== DRC-gf180mcu_fd_sc_mcu9t5v0 testing =========="
 	@ python3 run_sc_regression.py --path=sc_testcases/gf180mcu_fd_sc_mcu9t5v0.gds
@@ -70,7 +73,7 @@ test-DRC-gf180mcu_fd_sc_mcu9t5v0:
 #=================================
 
 .ONESHELL:
-test-DRC-main : test-DRC-foundry-Option-1 test-DRC-foundry-Option-2 test-DRC-foundry-Option-3 test-DRC-foundry-Option-4 test-DRC-Option-A test-DRC-Option-B test-DRC-Option-C
+test-DRC-main : print_klayout_version test-DRC-foundry-Option-1 test-DRC-foundry-Option-2 test-DRC-foundry-Option-3 test-DRC-foundry-Option-4 test-DRC-Option-A test-DRC-Option-B test-DRC-Option-C
 	@echo "========== DRC-Regression is done =========="
 
 .ONESHELL:
@@ -143,11 +146,10 @@ test-DRC-Option-C:
 #=================================
 
 .ONESHELL:
-test-DRC-switch:
+test-DRC-switch: print_klayout_version
 	@cd $(Testing_DIR)
 	@echo "========== DRC-Switch testing =========="
-	@python3 run_switch_checking.py
-	@rm -rf pattern.csv
+	python3 run_switch_checking.py && rm -rf pattern.csv
 
 #===============================
 # --------- Clean ALL ----------

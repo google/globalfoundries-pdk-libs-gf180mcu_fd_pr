@@ -70,13 +70,10 @@ def get_results(rule_deck,rules,lyrdb, type):
         logging.info("Klayout GDS DRC Clean\n")
 
 def get_top_cell_names(gds_path):
-    # klayout -b -r script.rb -rd infile=./layouts/caravel.gds.gz
-
-    pdk_root = os.environ['PDK_ROOT']
-    pdk      = os.environ['PDK']
+    curr_path = os.path.dirname(os.path.abspath(__file__))
 
     top_cell_names = list()
-    proc = subprocess.Popen(['klayout','-b', '-r', f"{pdk_root}/{pdk}/utils/get_top_cell_names.rb", "-rd", "infile={}".format(gds_path)], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(['klayout','-b', '-r', f"{curr_path}/utils/get_top_cell_names.rb", "-rd", "infile={}".format(gds_path)], stdout=subprocess.PIPE)
     while True:
         line = proc.stdout.readline()
         if not line:
@@ -88,15 +85,14 @@ def get_top_cell_names(gds_path):
 def clean_gds_from_many_top_cells(gds_path, topcell):
     # klayout -b -r keep_single_top_cell.rb -rd infile=./layouts/caravel.gds.gz -rd topcell=chip_io -rd outfile=test.gds.gz
 
-    pdk_root = os.environ['PDK_ROOT']
-    pdk      = os.environ['PDK']
+    curr_path = os.path.dirname(os.path.abspath(__file__))
 
     basename = os.path.basename(gds_path)
     dirname = os.path.dirname(gds_path)
     main_file_name = basename.split(".")[0]
     output_file_path = os.path.join(dirname, "{}_single_top.gds.gz".format(main_file_name))
 
-    proc = subprocess.Popen(['klayout','-b', '-r', f"{pdk_root}/{pdk}/utils/keep_single_top_cell.rb", "-rd", "infile={}".format(gds_path), "-rd", "topcell={}".format(topcell), "-rd", "outfile={}".format(output_file_path)], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(['klayout','-b', '-r', f"{curr_path}/utils/keep_single_top_cell.rb", "-rd", "infile={}".format(gds_path), "-rd", "topcell={}".format(topcell), "-rd", "outfile={}".format(output_file_path)], stdout=subprocess.PIPE)
 
     while True:
         line = proc.stdout.readline()
@@ -114,14 +110,16 @@ def main():
         logging.error("The input GDS file path doesn't exist, please recheck.")
         exit()
 
-    # Env. variables
-    pdk_root = os.environ['PDK_ROOT']
-    pdk      = os.environ['PDK']
-
+    curr_path = os.path.dirname(os.path.abspath(__file__))
+    
     # ======= Checking Klayout version =======
     klayout_v_ = os.popen("klayout -v").read()
     klayout_v_ = klayout_v_.split("\n")[0]
-    klayout_v  = int (klayout_v_.split(".") [-1])
+    if klayout_v_ == "":
+        logging.error("Klayout is not found. Please make sure klayout is installed.")
+        exit(1)
+    else:
+        klayout_v  = int (klayout_v_.split(".") [-1])
 
     logging.info(f"Your Klayout version is: {klayout_v_}"  )
 
@@ -188,28 +186,28 @@ def main():
             # Running DRC using klayout
             if (arguments["--antenna_only"]) and not (arguments["--density_only"]):
                 logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                os.system(f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
 
             elif (arguments["--density_only"]) and not (arguments["--antenna_only"]):
                 logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                os.system(f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
 
             elif arguments["--antenna_only"] and arguments["--density_only"]:
                 logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                os.system(f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
 
                 logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                os.system(f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
 
             else:
                 logging.info(f"Running main Global Foundries 180nm MCU runset on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu.drc -rd input={path} -rd report={name_clean}_main_drc_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                os.system(f"klayout -b -r {curr_path}/gf180mcu.drc -rd input={path} -rd report={name_clean}_main_drc_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
                 if arguments["--antenna"]:
                     logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                    os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                    os.system(f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
                 if arguments["--density"]:
                     logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                    os.system(f"klayout -b -r $PDK_ROOT/$PDK/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                    os.system(f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
         else:
             logging.error("Script only support gds files, please select one")
             exit()
@@ -217,8 +215,9 @@ def main():
         logging.error("No provided gds file, please add one")
         exit()
 
-    # ======================== Reporting results ========================
-    rule_deck_path = [f"{pdk_root}/{pdk}/gf180mcu.drc" , f"{pdk_root}/{pdk}/gf180mcu_antenna.drc" , f"{pdk_root}/{pdk}/gf180mcu_density.drc"]
+    # ======================== Reporting results ======================== 
+    curr_path = os.path.dirname(os.path.abspath(__file__))
+    rule_deck_path = [f"{curr_path}/gf180mcu.drc" , f"{curr_path}/gf180mcu_antenna.drc" , f"{curr_path}/gf180mcu_density.drc"]
 
     # Get rules from rule deck
     rules = []
