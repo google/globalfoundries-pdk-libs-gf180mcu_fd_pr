@@ -30,6 +30,8 @@ import os
 import time
 import datetime
 import logging
+from subprocess import check_call
+
 
 def lvs_check(table,files):
 
@@ -40,7 +42,7 @@ def lvs_check(table,files):
     # x = x.replace(" ", "_")
 
     # name_ext = str(rule_deck_path).replace(".drc","").split("/")[-1]
-    # os.system(f"mkdir run_{x}_{name_ext}")
+    # check_call(f"mkdir run_{x}_{name_ext}")
 
     pass_count = 0
     fail_count = 0
@@ -58,7 +60,7 @@ def lvs_check(table,files):
         layout = file[0]
 
         # Get switches
-        if layout == "sample_ggnmos_6p0_sab":
+        if layout == "sample_ggnfet_06v0_dss":
             switches = ' -rd lvs_sub=sub!'
         else:
             switches = ' -rd lvs_sub=vdd!'
@@ -91,7 +93,7 @@ def lvs_check(table,files):
         # moving all reports to run dir
         out_dir = arguments["--run_dir"]
         device_dir = table.split(" ")[0]
-        os.system(f"mv -f testcases/{layout}.lvsdb testcases/{layout}_extracted.cir testcases/{layout}_generated.cdl {out_dir}/LVS_{device_dir}/")
+        check_call(f"mv -f testcases/{layout}.lvsdb testcases/{layout}_extracted.cir testcases/{layout}_generated.cdl {out_dir}/LVS_{device_dir}/", shell=True)
 
         if "INFO : Congratulations! Netlists match." in result:
             logging.info(f"Extraction of {layout} is passed")
@@ -106,7 +108,7 @@ def lvs_check(table,files):
                     result = os.popen(f"klayout -b -r ../gf180mcu.lvs -rd input={file} -rd report={layout}.lvsdb -rd schematic={layout}.cdl -rd target_netlist={layout}_extracted.cir -rd thr={workers_count} {switches}").read()
 
                     dir_clean = file.replace(".gds","")
-                    os.system(f"mv -f {dir_clean}.lvsdb {dir_clean}_extracted.cir {out_dir}/LVS_{device_dir}/")
+                    check_call(f"mv -f {dir_clean}.lvsdb {dir_clean}_extracted.cir {out_dir}/LVS_{device_dir}/", shell=True)
 
                     if "INFO : Congratulations! Netlists match." in result:
                         logging.info(f"Extraction of {layout} in manual test case is passed")
@@ -126,6 +128,10 @@ def lvs_check(table,files):
     logging.info(f"NO. OF FAILED {table} : {fail_count}")
     logging.info("==================================\n")
 
+    if fail_count > 0:
+        return False
+    else:
+        return True
 
 def main():
 
@@ -142,27 +148,27 @@ def main():
         exit ()
 
     # MOSFET
-    mosfet_files = [['sample_pmos_6p0_dw'], ['sample_nmos_10p0_asym'], ['sample_nmos_3p3'], ['sample_pmos_5p0_dw'], ['sample_pmos_6p0'], ['sample_nmos_5p0'], ['sample_nmos_6p0'], ['sample_nmos_6p0_dw'], ['sample_pmos_10p0_asym'], ['sample_nmos_5p0_dw'], ['sample_pmos_5p0'], ['sample_pmos_3p3'], ['sample_nmos_6p0_nat']]
+    mosfet_files = [['sample_pfet_06v0_dn'], ['sample_nfet_10v0_asym'], ['sample_nfet_03v3'], ['sample_pfet_05v0_dn'], ['sample_pfet_06v0'], ['sample_nfet_05v0'], ['sample_nfet_06v0'], ['sample_nfet_06v0_dn'], ['sample_pfet_10v0_asym'], ['sample_nfet_05v0_dn'], ['sample_pfet_05v0'], ['sample_pfet_03v3'], ['sample_nfet_06v0_nvt']]
 
     # BJT
-    bjt_files    = [['vnpn_10x10'], ['vnpn_5x5'], ['vnpn_0p54x16'], ['vnpn_0p54x8'], ['vnpn_0p54x4'], ['vnpn_0p54x2'], ['vpnp_10x10'], ['vpnp_5x5'], ['vpnp_0p42x10'], ['vpnp_0p42x5']]
+    bjt_files    = [['npn_10p00x10p00'], ['npn_05p00x05p00'], ['npn_00p54x16p00'], ['npn_00p54x08p00'], ['npn_00p54x04p00'], ['npn_00p54x02p00'], ['pnp_10p00x10p00'], ['pnp_05p00x05p00'], ['pnp_10p00x00p42'], ['pnp_05p00x00p42']]
 
     # Diode
-    diode_files  = [['np_3p3'], ['np_3p3_dw'], ['np_6p0'], ['np_6p0_dw'], ['pn_3p3'], ['pn_3p3_dw'], ['pn_6p0'], ['pn_6p0_dw'], ['nwp_3p3'], ['nwp_6p0'], ['dnwpw_3p3'], ['dnwpw_6p0'], ['dnwps_3p3'], ['dnwps_6p0'], ['sc_diode']]
+    diode_files  = [['diode_nd2ps_03v3'], ['diode_nd2ps_03v3_dn'], ['diode_nd2ps_06v0'], ['diode_nd2ps_06v0_dn'], ['diode_pd2nw_03v3'], ['diode_pd2nw_03v3_dn'], ['diode_pd2nw_06v0'], ['diode_pd2nw_06v0_dn'], ['diode_nw2ps_03v3'], ['diode_nw2ps_06v0'], ['diode_pw2dw_03v3'], ['diode_pw2dw_06v0'], ['diode_dw2ps_03v3'], ['diode_dw2ps_06v0'], ['sc_diode']]
 
     # Resistor
     resistor_files = [['pplus_u'], ['nplus_s'], ['pplus_u_dw'], ['nplus_s_dw'], ['pplus_s'], ['pplus_s_dw'], ['nplus_u_dw'], ['nplus_u'], ['nwell'], ['pwell'], ['ppolyf_s'], ['ppolyf_u_3k', '-rd poly_res=3k'], ['ppolyf_s_dw'], ['ppolyf_u_1k', '-rd poly_res=1k'], ['ppolyf_u_3k_6p0_dw', '-rd poly_res=3k'], ['npolyf_u_dw'], ['ppolyf_u_3k_dw', '-rd poly_res=3k'], ['ppolyf_u_3k_6p0', '-rd poly_res=3k'], ['npolyf_s'], ['ppolyf_u_1k_6p0_dw', '-rd poly_res=1k'], ['ppolyf_u'], ['npolyf_u'], ['ppolyf_u_2k_dw', '-rd poly_res=2k'], ['npolyf_s_dw'], ['ppolyf_u_2k_6p0_dw', '-rd poly_res=2k'], ['ppolyf_u_2k_6p0', '-rd poly_res=2k'], ['ppolyf_u_dw'], ['ppolyf_u_1k_6p0', '-rd poly_res=1k'], ['ppolyf_u_2k', '-rd poly_res=2k'], ['ppolyf_u_1k_dw', '-rd poly_res=1k'], ['rm1'], ['rm2'], ['rm3'], ['tm6k', '-rd metal_top=6K'], ['tm9k', '-rd metal_top=9K'], ['tm30k', '-rd metal_top=30K'], ['tm11k', '-rd metal_top=11K']]
 
     # MIM Capacitor
-    mim_files = [['mim_1p0fF', '-rd mim_option=A -rd mim_cap=1'], ['mim_1p5fF', '-rd mim_option=A -rd mim_cap=1.5'], ['mim_2p0fF', '-rd mim_option=A -rd mim_cap=2'],['mim_1p0fF_tm', '-rd mim_option=B -rd mim_cap=1'], ['mim_1p5fF_tm', '-rd mim_option=B -rd mim_cap=1.5'], ['mim_2p0fF_tm', '-rd mim_option=B -rd mim_cap=2']]
+    mim_files = [['cap_mim_1f0_m2m3_noshield', '-rd mim_option=A -rd mim_cap=1'], ['cap_mim_1f5_m2m3_noshield', '-rd mim_option=A -rd mim_cap=1.5'], ['cap_mim_2f0_m2m3_noshield', '-rd mim_option=A -rd mim_cap=2'],\
+                 ['cap_mim_1f0_m5m6_noshield', '-rd mim_option=B -rd mim_cap=1'], ['cap_mim_1f5_m5m6_noshield', '-rd mim_option=B -rd mim_cap=1.5'], ['cap_mim_2f0_m5m6_noshield', '-rd mim_option=B -rd mim_cap=2']]
 
     # MOS Capacitor
-    moscap_files = [['pmoscap_3p3_b'], ['nmoscap_3p3_b'], ['nmoscap_3p3'], ['nmoscap_6p0_b'], ['pmoscap_6p0_dw'], ['nmoscap_6p0'], ['pmoscap_3p3_dw'], ['pmoscap_6p0'], ['nmoscap_3p3_dw'], ['pmoscap_6p0_b'], ['pmoscap_3p3'], ['nmoscap_6p0_dw']]
+    moscap_files = [['cap_pmos_03v3_b'], ['cap_nmos_03v3_b'], ['cap_nmos_03v3'], ['cap_nmos_06v0_b'], ['cap_pmos_06v0_dn'], ['cap_nmos_06v0'], ['cap_pmos_03v3_dn'], ['cap_pmos_06v0'], ['cap_nmos_03v3_dn'], ['cap_pmos_06v0_b'], ['cap_pmos_03v3'], ['cap_nmos_06v0_dn']]
 
     # ESD (SAB MOSFET)
-    esd_files = [['sample_pmos_5p0_sab'], ['sample_nmos_5p0_sab'], ['sample_pmos_3p3_dw_sab'], ['sample_pmos_3p3_sab'], ['sample_pmos_5p0_dw_sab'], ['sample_nmos_6p0_sab'], ['sample_pmos_6p0_dw_sab'], ['sample_nmos_6p0_dw_sab'], ['sample_nmos_3p3_dw_sab'], ['sample_nmos_5p0_dw_sab'], ['sample_nmos_3p3_sab'], ['sample_pmos_6p0_sab'],
-                 ['sample_ggnmos_3p3_sab'], ['sample_ggnmos_6p0_dw_sab'], ['sample_ggnmos_6p0_sab'], ['sample_ggnmos_5p0_sab'], ['sample_ggnmos_5p0_dw_sab'], ['sample_ggnmos_3p3_dw_sab'], ['sample_gppmos_3p3_dw_sab'], ['sample_gppmos_6p0_sab'], ['sample_gppmos_5p0_dw_sab'], ['sample_gppmos_3p3_sab'], ['sample_gppmos_6p0_dw_sab'], ['sample_gppmos_5p0_sab']
-]
+    esd_files = [['sample_pfet_05v0_dss'], ['sample_nfet_05v0_dss'], ['sample_pfet_03v3_dn_dss'], ['sample_pfet_03v3_dss'], ['sample_pfet_05v0_dn_dss'], ['sample_nfet_06v0_dss'], ['sample_pfet_06v0_dn_dss'], ['sample_nfet_06v0_dn_dss'], ['sample_nfet_03v3_dn_dss'], ['sample_nfet_05v0_dn_dss'], ['sample_nfet_03v3_dss'], ['sample_pfet_06v0_dss']]
+    
     # eFuse
     efuse_files = [['efuse']]
 
@@ -170,31 +176,36 @@ def main():
     logging.info("Running LVS regression")
     logging.info("================================\n")
 
+    status = True
     if arguments["--device"] == "MOS":
-        lvs_check ("MOS DEVICES" , mosfet_files)
+        status = lvs_check ("MOS DEVICES" , mosfet_files)
     elif arguments["--device"] == "BJT":
-        lvs_check ("BJT DEVICES"   , bjt_files)
+        status = lvs_check ("BJT DEVICES"   , bjt_files)
     elif arguments["--device"] == "DIODE":
-        lvs_check ("DIODE DEVICES" , diode_files)
+        status = lvs_check ("DIODE DEVICES" , diode_files)
     elif arguments["--device"] == "RES":
-       lvs_check ("RES DEVICES" , resistor_files)
+        status = lvs_check ("RES DEVICES" , resistor_files)
     elif arguments["--device"] == "MIMCAP":
-        lvs_check ("MIMCAP DEVICES" , mim_files)
+        status = lvs_check ("MIMCAP DEVICES" , mim_files)
     elif arguments["--device"] == "MOSCAP":
-        lvs_check ("MOSCAP DEVICES" , moscap_files)
+        status = lvs_check ("MOSCAP DEVICES" , moscap_files)
     elif arguments["--device"] == "MOS-SAB":
-        lvs_check ("MOS-SAB DEVICES" , esd_files)
+        status = lvs_check ("MOS-SAB DEVICES" , esd_files)
     elif arguments["--device"] == "EFUSE":
-        lvs_check ("EFUSE DEVICES" , efuse_files)
+        status = lvs_check ("EFUSE DEVICES" , efuse_files)
     else:
-        lvs_check ("MOS DEVICES" , mosfet_files)
-        lvs_check ("BJT DEVICES"   , bjt_files)
-        lvs_check ("DIODE DEVICES" , diode_files)
-        lvs_check ("RES DEVICES" , resistor_files)
-        lvs_check ("MIM DEVICES" , mim_files)
-        lvs_check ("MOSCAP DEVICES" , moscap_files)
-        lvs_check ("ESD DEVICES" , esd_files)
-        lvs_check ("EFUSE DEVICES" , efuse_files)
+        status = lvs_check ("MOS DEVICES" , mosfet_files)
+        status = lvs_check ("BJT DEVICES"   , bjt_files)
+        status = lvs_check ("DIODE DEVICES" , diode_files)
+        status = lvs_check ("RES DEVICES" , resistor_files)
+        status = lvs_check ("MIM DEVICES" , mim_files)
+        status = lvs_check ("MOSCAP DEVICES" , moscap_files)
+        status = lvs_check ("ESD DEVICES" , esd_files)
+        status = lvs_check ("EFUSE DEVICES" , efuse_files)
+    
+    if status:
+        logging.error("## There are failed cases will exit with 1.")
+        exit(1)
 
 if __name__ == "__main__":
 

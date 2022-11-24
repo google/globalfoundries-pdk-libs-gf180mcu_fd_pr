@@ -45,6 +45,8 @@ from docopt import docopt
 import os
 import logging
 
+from subprocess import check_call
+
 def main():
 
     # Switches used in run
@@ -99,7 +101,8 @@ def main():
             print("The script must be given a netlist file or a path to be able to run LVS")
             exit()
 
-        os.system(f"klayout -b -r gf180mcu.lvs -rd input={path} -rd report={file_name[0]}.lyrdb -rd schematic={args['--net']} -rd target_netlist=extracted_netlist_{file_name[0]}.cir -rd thr={workers_count} {switches}")
+        check_call(f"klayout -b -r gf180mcu.lvs -rd input={path} -rd report={file_name[0]}.lyrdb -rd schematic={args['--net']} -rd target_netlist=extracted_netlist_{file_name[0]}.cir -rd thr={workers_count} {switches}", 
+                   shell=True)
 
     else:
         print("The script must be given a layout file or a path to be able to run LVS")
