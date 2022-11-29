@@ -19,7 +19,7 @@ import xml.etree.ElementTree as ET
 
 gds_files = glob.glob("testcases/*.gds")
 current = f'run_{datetime.now().strftime("_%y_%m_%d_%H_%M_%S")}'
-subprocess.check_call(f'mkdir {current}', shell=True)
+subprocess.check_call(f"mkdir {current}", shell=True)
 
 for gds_file in gds_files:
     txt_file = gds_file.replace(".gds", ".txt").replace("testcases", current)
@@ -27,13 +27,20 @@ for gds_file in gds_files:
     rep_file = gds_file.replace(".gds", "_r.gds").replace("testcases", current)
     subprocess.check_call(f"gds2txt {gds_file} > {txt_file}", shell=True)
     subprocess.check_call(f"txt2gds -o {out_file} {txt_file}", shell=True)
-    subprocess.check_call(f"klayout -b -r xor.drc -rd gds1={gds_file} -rd gds2={out_file} -rd out={rep_file}", shell=True)
+    subprocess.check_call(
+        f"klayout -b -r xor.drc -rd gds1={gds_file} -rd gds2={out_file} -rd out={rep_file}",
+        shell=True,
+    )
     subprocess.check_call(f"klayout -b -r report.drc -rd input={rep_file}", shell=True)
 
-    mytree = ET.parse(f'{gds_file.replace(".gds", "").replace("testcases", current)}_xor.lyrdb')
+    mytree = ET.parse(
+        f'{gds_file.replace(".gds", "").replace("testcases", current)}_xor.lyrdb'
+    )
     myroot = mytree.getroot()
     if len(myroot[7]) == 0:
-        print(f'## File {gds_file.replace(".gds", "").replace("testcases/", "")} has been converted as GDS > TXT > GDS successfully')
+        print(
+            f'## File {gds_file.replace(".gds", "").replace("testcases/", "")} has been converted as GDS > TXT > GDS successfully'
+        )
 
 subprocess.check_call(f"rm report.drc", shell=True)
-print('\x1b[6;30;42m' + 'Success!' + '\x1b[0m')
+print("\x1b[6;30;42m" + "Success!" + "\x1b[0m")

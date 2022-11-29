@@ -23,6 +23,7 @@ from .draw_cap_mim import *
 mim_l = 0.28
 mim_w = 0.28
 
+
 class cap_mim(pya.PCellDeclarationHelper):
     """
     MIM capacitor Generator for GF180MCU
@@ -33,35 +34,37 @@ class cap_mim(pya.PCellDeclarationHelper):
         # Initializing super class.
         super(cap_mim, self).__init__()
 
-        #===================== PARAMETERS DECLARATIONS =====================
-        self.Type_handle  = self.param("mim_option", self.TypeList, "MIM-Option")
+        # ===================== PARAMETERS DECLARATIONS =====================
+        self.Type_handle = self.param("mim_option", self.TypeList, "MIM-Option")
         self.Type_handle.add_choice("MIM-A", "MIM-A")
         self.Type_handle.add_choice("MIM-B", "MIM-B")
 
-        self.Type_handle2 = self.param("metal_level", self.TypeList, "Metal level (MIM-B)")
+        self.Type_handle2 = self.param(
+            "metal_level", self.TypeList, "Metal level (MIM-B)"
+        )
         self.Type_handle2.add_choice("M4", "M4")
         self.Type_handle2.add_choice("M5", "M5")
         self.Type_handle2.add_choice("M6", "M6")
 
-        self.param("l", self.TypeDouble,"Length", default=mim_l, unit="um")
-        self.param("w", self.TypeDouble,"Width", default=mim_w, unit="um")
-        self.param("area", self.TypeDouble,"Area", readonly=True, unit="um^2")
-        self.param("perim", self.TypeDouble,"Perimeter", readonly=True, unit="um")
+        self.param("l", self.TypeDouble, "Length", default=mim_l, unit="um")
+        self.param("w", self.TypeDouble, "Width", default=mim_w, unit="um")
+        self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
+        self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "cap_mim(L=" + ('%.3f' % self.l) + ",W=" + ('%.3f' % self.w) + ")"
+        return "cap_mim(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area  = self.w * self.l
-        self.perim = 2*(self.w + self.l)
+        self.area = self.w * self.l
+        self.perim = 2 * (self.w + self.l)
         # w,l must be larger or equal than min. values.
         if (self.l) < mim_l:
-            self.l  = mim_l
+            self.l = mim_l
         if (self.w) < mim_w:
-            self.w  = mim_w
+            self.w = mim_w
         if (self.mim_option) == "MIM-A":
             self.metal_level = "M3"
 
@@ -82,16 +85,24 @@ class cap_mim(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        option = os.environ['GF_PDK_OPTION']
+        option = os.environ["GF_PDK_OPTION"]
         if option == "A":
             if (self.mim_option) == "MIM-B":
                 raise TypeError(f"Current stack ({option}) doesn't allow this option")
         else:
             if (self.mim_option) == "MIM-A":
                 raise TypeError(f"Current stack ({option}) doesn't allow this option")
-        np_instance = draw_cap_mim(self.layout, self.l, self.w, self.mim_option , self.metal_level)
-        write_cells = pya.CellInstArray(np_instance.cell_index(), pya.Trans(pya.Point(0, 0)),
-                      pya.Vector(0, 0), pya.Vector(0, 0), 1, 1)
+        np_instance = draw_cap_mim(
+            self.layout, self.l, self.w, self.mim_option, self.metal_level
+        )
+        write_cells = pya.CellInstArray(
+            np_instance.cell_index(),
+            pya.Trans(pya.Point(0, 0)),
+            pya.Vector(0, 0),
+            pya.Vector(0, 0),
+            1,
+            1,
+        )
 
         self.cell.insert(write_cells)
         self.cell.flatten(1)

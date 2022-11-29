@@ -45,7 +45,8 @@ import xml.etree.ElementTree as ET
 import logging
 import subprocess
 
-def get_results(rule_deck,rules,lyrdb, type):
+
+def get_results(rule_deck, rules, lyrdb, type):
 
     mytree = ET.parse(f"{lyrdb}_{type}_gf{arguments['--gf180mcu']}.lyrdb")
     myroot = mytree.getroot()
@@ -59,21 +60,36 @@ def get_results(rule_deck,rules,lyrdb, type):
                 violated.append(lrule)
                 break
 
-    lyrdb_clean = lyrdb.split("/") [-1]
+    lyrdb_clean = lyrdb.split("/")[-1]
 
     if len(violated) > 0:
-        logging.error(f"\nTotal # of DRC violations in {rule_deck}.drc is {len(violated)}. Please check {lyrdb_clean}_{type}_gf{arguments['--gf180mcu']}.lyrdb file For more details")
+        logging.error(
+            f"\nTotal # of DRC violations in {rule_deck}.drc is {len(violated)}. Please check {lyrdb_clean}_{type}_gf{arguments['--gf180mcu']}.lyrdb file For more details"
+        )
         logging.info("Klayout GDS DRC Not Clean")
         logging.info(f"Violated rules are : {violated}\n")
     else:
-        logging.info(f"\nCongratulations !!. No DRC Violations found in {lyrdb_clean} for {rule_deck}.drc rule deck with switch gf{arguments['--gf180mcu']}")
+        logging.info(
+            f"\nCongratulations !!. No DRC Violations found in {lyrdb_clean} for {rule_deck}.drc rule deck with switch gf{arguments['--gf180mcu']}"
+        )
         logging.info("Klayout GDS DRC Clean\n")
+
 
 def get_top_cell_names(gds_path):
     curr_path = os.path.dirname(os.path.abspath(__file__))
 
     top_cell_names = list()
-    proc = subprocess.Popen(['klayout','-b', '-r', f"{curr_path}/utils/get_top_cell_names.rb", "-rd", "infile={}".format(gds_path)], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(
+        [
+            "klayout",
+            "-b",
+            "-r",
+            f"{curr_path}/utils/get_top_cell_names.rb",
+            "-rd",
+            "infile={}".format(gds_path),
+        ],
+        stdout=subprocess.PIPE,
+    )
     while True:
         line = proc.stdout.readline()
         if not line:
@@ -81,6 +97,7 @@ def get_top_cell_names(gds_path):
         top_cell_names.append(line.decode().strip())
 
     return top_cell_names
+
 
 def clean_gds_from_many_top_cells(gds_path, topcell):
     # klayout -b -r keep_single_top_cell.rb -rd infile=./layouts/caravel.gds.gz -rd topcell=chip_io -rd outfile=test.gds.gz
@@ -90,9 +107,25 @@ def clean_gds_from_many_top_cells(gds_path, topcell):
     basename = os.path.basename(gds_path)
     dirname = os.path.dirname(gds_path)
     main_file_name = basename.split(".")[0]
-    output_file_path = os.path.join(dirname, "{}_single_top.gds.gz".format(main_file_name))
+    output_file_path = os.path.join(
+        dirname, "{}_single_top.gds.gz".format(main_file_name)
+    )
 
-    proc = subprocess.Popen(['klayout','-b', '-r', f"{curr_path}/utils/keep_single_top_cell.rb", "-rd", "infile={}".format(gds_path), "-rd", "topcell={}".format(topcell), "-rd", "outfile={}".format(output_file_path)], stdout=subprocess.PIPE)
+    proc = subprocess.Popen(
+        [
+            "klayout",
+            "-b",
+            "-r",
+            f"{curr_path}/utils/keep_single_top_cell.rb",
+            "-rd",
+            "infile={}".format(gds_path),
+            "-rd",
+            "topcell={}".format(topcell),
+            "-rd",
+            "outfile={}".format(output_file_path),
+        ],
+        stdout=subprocess.PIPE,
+    )
 
     while True:
         line = proc.stdout.readline()
@@ -100,6 +133,7 @@ def clean_gds_from_many_top_cells(gds_path, topcell):
             break
         print(line.strip())
     return output_file_path
+
 
 def main():
 
@@ -111,7 +145,7 @@ def main():
         exit()
 
     curr_path = os.path.dirname(os.path.abspath(__file__))
-    
+
     # ======= Checking Klayout version =======
     klayout_v_ = os.popen("klayout -v").read()
     klayout_v_ = klayout_v_.split("\n")[0]
@@ -119,44 +153,59 @@ def main():
         logging.error("Klayout is not found. Please make sure klayout is installed.")
         exit(1)
     else:
-        klayout_v  = int (klayout_v_.split(".") [-1])
+        klayout_v = int(klayout_v_.split(".")[-1])
 
-    logging.info(f"Your Klayout version is: {klayout_v_}"  )
+    logging.info(f"Your Klayout version is: {klayout_v_}")
 
     if klayout_v < 8:
         logging.info(f"Prerequisites at a minimum: KLayout 0.27.8")
-        logging.error("Using this klayout version has not been assesed in this development. Limits are unknown")
+        logging.error(
+            "Using this klayout version has not been assesed in this development. Limits are unknown"
+        )
 
     # Switches used in run
-    switches = ''
+    switches = ""
 
-    if arguments["--run_mode"] in ["flat" , "deep", "tiling"]:
+    if arguments["--run_mode"] in ["flat", "deep", "tiling"]:
         switches = switches + f'-rd run_mode={arguments["--run_mode"]} '
     else:
         logging.error("Allowed klayout modes are (flat , deep , tiling) only")
         exit()
 
-    if   arguments["--gf180mcu"] == "A":   switches = switches + f'-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM '
-    elif arguments["--gf180mcu"] == "B":   switches = switches + f'-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM '
-    elif arguments["--gf180mcu"] == "C":   switches = switches + f'-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM '
+    if arguments["--gf180mcu"] == "A":
+        switches = switches + f"-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM "
+    elif arguments["--gf180mcu"] == "B":
+        switches = switches + f"-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM "
+    elif arguments["--gf180mcu"] == "C":
+        switches = switches + f"-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM "
     else:
         logging.error("gf180mcu switch allowed values are (A , B, C) only")
         exit()
 
-    if arguments["--no_feol"]:      switches = switches + '-rd feol=false '
-    else:                           switches = switches + '-rd feol=true  '
+    if arguments["--no_feol"]:
+        switches = switches + "-rd feol=false "
+    else:
+        switches = switches + "-rd feol=true  "
 
-    if arguments["--no_beol"]:      switches = switches + '-rd beol=false '
-    else:                           switches = switches + '-rd beol=true '
+    if arguments["--no_beol"]:
+        switches = switches + "-rd beol=false "
+    else:
+        switches = switches + "-rd beol=true "
 
-    if arguments["--no_offgrid"]:   switches = switches + '-rd offgrid=false '
-    else:                           switches = switches + '-rd offgrid=true '
+    if arguments["--no_offgrid"]:
+        switches = switches + "-rd offgrid=false "
+    else:
+        switches = switches + "-rd offgrid=true "
 
-    if arguments["--connectivity"]: switches = switches + '-rd conn_drc=true '
-    else:                           switches = switches + '-rd conn_drc=false '
+    if arguments["--connectivity"]:
+        switches = switches + "-rd conn_drc=true "
+    else:
+        switches = switches + "-rd conn_drc=false "
 
-    if arguments["--density"]:      switches = switches + '-rd density=true '
-    else:                           switches = switches + '-rd density=false '
+    if arguments["--density"]:
+        switches = switches + "-rd density=true "
+    else:
+        switches = switches + "-rd density=false "
 
     # Generate databases
     if arguments["--path"]:
@@ -164,7 +213,7 @@ def main():
         topcell_name = arguments["--topcell"]
 
         if ".gds" in path:
-            name_clean_= path.replace(".gds","")
+            name_clean_ = path.replace(".gds", "")
             name_clean = name_clean_.split("/")[-1]
 
             tc_list = get_top_cell_names(path)
@@ -178,36 +227,66 @@ def main():
                 exit()
 
             # if not topcell_name is None:
-            switches = switches + f'-rd topcell={topcell_name}'
+            switches = switches + f"-rd topcell={topcell_name}"
 
             # Removing old db
-            os.system(f"rm -rf {name_clean_}_main_drc_gf{arguments['--gf180mcu']}.lyrdb {name_clean_}_antenna_gf{arguments['--gf180mcu']}.lyrdb {name_clean_}_density_gf{arguments['--gf180mcu']}.lyrdb")
+            os.system(
+                f"rm -rf {name_clean_}_main_drc_gf{arguments['--gf180mcu']}.lyrdb {name_clean_}_antenna_gf{arguments['--gf180mcu']}.lyrdb {name_clean_}_density_gf{arguments['--gf180mcu']}.lyrdb"
+            )
 
             # Running DRC using klayout
             if (arguments["--antenna_only"]) and not (arguments["--density_only"]):
-                logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                logging.info(
+                    f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:"
+                )
+                os.system(
+                    f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
+                )
 
             elif (arguments["--density_only"]) and not (arguments["--antenna_only"]):
-                logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                logging.info(
+                    f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:"
+                )
+                os.system(
+                    f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
+                )
 
             elif arguments["--antenna_only"] and arguments["--density_only"]:
-                logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                logging.info(
+                    f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:"
+                )
+                os.system(
+                    f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
+                )
 
-                logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                logging.info(
+                    f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:"
+                )
+                os.system(
+                    f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
+                )
 
             else:
-                logging.info(f"Running main Global Foundries 180nm MCU runset on design {name_clean} on cell {topcell_name}:")
-                os.system(f"klayout -b -r {curr_path}/gf180mcu.drc -rd input={path} -rd report={name_clean}_main_drc_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                logging.info(
+                    f"Running main Global Foundries 180nm MCU runset on design {name_clean} on cell {topcell_name}:"
+                )
+                os.system(
+                    f"klayout -b -r {curr_path}/gf180mcu.drc -rd input={path} -rd report={name_clean}_main_drc_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
+                )
                 if arguments["--antenna"]:
-                    logging.info(f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:")
-                    os.system(f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                    logging.info(
+                        f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:"
+                    )
+                    os.system(
+                        f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
+                    )
                 if arguments["--density"]:
-                    logging.info(f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:")
-                    os.system(f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}")
+                    logging.info(
+                        f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:"
+                    )
+                    os.system(
+                        f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
+                    )
         else:
             logging.error("Script only support gds files, please select one")
             exit()
@@ -215,16 +294,20 @@ def main():
         logging.error("No provided gds file, please add one")
         exit()
 
-    # ======================== Reporting results ======================== 
+    # ======================== Reporting results ========================
     curr_path = os.path.dirname(os.path.abspath(__file__))
-    rule_deck_path = [f"{curr_path}/gf180mcu.drc" , f"{curr_path}/gf180mcu_antenna.drc" , f"{curr_path}/gf180mcu_density.drc"]
+    rule_deck_path = [
+        f"{curr_path}/gf180mcu.drc",
+        f"{curr_path}/gf180mcu_antenna.drc",
+        f"{curr_path}/gf180mcu_density.drc",
+    ]
 
     # Get rules from rule deck
     rules = []
 
     # Get rules from rule deck
     for runset in rule_deck_path:
-        with open(runset, 'r') as f:
+        with open(runset, "r") as f:
             for line in f:
                 if ".output" in line:
                     line_list = line.split('"')
@@ -234,11 +317,12 @@ def main():
                         rules.append(line_list[1])
 
     # Get results
-    lyrdbs  = [ "main_drc"     , "antenna"          , "density"         ]
-    runsets = [ "gf180mcu"     , "gf180mcu_antenna" , "gf180mcu_density"]
-    for i,lyrdb in enumerate(lyrdbs):
+    lyrdbs = ["main_drc", "antenna", "density"]
+    runsets = ["gf180mcu", "gf180mcu_antenna", "gf180mcu_density"]
+    for i, lyrdb in enumerate(lyrdbs):
         if os.path.exists(f"{name_clean_}_{lyrdb}_gf{arguments['--gf180mcu']}.lyrdb"):
-            get_results(runsets[i],rules,name_clean_, lyrdb)
+            get_results(runsets[i], rules, name_clean_, lyrdb)
+
 
 # ================================================================
 # -------------------------- MAIN --------------------------------
@@ -247,13 +331,19 @@ def main():
 if __name__ == "__main__":
 
     # logs format
-    logging.basicConfig(level=logging.DEBUG, format=f"%(asctime)s | %(levelname)-7s | %(message)s", datefmt='%d-%b-%Y %H:%M:%S')
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
 
     # arguments
-    arguments     = docopt(__doc__, version='RUN DRC: 0.1')
+    arguments = docopt(__doc__, version="RUN DRC: 0.1")
 
     # No. of threads
-    thrCount = os.cpu_count()*2 if arguments["--thr"] == None else int(arguments["--thr"])
+    thrCount = (
+        os.cpu_count() * 2 if arguments["--thr"] == None else int(arguments["--thr"])
+    )
 
     # Calling main function
     main()

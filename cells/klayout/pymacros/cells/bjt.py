@@ -36,7 +36,13 @@ class npn_bjt(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("npn_00p54x08p00", "npn_00p54x08p00")
         self.Type_handle.add_choice("npn_00p54x04p00", "npn_00p54x04p00")
         self.Type_handle.add_choice("npn_00p54x02p00", "npn_00p54x02p00")
-        self.param("Model", self.TypeString, "Model", default="gf180mcu_fd_pr__npn",readonly=True)
+        self.param(
+            "Model",
+            self.TypeString,
+            "Model",
+            default="gf180mcu_fd_pr__npn",
+            readonly=True,
+        )
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -48,7 +54,6 @@ class npn_bjt(pya.PCellDeclarationHelper):
         # radius ru) and set ru to the effective radius. We also update the
         # numerical value or the shape, depending on which on has not changed.
         pass
-
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -73,14 +78,21 @@ class npn_bjt(pya.PCellDeclarationHelper):
 
         # This is the main part of the implementation: create the layout
 
-        self.percision = 1/self.layout.dbu
-        npn_instance = draw_npn(layout=self.layout,device_name=self.Type)
-        write_cells = pya.CellInstArray(npn_instance.cell_index(), pya.Trans(pya.Point(0, 0)),
-                              pya.Vector(0, 0), pya.Vector(0, 0),1 , 1)
+        self.percision = 1 / self.layout.dbu
+        npn_instance = draw_npn(layout=self.layout, device_name=self.Type)
+        write_cells = pya.CellInstArray(
+            npn_instance.cell_index(),
+            pya.Trans(pya.Point(0, 0)),
+            pya.Vector(0, 0),
+            pya.Vector(0, 0),
+            1,
+            1,
+        )
 
         self.cell.flatten(1)
         self.cell.insert(write_cells)
         self.layout.cleanup()
+
 
 class pnp_bjt(pya.PCellDeclarationHelper):
     """
@@ -96,7 +108,13 @@ class pnp_bjt(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("pnp_05p00x05p00", "pnp_05p00x05p00")
         self.Type_handle.add_choice("pnp_10p00x00p42", "pnp_10p00x00p42")
         self.Type_handle.add_choice("pnp_05p00x00p42", "pnp_05p00x00p42")
-        self.param("Model", self.TypeString, "Model", default="gf180mcu_fd_pr__pnp",readonly=True)
+        self.param(
+            "Model",
+            self.TypeString,
+            "Model",
+            default="gf180mcu_fd_pr__pnp",
+            readonly=True,
+        )
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -108,7 +126,6 @@ class pnp_bjt(pya.PCellDeclarationHelper):
         # radius ru) and set ru to the effective radius. We also update the
         # numerical value or the shape, depending on which on has not changed.
         pass
-
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -133,15 +150,17 @@ class pnp_bjt(pya.PCellDeclarationHelper):
 
         # This is the main part of the implementation: create the layout
 
-        self.percision = 1/self.layout.dbu
-        pnp_instance = draw_pnp(layout=self.layout,device_name=self.Type)
-        write_cells = pya.CellInstArray(pnp_instance.cell_index(), pya.Trans(pya.Point(0, 0)),
-                              pya.Vector(0, 0), pya.Vector(0, 0),1 , 1)
+        self.percision = 1 / self.layout.dbu
+        pnp_instance = draw_pnp(layout=self.layout, device_name=self.Type)
+        write_cells = pya.CellInstArray(
+            pnp_instance.cell_index(),
+            pya.Trans(pya.Point(0, 0)),
+            pya.Vector(0, 0),
+            pya.Vector(0, 0),
+            1,
+            1,
+        )
 
         self.cell.flatten(1)
         self.cell.insert(write_cells)
         self.layout.cleanup()
-
-
-
-
