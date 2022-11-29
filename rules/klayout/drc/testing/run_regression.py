@@ -124,8 +124,8 @@ def call_regression(rule_deck_path, path):
     ((input(6, 222).interacting(input(3, 222).interacting(input(11, 222).texts("{rule}))).or((input(3, 222).interacting(input(11, 222).texts("{rule})).not_interacting(input(6, 222)))).not_interacting(input(10000, {ly})).output("{line_list[1]}_false_negative", "{line_list[1]}_false_negative occurred") \n
     CHIP.not_interacting(input(11, 222).texts("{rule}).output("{line_list[1]}_not_tested", "{line_list[1]}_not_tested")\n'''
                 ly +=1
-            if "deep" in line:
-                line = ""
+            if line.strip() == "deep":
+                line = "flat"
             marker_gen.append(line)
 
     # Create small drc file

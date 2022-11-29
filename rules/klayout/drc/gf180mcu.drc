@@ -101,115 +101,124 @@ end # run_mode
 #------------- LAYERS DEFINITIONS ---------------
 #================================================
 
-logger.info("Read in polygons from layers.")
+logger.info("Read in polygons/klayout from layers.")
 
-
-comp           = polygons(22 , 0 ).merged
-dnwell         = polygons(12 , 0 ).merged
-nwell          = polygons(21 , 0 ).merged
-lvpwell        = polygons(204, 0 ).merged
-dualgate       = polygons(55 , 0 ).merged
-poly2          = polygons(30 , 0 ).merged
-nplus          = polygons(32 , 0 ).merged
-pplus          = polygons(31 , 0 ).merged
-sab            = polygons(49 , 0 ).merged
-esd            = polygons(24 , 0 ).merged
-contact        = polygons(33 , 0 ).merged
-metal1         = polygons(34 , 0 ).merged
-via1           = polygons(35 , 0 ).merged
-metal2         = polygons(36 , 0 ).merged
-via2           = polygons(38 , 0 ).merged
-metal3         = polygons(42 , 0 ).merged
-via3           = polygons(40 , 0 ).merged
-metal4         = polygons(46 , 0 ).merged
-via4           = polygons(41 , 0 ).merged
-metal5         = polygons(81 , 0 ).merged
-via5           = polygons(82 , 0 ).merged
-metaltop       = polygons(53 , 0 ).merged
-pad            = polygons(37 , 0 ).merged
-resistor       = polygons(62 , 0 ).merged
-fhres          = polygons(227, 0 ).merged
-fusetop        = polygons(75 , 0 ).merged
-fusewindow_d   = polygons(96 , 1 ).merged
-polyfuse       = polygons(220, 0 ).merged
-mvsd           = polygons(210, 0 ).merged
-mvpsd          = polygons(11 , 39).merged
-nat            = polygons(5  , 0 ).merged
-comp_dummy     = polygons(22 , 4 ).merged
-poly2_dummy    = polygons(30 , 4 ).merged
-metal1_dummy   = polygons(34 , 4 ).merged
-metal2_dummy   = polygons(36 , 4 ).merged
-metal3_dummy   = polygons(42 , 4 ).merged
-metal4_dummy   = polygons(46 , 4 ).merged
-metal5_dummy   = polygons(81 , 4 ).merged
-metaltop_dummy = polygons(53 , 4 ).merged
-comp_label     = polygons(22 , 10).merged
-poly2_label    = polygons(30 , 10).merged
-metal1_label   = polygons(34 , 10).merged
-metal2_label   = polygons(36 , 10).merged
-metal3_label   = polygons(42 , 10).merged
-metal4_label   = polygons(46 , 10).merged
-metal5_label   = polygons(81 , 10).merged
-metaltop_label = polygons(53 , 10).merged
-metal1_slot    = polygons(34 , 3 ).merged
-metal2_slot    = polygons(36 , 3 ).merged
-metal3_slot    = polygons(42 , 3 ).merged
-metal4_slot    = polygons(46 , 3 ).merged
-metal5_slot    = polygons(81 , 3 ).merged
-metaltop_slot  = polygons(53 , 3 ).merged
-ubmpperi       = polygons(183, 0 ).merged
-ubmparray      = polygons(184, 0 ).merged
-ubmeplate      = polygons(185, 0 ).merged
-schottky_diode = polygons(241, 0 ).merged
-zener          = polygons(178, 0 ).merged
-res_mk         = polygons(110, 5 ).merged
-opc_drc        = polygons(124, 5 ).merged
-ndmy           = polygons(111, 5 ).merged
-pmndmy         = polygons(152, 5 ).merged
-v5_xtor        = polygons(112, 1 ).merged
-cap_mk         = polygons(117, 5 ).merged
-mos_cap_mk     = polygons(166, 5 ).merged
-ind_mk         = polygons(151, 5 ).merged
-diode_mk       = polygons(115, 5 ).merged
-drc_bjt        = polygons(127, 5 ).merged
-lvs_bjt        = polygons(118, 5 ).merged
-mim_l_mk       = polygons(117, 10).merged
-latchup_mk     = polygons(137, 5 ).merged
-guard_ring_mk  = polygons(167, 5 ).merged
-otp_mk         = polygons(173, 5 ).merged
-mtpmark        = polygons(122, 5 ).merged
-neo_ee_mk      = polygons(88 , 17).merged
-sramcore       = polygons(108, 5 ).merged
-lvs_rf         = polygons(100, 5 ).merged
-lvs_drain      = polygons(100, 7 ).merged
-ind_mk         = polygons(151, 5 ).merged
-hvpolyrs       = polygons(123, 5 ).merged
-lvs_io         = polygons(119, 5 ).merged
-probe_mk       = polygons(13 , 17).merged
-esd_mk         = polygons(24 , 5 ).merged
-lvs_source     = polygons(100, 8 ).merged
-well_diode_mk  = polygons(153, 51).merged
-ldmos_xtor     = polygons(226, 0 ).merged
-plfuse         = polygons(125, 5 ).merged
-efuse_mk       = polygons(80 , 5 ).merged
-mcell_feol_mk  = polygons(11 , 17).merged
-ymtp_mk        = polygons(86 , 17).merged
-dev_wf_mk      = polygons(128, 17).merged
-metal1_blk     = polygons(34 , 5 ).merged
-metal2_blk     = polygons(36 , 5 ).merged
-metal3_blk     = polygons(42 , 5 ).merged
-metal4_blk     = polygons(46 , 5 ).merged
-metal5_blk     = polygons(81 , 5 ).merged
-metalt_blk     = polygons(53 , 5 ).merged
-pr_bndry       = polygons(0  , 0 ).merged
-mdiode         = polygons(116, 5 ).merged
-metal1_res     = polygons(110, 11).merged
-metal2_res     = polygons(110, 12).merged
-metal3_res     = polygons(110, 13).merged
-metal4_res     = polygons(110, 14).merged
-metal5_res     = polygons(110, 15).merged
-metal6_res     = polygons(110, 16).merged
-border         = polygons(63 , 0 ).merged
+def read_input(layer, datatype)
+  if $run_mode == "deep"
+    # deep mode benefits from a hierarchical distribution which may be destroyed by the 
+    # merge operation
+    polygons(layer, datatype)
+  else
+    polygons(layer, datatype).merged
+  end
+end
+  
+comp           = read_input(22 , 0 )
+dnwell         = read_input(12 , 0 )
+nwell          = read_input(21 , 0 )
+lvpwell        = read_input(204, 0 )
+dualgate       = read_input(55 , 0 )
+poly2          = read_input(30 , 0 )
+nplus          = read_input(32 , 0 )
+pplus          = read_input(31 , 0 )
+sab            = read_input(49 , 0 )
+esd            = read_input(24 , 0 )
+contact        = read_input(33 , 0 )
+metal1         = read_input(34 , 0 )
+via1           = read_input(35 , 0 )
+metal2         = read_input(36 , 0 )
+via2           = read_input(38 , 0 )
+metal3         = read_input(42 , 0 )
+via3           = read_input(40 , 0 )
+metal4         = read_input(46 , 0 )
+via4           = read_input(41 , 0 )
+metal5         = read_input(81 , 0 )
+via5           = read_input(82 , 0 )
+metaltop       = read_input(53 , 0 )
+pad            = read_input(37 , 0 )
+resistor       = read_input(62 , 0 )
+fhres          = read_input(227, 0 )
+fusetop        = read_input(75 , 0 )
+fusewindow_d   = read_input(96 , 1 )
+polyfuse       = read_input(220, 0 )
+mvsd           = read_input(210, 0 )
+mvpsd          = read_input(11 , 39)
+nat            = read_input(5  , 0 )
+comp_dummy     = read_input(22 , 4 )
+poly2_dummy    = read_input(30 , 4 )
+metal1_dummy   = read_input(34 , 4 )
+metal2_dummy   = read_input(36 , 4 )
+metal3_dummy   = read_input(42 , 4 )
+metal4_dummy   = read_input(46 , 4 )
+metal5_dummy   = read_input(81 , 4 )
+metaltop_dummy = read_input(53 , 4 )
+comp_label     = read_input(22 , 10)
+poly2_label    = read_input(30 , 10)
+metal1_label   = read_input(34 , 10)
+metal2_label   = read_input(36 , 10)
+metal3_label   = read_input(42 , 10)
+metal4_label   = read_input(46 , 10)
+metal5_label   = read_input(81 , 10)
+metaltop_label = read_input(53 , 10)
+metal1_slot    = read_input(34 , 3 )
+metal2_slot    = read_input(36 , 3 )
+metal3_slot    = read_input(42 , 3 )
+metal4_slot    = read_input(46 , 3 )
+metal5_slot    = read_input(81 , 3 )
+metaltop_slot  = read_input(53 , 3 )
+ubmpperi       = read_input(183, 0 )
+ubmparray      = read_input(184, 0 )
+ubmeplate      = read_input(185, 0 )
+schottky_diode = read_input(241, 0 )
+zener          = read_input(178, 0 )
+res_mk         = read_input(110, 5 )
+opc_drc        = read_input(124, 5 )
+ndmy           = read_input(111, 5 )
+pmndmy         = read_input(152, 5 )
+v5_xtor        = read_input(112, 1 )
+cap_mk         = read_input(117, 5 )
+mos_cap_mk     = read_input(166, 5 )
+ind_mk         = read_input(151, 5 )
+diode_mk       = read_input(115, 5 )
+drc_bjt        = read_input(127, 5 )
+lvs_bjt        = read_input(118, 5 )
+mim_l_mk       = read_input(117, 10)
+latchup_mk     = read_input(137, 5 )
+guard_ring_mk  = read_input(167, 5 )
+otp_mk         = read_input(173, 5 )
+mtpmark        = read_input(122, 5 )
+neo_ee_mk      = read_input(88 , 17)
+sramcore       = read_input(108, 5 )
+lvs_rf         = read_input(100, 5 )
+lvs_drain      = read_input(100, 7 )
+ind_mk         = read_input(151, 5 )
+hvpolyrs       = read_input(123, 5 )
+lvs_io         = read_input(119, 5 )
+probe_mk       = read_input(13 , 17)
+esd_mk         = read_input(24 , 5 )
+lvs_source     = read_input(100, 8 )
+well_diode_mk  = read_input(153, 51)
+ldmos_xtor     = read_input(226, 0 )
+plfuse         = read_input(125, 5 )
+efuse_mk       = read_input(80 , 5 )
+mcell_feol_mk  = read_input(11 , 17)
+ymtp_mk        = read_input(86 , 17)
+dev_wf_mk      = read_input(128, 17)
+metal1_blk     = read_input(34 , 5 )
+metal2_blk     = read_input(36 , 5 )
+metal3_blk     = read_input(42 , 5 )
+metal4_blk     = read_input(46 , 5 )
+metal5_blk     = read_input(81 , 5 )
+metalt_blk     = read_input(53 , 5 )
+pr_bndry       = read_input(0  , 0 )
+mdiode         = read_input(116, 5 )
+metal1_res     = read_input(110, 11)
+metal2_res     = read_input(110, 12)
+metal3_res     = read_input(110, 13)
+metal4_res     = read_input(110, 14)
+metal5_res     = read_input(110, 15)
+metal6_res     = read_input(110, 16)
+border         = read_input(63 , 0 )
 
 # ================= COUNT POLYGONS =================
 poly_count = 0
@@ -1009,7 +1018,7 @@ df2a_l1.forget
 
 df_2a.forget
 
-df_2b = comp.drc(width <= 100.um).polygons(0.001).not_inside(mos_cap_mk)
+df_2b = comp.width(100.um).polygons(0.001).not_inside(mos_cap_mk)
 # Rule DF.2b_3.3V: Max. COMP width for all cases except those used for capacitors, marked by ‘MOS_CAP_MK’ layer.
 logger.info("Executing rule DF.2b_3.3V")
 df2b_l1 = comp.not_inside(mos_cap_mk).not_interacting(df_2b).not_interacting(v5_xtor).not_interacting(dualgate)
@@ -2280,27 +2289,36 @@ contact_mask.forget
 
 selected_co1.forget
 
+contact_logic = contact.outside(sramcore)
+
 # Rule CO.3: Poly2 overlap of contact. is 0.07µm
 logger.info("Executing rule CO.3")
-co3_l1 = poly2.enclosing(contact.outside(sramcore), 0.07.um, euclidian).polygons(0.001)
-co3_l2 = contact.outside(sramcore).not_outside(poly2).not(poly2)
+co3_l1 = poly2.enclosing(contact_logic, 0.07.um, euclidian).polygons(0.001)
+co3_l2 = contact_logic.not_outside(poly2).not(poly2)
 co3_l  = co3_l1.or(co3_l2)
 co3_l.output("CO.3", "CO.3 : Poly2 overlap of contact. : 0.07µm")
 co3_l1.forget
 co3_l2.forget
 co3_l.forget
 
+comp_not_mvsd = comp.not(mvsd).not(mvpsd)
+
 # Rule CO.4: COMP overlap of contact. is 0.07µm
 logger.info("Executing rule CO.4")
-co4_l1 = comp.not(mvsd).not(mvpsd).enclosing(contact.outside(sramcore), 0.07.um, euclidian).polygons(0.001)
-co4_l2 = contact.outside(sramcore).not_outside(comp.not(mvsd).not(mvpsd)).not(comp.not(mvsd).not(mvpsd))
+co4_l1 = comp_not_mvsd.enclosing(contact_logic, 0.07.um, euclidian).polygons(0.001)
+co4_l2 = contact_logic.not_outside(comp_not_mvsd).not(comp_not_mvsd)
 co4_l  = co4_l1.or(co4_l2)
 co4_l.output("CO.4", "CO.4 : COMP overlap of contact. : 0.07µm")
 co4_l1.forget
 co4_l2.forget
 co4_l.forget
 
-co_5a_ncomp_butted = ncomp.not(pplus).interacting(pcomp.not(nplus)).not_overlapping(pcomp.not(nplus))
+comp_not_mvsd.forget
+
+ncomp_not_pplus = ncomp.not(pplus)
+pcomp_not_nplus = pcomp.not(nplus)
+
+co_5a_ncomp_butted = ncomp_not_pplus.interacting(pcomp_not_nplus).not_overlapping(pcomp_not_nplus)
 # Rule CO.5a: Nplus overlap of contact on COMP (Only for contacts to butted Nplus and Pplus COMP areas). is 0.1µm
 logger.info("Executing rule CO.5a")
 co5a_l1 = co_5a_ncomp_butted.enclosing(contact, 0.1.um, euclidian).polygons(0.001)
@@ -2313,7 +2331,7 @@ co5a_l.forget
 
 co_5a_ncomp_butted.forget
 
-co_5b_pcomp_butted = pcomp.not(nplus).interacting(ncomp.not(pplus)).not_overlapping(ncomp.not(pplus))
+co_5b_pcomp_butted = pcomp_not_nplus.interacting(ncomp_not_pplus).not_overlapping(ncomp_not_pplus)
 # Rule CO.5b: Pplus overlap of contact on COMP (Only for contacts to butted Nplus and Pplus COMP areas). is 0.1µm
 logger.info("Executing rule CO.5b")
 co5b_l1 = co_5b_pcomp_butted.enclosing(contact, 0.1.um, euclidian).polygons(0.001)
@@ -2326,13 +2344,16 @@ co5b_l.forget
 
 co_5b_pcomp_butted.forget
 
+ncomp_not_pplus.forget
+pcomp_not_nplus.forget
+
 # Rule CO.6: Metal1 overlap of contact.
 logger.info("Executing rule CO.6")
-co6_l1 = metal1.enclosing(contact, 0.005.um, euclidian).polygons(0.001).or(contact.not_inside(metal1).not(metal1))
+co6_l1 = contact.enclosed(metal1, 0.005.um, euclidian).polygons(0.001) + contact.not(metal1)
 co6_l1.output("CO.6", "CO.6 : Metal1 overlap of contact.")
 co6_l1.forget
 
-cop6a_cond = metal1.drc( width <= 0.34.um).with_length(0.24.um,nil,both)
+cop6a_cond = metal1.width(0.34.um + 1.dbu).with_length(0.24.um, nil, both)
 cop6a_eol = metal1.edges.with_length(nil, 0.34.um).interacting(cop6a_cond.first_edges).interacting(cop6a_cond.second_edges).not(cop6a_cond.first_edges).not(cop6a_cond.second_edges)
 # Rule CO.6a: (i) Metal1 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule CO.6a")
@@ -2575,7 +2596,7 @@ v13a_l1.forget
 
 # rule V1.3b is not a DRC check
 
-v1p3c_cond = metal1.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v1p3c_cond = metal1.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v1p3c_eol = metal1.edges.with_length(nil, 0.34.um).interacting(v1p3c_cond.first_edges).interacting(v1p3c_cond.second_edges).not(v1p3c_cond.first_edges).not(v1p3c_cond.second_edges)
 # Rule V1.3c: metal-1 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V1.3c")
@@ -2610,7 +2631,7 @@ v14a_l1 = metal2.enclosing(via1, 0.01.um, euclidian).polygons(0.001).or(via1.not
 v14a_l1.output("V1.4a", "V1.4a : metal-2 overlap of via1.")
 v14a_l1.forget
 
-v1p4b_cond = metal2.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v1p4b_cond = metal2.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v1p4b_eol = metal2.edges.with_length(nil, 0.34.um).interacting(v1p4b_cond.first_edges).interacting(v1p4b_cond.second_edges).not(v1p4b_cond.first_edges).not(v1p4b_cond.second_edges)
 # Rule V1.4b: metal-2 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V1.4b")
@@ -2680,7 +2701,7 @@ v23b_l1 = metal2.enclosing(via2, 0.01.um, euclidian).polygons(0.001).or(via2.not
 v23b_l1.output("V2.3b", "V2.3b : metal2  overlap of via2.")
 v23b_l1.forget
 
-v2p3c_cond = metal2.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v2p3c_cond = metal2.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v2p3c_eol = metal2.edges.with_length(nil, 0.34.um).interacting(v2p3c_cond.first_edges).interacting(v2p3c_cond.second_edges).not(v2p3c_cond.first_edges).not(v2p3c_cond.second_edges)
 # Rule V2.3c: metal2 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V2.3c")
@@ -2715,7 +2736,7 @@ v24a_l1 = metal3.enclosing(via2, 0.01.um, euclidian).polygons(0.001).or(via2.not
 v24a_l1.output("V2.4a", "V2.4a : metal3 overlap of via2.")
 v24a_l1.forget
 
-v2p4b_cond = metal3.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v2p4b_cond = metal3.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v2p4b_eol = metal3.edges.with_length(nil, 0.34.um).interacting(v2p4b_cond.first_edges).interacting(v2p4b_cond.second_edges).not(v2p4b_cond.first_edges).not(v2p4b_cond.second_edges)
 # Rule V2.4b: metal3 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V2.4b")
@@ -2785,7 +2806,7 @@ v33b_l1 = metal3.enclosing(via3, 0.01.um, euclidian).polygons(0.001).or(via3.not
 v33b_l1.output("V3.3b", "V3.3b : metal3  overlap of via3.")
 v33b_l1.forget
 
-v3p3c_cond = metal3.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v3p3c_cond = metal3.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v3p3c_eol = metal3.edges.with_length(nil, 0.34.um).interacting(v3p3c_cond.first_edges).interacting(v3p3c_cond.second_edges).not(v3p3c_cond.first_edges).not(v3p3c_cond.second_edges)
 # Rule V3.3c: metal3 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V3.3c")
@@ -2820,7 +2841,7 @@ v34a_l1 = metal4.enclosing(via3, 0.01.um, euclidian).polygons(0.001).or(via3.not
 v34a_l1.output("V3.4a", "V3.4a : metal4 overlap of via3.")
 v34a_l1.forget
 
-v3p4b_cond = metal4.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v3p4b_cond = metal4.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v3p4b_eol = metal4.edges.with_length(nil, 0.34.um).interacting(v3p4b_cond.first_edges).interacting(v3p4b_cond.second_edges).not(v3p4b_cond.first_edges).not(v3p4b_cond.second_edges)
 # Rule V3.4b: metal4 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V3.4b")
@@ -2890,7 +2911,7 @@ v43b_l1 = metal4.enclosing(via4, 0.01.um, euclidian).polygons(0.001).or(via4.not
 v43b_l1.output("V4.3b", "V4.3b : metal4  overlap of via4.")
 v43b_l1.forget
 
-v4p3c_cond = metal4.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v4p3c_cond = metal4.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v4p3c_eol = metal4.edges.with_length(nil, 0.34.um).interacting(v4p3c_cond.first_edges).interacting(v4p3c_cond.second_edges).not(v4p3c_cond.first_edges).not(v4p3c_cond.second_edges)
 # Rule V4.3c: metal4 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V4.3c")
@@ -2925,7 +2946,7 @@ v44a_l1 = metal5.enclosing(via4, 0.01.um, euclidian).polygons(0.001).or(via4.not
 v44a_l1.output("V4.4a", "V4.4a : metal5 overlap of via4.")
 v44a_l1.forget
 
-v4p4b_cond = metal5.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v4p4b_cond = metal5.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v4p4b_eol = metal5.edges.with_length(nil, 0.34.um).interacting(v4p4b_cond.first_edges).interacting(v4p4b_cond.second_edges).not(v4p4b_cond.first_edges).not(v4p4b_cond.second_edges)
 # Rule V4.4b: metal5 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V4.4b")
@@ -2995,7 +3016,7 @@ v53b_l1 = metal5.enclosing(via5, 0.01.um, euclidian).polygons(0.001).or(via5.not
 v53b_l1.output("V5.3b", "V5.3b : metal5  overlap of via5.")
 v53b_l1.forget
 
-v5p3c_cond = metal5.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v5p3c_cond = metal5.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v5p3c_eol = metal5.edges.with_length(nil, 0.34.um).interacting(v5p3c_cond.first_edges).interacting(v5p3c_cond.second_edges).not(v5p3c_cond.first_edges).not(v5p3c_cond.second_edges)
 # Rule V5.3c: metal5 (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V5.3c")
@@ -3030,7 +3051,7 @@ v54a_l1 = metaltop.enclosing(via5, 0.01.um, euclidian).polygons(0.001).or(via5.n
 v54a_l1.output("V5.4a", "V5.4a : metaltop overlap of via5.")
 v54a_l1.forget
 
-v5p4b_cond = metaltop.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+v5p4b_cond = metaltop.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 v5p4b_eol = metaltop.edges.with_length(nil, 0.34.um).interacting(v5p4b_cond.first_edges).interacting(v5p4b_cond.second_edges).not(v5p4b_cond.first_edges).not(v5p4b_cond.second_edges)
 # Rule V5.4b: metaltop (< 0.34um) end-of-line overlap. is 0.06µm
 logger.info("Executing rule V5.4b")
@@ -3158,7 +3179,7 @@ mt305_l1 = top_metal.enclosing(top_via, 0.12.um, euclidian).polygons(0.001).or(t
 mt305_l1.output("MT30.5", "MT30.5 : Minimum thick MetalTop enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].")
 mt305_l1.forget
 
-mt30p6_cond = top_metal.drc( width < 2.5.um)
+mt30p6_cond = top_metal.width(2.5.um)
 mt30p6_eol = top_metal.edges.with_length(nil, 2.5.um).interacting(mt30p6_cond.first_edges).interacting(mt30p6_cond.second_edges).not(mt30p6_cond.first_edges).not(mt30p6_cond.second_edges)
 # Rule MT30.6: Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
 logger.info("Executing rule MT30.6")
@@ -4114,19 +4135,19 @@ ef17_l1.forget
 
 # Rule EF.18: PLFUSE must sit on field oxide (NOT COMP), no cross with any COMP, Nplus, Pplus, ESD, SAB, Resistor, Metal1, Metal2.
 logger.info("Executing rule EF.18")
-ef18_l1 = plfuse.not_outside(comp.or(nplus).or(esd).or(sab).or(resistor).or(metal1).or(metal2))
+ef18_l1 = plfuse.not(plfuse.outside(comp).outside(nplus).outside(esd).outside(sab).outside(resistor).outside(metal1).outside(metal2))
 ef18_l1.output("EF.18", "EF.18 : PLFUSE must sit on field oxide (NOT COMP), no cross with any COMP, Nplus, Pplus, ESD, SAB, Resistor, Metal1, Metal2.")
 ef18_l1.forget
 
 # Rule EF.19: Min. PLFUSE space to Metal1, Metal2.
 logger.info("Executing rule EF.19")
-ef19_l1 = plfuse.not_outside(metal1.or(metal2))
+ef19_l1 = plfuse.not(plfuse.outside(metal1).outside(metal2))
 ef19_l1.output("EF.19", "EF.19 : Min. PLFUSE space to Metal1, Metal2.")
 ef19_l1.forget
 
 # Rule EF.20: Min. PLFUSE space to COMP, Nplus, Pplus, Resistor, ESD, SAB. is 2.73µm
 logger.info("Executing rule EF.20")
-ef20_l1  = plfuse.separation(comp.or(nplus).or(esd).or(sab).or(resistor), 2.73.um, euclidian).polygons(0.001)
+ef20_l1  = plfuse.separation(comp + nplus + esd + sab + resistor, 2.73.um, euclidian).polygons(0.001)
 ef20_l1.output("EF.20", "EF.20 : Min. PLFUSE space to COMP, Nplus, Pplus, Resistor, ESD, SAB. : 2.73µm")
 ef20_l1.forget
 
@@ -4195,35 +4216,41 @@ mdn2b_l1.forget
 
 end #CONNECTIVITY_RULES
 
-gate_mdn = poly2.and(comp).inside(ldmos_xtor).inside(dualgate)
+poly_mdn = poly2.and(ncomp).inside(ldmos_xtor).inside(dualgate)
+ldnmos = poly_mdn.not(mvsd)
+ldnmos_edges = ldnmos.edges
+
 # Rule MDN.3a: Min transistor channel length. is 0.6µm
 logger.info("Executing rule MDN.3a")
-mdn3a_l1 = gate_mdn.enclosing(mvsd, 0.6.um, euclidian).polygons(0.001)
+mdn3a_l1 = poly_mdn.enclosing(mvsd, 0.6.um, euclidian).polygons(0.001)
 mdn3a_l1.output("MDN.3a", "MDN.3a : Min transistor channel length. : 0.6µm")
 mdn3a_l1.forget
 
-mvsd_mdn = mvsd.edges.and(ncomp).and(poly2)
 # Rule MDN.3b: Max transistor channel length.
 logger.info("Executing rule MDN.3b")
-mdn3b_l1 = poly2.edges.and(ncomp).or(mvsd_mdn).and(ldmos_xtor).and(dualgate).not(ngate.not(mvsd).edges.interacting(poly2.edges.and(ncomp).or(mvsd_mdn)).width(20.001.um).edges)
+mdn3b_l1 = ldnmos_edges.inside_part(ncomp).not(ldnmos.width(20.um + 1.dbu, projection).edges)
 mdn3b_l1.output("MDN.3b", "MDN.3b : Max transistor channel length.")
 mdn3b_l1.forget
 
-mvsd_mdn.forget
+ldnmos_gateends = ldnmos_edges.outside_part(ncomp)
 
 # Rule MDN.4a: Min transistor channel width. is 4µm
 logger.info("Executing rule MDN.4a")
-mdn4a_l1  = gate_mdn.edges.not(mvsd).interacting(mvsd).width(4.um, euclidian).polygons(0.001)
+mdn4a_l1 = ldnmos_gateends.and(ldnmos.width(4.um, projection).edges).extended(0, 0, 0.001, 0.001)
 mdn4a_l1.output("MDN.4a", "MDN.4a : Min transistor channel width. : 4µm")
 mdn4a_l1.forget
 
 # Rule MDN.4b: Max transistor channel width.
 logger.info("Executing rule MDN.4b")
-mdn4b_l1 = gate_mdn.not(mvsd).interacting(nplus).not_interacting(gate_mdn.edges.not(mvsd).not(poly2.edges).width(50.001.um).polygons)
+mdn4b_l1 = ldnmos_gateends.not(ldnmos.width(50.um + 1.dbu, projection).edges).extended(0, 0, 0.001, 0.001)
 mdn4b_l1.output("MDN.4b", "MDN.4b : Max transistor channel width.")
 mdn4b_l1.forget
 
-gate_mdn.forget
+ldnmos_gateends.forget
+
+ldnmos_edges.forget
+ldnmos.forget
+poly_mdn.forget
 
 pcomp_mdn5a = pcomp.not_interacting(ncomp).inside(ldmos_xtor).inside(dualgate)
 # Rule MDN.5ai: Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap non-butted). PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed.
@@ -4503,28 +4530,34 @@ mdn_17_gr_in_ldmos_mk.forget
 #-------------------10V LDPMOS-------------------
 #================================================
 
-mdp_source = (pcomp).interacting(poly2.and(dualgate).and(ldmos_xtor).and(mvpsd)).not(poly2)
-ldpmos     = poly2.and(pcomp).and(dualgate).not(mvpsd).inside(ldmos_xtor)
+poly_mdp = poly2.and(pcomp).inside(ldmos_xtor).inside(dualgate)
+mdp_source = pcomp.interacting(poly_mdp.and(mvpsd)).not(poly2)
+ldpmos = poly_mdp.not(mvpsd)
+ldpmos_edges = ldpmos.edges
+
 # Rule MDP.1: Minimum transistor channel length. is 0.6µm
 logger.info("Executing rule MDP.1")
-mdp1_l1 = poly2.and(comp).inside(ldmos_xtor).inside(dualgate).enclosing(mvpsd, 0.6.um, euclidian).polygons(0.001)
+mdp1_l1 = poly_mdp.enclosing(mvpsd, 0.6.um, euclidian).polygons(0.001)
 mdp1_l1.output("MDP.1", "MDP.1 : Minimum transistor channel length. : 0.6µm")
 mdp1_l1.forget
 
-mvpsd_mdp = mvpsd.edges.and(pcomp).and(poly2)
 # Rule MDP.1a: Max transistor channel length.
 logger.info("Executing rule MDP.1a")
-mdp1a_l1 = poly2.edges.and(pcomp).or(mvpsd_mdp).and(ldmos_xtor).and(dualgate).not(pgate.not(mvpsd).edges.interacting(poly2.edges.and(pcomp).or(mvpsd_mdp)).width(20.001.um).edges)
+mdp1a_l1 = ldpmos_edges.inside_part(pcomp).not(ldpmos.width(20.um + 1.dbu, projection).edges).extended(0, 0, 0.001, 0.001)
 mdp1a_l1.output("MDP.1a", "MDP.1a : Max transistor channel length.")
 mdp1a_l1.forget
 
-mvpsd_mdp.forget
+ldpmos_gateends = ldpmos_edges.outside_part(pcomp)
 
 # Rule MDP.2: Minimum transistor channel width. is 4µm
 logger.info("Executing rule MDP.2")
-mdp2_l1  = poly2.and(comp).inside(ldmos_xtor).inside(dualgate).edges.not(mvpsd).interacting(mvpsd).width(4.um, euclidian).polygons(0.001)
+mdp2_l1 = ldpmos_gateends.and(ldpmos.width(4.um, projection).edges).extended(0, 0, 0.001, 0.001)
 mdp2_l1.output("MDP.2", "MDP.2 : Minimum transistor channel width. : 4µm")
 mdp2_l1.forget
+
+ldpmos_gateends.forget
+
+ldpmos_edges.forget
 
 mdp3_1 = ldpmos.or(mvpsd).or(mdp_source).not_interacting(ncomp.holes).inside(dualgate).inside(ldmos_xtor)
 mdp3_2 = ncomp.holes.not_interacting(ncomp.interacting(mdp_source)).not_interacting(mvpsd,1,1).inside(dualgate).inside(ldmos_xtor)
@@ -4820,6 +4853,10 @@ logger.info("Executing rule MDP.17c")
 mdp17c_l1 = dnwell.with_holes.not_covering(ncomp)
 mdp17c_l1.output("MDP.17c", "MDP.17c : DNWELL guard ring shall have NCOMP tab to be connected to highest potential")
 mdp17c_l1.forget
+
+mdp_source.forget
+ldpmos.forget
+poly_mdp.forget
 
 #================================================
 #--------------------YMTP_MK---------------------
