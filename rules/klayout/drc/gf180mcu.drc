@@ -1018,7 +1018,7 @@ df2a_l1.forget
 
 df_2a.forget
 
-df_2b = comp.width(100.um).polygons(0.001).not_inside(mos_cap_mk)
+df_2b = comp.width(100.um + 1.dbu).polygons(0.001).not_inside(mos_cap_mk)
 # Rule DF.2b_3.3V: Max. COMP width for all cases except those used for capacitors, marked by ‘MOS_CAP_MK’ layer.
 logger.info("Executing rule DF.2b_3.3V")
 df2b_l1 = comp.not_inside(mos_cap_mk).not_interacting(df_2b).not_interacting(v5_xtor).not_interacting(dualgate)
