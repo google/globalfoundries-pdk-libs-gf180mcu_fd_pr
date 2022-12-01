@@ -1,0 +1,43 @@
+################################################################################################
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################################
+
+#================================================
+#--------------DUMMY EXCLUDE LAYERS--------------
+#================================================
+
+# rule DE.1 is not a DRC check
+
+# Rule DE.2: Minimum NDMY or PMNDMY size (x or y dimension in um). is 0.8µm
+logger.info("Executing rule DE.2")
+de2_l1  = ndmy.or(pmndmy).width(0.8.um, euclidian).polygons(0.001)
+de2_l1.output("DE.2", "DE.2 : Minimum NDMY or PMNDMY size (x or y dimension in um). : 0.8µm")
+de2_l1.forget
+
+de3_ndmy_area = ndmy.with_area(15000.um, nil)
+# Rule DE.3: If size greater than 15000 um2 then two sides should not be greater than (um).
+logger.info("Executing rule DE.3")
+de3_l1 = de3_ndmy_area.edges.with_length(80.um, nil).not_interacting(de3_ndmy_area.edges.with_length(nil, 80.um))
+de3_l1.output("DE.3", "DE.3 : If size greater than 15000 um2 then two sides should not be greater than (um).")
+de3_l1.forget
+
+de3_ndmy_area.forget
+
+# Rule DE.4: Minimum NDMY to NDMY space (Merge if space is less). is 20µm
+logger.info("Executing rule DE.4")
+de4_l1  = ndmy.space(20.um, euclidian).polygons(0.001)
+de4_l1.output("DE.4", "DE.4 : Minimum NDMY to NDMY space (Merge if space is less). : 20µm")
+de4_l1.forget
+

@@ -1,0 +1,123 @@
+################################################################################################
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################################
+
+if BEOL
+    #================================================
+    #----------------------VIA1----------------------
+    #================================================
+
+    # Rule V1.1: Min/max Via1 size . is 0.26µm
+    logger.info("Executing rule V1.1")
+    v11_l1 = via1.edges.without_length(0.26.um).extended(0, 0, 0.001, 0.001)
+    v11_l1.output("V1.1", "V1.1 : Min/max Via1 size . : 0.26µm")
+    v11_l1.forget
+
+    # Rule V1.2a: min. via1 spacing is 0.26µm
+    logger.info("Executing rule V1.2a")
+    v12a_l1  = via1.space(0.26.um, euclidian).polygons(0.001)
+    v12a_l1.output("V1.2a", "V1.2a : min. via1 spacing : 0.26µm")
+    v12a_l1.forget
+
+    merged_via1 = via1.sized(0.18.um).sized(-0.18.um).with_bbox_min(1.82.um , nil).extents.inside(metal1)
+    via1_mask = merged_via1.size(1).not(via1).with_holes(16, nil)
+    selected_via1 = via1.interacting(via1_mask)
+    # Rule V1.2b: Via1 Space in 4x4 or larger via1 array is 0.36µm
+    logger.info("Executing rule V1.2b")
+    v12b_l1  = selected_via1.space(0.36.um, euclidian).polygons(0.001)
+    v12b_l1.output("V1.2b", "V1.2b : Via1 Space in 4x4 or larger via1 array : 0.36µm")
+    v12b_l1.forget
+
+    merged_via1.forget
+
+    via1_mask.forget
+
+    selected_via1.forget
+
+    # Rule V1.3a: metal-1  overlap of via1.
+    logger.info("Executing rule V1.3a")
+    v13a_l1 = via1.not_inside(metal1)
+    v13a_l1.output("V1.3a", "V1.3a : metal-1  overlap of via1.")
+    v13a_l1.forget
+
+    # rule V1.3b is not a DRC check
+
+    v1p3c_cond = metal1.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+    v1p3c_eol = metal1.edges.with_length(nil, 0.34.um).interacting(v1p3c_cond.first_edges).interacting(v1p3c_cond.second_edges).not(v1p3c_cond.first_edges).not(v1p3c_cond.second_edges)
+    # Rule V1.3c: metal-1 (< 0.34um) end-of-line overlap. is 0.06µm
+    logger.info("Executing rule V1.3c")
+    v13c_l1 = v1p3c_eol.enclosing(via1.edges,0.06.um, projection).polygons(0.001)
+    v13c_l1.output("V1.3c", "V1.3c : metal-1 (< 0.34um) end-of-line overlap. : 0.06µm")
+    v13c_l1.forget
+
+    v1p3c_cond.forget
+
+    v1p3c_eol.forget
+
+    v1_3d_1 = via1.edges.interacting(via1.drc(enclosed(metal1, projection) < 0.04.um).edges.centers(0, 0.5))
+    v1_3d_2 = via1.edges.interacting(via1.drc(0.04.um <= enclosed(metal1, projection) < 0.06.um).centers(0, 0.5))
+    v1_3d_3 = v1_3d_1.extended(0, 0, 0, 0.001, joined).corners(90)
+    # Rule V1.3d: If metal-1 overlap via1 by < 0.04um on one side, adjacent metal-1 edges overlap. is 0.06µm
+    logger.info("Executing rule V1.3d")
+    v13d_l1 = v1_3d_2.not_in(v1_3d_1).interacting(v1_3d_1).or(v1_3d_1.interacting(v1_3d_3)).enclosed(metal1.edges, 0.06.um).polygons(0.001)
+    v13d_l1.output("V1.3d", "V1.3d : If metal-1 overlap via1 by < 0.04um on one side, adjacent metal-1 edges overlap. : 0.06µm")
+    v13d_l1.forget
+
+    v1_3d_1.forget
+
+    v1_3d_2.forget
+
+    v1_3d_3.forget
+
+    # rule V1.3e is not a DRC check
+
+    # Rule V1.4a: metal-2 overlap of via1.
+    logger.info("Executing rule V1.4a")
+    v14a_l1 = metal2.enclosing(via1, 0.01.um, euclidian).polygons(0.001).or(via1.not_inside(metal2).not(metal2))
+    v14a_l1.output("V1.4a", "V1.4a : metal-2 overlap of via1.")
+    v14a_l1.forget
+
+    v1p4b_cond = metal2.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+    v1p4b_eol = metal2.edges.with_length(nil, 0.34.um).interacting(v1p4b_cond.first_edges).interacting(v1p4b_cond.second_edges).not(v1p4b_cond.first_edges).not(v1p4b_cond.second_edges)
+    # Rule V1.4b: metal-2 (< 0.34um) end-of-line overlap. is 0.06µm
+    logger.info("Executing rule V1.4b")
+    v14b_l1 = v1p4b_eol.enclosing(via1.edges,0.06.um, projection).polygons(0.001)
+    v14b_l1.output("V1.4b", "V1.4b : metal-2 (< 0.34um) end-of-line overlap. : 0.06µm")
+    v14b_l1.forget
+
+    v1p4b_cond.forget
+
+    v1p4b_eol.forget
+
+    v1_4c_1 = via1.edges.interacting(via1.drc(enclosed(metal2, projection) < 0.04.um).edges.centers(0, 0.5))
+    v1_4c_2 = via1.edges.interacting(via1.drc(0.04.um <= enclosed(metal2, projection) < 0.06.um).centers(0, 0.5))
+    v1_4c_3 = v1_4c_1.extended(0, 0, 0, 0.001, joined).corners(90)
+    # Rule V1.4c: If metal-2 overlap via1 by < 0.04um on one side, adjacent metal-2 edges overlap. is 0.06µm
+    logger.info("Executing rule V1.4c")
+    v14c_l1 = v1_4c_2.not_in(v1_4c_1).interacting(v1_4c_1).or(v1_4c_1.interacting(v1_4c_3)).enclosed(metal2.edges, 0.06.um).polygons(0.001)
+    v14c_l1.output("V1.4c", "V1.4c : If metal-2 overlap via1 by < 0.04um on one side, adjacent metal-2 edges overlap. : 0.06µm")
+    v14c_l1.forget
+
+    v1_4c_1.forget
+
+    v1_4c_2.forget
+
+    v1_4c_3.forget
+
+    # rule V1.4d is not a DRC check
+
+    # rule V1.5 is not a DRC check
+
+end #BEOL
