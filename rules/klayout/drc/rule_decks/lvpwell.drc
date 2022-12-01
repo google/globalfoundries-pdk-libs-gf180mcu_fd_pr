@@ -1,0 +1,129 @@
+################################################################################################
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################################
+
+if FEOL
+    #================================================
+    #--------------------LVPWELL---------------------
+    #================================================
+
+    # Rule LPW.1_3.3V: Min. LVPWELL Width. is 0.6µm
+    logger.info("Executing rule LPW.1_3.3V")
+    lpw1_l1  = lvpwell.width(0.6.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
+    lpw1_l1.output("LPW.1_3.3V", "LPW.1_3.3V : Min. LVPWELL Width. : 0.6µm")
+    lpw1_l1.forget
+
+    # Rule LPW.1_5V: Min. LVPWELL Width. is 0.74µm
+    logger.info("Executing rule LPW.1_5V")
+    lpw1_l1  = lvpwell.width(0.74.um, euclidian).polygons(0.001).overlapping(dualgate)
+    lpw1_l1.output("LPW.1_5V", "LPW.1_5V : Min. LVPWELL Width. : 0.74µm")
+    lpw1_l1.forget
+
+    if CONNECTIVITY_RULES
+    logger.info("CONNECTIVITY_RULES section")
+
+    connected_lvpwell_3p3v, unconnected_lvpwell_3p3v = conn_space(lvpwell, 0.86, 1.4, euclidian)
+
+    connected_lvpwell_5p0v, unconnected_lvpwell_5p0v = conn_space(lvpwell, 0.86, 1.7, euclidian)
+
+    # Rule LPW.2a_3.3V: Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. is 1.4µm
+    logger.info("Executing rule LPW.2a_3.3V")
+    lpw2a_l1  = unconnected_lvpwell_3p3v.not_interacting(v5_xtor).not_interacting(dualgate)
+    lpw2a_l1.output("LPW.2a_3.3V", "LPW.2a_3.3V : Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. : 1.4µm")
+    lpw2a_l1.forget
+
+    # Rule LPW.2a_5V: Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. is 1.7µm
+    logger.info("Executing rule LPW.2a_5V")
+    lpw2a_l1  = unconnected_lvpwell_5p0v.overlapping(dualgate)
+    lpw2a_l1.output("LPW.2a_5V", "LPW.2a_5V : Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. : 1.7µm")
+    lpw2a_l1.forget
+
+    # Rule LPW.2b_3.3V: Min. LVPWELL to LVPWELL Space [Equi potential]. is 0.86µm
+    logger.info("Executing rule LPW.2b_3.3V")
+    lpw2b_l1  = connected_lvpwell_3p3v.not_interacting(v5_xtor).not_interacting(dualgate)
+    lpw2b_l1.output("LPW.2b_3.3V", "LPW.2b_3.3V : Min. LVPWELL to LVPWELL Space [Equi potential]. : 0.86µm")
+    lpw2b_l1.forget
+
+    # Rule LPW.2b_5V: Min. LVPWELL to LVPWELL Space [Equi potential]. is 0.86µm
+    logger.info("Executing rule LPW.2b_5V")
+    lpw2b_l1  = connected_lvpwell_5p0v.overlapping(dualgate)
+    lpw2b_l1.output("LPW.2b_5V", "LPW.2b_5V : Min. LVPWELL to LVPWELL Space [Equi potential]. : 0.86µm")
+    lpw2b_l1.forget
+
+    else
+    logger.info("CONNECTIVITY_RULES disabled section")
+
+    # Rule LPW.2a_3.3V_: Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. is 1.4µm
+    logger.info("Executing rule LPW.2a_3.3V_")
+    lpw2a_l1  = lvpwell.isolated(1.4.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
+    lpw2a_l1.output("LPW.2a_3.3V_", "LPW.2a_3.3V_ : Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. : 1.4µm")
+    lpw2a_l1.forget
+
+    # Rule LPW.2a_5V_: Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. is 1.7µm
+    logger.info("Executing rule LPW.2a_5V_")
+    lpw2a_l1  = lvpwell.isolated(1.7.um, euclidian).polygons(0.001).overlapping(dualgate)
+    lpw2a_l1.output("LPW.2a_5V_", "LPW.2a_5V_ : Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. : 1.7µm")
+    lpw2a_l1.forget
+
+    end #CONNECTIVITY_RULES
+
+    # Rule LPW.3_3.3V: Min. DNWELL enclose LVPWELL. is 2.5µm
+    logger.info("Executing rule LPW.3_3.3V")
+    lpw3_l1 = dnwell.enclosing(lvpwell, 2.5.um, euclidian).polygons(0.001)
+    lpw3_l2 = lvpwell.not_outside(dnwell).not(dnwell)
+    lpw3_l  = lpw3_l1.or(lpw3_l2).not_interacting(v5_xtor).not_interacting(dualgate)
+    lpw3_l.output("LPW.3_3.3V", "LPW.3_3.3V : Min. DNWELL enclose LVPWELL. : 2.5µm")
+    lpw3_l1.forget
+    lpw3_l2.forget
+    lpw3_l.forget
+
+    # Rule LPW.3_5V: Min. DNWELL enclose LVPWELL. is 2.5µm
+    logger.info("Executing rule LPW.3_5V")
+    lpw3_l1 = dnwell.enclosing(lvpwell, 2.5.um, euclidian).polygons(0.001)
+    lpw3_l2 = lvpwell.not_outside(dnwell).not(dnwell)
+    lpw3_l  = lpw3_l1.or(lpw3_l2).overlapping(dualgate)
+    lpw3_l.output("LPW.3_5V", "LPW.3_5V : Min. DNWELL enclose LVPWELL. : 2.5µm")
+    lpw3_l1.forget
+    lpw3_l2.forget
+    lpw3_l.forget
+
+    # rule LPW.4_3.3V is not a DRC check
+
+    # rule LPW.4_5V is not a DRC check
+
+    # Rule LPW.5_3.3V: LVPWELL resistors must be enclosed by DNWELL.
+    logger.info("Executing rule LPW.5_3.3V")
+    lpw5_l1 = lvpwell.inside(res_mk).not_inside(dnwell).not_interacting(v5_xtor).not_interacting(dualgate)
+    lpw5_l1.output("LPW.5_3.3V", "LPW.5_3.3V : LVPWELL resistors must be enclosed by DNWELL.")
+    lpw5_l1.forget
+
+    # Rule LPW.5_5V: LVPWELL resistors must be enclosed by DNWELL.
+    logger.info("Executing rule LPW.5_5V")
+    lpw5_l1 = lvpwell.inside(res_mk).not_inside(dnwell).overlapping(dualgate)
+    lpw5_l1.output("LPW.5_5V", "LPW.5_5V : LVPWELL resistors must be enclosed by DNWELL.")
+    lpw5_l1.forget
+
+    # Rule LPW.11: Min. (LVPWELL outside DNWELL) space to DNWELL. is 1.5µm
+    logger.info("Executing rule LPW.11")
+    lpw11_l1  = lvpwell.outside(dnwell).separation(dnwell, 1.5.um, euclidian).polygons(0.001)
+    lpw11_l1.output("LPW.11", "LPW.11 : Min. (LVPWELL outside DNWELL) space to DNWELL. : 1.5µm")
+    lpw11_l1.forget
+
+    # Rule LPW.12: LVPWELL cannot overlap with Nwell.
+    logger.info("Executing rule LPW.12")
+    lpw12_l1 = lvpwell.not_outside(nwell)
+    lpw12_l1.output("LPW.12", "LPW.12 : LVPWELL cannot overlap with Nwell.")
+    lpw12_l1.forget
+end #FEOL

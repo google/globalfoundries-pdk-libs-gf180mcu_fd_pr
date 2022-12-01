@@ -17,16 +17,18 @@ Run GlobalFoundries 180nm MCU DRC.
 
 Usage:
     run_drc.py (--help| -h)
-    run_drc.py (--path=<file_path>) (--gf180mcu=<combined_options>) [-run_dir=<run_dir_path>] [--topcell=<topcell_name>] [--thr=<thr>] [--run_mode=<run_mode>] [--no_feol] [--no_beol] [--connectivity] [--density] [--density_only] [--antenna] [--antenna_only] [--no_offgrid]
+    run_drc.py (--path=<file_path>) (--variant=<combined_options>) [--table=<table_name>] [--mp=<num_cores>] [--run_dir=<run_dir_path>] [--topcell=<topcell_name>] [--thr=<thr>] [--run_mode=<run_mode>] [--no_feol] [--no_beol] [--connectivity] [--density] [--density_only] [--antenna] [--antenna_only] [--no_offgrid]
 
 Options:
     --help -h                           Print this help message.
     --path=<file_path>                  The input GDS file path.
-    --gf180mcu=<combined_options>       Select combined options of metal_top, mim_option, and metal_level. Allowed values (A, B, C).
-                                        gf180mcu=A: Select  metal_top=30K  mim_option=A  metal_level=3LM
-                                        gf180mcu=B: Select  metal_top=11K  mim_option=B  metal_level=4LM
-                                        gf180mcu=C: Select  metal_top=9K   mim_option=B  metal_level=5LM
+    --variant=<combined_options>        Select combined options of metal_top, mim_option, and metal_level. Allowed values (A, B, C).
+                                        variant=A: Select  metal_top=30K  mim_option=A  metal_level=3LM
+                                        variant=B: Select  metal_top=11K  mim_option=B  metal_level=4LM
+                                        variant=C: Select  metal_top=9K   mim_option=B  metal_level=5LM
     --topcell=<topcell_name>            Topcell name to use.
+    --table=<table_name>                Table name to use to run the rule deck.
+    --mp=<num_cores>                    Run the rule deck in parts in parallel to speed up the run.
     --run_dir=<run_dir_path>            Run directory to save all the results [default: pwd]
     --thr=<thr>                         The number of threads used in run.
     --run_mode=<run_mode>               Select klayout mode Allowed modes (flat , deep, tiling). [default: deep]
@@ -46,9 +48,10 @@ import xml.etree.ElementTree as ET
 import logging
 import subprocess
 import pya
+import glob
 from datetime import datetime
-
 from subprocess import check_call
+from jinja2 import Template
 
 
 def get_results(rule_deck, rules, lyrdb, type):
@@ -80,6 +83,47 @@ def get_results(rule_deck, rules, lyrdb, type):
         logging.info("Klayout GDS DRC Clean\n")
 
 
+def generate_drc_run_template(drc_dir : str, run_dir: str, run_tables_list: list =[]):
+    """
+    generate_drc_run_template will generate the template file to run drc in the run_dir path.
+
+    Parameters
+    ----------
+    drc_dir : str
+        Path string to the location where the DRC files would be found to get the list of the rule tables.
+    run_dir : str
+        Absolute path string to the run location where all the run output will be generated.
+    deck_name : str, optional
+        Name of the rule deck to use for generating the template, by default ""
+    run_tables_list : list, optional
+        list of target parts of the rule deck, if empty assume all of the rule tables found, by default []
+    
+    Returns
+    -------
+    str
+        Absolute path to the generated DRC file.
+    """
+    if len(run_tables_list) < 1:
+        all_tables = [os.path.basename(f) for f in glob.glob(os.path.join(drc_dir, "rule_decks", "*.drc")) if "antenna" not in f or "density" not in f]
+        deck_name = "main"
+    elif len(run_tables_list) == 1:
+        deck_name = run_tables_list[0]
+    else:
+        all_tables = ["{}.drc".format(t) for t in run_tables_list]
+        deck_name = "main"
+        
+    logging.info("## Generating template with for the following rule tables: {}".format(str(all_tables)))
+    template_path = os.path.join(drc_dir, "rule_deck", "main.drc.template")
+    gen_rule_deck_path = os.path.join(run_dir, "{}.drc".format(deck_name))
+
+    with open(template_path) as f:
+        tmpl = Template(f.read())
+
+        with open(gen_rule_deck_path, "w") as rdf:
+            rdf.write(tmpl.render(include_files_list=all_tables))
+    
+    return gen_rule_deck_path
+
 def get_top_cell_names(gds_path):
     """
     get_top_cell_names get the top cell names from the GDS file.
@@ -96,7 +140,7 @@ def get_top_cell_names(gds_path):
     """
     layout = pya.Layout()
     layout.read(gds_path)
-    top_cells = [t.name for t in layout.top_cells]
+    top_cells = [t.name for t in layout.top_cells()]
     
     return top_cells
 
@@ -161,23 +205,23 @@ def generate_klayout_switches(arguments, layout_path):
         logging.error("Allowed klayout modes are (flat , deep , tiling) only")
         exit()
 
-    if arguments["--gf180mcu"] == "A":
+    if arguments["--variant"] == "A":
         switches["metal_top"] = "30K"
         switches["mim_option"] = "A"
         switches["metal_level"] = "3LM"
         #switches = switches + f"-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM "
-    elif arguments["--gf180mcu"] == "B":
+    elif arguments["--variant"] == "B":
         switches["metal_top"] = "11K"
         switches["mim_option"] = "B"
         switches["metal_level"] = "4LM"
         #switches = switches + f"-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM "
-    elif arguments["--gf180mcu"] == "C":
+    elif arguments["--variant"] == "C":
         switches["metal_top"] = "9K"
         switches["mim_option"] = "B"
         switches["metal_level"] = "5LM"
         #switches = switches + f"-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM "
     else:
-        logging.error("gf180mcu switch allowed values are (A , B, C) only")
+        logging.error("variant switch allowed values are (A , B, C) only")
         exit()
 
     if arguments["--no_feol"]:
@@ -342,23 +386,34 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     ## Get run switches
     switches = generate_klayout_switches(arguments, layout_path)
 
+    list_of_drc_files = []
+
     ## Run Antenna if required.
     if arguments["--antenna"] or arguments["--antenna_only"]:
         drc_path = os.path.join(rule_deck_full_path, "rule_decks", "antenna.drc")
-        run_check(drc_path, "antenna", layout_path, drc_run_dir, switches)
+        list_of_drc_files.append(drc_path)
+
         if (arguments["--antenna_only"]):
+            run_check(drc_path, "antenna", layout_path, drc_run_dir, switches)
             logging.info("## Completed running Antenna checks only.")
             exit()
 
     ## Run Density if required.
     if arguments["--density"] or arguments["--density_only"]:
         drc_path = os.path.join(rule_deck_full_path, "rule_decks", "density.drc")
-        run_check(drc_path, "density", layout_path, drc_run_dir, switches)
+        list_of_drc_files.append(drc_path)
+
         if (arguments["--density_only"]):
+            run_check(drc_path, "density", layout_path, drc_run_dir, switches)
             logging.info("## Completed running density checks only.")
             exit()
 
-    ## Run Main DRC if required.
+    ## Generate run rule deck from template.
+    if not arguments["--table"]:
+        drc_file = generate_drc_run_template()
+    else:
+
+    ## Run Main DRC
     drc_path = os.path.join(rule_deck_full_path, "rule_decks", "main.drc")
     run_check(drc_path, "main", layout_path, drc_run_dir, switches)
 

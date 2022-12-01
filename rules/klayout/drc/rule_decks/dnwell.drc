@@ -1,0 +1,67 @@
+################################################################################################
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################################
+
+if FEOL
+    #================================================
+    #---------------------DNWELL---------------------
+    #================================================
+
+    # Rule DN.1: Min. DNWELL Width is 1.7µm
+    logger.info("Executing rule DN.1")
+    dn1_l1  = dnwell.width(1.7.um, euclidian).polygons(0.001)
+    dn1_l1.output("DN.1", "DN.1 : Min. DNWELL Width : 1.7µm")
+    dn1_l1.forget
+
+    if CONNECTIVITY_RULES
+    logger.info("CONNECTIVITY_RULES section")
+
+    connected_dnwell, unconnected_dnwell = conn_space(dnwell, 2.5, 5.42, euclidian)
+
+    # Rule DN.2a: Min. DNWELL Space (Equi-potential), Merge if the space is less than is 2.5µm
+    logger.info("Executing rule DN.2a")
+    dn2a_l1  = connected_dnwell
+    dn2a_l1.output("DN.2a", "DN.2a : Min. DNWELL Space (Equi-potential), Merge if the space is less than : 2.5µm")
+    dn2a_l1.forget
+
+    # Rule DN.2b: Min. DNWELL Space (Different potential) is 5.42µm
+    logger.info("Executing rule DN.2b")
+    dn2b_l1  = unconnected_dnwell
+    dn2b_l1.output("DN.2b", "DN.2b : Min. DNWELL Space (Different potential) : 5.42µm")
+    dn2b_l1.forget
+
+    else
+    logger.info("CONNECTIVITY_RULES disabled section")
+
+    # Rule DN.2b_: Min. DNWELL Space (Different potential) is 5.42µm
+    logger.info("Executing rule DN.2b_")
+    dn2b_l1  = dnwell.isolated(5.42.um, euclidian).polygons(0.001)
+    dn2b_l1.output("DN.2b_", "DN.2b_ : Min. DNWELL Space (Different potential) : 5.42µm")
+    dn2b_l1.forget
+
+    end #CONNECTIVITY_RULES
+
+    dn3_1 = dnwell.not_inside(pcomp.holes.not(pcomp).interacting(dnwell, 1..1).extents)
+    dn3_2 = dnwell.inside((pcomp.holes.not(pcomp).covering(nat.or(ncomp).or(nwell).not_interacting(dnwell))))
+    # Rule DN.3: Each DNWELL shall be directly surrounded by PCOMP guard ring tied to the P-substrate potential.
+    logger.info("Executing rule DN.3")
+    dn3_l1 = dn3_1.or(dn3_2)
+    dn3_l1.output("DN.3", "DN.3 : Each DNWELL shall be directly surrounded by PCOMP guard ring tied to the P-substrate potential.")
+    dn3_l1.forget
+
+    dn3_1.forget
+
+    dn3_2.forget
+end #FEOL
