@@ -17,7 +17,7 @@ Run GlobalFoundries 180nm MCU DRC.
 
 Usage:
     run_drc.py (--help| -h)
-    run_drc.py (--path=<file_path>) (--gf180mcu=<combined_options>) [--topcell=<topcell_name>] [--thr=<thr>] [--run_mode=<run_mode>] [--no_feol] [--no_beol] [--connectivity] [--density] [--density_only] [--antenna] [--antenna_only] [--no_offgrid]
+    run_drc.py (--path=<file_path>) (--gf180mcu=<combined_options>) [-run_dir=<run_dir_path>] [--topcell=<topcell_name>] [--thr=<thr>] [--run_mode=<run_mode>] [--no_feol] [--no_beol] [--connectivity] [--density] [--density_only] [--antenna] [--antenna_only] [--no_offgrid]
 
 Options:
     --help -h                           Print this help message.
@@ -27,8 +27,9 @@ Options:
                                         gf180mcu=B: Select  metal_top=11K  mim_option=B  metal_level=4LM
                                         gf180mcu=C: Select  metal_top=9K   mim_option=B  metal_level=5LM
     --topcell=<topcell_name>            Topcell name to use.
+    --run_dir=<run_dir_path>            Run directory to save all the results [default: pwd]
     --thr=<thr>                         The number of threads used in run.
-    --run_mode=<run_mode>               Select klayout mode Allowed modes (flat , deep, tiling). [default: flat]
+    --run_mode=<run_mode>               Select klayout mode Allowed modes (flat , deep, tiling). [default: deep]
     --no_feol                           Turn off FEOL rules from running.
     --no_beol                           Turn off BEOL rules from running.
     --connectivity                      Turn on connectivity rules.
@@ -45,6 +46,9 @@ import xml.etree.ElementTree as ET
 import logging
 import subprocess
 import pya
+from datetime import datetime
+
+from subprocess import check_call
 
 
 def get_results(rule_deck, rules, lyrdb, type):
@@ -127,41 +131,6 @@ def get_run_top_cell_name(arguments, layout_path):
     
     return topcell
 
-def clean_gds_from_many_top_cells(gds_path, topcell):
-    # klayout -b -r keep_single_top_cell.rb -rd infile=./layouts/caravel.gds.gz -rd topcell=chip_io -rd outfile=test.gds.gz
-
-    curr_path = os.path.dirname(os.path.abspath(__file__))
-
-    basename = os.path.basename(gds_path)
-    dirname = os.path.dirname(gds_path)
-    main_file_name = basename.split(".")[0]
-    output_file_path = os.path.join(
-        dirname, "{}_single_top.gds.gz".format(main_file_name)
-    )
-
-    proc = subprocess.Popen(
-        [
-            "klayout",
-            "-b",
-            "-r",
-            f"{curr_path}/utils/keep_single_top_cell.rb",
-            "-rd",
-            "infile={}".format(gds_path),
-            "-rd",
-            "topcell={}".format(topcell),
-            "-rd",
-            "outfile={}".format(output_file_path),
-        ],
-        stdout=subprocess.PIPE,
-    )
-
-    while True:
-        line = proc.stdout.readline()
-        if not line:
-            break
-        print(line.strip())
-    return output_file_path
-
 def generate_klayout_switches(arguments, layout_path):
     """
     parse_switches Function that parse all the args from input to prepare switches for DRC run.
@@ -175,59 +144,69 @@ def generate_klayout_switches(arguments, layout_path):
     
     Returns
     -------
-    string
-        string that represent all run switches passed to klayout.
+    dict
+        Dictionary that represent all run switches passed to klayout.
     """
-    switches = ""
+    switches = dict()
 
     # No. of threads
     thrCount = (
         os.cpu_count() * 2 if arguments["--thr"] == None else int(arguments["--thr"])
     )
+    switches["thr"] = str(int(thrCount))
 
     if arguments["--run_mode"] in ["flat", "deep", "tiling"]:
-        switches = switches + f'-rd run_mode={arguments["--run_mode"]} '
+        switches["run_mode"] = arguments["--run_mode"]
     else:
         logging.error("Allowed klayout modes are (flat , deep , tiling) only")
         exit()
 
     if arguments["--gf180mcu"] == "A":
-        switches = switches + f"-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM "
+        switches["metal_top"] = "30K"
+        switches["mim_option"] = "A"
+        switches["metal_level"] = "3LM"
+        #switches = switches + f"-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM "
     elif arguments["--gf180mcu"] == "B":
-        switches = switches + f"-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM "
+        switches["metal_top"] = "11K"
+        switches["mim_option"] = "B"
+        switches["metal_level"] = "4LM"
+        #switches = switches + f"-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM "
     elif arguments["--gf180mcu"] == "C":
-        switches = switches + f"-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM "
+        switches["metal_top"] = "9K"
+        switches["mim_option"] = "B"
+        switches["metal_level"] = "5LM"
+        #switches = switches + f"-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM "
     else:
         logging.error("gf180mcu switch allowed values are (A , B, C) only")
         exit()
 
     if arguments["--no_feol"]:
-        switches = switches + "-rd feol=false "
+        switches["feol"] = "false"
     else:
-        switches = switches + "-rd feol=true  "
+        switches["feol"] = "true"
 
     if arguments["--no_beol"]:
-        switches = switches + "-rd beol=false "
+        switches["beol"] = "false"
     else:
-        switches = switches + "-rd beol=true "
+        switches["beol"] = "true"
 
     if arguments["--no_offgrid"]:
-        switches = switches + "-rd offgrid=false "
+        switches["offgrid"] = "false"
     else:
-        switches = switches + "-rd offgrid=true "
+        switches["offgrid"] = "true"
 
     if arguments["--connectivity"]:
-        switches = switches + "-rd conn_drc=true "
+        switches["conn_drc"] = "true"
     else:
-        switches = switches + "-rd conn_drc=false "
+        switches["conn_drc"] = "false"
 
     if arguments["--density"]:
-        switches = switches + "-rd density=true "
+        switches["density"] = "true"
     else:
-        switches = switches + "-rd density=false "
+        switches["density"] = "false"
     
-    topcell_name = get_run_top_cell_name(arguments, layout_path)
-    switches = switches + f"-rd topcell={topcell_name} "
+    switches["topcell"] = get_run_top_cell_name(arguments, layout_path)
+    switches["input"] = layout_path
 
     return switches
 
@@ -276,14 +255,65 @@ def check_layout_path(layout_path):
         logging.error("## Layout is not in GDSII format. Please use gds format.")
         exit(1)
     
-    retu
+    return os.path.abspath(layout_path)
 
-def main(arguments):
+def build_switches_string(sws: dict):
+    """
+    build_switches_string Build swtiches string from dictionary.
+
+    Parameters
+    ----------
+    sws : dict
+        Dictionary that holds the Antenna swithces.
+    """
+    switches_str = ""
+    for k in sws:
+        switches_str += "-rd {}={} ".format(k, sws[k])
+    
+    return switches_str
+
+def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
+    """
+    run_antenna_check run DRC check based on DRC file provided.
+
+    Parameters
+    ----------
+    drc_file : str
+        String that has the file full path to run.
+    path : str
+        String that holds the full path of the layout.
+    run_dir : str
+        String that holds the full path of the run location.
+    sws : dict
+        Dictionary that holds all switches that needs to be passed to the antenna checks.
+    """
+
+    logging.info(
+        "Running Global Foundries 180nm MCU {} checks on design {} on cell {}:".format(path, drc_name, sws["topcell"])
+    )
+
+    layout_base_name = os.path.basename(path).split(".")[0]
+    new_sws = sws.copy()
+    new_sws["report"] = os.path.join(run_dir, "{}_{}.lyrdb".format(layout_base_name, drc_name))
+    sws_str = build_switches_string(new_sws)
+
+    run_str = "klayout -b -r {} {}".format(
+        drc_file,
+        sws_str
+    )
+
+    check_call(run_str, shell=True)
+                
+def main(drc_run_dir: str, now_str: str, arguments: dict):
     """
     main function to run the DRC.
 
     Parameters
     ----------
+    drc_run_dir : str
+        String with absolute path of the full run dir.
+    now_str : str
+        String with the run name for logs.
     arguments : dict
         Dictionary that holds the arguments used by user in the run command. This is generated by docopt library.
     """
@@ -295,7 +325,7 @@ def main(arguments):
         logging.error("The input GDS file path doesn't exist, please recheck.")
         exit()
 
-    curr_path = os.path.dirname(os.path.abspath(__file__))
+    rule_deck_full_path = os.path.dirname(os.path.abspath(__file__))
 
     ## Check Klayout version
     check_klayout_version()
@@ -307,110 +337,60 @@ def main(arguments):
     
     ## Check layout type
     layout_path = arguments["--path"]
-    check_layout_type(layout_path)
+    layout_path = check_layout_path(layout_path)
 
     ## Get run switches
     switches = generate_klayout_switches(arguments, layout_path)
 
     ## Run Antenna if required.
-    
+    if arguments["--antenna"] or arguments["--antenna_only"]:
+        drc_path = os.path.join(rule_deck_full_path, "rule_decks", "antenna.drc")
+        run_check(drc_path, "antenna", layout_path, drc_run_dir, switches)
+        if (arguments["--antenna_only"]):
+            logging.info("## Completed running Antenna checks only.")
+            exit()
+
     ## Run Density if required.
+    if arguments["--density"] or arguments["--density_only"]:
+        drc_path = os.path.join(rule_deck_full_path, "rule_decks", "density.drc")
+        run_check(drc_path, "density", layout_path, drc_run_dir, switches)
+        if (arguments["--density_only"]):
+            logging.info("## Completed running density checks only.")
+            exit()
 
     ## Run Main DRC if required.
+    drc_path = os.path.join(rule_deck_full_path, "rule_decks", "main.drc")
+    run_check(drc_path, "main", layout_path, drc_run_dir, switches)
 
-    if arguments["--path"]:
-        path = arguments["--path"]
-        topcell_name = arguments["--topcell"]
+    
+    # # ======================== Reporting results ========================
+    # curr_path = os.path.dirname(os.path.abspath(__file__))
+    # rule_deck_path = [
+    #     f"{curr_path}/gf180mcu.drc",
+    #     f"{curr_path}/gf180mcu_antenna.drc",
+    #     f"{curr_path}/gf180mcu_density.drc",
+    # ]
 
-        
+    # # Get rules from rule deck
+    # rules = []
 
-            # Running DRC using klayout
-            if (arguments["--antenna_only"]) and not (arguments["--density_only"]):
-                logging.info(
-                    f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:"
-                )
-                os.system(
-                    f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
-                )
+    # # Get rules from rule deck
+    # for runset in rule_deck_path:
+    #     with open(runset, "r") as f:
+    #         for line in f:
+    #             if ".output" in line:
+    #                 line_list = line.split('"')
+    #                 if line_list[1] in rules:
+    #                     pass
+    #                 else:
+    #                     rules.append(line_list[1])
 
-            elif (arguments["--density_only"]) and not (arguments["--antenna_only"]):
-                logging.info(
-                    f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:"
-                )
-                os.system(
-                    f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
-                )
-
-            elif arguments["--antenna_only"] and arguments["--density_only"]:
-                logging.info(
-                    f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:"
-                )
-                os.system(
-                    f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
-                )
-
-                logging.info(
-                    f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:"
-                )
-                os.system(
-                    f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
-                )
-
-            else:
-                logging.info(
-                    f"Running main Global Foundries 180nm MCU runset on design {name_clean} on cell {topcell_name}:"
-                )
-                os.system(
-                    f"klayout -b -r {curr_path}/gf180mcu.drc -rd input={path} -rd report={name_clean}_main_drc_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
-                )
-                if arguments["--antenna"]:
-                    logging.info(
-                        f"Running Global Foundries 180nm MCU antenna checks on design {name_clean} on cell {topcell_name}:"
-                    )
-                    os.system(
-                        f"klayout -b -r {curr_path}/gf180mcu_antenna.drc -rd input={path} -rd report={name_clean}_antenna_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
-                    )
-                if arguments["--density"]:
-                    logging.info(
-                        f"Running Global Foundries 180nm MCU density checks on design {name_clean} on cell {topcell_name}:"
-                    )
-                    os.system(
-                        f"klayout -b -r {curr_path}/gf180mcu_density.drc -rd input={path} -rd report={name_clean}_density_gf{arguments['--gf180mcu']}.lyrdb -rd thr={thrCount} {switches}"
-                    )
-        else:
-            logging.error("Script only support gds files, please select one")
-            exit(1)
-    else:
-        
-
-    # ======================== Reporting results ========================
-    curr_path = os.path.dirname(os.path.abspath(__file__))
-    rule_deck_path = [
-        f"{curr_path}/gf180mcu.drc",
-        f"{curr_path}/gf180mcu_antenna.drc",
-        f"{curr_path}/gf180mcu_density.drc",
-    ]
-
-    # Get rules from rule deck
-    rules = []
-
-    # Get rules from rule deck
-    for runset in rule_deck_path:
-        with open(runset, "r") as f:
-            for line in f:
-                if ".output" in line:
-                    line_list = line.split('"')
-                    if line_list[1] in rules:
-                        pass
-                    else:
-                        rules.append(line_list[1])
-
-    # Get results
-    lyrdbs = ["main_drc", "antenna", "density"]
-    runsets = ["gf180mcu", "gf180mcu_antenna", "gf180mcu_density"]
-    for i, lyrdb in enumerate(lyrdbs):
-        if os.path.exists(f"{name_clean_}_{lyrdb}_gf{arguments['--gf180mcu']}.lyrdb"):
-            get_results(runsets[i], rules, name_clean_, lyrdb)
+    # # Get results
+    # lyrdbs = ["main_drc", "antenna", "density"]
+    # runsets = ["gf180mcu", "gf180mcu_antenna", "gf180mcu_density"]
+    # for i, lyrdb in enumerate(lyrdbs):
+    #     if os.path.exists(f"{name_clean_}_{lyrdb}_gf{arguments['--gf180mcu']}.lyrdb"):
+    #         get_results(runsets[i], rules, name_clean_, lyrdb)
 
 
 # ================================================================
@@ -419,15 +399,28 @@ def main(arguments):
 
 if __name__ == "__main__":
 
+    # arguments
+    arguments = docopt(__doc__, version="RUN DRC: 1.0")
+
+    if arguments["--run_dir"] == "pwd" or arguments["--run_dir"] == "" or arguments["--run_dir"] is None:
+        drc_run_dir = os.path.abspath(os.getcwd())
+    else:
+        drc_run_dir = os.path.abspath(arguments["--run_dir"])
+    
+
     # logs format
+    now_str = datetime.utcnow().strftime("drc_run_%Y_%m_%d_%H_%M_%S")
+
     logging.basicConfig(
         level=logging.DEBUG,
+        handlers=[
+        logging.FileHandler(os.path.join(drc_run_dir, "{}.log".format(now_str))),
+        logging.StreamHandler()
+        ],
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
-    # arguments
-    arguments = docopt(__doc__, version="RUN DRC: 0.1")
-
     # Calling main function
-    main(arguments)
+    main(drc_run_dir, now_str, arguments)
+
