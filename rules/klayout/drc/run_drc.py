@@ -31,7 +31,7 @@ Options:
     --mp=<num_cores>                    Run the rule deck in parts in parallel to speed up the run.
     --run_dir=<run_dir_path>            Run directory to save all the results [default: pwd]
     --thr=<thr>                         The number of threads used in run.
-    --run_mode=<run_mode>               Select klayout mode Allowed modes (flat , deep, tiling). [default: deep]
+    --run_mode=<run_mode>               Select klayout mode Allowed modes (flat , deep, tiling). [default: flat]
     --no_feol                           Turn off FEOL rules from running.
     --no_beol                           Turn off BEOL rules from running.
     --connectivity                      Turn on connectivity rules.
@@ -109,6 +109,7 @@ def generate_drc_run_template(drc_dir : str, run_dir: str, run_tables_list: list
         deck_name = "main"
     elif len(run_tables_list) == 1:
         deck_name = run_tables_list[0]
+        all_tables = ["{}.drc".format(run_tables_list[0])]
     else:
         all_tables = ["{}.drc".format(t) for t in run_tables_list]
         deck_name = "main"

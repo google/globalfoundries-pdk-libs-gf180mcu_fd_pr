@@ -49,11 +49,11 @@ if FEOL
     pl2_l1.output("PL.2_3.3V", "PL.2_3.3V : Gate Width (Channel Length). : 0.28µm")
     pl2_l1.forget
 
-    pl_2_5v_n = ngate.and(v5_xtor).and(dualgate).space(0.6.um, euclidian).polygons
-    pl_2_5v_p = pgate.and(v5_xtor).and(dualgate).space(0.5.um, euclidian).polygons
+    pl_2_5v_n = ngate.and(v5_xtor).and(dualgate).width(0.6.um, euclidian).polygons
+    pl_2_5v_p = pgate.and(v5_xtor).and(dualgate).width(0.5.um, euclidian).polygons
 
-    pl_2_6v_n = ngate.not(v5_xtor).and(dualgate).space(0.7.um, euclidian).polygons
-    pl_2_6v_p = pgate.not(v5_xtor).and(dualgate).space(0.55.um, euclidian).polygons
+    pl_2_6v_n = ngate.not(v5_xtor).and(dualgate).width(0.7.um, euclidian).polygons
+    pl_2_6v_p = pgate.not(v5_xtor).and(dualgate).width(0.55.um, euclidian).polygons
 
     # Rule PL.2_5V: Gate Width (Channel Length).
     logger.info("Executing rule PL.2_5V")
