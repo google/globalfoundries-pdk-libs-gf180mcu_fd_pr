@@ -133,8 +133,8 @@ if FEOL
 
     # Rule PL.7_3.3V: 45 degree bent gate width is 0.3µm
     logger.info("Executing rule PL.7_3.3V")
-    nom_e1 = nom_gate.edges.inside_part(comp).with_angle(5, 85)
-    nom_e2 = nom_gate.edges.inside_part(comp).with_angle(-85, -5)
+    nom_e1 = nom_gate.edges.inside_part(comp).with_angle(25, 65)
+    nom_e2 = nom_gate.edges.inside_part(comp).with_angle(-65, -25)
     pl7_edges_nom = nom_e1.or(nom_e2)
     pl7_l1  = pl7_edges_nom.width(0.3.um, euclidian)
     pl7_l1.output("PL.7_3.3V", "PL.7_3.3V : 45 degree bent gate width : 0.3µm")
@@ -145,8 +145,8 @@ if FEOL
 
     # Rule PL.7_5V: 45 degree bent gate width is 0.7µm
     logger.info("Executing rule PL.7_5V")
-    thick_e1 = thick_gate.edges.inside_part(comp).with_angle(5, 85)
-    thick_e2 = thick_gate.edges.inside_part(comp).with_angle(-85, -5)
+    thick_e1 = thick_gate.edges.inside_part(comp).with_angle(25, 65)
+    thick_e2 = thick_gate.edges.inside_part(comp).with_angle(-65, -25)
     pl7_edges_thick = thick_e1.or(thick_e2)
     pl7_l2 = pl7_edges_thick.width(0.7.um, euclidian)
     pl7_l2.output("PL.7_5V", "PL.7_5V : 45 degree bent gate width : 0.7µm")

@@ -55,6 +55,56 @@ import shutil
 
 
 
+def get_rules_with_violations(results_database):
+    """
+    This function will find all the rules that has violated in a database.
+
+    Parameters
+    ----------
+    results_database : string or Path object
+        Path string to the results file
+    
+    Returns
+    -------
+    set
+        A set that contains all rules in the database with violations
+    """
+
+    mytree = ET.parse(results_database)
+    myroot = mytree.getroot()
+
+    all_violating_rules = set()
+
+    for z in myroot[7]:  # myroot[7] : List rules with viloations
+        all_violating_rules.add(f"{z[1].text}".replace("'", ""))
+
+    return all_violating_rules
+
+def check_drc_results(results_db_files: list):
+    """
+    check_drc_results Checks the results db generated from run and report at the end if the DRC run failed or passed.
+    This function will exit with 1 if there are violations.
+
+    Parameters
+    ----------
+    results_db_files : list
+        A list of strings that represent paths to results databases of all the DRC runs.
+    """
+
+    full_violating_rules = set()
+
+    for f in results_db_files:
+        violating_rules = get_rules_with_violations(f)
+        full_violating_rules.update(violating_rules)
+    
+    if len(full_violating_rules) > 0:
+        logging.error("Klayout DRC run is not clean.")
+        logging.error("Violated rules are : {}\n".format(str(full_violating_rules)))
+        exit(1)
+    else:
+        logging.info("Klayout DRC run is clean. GDS has no DRC violations.")
+
+
 def get_results(rule_deck, rules, lyrdb, type):
 
     mytree = ET.parse(f"{lyrdb}_{type}_gf{arguments['--gf180mcu']}.lyrdb")
@@ -347,6 +397,12 @@ def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
         String that holds the full path of the run location.
     sws : dict
         Dictionary that holds all switches that needs to be passed to the antenna checks.
+    
+    Returns
+    -------
+    string
+        string that represent the path to the results output database for this run.
+
     """
 
     ## Using print because of the multiprocessing
@@ -356,7 +412,8 @@ def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
 
     layout_base_name = os.path.basename(path).split(".")[0]
     new_sws = sws.copy()
-    new_sws["report"] = os.path.join(run_dir, "{}_{}.lyrdb".format(layout_base_name, drc_name))
+    report_path = os.path.join(run_dir, "{}_{}.lyrdb".format(layout_base_name, drc_name))
+    new_sws["report"] = report_path
     sws_str = build_switches_string(new_sws)
 
     run_str = "klayout -b -r {} {}".format(
@@ -365,6 +422,8 @@ def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
     )
 
     check_call(run_str, shell=True)
+
+    return report_path
                 
 def main(drc_run_dir: str, now_str: str, arguments: dict):
     """
@@ -405,12 +464,13 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     switches = generate_klayout_switches(arguments, layout_path)
 
     list_of_drc_files = []
+    list_res_db_files = []
 
     ## Run Antenna if required.
     if arguments["--antenna"] or arguments["--antenna_only"]:
         drc_path = os.path.join(rule_deck_full_path, "rule_decks", "antenna.drc")
         list_of_drc_files.append(drc_path)
-        run_check(drc_path, "antenna", layout_path, drc_run_dir, switches)
+        list_res_db_files.append(run_check(drc_path, "antenna", layout_path, drc_run_dir, switches))
 
         if (arguments["--antenna_only"]):
             logging.info("## Completed running Antenna checks only.")
@@ -420,7 +480,7 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     if arguments["--density"] or arguments["--density_only"]:
         drc_path = os.path.join(rule_deck_full_path, "rule_decks", "density.drc")
         list_of_drc_files.append(drc_path)
-        run_check(drc_path, "density", layout_path, drc_run_dir, switches)
+        list_res_db_files.append(run_check(drc_path, "density", layout_path, drc_run_dir, switches))
 
         if (arguments["--density_only"]):
             logging.info("## Completed running density checks only.")
@@ -434,8 +494,11 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     
     list_of_drc_files.append(drc_file)
 
-    # ## Run Main DRC
-    run_check(drc_file, "main", layout_path, drc_run_dir, switches)
+    ## Run Main DRC
+    list_res_db_files.append(run_check(drc_file, "main", layout_path, drc_run_dir, switches))
+
+    ## Check run
+    check_drc_results(list_res_db_files)
 
 
 # ================================================================
