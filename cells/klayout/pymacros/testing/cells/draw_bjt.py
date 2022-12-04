@@ -19,7 +19,7 @@
 import pya
 import os
 
-gds_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"bjt" ) 
+gds_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bjt")
 
 
 def draw_npn(layout, device_name):
@@ -62,4 +62,3 @@ def draw_pnp(layout, device_name):
         cell_name = "pnp_05p00x00p42"
 
     return layout.cell(cell_name)
-

@@ -29,16 +29,21 @@ Options:
 from docopt import docopt
 import subprocess
 
+
 def main():
     if args["--gds"]:
         gds = args["--gds"]
         if args["--txt"]:
             txt = args["--txt"]
         else:
-            print("The script must be given a txt file or a path to be able to run conversion")
+            print(
+                "The script must be given a txt file or a path to be able to run conversion"
+            )
             exit()
     else:
-        print("The script must be given a gds file or a path to be able to run conversion")
+        print(
+            "The script must be given a gds file or a path to be able to run conversion"
+        )
         exit()
 
     if args["--mode"] == "to":
@@ -46,12 +51,14 @@ def main():
     elif args["--mode"] == "from":
         subprocess.check_call(f"txt2gds -o {gds} {txt}", shell=True)
     else:
-        print("The script must be given a mode operation ['to', 'from'] only to be able to run conversion")
+        print(
+            "The script must be given a mode operation ['to', 'from'] only to be able to run conversion"
+        )
         exit()
 
 
 if __name__ == "__main__":
 
     # Args
-    args          = docopt(__doc__, version='GDS/TXT converter: 0.1')
+    args = docopt(__doc__, version="GDS/TXT converter: 0.1")
     main()

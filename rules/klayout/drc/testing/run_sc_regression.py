@@ -62,7 +62,8 @@ def get_results(results_file_path):
     else:
         status = "clean"
 
-    return ' '.join(violated), len(violated), status
+    return " ".join(violated), len(violated), status
+
 
 def call_simulator(arg):
     """
@@ -80,6 +81,7 @@ def call_simulator(arg):
         print("## Run generated exception: ", arg)
         print(str(e))
         return False
+
 
 if __name__ == "__main__":
 
@@ -101,7 +103,7 @@ if __name__ == "__main__":
     rules = []
     runs = dict()
 
-    files = os.listdir('..')
+    files = os.listdir("..")
 
     for file in files:
         if ".drc" in file:
@@ -109,17 +111,18 @@ if __name__ == "__main__":
 
     # Get rules names
     for runset in rule_deck_path:
-        with open(runset, 'r') as f:
+        with open(runset, "r") as f:
             for line in f:
-                if 'GEOMETRY RULES' in line:
+                if "GEOMETRY RULES" in line:
                     break
                 if ".output" in line:
                     line_list = line.split('"')
                     rules.append(line_list[1])
 
     # Create GDS splitter script
-    with open('split_gds.rb', 'w') as f:
-        f.write(''' layout = RBA::Layout::new
+    with open("split_gds.rb", "w") as f:
+        f.write(
+            """ layout = RBA::Layout::new
                     layout.read($input)
                     Dir.mkdir("sc") unless File.exists?("sc")
 
@@ -130,35 +133,38 @@ if __name__ == "__main__":
                         new_top = ly2.add_cell("#{cell.name}")
                         ly2.cell(new_top).copy_tree(layout.cell("#{cell.name}"))
                         ly2.write("sc/#{cell.name}.gds")
-                    end''')
+                    end"""
+        )
 
     # Split standard cells top-cells into multiple gds files
     for path in args["--path"]:
-        iname = path.split('.gds')
-        file = iname[0].split('/')
+        iname = path.split(".gds")
+        file = iname[0].split("/")
         if "sc" in file[-1]:
             print("## Extracting top cells for : ", path)
             os.system(f"klayout -b -r split_gds.rb -rd input={path}")
             print(f"File {path} was splitted into multiple gds files")
         else:
-            print(f"## {path} Not a standard cells library GDS. We will use the full GDS. No splitting required.")
+            print(
+                f"## {path} Not a standard cells library GDS. We will use the full GDS. No splitting required."
+            )
 
     ## If this was a standard cells library, get the new list of files.
     if os.path.exists("sc"):
-        other_files = os.listdir('sc')
+        other_files = os.listdir("sc")
         args["--path"] = args["--path"] + other_files
 
     # Get input data for klayout runs and create the run list.
     for path in args["--path"]:
         x = 0
-        iname = path.split('.gds')
-        file = iname[0].split('/')
+        iname = path.split(".gds")
+        file = iname[0].split("/")
         if "sc" in file[-1]:
             continue
         if "/" not in path:
             path = f"sc/{path}"
-        iname = path.split('.gds')
-        file = iname[0].split('/')
+        iname = path.split(".gds")
+        file = iname[0].split("/")
         for runset in rule_deck_path:
             arg = f"klayout -b -r {runset} -rd input={path} -rd report={file[-1]}_{x}.lyrdb -rd thr={thrCount} -rd conn_drc=true"
             run_id = f"{runset}|{path}|{file[-1]}_{x}.lyrdb"
@@ -180,12 +186,16 @@ if __name__ == "__main__":
             info["file_path"] = run_info[1]
             info["runset"] = run_info[0]
             info["results_file"] = run_info[2]
-            results_db_path = os.path.join(os.path.dirname(os.path.abspath(run_info[1])), run_info[2])
+            results_db_path = os.path.join(
+                os.path.dirname(os.path.abspath(run_info[1])), run_info[2]
+            )
 
             try:
                 run_status = future.result()
                 if run_status:
-                    violators, num_rules_violated, db_status = get_results(results_db_path)
+                    violators, num_rules_violated, db_status = get_results(
+                        results_db_path
+                    )
                     info["rules_violated"] = violators
                     info["num_rules_violated"] = num_rules_violated
                     info["run_status"] = db_status
@@ -197,15 +207,14 @@ if __name__ == "__main__":
                 report.append(info)
 
             except Exception as exc:
-                print('%r generated an exception: %s' % (run_id, exc))
-
+                print("%r generated an exception: %s" % (run_id, exc))
 
     df = pd.DataFrame(report)
     df.to_csv("ip_cells_run_report.csv", index=False)
-    pd.set_option('display.max_columns', None)
-    pd.set_option('display.max_rows', None)
+    pd.set_option("display.max_columns", None)
+    pd.set_option("display.max_rows", None)
     pd.set_option("max_colwidth", None)
-    pd.set_option('display.width', 1000)
+    pd.set_option("display.width", 1000)
 
     print(df)
 
@@ -216,7 +225,7 @@ if __name__ == "__main__":
         os.system("rm -rf sc")
 
     t1 = time.time()
-    print(f'Total execution time {t1 - t0} s')
+    print(f"Total execution time {t1 - t0} s")
 
     if (df["run_status"] != "clean").any():
         print("## Run failed as there are failures or violations.")

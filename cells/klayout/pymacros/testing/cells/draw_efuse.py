@@ -15,7 +15,7 @@
 import pya
 import os
 
-USER = os.environ['USER']
+USER = os.environ["USER"]
 gds_path = f"/home/{USER}/.klayout/pymacros/cells/efuse"
 
 
