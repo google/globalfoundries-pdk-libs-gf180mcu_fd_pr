@@ -133,15 +133,27 @@ if FEOL
 
     # Rule PL.7_3.3V: 45 degree bent gate width is 0.3µm
     logger.info("Executing rule PL.7_3.3V")
-    pl7_l1  = nom_gate.edges.inside_part(comp).with_angle(-43,47).width(0.3.um, euclidian)
+    nom_e1 = nom_gate.edges.inside_part(comp).with_angle(5, 85)
+    nom_e2 = nom_gate.edges.inside_part(comp).with_angle(-85, -5)
+    pl7_edges_nom = nom_e1.or(nom_e2)
+    pl7_l1  = pl7_edges_nom.width(0.3.um, euclidian)
     pl7_l1.output("PL.7_3.3V", "PL.7_3.3V : 45 degree bent gate width : 0.3µm")
     pl7_l1.forget
+    nom_e1.forget
+    nom_e2.forget
+    pl7_edges_nom.forget
 
     # Rule PL.7_5V: 45 degree bent gate width is 0.7µm
     logger.info("Executing rule PL.7_5V")
-    pl7_l2 = thick_gate.edges.inside_part(comp).with_angle(-43,47).width(0.7.um, euclidian)
+    thick_e1 = thick_gate.edges.inside_part(comp).with_angle(5, 85)
+    thick_e2 = thick_gate.edges.inside_part(comp).with_angle(-85, -5)
+    pl7_edges_thick = thick_e1.or(thick_e2)
+    pl7_l2 = pl7_edges_thick.width(0.7.um, euclidian)
     pl7_l2.output("PL.7_5V", "PL.7_5V : 45 degree bent gate width : 0.7µm")
     pl7_l2.forget
+    thick_e1.forget
+    thick_e2.forget
+    pl7_edges_thick.forget
 
 
     # Rule PL.9: Poly2 inter connect connecting 3.3V and 5V areas (area inside and outside Dualgate) are not allowed. They shall be done though metal lines only.
