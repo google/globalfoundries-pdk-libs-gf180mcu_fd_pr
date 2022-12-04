@@ -263,7 +263,7 @@ def check_klayout_version():
     check_klayout_version checks klayout version and makes sure it would work with the DRC.
     """
     # ======= Checking Klayout version =======
-    klayout_v_ = os.popen("klayout -v").read()
+    klayout_v_ = os.popen("klayout -b -v").read()
     klayout_v_ = klayout_v_.split("\n")[0]
     klayout_v_list = []
 
