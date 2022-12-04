@@ -79,18 +79,14 @@ if $run_mode == "tiling"
   tile_borders(10.um)
   logger.info("Tiling  mode is enabled.")
 
-elsif $run_mode == "flat"
-
-  #=== FLAT MODE ===
-  flat
-  logger.info("flat  mode is enabled.")
-
-else
-
+elsif $run_mode == "deep"
   #=== HIER MODE ===
   deep
   logger.info("deep  mode is enabled.")
-
+else
+  #=== FLAT MODE ===
+  flat
+  logger.info("flat  mode is enabled.")
 end # run_mode
 
 
