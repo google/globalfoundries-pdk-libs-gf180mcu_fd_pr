@@ -1,0 +1,669 @@
+################################################################################################
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################################
+
+#===========================================================================================================================
+#------------------------------------------- GF 0.18um MCU DRC RULE DECK --------------------------------------------------
+#===========================================================================================================================
+require 'time'
+require "logger"
+
+exec_start_time = Time.now
+
+logger = Logger.new(STDOUT)
+
+logger.formatter = proc do |severity, datetime, progname, msg|
+  "#{datetime}: Memory Usage (" + `pmap #{Process.pid} | tail -1`[10,40].strip + ") : #{msg}
+"
+end
+
+#================================================
+#----------------- FILE SETUP -------------------
+#================================================
+
+# optional for a batch launch :   klayout -b -r gf_018mcu.drc -rd input=design.gds -rd report=gp180_drc.lyrdb
+
+logger.info("Starting running GF180MCU Klayout DRC runset on %s" % [$input])
+logger.info("Ruby Version for klayout: %s" % [RUBY_VERSION])
+
+if $input
+    if $topcell
+        source($input, $topcell)
+    else
+        source($input)
+    end
+end
+
+logger.info("Loading database to memory is complete.")
+
+if $report
+    logger.info("GF180MCU Klayout DRC runset output at: %s" % [$report])
+    report("DRC Run Report at", $report)
+else
+    logger.info("GF180MCU Klayout DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180_drc.lyrdb")])
+    report("DRC Run Report at", File.join(File.dirname(RBA::CellView::active.filename), "gf180_drc.lyrdb"))
+end
+
+if $thr
+    threads($thr)
+    logger.info("Number of threads to use %s" % [$thr])
+else
+    threads(%x("nproc"))
+    logger.info("Number of threads to use #{%x("nproc")}")
+end
+
+#=== PRINT DETAILS ===
+if $verbose == "true"
+  logger.info("Verbose mode: #{$verbose}")
+  verbose(true)
+else
+  verbose(false)
+  logger.info("Verbose mode: false")
+end
+
+# === TILING MODE ===
+if $run_mode == "tiling"
+  tiles(500.um)
+  tile_borders(10.um)
+  logger.info("Tiling  mode is enabled.")
+
+elsif $run_mode == "flat"
+
+  #=== FLAT MODE ===
+  flat
+  logger.info("flat  mode is enabled.")
+
+else
+
+  #=== HIER MODE ===
+  deep
+  logger.info("deep  mode is enabled.")
+
+end # run_mode
+
+
+#================================================
+#------------- LAYERS DEFINITIONS ---------------
+#================================================
+
+logger.info("Read in polygons from layers.")
+
+
+comp           = polygons(22 , 0 ).merged
+dnwell         = polygons(12 , 0 ).merged
+nwell          = polygons(21 , 0 ).merged
+lvpwell        = polygons(204, 0 ).merged
+dualgate       = polygons(55 , 0 ).merged
+poly2          = polygons(30 , 0 ).merged
+nplus          = polygons(32 , 0 ).merged
+pplus          = polygons(31 , 0 ).merged
+sab            = polygons(49 , 0 ).merged
+esd            = polygons(24 , 0 ).merged
+contact        = polygons(33 , 0 ).merged
+metal1         = polygons(34 , 0 ).merged
+via1           = polygons(35 , 0 ).merged
+metal2         = polygons(36 , 0 ).merged
+via2           = polygons(38 , 0 ).merged
+metal3         = polygons(42 , 0 ).merged
+via3           = polygons(40 , 0 ).merged
+metal4         = polygons(46 , 0 ).merged
+via4           = polygons(41 , 0 ).merged
+metal5         = polygons(81 , 0 ).merged
+via5           = polygons(82 , 0 ).merged
+metaltop       = polygons(53 , 0 ).merged
+pad            = polygons(37 , 0 ).merged
+resistor       = polygons(62 , 0 ).merged
+fhres          = polygons(227, 0 ).merged
+fusetop        = polygons(75 , 0 ).merged
+fusewindow_d   = polygons(96 , 1 ).merged
+polyfuse       = polygons(220, 0 ).merged
+mvsd           = polygons(210, 0 ).merged
+mvpsd          = polygons(11 , 39).merged
+nat            = polygons(5  , 0 ).merged
+comp_dummy     = polygons(22 , 4 ).merged
+poly2_dummy    = polygons(30 , 4 ).merged
+metal1_dummy   = polygons(34 , 4 ).merged
+metal2_dummy   = polygons(36 , 4 ).merged
+metal3_dummy   = polygons(42 , 4 ).merged
+metal4_dummy   = polygons(46 , 4 ).merged
+metal5_dummy   = polygons(81 , 4 ).merged
+metaltop_dummy = polygons(53 , 4 ).merged
+comp_label     = polygons(22 , 10).merged
+poly2_label    = polygons(30 , 10).merged
+metal1_label   = polygons(34 , 10).merged
+metal2_label   = polygons(36 , 10).merged
+metal3_label   = polygons(42 , 10).merged
+metal4_label   = polygons(46 , 10).merged
+metal5_label   = polygons(81 , 10).merged
+metaltop_label = polygons(53 , 10).merged
+metal1_slot    = polygons(34 , 3 ).merged
+metal2_slot    = polygons(36 , 3 ).merged
+metal3_slot    = polygons(42 , 3 ).merged
+metal4_slot    = polygons(46 , 3 ).merged
+metal5_slot    = polygons(81 , 3 ).merged
+metaltop_slot  = polygons(53 , 3 ).merged
+ubmpperi       = polygons(183, 0 ).merged
+ubmparray      = polygons(184, 0 ).merged
+ubmeplate      = polygons(185, 0 ).merged
+schottky_diode = polygons(241, 0 ).merged
+zener          = polygons(178, 0 ).merged
+res_mk         = polygons(110, 5 ).merged
+opc_drc        = polygons(124, 5 ).merged
+ndmy           = polygons(111, 5 ).merged
+pmndmy         = polygons(152, 5 ).merged
+v5_xtor        = polygons(112, 1 ).merged
+cap_mk         = polygons(117, 5 ).merged
+mos_cap_mk     = polygons(166, 5 ).merged
+ind_mk         = polygons(151, 5 ).merged
+diode_mk       = polygons(115, 5 ).merged
+drc_bjt        = polygons(127, 5 ).merged
+lvs_bjt        = polygons(118, 5 ).merged
+mim_l_mk       = polygons(117, 10).merged
+latchup_mk     = polygons(137, 5 ).merged
+guard_ring_mk  = polygons(167, 5 ).merged
+otp_mk         = polygons(173, 5 ).merged
+mtpmark        = polygons(122, 5 ).merged
+neo_ee_mk      = polygons(88 , 17).merged
+sramcore       = polygons(108, 5 ).merged
+lvs_rf         = polygons(100, 5 ).merged
+lvs_drain      = polygons(100, 7 ).merged
+ind_mk         = polygons(151, 5 ).merged
+hvpolyrs       = polygons(123, 5 ).merged
+lvs_io         = polygons(119, 5 ).merged
+probe_mk       = polygons(13 , 17).merged
+esd_mk         = polygons(24 , 5 ).merged
+lvs_source     = polygons(100, 8 ).merged
+well_diode_mk  = polygons(153, 51).merged
+ldmos_xtor     = polygons(226, 0 ).merged
+plfuse         = polygons(125, 5 ).merged
+efuse_mk       = polygons(80 , 5 ).merged
+mcell_feol_mk  = polygons(11 , 17).merged
+ymtp_mk        = polygons(86 , 17).merged
+dev_wf_mk      = polygons(128, 17).merged
+metal1_blk     = polygons(34 , 5 ).merged
+metal2_blk     = polygons(36 , 5 ).merged
+metal3_blk     = polygons(42 , 5 ).merged
+metal4_blk     = polygons(46 , 5 ).merged
+metal5_blk     = polygons(81 , 5 ).merged
+metalt_blk     = polygons(53 , 5 ).merged
+pr_bndry       = polygons(0  , 0 ).merged
+mdiode         = polygons(116, 5 ).merged
+metal1_res     = polygons(110, 11).merged
+metal2_res     = polygons(110, 12).merged
+metal3_res     = polygons(110, 13).merged
+metal4_res     = polygons(110, 14).merged
+metal5_res     = polygons(110, 15).merged
+metal6_res     = polygons(110, 16).merged
+border         = polygons(63 , 0 ).merged
+
+# ================= COUNT POLYGONS =================
+poly_count = 0
+comp_count                     = comp.count()
+poly_count                     = poly_count + comp_count
+dnwell_count                   = dnwell.count()
+poly_count                     = poly_count + dnwell_count
+nwell_count                    = nwell.count()
+poly_count                     = poly_count + nwell_count
+lvpwell_count                  = lvpwell.count()
+poly_count                     = poly_count + lvpwell_count
+dualgate_count                 = dualgate.count()
+poly_count                     = poly_count + dualgate_count
+poly2_count                    = poly2.count()
+poly_count                     = poly_count + poly2_count
+nplus_count                    = nplus.count()
+poly_count                     = poly_count + nplus_count
+pplus_count                    = pplus.count()
+poly_count                     = poly_count + pplus_count
+sab_count                      = sab .count()
+poly_count                     = poly_count + sab_count
+esd_count                      = esd .count()
+poly_count                     = poly_count + esd_count
+contact_count                  = contact.count()
+poly_count                     = poly_count + contact_count
+metal1_count                   = metal1.count()
+poly_count                     = poly_count + metal1_count
+via1_count                     = via1.count()
+poly_count                     = poly_count + via1_count
+metal2_count                   = metal2.count()
+poly_count                     = poly_count + metal2_count
+via2_count                     = via2.count()
+poly_count                     = poly_count + via2_count
+metal3_count                   = metal3.count()
+poly_count                     = poly_count + metal3_count
+via3_count                     = via3.count()
+poly_count                     = poly_count + via3_count
+metal4_count                   = metal4.count()
+poly_count                     = poly_count + metal4_count
+via4_count                     = via4.count()
+poly_count                     = poly_count + via4_count
+metal5_count                   = metal5.count()
+poly_count                     = poly_count + metal5_count
+via5_count                     = via5.count()
+poly_count                     = poly_count + via5_count
+metaltop_count                 = metaltop.count()
+poly_count                     = poly_count + metaltop_count
+pad_count                      = pad .count()
+poly_count                     = poly_count + pad_count
+resistor_count                 = resistor.count()
+poly_count                     = poly_count + resistor_count
+fhres_count                    = fhres.count()
+poly_count                     = poly_count + fhres_count
+fusetop_count                  = fusetop.count()
+poly_count                     = poly_count + fusetop_count
+fusewindow_d_count             = fusewindow_d.count()
+poly_count                     = poly_count + fusewindow_d_count
+polyfuse_count                 = polyfuse.count()
+poly_count                     = poly_count + polyfuse_count
+mvsd_count                     = mvsd.count()
+poly_count                     = poly_count + mvsd_count
+mvpsd_count                    = mvpsd.count()
+poly_count                     = poly_count + mvpsd_count
+nat_count                      = nat .count()
+poly_count                     = poly_count + nat_count
+comp_dummy_count               = comp_dummy.count()
+poly_count                     = poly_count + comp_dummy_count
+poly2_dummy_count              = poly2_dummy.count()
+poly_count                     = poly_count + poly2_dummy_count
+metal1_dummy_count             = metal1_dummy.count()
+poly_count                     = poly_count + metal1_dummy_count
+metal2_dummy_count             = metal2_dummy.count()
+poly_count                     = poly_count + metal2_dummy_count
+metal3_dummy_count             = metal3_dummy.count()
+poly_count                     = poly_count + metal3_dummy_count
+metal4_dummy_count             = metal4_dummy.count()
+poly_count                     = poly_count + metal4_dummy_count
+metal5_dummy_count             = metal5_dummy.count()
+poly_count                     = poly_count + metal5_dummy_count
+metaltop_dummy_count           = metaltop_dummy.count()
+poly_count                     = poly_count + metaltop_dummy_count
+comp_label_count               = comp_label.count()
+poly_count                     = poly_count + comp_label_count
+poly2_label_count              = poly2_label.count()
+poly_count                     = poly_count + poly2_label_count
+metal1_label_count             = metal1_label.count()
+poly_count                     = poly_count + metal1_label_count
+metal2_label_count             = metal2_label.count()
+poly_count                     = poly_count + metal2_label_count
+metal3_label_count             = metal3_label.count()
+poly_count                     = poly_count + metal3_label_count
+metal4_label_count             = metal4_label.count()
+poly_count                     = poly_count + metal4_label_count
+metal5_label_count             = metal5_label.count()
+poly_count                     = poly_count + metal5_label_count
+metaltop_label_count           = metaltop_label.count()
+poly_count                     = poly_count + metaltop_label_count
+metal1_slot_count              = metal1_slot.count()
+poly_count                     = poly_count + metal1_slot_count
+metal2_slot_count              = metal2_slot.count()
+poly_count                     = poly_count + metal2_slot_count
+metal3_slot_count              = metal3_slot.count()
+poly_count                     = poly_count + metal3_slot_count
+metal4_slot_count              = metal4_slot.count()
+poly_count                     = poly_count + metal4_slot_count
+metal5_slot_count              = metal5_slot.count()
+poly_count                     = poly_count + metal5_slot_count
+metaltop_slot_count            = metaltop_slot.count()
+poly_count                     = poly_count + metaltop_slot_count
+ubmpperi_count                 = ubmpperi.count()
+poly_count                     = poly_count + ubmpperi_count
+ubmparray_count                = ubmparray.count()
+poly_count                     = poly_count + ubmparray_count
+ubmeplate_count                = ubmeplate.count()
+poly_count                     = poly_count + ubmeplate_count
+schottky_diode_count           = schottky_diode.count()
+poly_count                     = poly_count + schottky_diode_count
+zener_count                    = zener.count()
+poly_count                     = poly_count + zener_count
+res_mk_count                   = res_mk.count()
+poly_count                     = poly_count + res_mk_count
+opc_drc_count                  = opc_drc.count()
+poly_count                     = poly_count + opc_drc_count
+ndmy_count                     = ndmy.count()
+poly_count                     = poly_count + ndmy_count
+pmndmy_count                   = pmndmy.count()
+poly_count                     = poly_count + pmndmy_count
+v5_xtor_count                  = v5_xtor.count()
+poly_count                     = poly_count + v5_xtor_count
+cap_mk_count                   = cap_mk.count()
+poly_count                     = poly_count + cap_mk_count
+mos_cap_mk_count               = mos_cap_mk.count()
+poly_count                     = poly_count + mos_cap_mk_count
+ind_mk_count                   = ind_mk.count()
+poly_count                     = poly_count + ind_mk_count
+diode_mk_count                 = diode_mk.count()
+poly_count                     = poly_count + diode_mk_count
+drc_bjt_count                  = drc_bjt.count()
+poly_count                     = poly_count + drc_bjt_count
+lvs_bjt_count                  = lvs_bjt.count()
+poly_count                     = poly_count + lvs_bjt_count
+mim_l_mk_count                 = mim_l_mk.count()
+poly_count                     = poly_count + mim_l_mk_count
+latchup_mk_count               = latchup_mk.count()
+poly_count                     = poly_count + latchup_mk_count
+guard_ring_mk_count            = guard_ring_mk.count()
+poly_count                     = poly_count + guard_ring_mk_count
+otp_mk_count                   = otp_mk.count()
+poly_count                     = poly_count + otp_mk_count
+mtpmark_count                  = mtpmark.count()
+poly_count                     = poly_count + mtpmark_count
+neo_ee_mk_count                = neo_ee_mk.count()
+poly_count                     = poly_count + neo_ee_mk_count
+sramcore_count                 = sramcore.count()
+poly_count                     = poly_count + sramcore_count
+lvs_rf_count                   = lvs_rf.count()
+poly_count                     = poly_count + lvs_rf_count
+lvs_drain_count                = lvs_drain.count()
+poly_count                     = poly_count + lvs_drain_count
+ind_mk_count                   = ind_mk.count()
+poly_count                     = poly_count + ind_mk_count
+hvpolyrs_count                 = hvpolyrs.count()
+poly_count                     = poly_count + hvpolyrs_count
+lvs_io_count                   = lvs_io.count()
+poly_count                     = poly_count + lvs_io_count
+probe_mk_count                 = probe_mk.count()
+poly_count                     = poly_count + probe_mk_count
+esd_mk_count                   = esd_mk.count()
+poly_count                     = poly_count + esd_mk_count
+lvs_source_count               = lvs_source.count()
+poly_count                     = poly_count + lvs_source_count
+well_diode_mk_count            = well_diode_mk.count()
+poly_count                     = poly_count + well_diode_mk_count
+ldmos_xtor_count               = ldmos_xtor.count()
+poly_count                     = poly_count + ldmos_xtor_count
+plfuse_count                   = plfuse.count()
+poly_count                     = poly_count + plfuse_count
+efuse_mk_count                 = efuse_mk.count()
+poly_count                     = poly_count + efuse_mk_count
+mcell_feol_mk_count            = mcell_feol_mk.count()
+poly_count                     = poly_count + mcell_feol_mk_count
+ymtp_mk_count                  = ymtp_mk.count()
+poly_count                     = poly_count + ymtp_mk_count
+dev_wf_mk_count                = dev_wf_mk.count()
+poly_count                     = poly_count + dev_wf_mk_count
+metal1_blk_count               = metal1_blk.count()
+poly_count                     = poly_count + metal1_blk_count
+metal2_blk_count               = metal2_blk.count()
+poly_count                     = poly_count + metal2_blk_count
+metal3_blk_count               = metal3_blk.count()
+poly_count                     = poly_count + metal3_blk_count
+metal4_blk_count               = metal4_blk.count()
+poly_count                     = poly_count + metal4_blk_count
+metal5_blk_count               = metal5_blk.count()
+poly_count                     = poly_count + metal5_blk_count
+metalt_blk_count               = metalt_blk.count()
+poly_count                     = poly_count + metalt_blk_count
+pr_bndry_count                 = pr_bndry.count()
+poly_count                     = poly_count + pr_bndry_count
+mdiode_count                   = mdiode.count()
+poly_count                     = poly_count + mdiode_count
+metal1_res_count               = metal1_res.count()
+poly_count                     = poly_count + metal1_res_count
+metal2_res_count               = metal2_res.count()
+poly_count                     = poly_count + metal2_res_count
+metal3_res_count               = metal3_res.count()
+poly_count                     = poly_count + metal3_res_count
+metal4_res_count               = metal4_res.count()
+poly_count                     = poly_count + metal4_res_count
+metal5_res_count               = metal5_res.count()
+poly_count                     = poly_count + metal5_res_count
+metal6_res_count               = metal6_res.count()
+poly_count                     = poly_count + metal6_res_count
+border_count                   = border.count()
+poly_count                     = poly_count + border_count
+
+logger.info("Starting deriving base layers.")
+#================================================
+#------------- LAYERS DERIVATIONS ---------------
+#================================================
+
+ncomp      =  comp      & nplus
+pcomp      =  comp      & pplus
+tgate      =  poly2     & comp
+ngate      =  nplus     & tgate
+pgate      =  pplus     & tgate
+natcompsd	 = (nat       & comp.interacting(poly2)) - tgate
+
+#================================================
+#------------------ SWITCHES --------------------
+#================================================
+logger.info("Evaluate switches.")
+
+# FEOL
+if $feol == "false"
+  FEOL = $feol
+  logger.info("FEOL is disabled.")
+else
+  FEOL = "true"
+  logger.info("FEOL is enabled.")
+end # FEOL
+
+# BEOL
+if $beol == "false"
+  BEOL = $beol
+  logger.info("BEOL is disabled.")
+else
+  BEOL = "true"
+  logger.info("BEOL is enabled.")
+end # BEOL
+
+# connectivity rules
+if $conn_drc == "true"
+  CONNECTIVITY_RULES = $conn_drc
+  logger.info("connectivity rules are enabled.")
+else
+  CONNECTIVITY_RULES = false
+  logger.info("connectivity rules are disabled.")
+end # connectivity rules
+
+# METAL_TOP
+if $metal_top
+  METAL_TOP = $metal_top
+else
+  METAL_TOP = "9K"
+end # METAL_TOP
+
+logger.info("METAL_TOP Selected is %s" % [METAL_TOP])
+
+# METAL_LEVEL
+if $metal_level
+  METAL_LEVEL = $metal_level
+else
+  METAL_LEVEL = "5LM"
+end # METAL_LEVEL
+
+logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
+
+# WEDGE
+if $wedge == "false"
+  WEDGE = $wedge
+else
+  WEDGE = "true"
+end # WEDGE
+
+logger.info("Wedge enabled  %s" % [WEDGE])
+
+# BALL
+if $ball == "false"
+  BALL = $ball
+else
+  BALL = "true"
+end # BALL
+
+logger.info("Ball enabled  %s" % [BALL])
+
+# GOLD
+if $gold == "false"
+  GOLD = $gold
+else
+  GOLD = "true"
+end # GOLD
+
+logger.info("Gold enabled  %s" % [GOLD])
+
+if $mim_option
+  MIM_OPTION = $mim_option
+else
+  MIM_OPTION = "B"
+end
+
+logger.info("MIM Option selected %s" % [MIM_OPTION])
+
+# OFFGRID
+if $offgrid == "false"
+  OFFGRID = false
+else
+  OFFGRID = true
+end # OFFGRID
+
+logger.info("Offgrid enabled  %s" % [OFFGRID])
+
+#================================================
+#------------- METAL LEVEL SWITCHES -------------
+#================================================
+
+
+if METAL_LEVEL == "6LM"
+    top_via       = via5
+    topmin1_via   = via4
+    top_metal     = metaltop
+    topmin1_metal = metal5
+elsif METAL_LEVEL == "5LM"
+    top_via       = via4
+    topmin1_via   = via3
+    top_metal     = metal5
+    topmin1_metal = metal4
+elsif METAL_LEVEL == "4LM"
+    top_via       = via3
+    topmin1_via   = via2
+    top_metal     = metal4
+    topmin1_metal = metal3
+elsif METAL_LEVEL == "3LM"
+    top_via       = via2
+    topmin1_via   = via1
+    top_metal     = metal3
+    topmin1_metal = metal2
+elsif METAL_LEVEL == "2LM"
+    top_via       = via1
+    topmin1_via   = via1
+    top_metal     = metal2
+    topmin1_metal = metal1
+end #METAL_LEVEL
+
+#================================================
+#------------- LAYERS CONNECTIONS ---------------
+#================================================
+
+if CONNECTIVITY_RULES
+
+  logger.info("Construct connectivity for the design.")
+
+  connect(dnwell,  ncomp)
+  connect(ncomp,  contact)
+  connect(pcomp,  contact)
+  connect(lvpwell,  ncomp)
+  connect(nwell,  ncomp)
+  connect(natcompsd,  contact)
+  connect(mvsd,  ncomp)
+  connect(mvpsd,  pcomp)
+  connect(contact,  metal1)
+  connect(metal1,  via1)
+  connect(via1,    metal2)
+  connect(metal2,  via2)
+  connect(via2,    metal3)
+  connect(metal3,  via3)
+  connect(via3,    metal4)
+  connect(metal4,  via4)
+  connect(via4,    metal5)
+  connect(metal5,  via5)
+  connect(via5,    metaltop)
+
+end #CONNECTIVITY_RULES
+
+#================================================
+#------------ PRE-DEFINED FUNCTIONS -------------
+#================================================
+
+def conn_space(layer,conn_val,not_conn_val, mode)
+  if conn_val > not_conn_val
+    raise "ERROR : Wrong connectivity implementation"
+  end
+  connected_output = layer.space(conn_val.um, mode).polygons(0.001)
+  unconnected_errors_unfiltered = layer.space(not_conn_val.um, mode)
+  singularity_errors = layer.space(0.001.um)
+  # Filter out the errors arising from the same net
+  unconnected_errors = DRC::DRCLayer::new(self, RBA::EdgePairs::new)
+  unconnected_errors_unfiltered.data.each do |ep|
+    net1 = l2n_data.probe_net(layer.data, ep.first.p1)
+    net2 = l2n_data.probe_net(layer.data, ep.second.p1)
+    if !net1 || !net2
+      puts "Should not happen ..."
+    elsif net1.circuit != net2.circuit || net1.cluster_id != net2.cluster_id
+      # unconnected
+      unconnected_errors.data.insert(ep)
+    end
+  end
+  unconnected_output = unconnected_errors.polygons.or(singularity_errors.polygons(0.001))
+  return connected_output, unconnected_output
+end
+
+def conn_separation(layer1, layer2, conn_val,not_conn_val, mode)
+  if conn_val > not_conn_val
+    raise "ERROR : Wrong connectivity implementation"
+  end
+  connected_output = layer1.separation(layer2, conn_val.um, mode).polygons(0.001)
+  unconnected_errors_unfiltered = layer1.separation(layer2, not_conn_val.um, mode)
+  # Filter out the errors arising from the same net
+  unconnected_errors = DRC::DRCLayer::new(self, RBA::EdgePairs::new)
+  unconnected_errors_unfiltered.data.each do |ep|
+    net1 = l2n_data.probe_net(layer1.data, ep.first.p1)
+    net2 = l2n_data.probe_net(layer2.data, ep.second.p1)
+    if !net1 || !net2
+      puts "Should not happen ..."
+    elsif net1.circuit != net2.circuit || net1.cluster_id != net2.cluster_id
+      # unconnected
+      unconnected_errors.data.insert(ep)
+    end
+  end
+  unconnected_output = unconnected_errors.polygons(0.001)
+  return connected_output, unconnected_output
+end
+
+# === IMPLICIT EXTRACTION ===
+if CONNECTIVITY_RULES
+  logger.info("Connectivity rules enabled, Netlist object will be generated.")
+  netlist
+end #CONNECTIVITY_RULES
+
+# === LAYOUT EXTENT ===
+CHIP = extent.sized(0.0)
+
+logger.info("Total area of the design is #{CHIP.area()} um^2.")
+logger.info("Total no. of polygons in the design is #{poly_count}")
+logger.info("Initialization and base layers definition.")
+
+#================================================
+#----------------- MAIN RUNSET ------------------
+#================================================
+
+logger.info("Starting GF180MCU DRC rules.")
+if FEOL
+  logger.info("Running all FEOL rules")
+end #FEOL
+
+if BEOL
+  logger.info("Running all BEOL rules")
+end #BEOL
+
+
