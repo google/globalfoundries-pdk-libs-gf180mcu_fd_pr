@@ -271,7 +271,7 @@ def check_klayout_version():
         logging.error("Klayout is not found. Please make sure klayout is installed.")
         exit(1)
     else:
-        klayout_v_list = [int(v) for v in klayout_v_.split(".")]
+        klayout_v_list = [int(v) for v in klayout_v_.split(" ")[-1].split(".")]
 
 
     logging.info(f"Your Klayout version is: {klayout_v_}")
