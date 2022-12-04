@@ -15,31 +15,33 @@
 ################################################################################################
 
 if BEOL
-    #================================================
-    #---------------------METAL5---------------------
-    #================================================
+    if METAL_LEVEL == "5LM" || METAL_LEVEL == "6LM"
+        #================================================
+        #---------------------METAL5---------------------
+        #================================================
 
-    # Rule M5.1: min. metal5 width is 0.28µm
-    logger.info("Executing rule M5.1")
-    m51_l1  = metal5.width(0.28.um, euclidian).polygons(0.001)
-    m51_l1.output("M5.1", "M5.1 : min. metal5 width : 0.28µm")
-    m51_l1.forget
+        # Rule M5.1: min. metal5 width is 0.28µm
+        logger.info("Executing rule M5.1")
+        m51_l1  = metal5.width(0.28.um, euclidian).polygons(0.001)
+        m51_l1.output("M5.1", "M5.1 : min. metal5 width : 0.28µm")
+        m51_l1.forget
 
-    # Rule M5.2a: min. metal5 spacing is 0.28µm
-    logger.info("Executing rule M5.2a")
-    m52a_l1  = metal5.space(0.28.um, euclidian).polygons(0.001)
-    m52a_l1.output("M5.2a", "M5.2a : min. metal5 spacing : 0.28µm")
-    m52a_l1.forget
+        # Rule M5.2a: min. metal5 spacing is 0.28µm
+        logger.info("Executing rule M5.2a")
+        m52a_l1  = metal5.space(0.28.um, euclidian).polygons(0.001)
+        m52a_l1.output("M5.2a", "M5.2a : min. metal5 spacing : 0.28µm")
+        m52a_l1.forget
 
-    # Rule M5.2b: Space to wide Metal5 (length & width > 10um) is 0.3µm
-    logger.info("Executing rule M5.2b")
-    m52b_l1  = metal5.separation(metal5.not_interacting(metal5.edges.with_length(nil, 10.um)), 0.3.um, euclidian).polygons(0.001)
-    m52b_l1.output("M5.2b", "M5.2b : Space to wide Metal5 (length & width > 10um) : 0.3µm")
-    m52b_l1.forget
+        # Rule M5.2b: Space to wide Metal5 (length & width > 10um) is 0.3µm
+        logger.info("Executing rule M5.2b")
+        m52b_l1  = metal5.separation(metal5.not_interacting(metal5.edges.with_length(nil, 10.um)), 0.3.um, euclidian).polygons(0.001)
+        m52b_l1.output("M5.2b", "M5.2b : Space to wide Metal5 (length & width > 10um) : 0.3µm")
+        m52b_l1.forget
 
-    # Rule M5.3: Minimum metal5 area is 0.1444µm²
-    logger.info("Executing rule M5.3")
-    m53_l1  = metal5.with_area(nil, 0.1444.um)
-    m53_l1.output("M5.3", "M5.3 : Minimum metal5 area : 0.1444µm²")
-    m53_l1.forget
+        # Rule M5.3: Minimum metal5 area is 0.1444µm²
+        logger.info("Executing rule M5.3")
+        m53_l1  = metal5.with_area(nil, 0.1444.um)
+        m53_l1.output("M5.3", "M5.3 : Minimum metal5 area : 0.1444µm²")
+        m53_l1.forget
+    end
 end #BEOL

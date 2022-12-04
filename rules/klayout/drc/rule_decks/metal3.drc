@@ -15,31 +15,33 @@
 ################################################################################################
 
 if BEOL
-    #================================================
-    #---------------------METAL3---------------------
-    #================================================
+    if METAL_LEVEL == "3LM" || METAL_LEVEL == "4LM" || METAL_LEVEL == "5LM" || METAL_LEVEL == "6LM"
+        #================================================
+        #---------------------METAL3---------------------
+        #================================================
 
-    # Rule M3.1: min. metal3 width is 0.28µm
-    logger.info("Executing rule M3.1")
-    m31_l1  = metal3.width(0.28.um, euclidian).polygons(0.001)
-    m31_l1.output("M3.1", "M3.1 : min. metal3 width : 0.28µm")
-    m31_l1.forget
+        # Rule M3.1: min. metal3 width is 0.28µm
+        logger.info("Executing rule M3.1")
+        m31_l1  = metal3.width(0.28.um, euclidian).polygons(0.001)
+        m31_l1.output("M3.1", "M3.1 : min. metal3 width : 0.28µm")
+        m31_l1.forget
 
-    # Rule M3.2a: min. metal3 spacing is 0.28µm
-    logger.info("Executing rule M3.2a")
-    m32a_l1  = metal3.space(0.28.um, euclidian).polygons(0.001)
-    m32a_l1.output("M3.2a", "M3.2a : min. metal3 spacing : 0.28µm")
-    m32a_l1.forget
+        # Rule M3.2a: min. metal3 spacing is 0.28µm
+        logger.info("Executing rule M3.2a")
+        m32a_l1  = metal3.space(0.28.um, euclidian).polygons(0.001)
+        m32a_l1.output("M3.2a", "M3.2a : min. metal3 spacing : 0.28µm")
+        m32a_l1.forget
 
-    # Rule M3.2b: Space to wide Metal3 (length & width > 10um) is 0.3µm
-    logger.info("Executing rule M3.2b")
-    m32b_l1  = metal3.separation(metal3.not_interacting(metal3.edges.with_length(nil, 10.um)), 0.3.um, euclidian).polygons(0.001)
-    m32b_l1.output("M3.2b", "M3.2b : Space to wide Metal3 (length & width > 10um) : 0.3µm")
-    m32b_l1.forget
+        # Rule M3.2b: Space to wide Metal3 (length & width > 10um) is 0.3µm
+        logger.info("Executing rule M3.2b")
+        m32b_l1  = metal3.separation(metal3.not_interacting(metal3.edges.with_length(nil, 10.um)), 0.3.um, euclidian).polygons(0.001)
+        m32b_l1.output("M3.2b", "M3.2b : Space to wide Metal3 (length & width > 10um) : 0.3µm")
+        m32b_l1.forget
 
-    # Rule M3.3: Minimum metal3 area is 0.1444µm²
-    logger.info("Executing rule M3.3")
-    m33_l1  = metal3.with_area(nil, 0.1444.um)
-    m33_l1.output("M3.3", "M3.3 : Minimum metal3 area : 0.1444µm²")
-    m33_l1.forget
+        # Rule M3.3: Minimum metal3 area is 0.1444µm²
+        logger.info("Executing rule M3.3")
+        m33_l1  = metal3.with_area(nil, 0.1444.um)
+        m33_l1.output("M3.3", "M3.3 : Minimum metal3 area : 0.1444µm²")
+        m33_l1.forget
+    end
 end # BEOL

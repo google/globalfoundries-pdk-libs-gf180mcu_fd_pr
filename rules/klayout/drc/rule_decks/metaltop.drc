@@ -18,129 +18,128 @@
 #================================================
 #--------------------METALTOP--------------------
 #================================================
+if BEOL
 
-if METAL_TOP == "6K"
-    logger.info("MetalTop thickness 6k section")
-    
-    # Rule MT.1: min. metaltop width is 0.36µm
-    logger.info("Executing rule MT.1")
-    mt1_l1  = metaltop.width(0.36.um, euclidian).polygons(0.001)
-    mt1_l1.output("MT.1", "MT.1 : min. metaltop width : 0.36µm")
-    mt1_l1.forget
-    
-    # Rule MT.2a: min. metaltop spacing is 0.38µm
-    logger.info("Executing rule MT.2a")
-    mt2a_l1  = metaltop.space(0.38.um, euclidian).polygons(0.001)
-    mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.38µm")
-    mt2a_l1.forget
-    
-    # Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.5µm
-    logger.info("Executing rule MT.2b")
-    mt2b_l1  = metaltop.separation(metal2.not_interacting(metal2.edges.with_length(nil, 10.um)), 0.5.um, euclidian).polygons(0.001)
-    mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.5µm")
-    mt2b_l1.forget 
-    
-    # Rule MT.4: Minimum MetalTop area is 0.5625µm²
-    logger.info("Executing rule MT.4")
-    mt4_l1  = metaltop.with_area(nil, 0.5625.um)
-    mt4_l1.output("MT.4", "MT.4 : Minimum MetalTop area : 0.5625µm²")
-    mt4_l1.forget
-    
-elsif METAL_TOP == "9K"
-    logger.info("MetalTop thickness 9k/11k section")
-    
-    # Rule MT.1: min. metaltop width is 0.44µm
-    logger.info("Executing rule MT.1")
-    mt1_l1  = metaltop.width(0.44.um, euclidian).polygons(0.001)
-    mt1_l1.output("MT.1", "MT.1 : min. metaltop width : 0.44µm")
-    mt1_l1.forget
-    
-    # Rule MT.2a: min. metaltop spacing is 0.46µm
-    logger.info("Executing rule MT.2a")
-    mt2a_l1  = metaltop.space(0.46.um, euclidian).polygons(0.001)
-    mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.46µm")
-    mt2a_l1.forget
-    
-    # Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.6µm
-    logger.info("Executing rule MT.2b")
-    mt2b_l1  = metaltop.separation(metaltop.not_interacting(metal2.edges.with_length(nil, 10.um)), 0.6.um, euclidian).polygons(0.001)
-    mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.6µm")
-    mt2b_l1.forget 
-    
-    # Rule MT.4: Minimum MetalTop area is 0.5625µm²
-    logger.info("Executing rule MT.4")
-    mt4_l1  = metaltop.with_area(nil, 0.5625.um)
-    mt4_l1.output("MT.4", "MT.4 : Minimum MetalTop area : 0.5625µm²")
-    mt4_l1.forget
-    
-elsif METAL_TOP == "30K"
-    logger.info("MetalTop thickness 30K section")
-    
-    # Rule MT30.1a: Min. thick MetalTop width. is 1.8µm
-    logger.info("Executing rule MT30.1a")
-    mt301a_l1  = metaltop.width(1.8.um, euclidian).polygons(0.001)
-    mt301a_l1.output("MT30.1a", "MT30.1a : Min. thick MetalTop width. : 1.8µm")
-    mt301a_l1.forget
-    
-    # Rule MT30.1b: Min width for >1000um long metal line (based on metal edge). is 2.2µm
-    logger.info("Executing rule MT30.1b")
-    mt301b_l1  = metaltop.interacting(metaltop.edges.with_length(1000.um, nil)).width(2.2.um, euclidian).polygons(0.001)
-    mt301b_l1.output("MT30.1b", "MT30.1b : Min width for >1000um long metal line (based on metal edge). : 2.2µm")
-    mt301b_l1.forget
-    
-    # Rule MT30.2: Min. thick MetalTop space. is 1.8µm
-    logger.info("Executing rule MT30.2")
-    mt302_l1  = metaltop.space(1.8.um, euclidian).polygons(0.001)
-    mt302_l1.output("MT30.2", "MT30.2 : Min. thick MetalTop space. : 1.8µm")
-    mt302_l1.forget
-    
-    # Rule MT30.3: The separation of two corners should satisfy the minimum spacing. is 1.8µm
-    logger.info("Executing rule MT30.3")
-    mt303_l1  = metaltop.space(1.8.um, euclidian).polygons(0.001)
-    mt303_l1.output("MT30.3", "MT30.3 : The separation of two corners should satisfy the minimum spacing. : 1.8µm")
-    mt303_l1.forget
-    
-    # Rule MT30.4: The separation of single metal line from a any degree metal line should satisfy the minimum spacing. is 1.8µm
-    logger.info("Executing rule MT30.4")
-    mt304_l1  = metaltop.space(1.8.um, euclidian).polygons(0.001)
-    mt304_l1.output("MT30.4", "MT30.4 : The separation of single metal line from a any degree metal line should satisfy the minimum spacing. : 1.8µm")
-    mt304_l1.forget
-    
-    # Rule MT30.5: Minimum thick MetalTop enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
-    logger.info("Executing rule MT30.5")
-    mt305_l1 = top_metal.enclosing(top_via, 0.12.um, euclidian).polygons(0.001).or(top_via.not_inside(top_metal))
-    mt305_l1.output("MT30.5", "MT30.5 : Minimum thick MetalTop enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].")
-    mt305_l1.forget
-    
-    mt30p6_cond = top_metal.drc( width < 2.5.um)
-    mt30p6_eol = top_metal.edges.with_length(nil, 2.5.um).interacting(mt30p6_cond.first_edges).interacting(mt30p6_cond.second_edges).not(mt30p6_cond.first_edges).not(mt30p6_cond.second_edges)
-    # Rule MT30.6: Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
-    logger.info("Executing rule MT30.6")
-    mt306_l1 = mt30p6_eol.enclosing(top_via.edges,0.25.um, projection).polygons(0.001).or(top_via.not_inside(top_metal))
-    mt306_l1.output("MT30.6", "MT30.6 : Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].")
-    mt306_l1.forget
-    
-    mt30p6_cond.forget
-    
-    mt30p6_eol.forget
-    
-    mt30p8_via_no_mim  = top_via.sized(0.18.um).sized(-0.18.um).with_bbox_min(0.78.um , nil).extents.inside(top_metal)
-    mt30p8_via_mim     = top_via.interacting(fusetop).sized(0.3.um).sized(-0.3.um).with_bbox_min(1.02.um , nil).extents.inside(top_metal)
-    mt30p8_via         = mt30p8_via_no_mim.or(mt30p8_via_mim)
-    mt30p8_mask        = mt30p8_via.size(1).not(top_via).with_holes(4, nil)
-    mt30p8_slct_via    = top_via.interacting(mt30p8_mask)
-    # Rule MT30.8: There shall be minimum 2X2 array of vias (top vias) at one location connecting to 3um thick top metal.
-    logger.info("Executing rule MT30.8")
-    mt308_l1 = topmin1_metal.outside(guard_ring_mk).not_interacting(mt30p8_slct_via)
-    mt308_l1.output("MT30.8", "MT30.8 : There shall be minimum 2X2 array of vias (top vias) at one location connecting to 3um thick top metal.")
-    mt308_l1.forget
-    
-    mt30p8_via.forget
-    
-    mt30p8_mask.forget
-    
-    mt30p8_slct_via.forget
-    
-end #METAL_TOP
+    if METAL_TOP == "6K"
+        logger.info("MetalTop thickness 6k section")
+        
+        # Rule MT.1: min. metaltop width is 0.36µm
+        logger.info("Executing rule MT.1")
+        mt1_l1  = top_metal.width(0.36.um, euclidian)
+        mt1_l1.output("MT.1", "MT.1 : min. metaltop width : 0.36µm")
+        mt1_l1.forget
+        
+        # Rule MT.2a: min. metaltop spacing is 0.38µm
+        logger.info("Executing rule MT.2a")
+        mt2a_l1  = top_metal.space(0.38.um, euclidian)
+        mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.38µm")
+        mt2a_l1.forget
+        
+        # Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.5µm
+        logger.info("Executing rule MT.2b")
+        wide_top_metal = top_metal.not_interacting(top_metal.edges.with_length(nil, 10.um))
+        mt2b_l1  = top_metal.separation(wide_top_metal, 0.5.um, euclidian)
+        mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.5µm")
+        mt2b_l1.forget
+        wide_top_metal.forget
+        
+        # Rule MT.4: Minimum MetalTop area is 0.5625µm²
+        logger.info("Executing rule MT.4")
+        mt4_l1  = top_metal.with_area(nil, 0.5625.um)
+        mt4_l1.output("MT.4", "MT.4 : Minimum MetalTop area : 0.5625µm²")
+        mt4_l1.forget
+        
+    elsif METAL_TOP == "9K"
+        logger.info("MetalTop thickness 9k/11k section")
+        
+        # Rule MT.1: min. metaltop width is 0.44µm
+        logger.info("Executing rule MT.1")
+        mt1_l1  = top_metal.width(0.44.um, euclidian)
+        mt1_l1.output("MT.1", "MT.1 : min. metaltop width : 0.44µm")
+        mt1_l1.forget
+        
+        # Rule MT.2a: min. metaltop spacing is 0.46µm
+        logger.info("Executing rule MT.2a")
+        mt2a_l1  = top_metal.space(0.46.um, euclidian)
+        mt2a_l1.output("MT.2a", "MT.2a : min. metaltop spacing : 0.46µm")
+        mt2a_l1.forget
+        
+        # Rule MT.2b: Space to wide Metal2 (length & width > 10um) is 0.6µm
+        logger.info("Executing rule MT.2b")
+        wide_top_metal = top_metal.not_interacting(top_metal.edges.with_length(nil, 10.um))
+        mt2b_l1  = top_metal.separation(wide_top_metal, 0.6.um, euclidian)
+        mt2b_l1.output("MT.2b", "MT.2b : Space to wide Metal2 (length & width > 10um) : 0.6µm")
+        mt2b_l1.forget 
+        wide_top_metal.forget
+        
+        # Rule MT.4: Minimum MetalTop area is 0.5625µm²
+        logger.info("Executing rule MT.4")
+        mt4_l1  = top_metal.with_area(nil, 0.5625.um)
+        mt4_l1.output("MT.4", "MT.4 : Minimum MetalTop area : 0.5625µm²")
+        mt4_l1.forget
+        
+    elsif METAL_TOP == "30K"
+        logger.info("MetalTop thickness 30K section")
+        
+        # Rule MT30.1a: Min. thick MetalTop width. is 1.8µm
+        logger.info("Executing rule MT30.1a")
+        mt301a_l1  = top_metal.width(1.8.um, euclidian)
+        mt301a_l1.output("MT30.1a", "MT30.1a : Min. thick MetalTop width. : 1.8µm")
+        mt301a_l1.forget
+        
+        # Rule MT30.1b: Min width for >1000um long metal line (based on metal edge). is 2.2µm
+        logger.info("Executing rule MT30.1b")
+        long_edge = top_metal.edges.with_length(1000.um, nil)
+        mt301b_l1  = top_metal.interacting(long_edge).width(2.2.um, euclidian)
+        mt301b_l1.output("MT30.1b", "MT30.1b : Min width for >1000um long metal line (based on metal edge). : 2.2µm")
+        mt301b_l1.forget
+        long_edge.forget
+        
+        # Rule MT30.2: Min. thick MetalTop space. is 1.8µmtop_metal.not_interacting(metal2.edges.with_length(nil, 10.um)
+        logger.info("Executing rule MT30.2")
+        mt302_l1  = top_metal.space(1.8.um, euclidian)
+        mt302_l1.output("MT30.2", "MT30.2 : Min. thick MetalTop space. : 1.8µm")
+        mt302_l1.forget
+        
+        # Rule MT30.5: Minimum thick MetalTop enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
+        logger.info("Executing rule MT30.5")
+        mt305_l1 = top_metal.enclosing(top_via, 0.12.um, euclidian).polygons(0.001).or(top_via.not_inside(top_metal))
+        mt305_l1.output("MT30.5", "MT30.5 : Minimum thick MetalTop enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].")
+        mt305_l1.forget
+        
+        # Rule MT30.6: Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
+        logger.info("Executing rule MT30.6")
+        mt30p6_cond = top_metal.drc( width < 2.5.um)
+        mt30p6_eol = top_metal.edges.with_length(nil, 2.5.um).interacting(mt30p6_cond.first_edges).interacting(mt30p6_cond.second_edges).not(mt30p6_cond.first_edges).not(mt30p6_cond.second_edges)
+        mt306_l1 = mt30p6_eol.enclosing(top_via.edges,0.25.um, projection)
+        mt306_l1.output("MT30.6", "MT30.6 : Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].")
+        mt306_l1.forget
+        mt30p6_cond.forget
+        mt30p6_eol.forget
+        
+        # Rule MT30.8: There shall be minimum 2X2 array of vias (top vias) at one location connecting to 3um thick top metal.
+        logger.info("Executing rule MT30.8")
+        top_via_not_seal_ring = top_via.not(guard_ring_mk)
+        metal_top_intersections = top_metal.and(topmin1_metal).not(guard_ring_mk).interacting(top_via_not_seal_ring)
+        mt308_l1 = metal_top_intersections.interacting(top_via_not_seal_ring, 1, 3)
+        mt308_poss_l2 = metal_top_intersections.interacting(top_via_not_seal_ring, 4, nil)
+        mt308_poss_via = top_via_not_seal_ring.interacting(mt308_poss_l2)
+        mt308_poss_via_over_under = mt308_poss_via.sized(0.13, "square_limit").merged.sized(-0.13, "square_limit")
+        bad_via_array = mt308_poss_via_over_under.interacting(mt308_poss_via_over_under.edges.with_length(nil, 0.775))
+        mt308_l2 = mt308_poss_l2.interacting(bad_via_array)
+        mt308_output = mt301a_l1.or(mt308_l2)
+        mt308_output.output("MT30.8", "MT30.8 : There shall be minimum 2X2 array of vias (top vias) at one location connecting to 3um thick top metal.")
+        top_via_not_seal_ring.forget
+        metal_top_intersections.forget
+        mt308_l1.forget
+        mt308_poss_l2.forget
+        mt308_poss_via.forget
+        mt308_poss_via_over_under.forget
+        bad_via_array.forget
+        mt308_l2.forget
+        mt308_output.forget
+        
+    end #METAL_TOP
+end #BEOL
     
     
