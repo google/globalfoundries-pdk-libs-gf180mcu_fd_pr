@@ -49,11 +49,11 @@ if FEOL
     pl2_l1.output("PL.2_3.3V", "PL.2_3.3V : Gate Width (Channel Length). : 0.28µm")
     pl2_l1.forget
 
-    pl_2_5v_n = ngate.and(v5_xtor).and(dualgate).width(0.6.um, euclidian).polygons
-    pl_2_5v_p = pgate.and(v5_xtor).and(dualgate).width(0.5.um, euclidian).polygons
+    pl_2_5v_n = ngate_5V.edges.inside_part(comp).width(0.6.um, euclidian).polygons
+    pl_2_5v_p = pgate_5V.edges.inside_part(comp).width(0.5.um, euclidian).polygons
 
-    pl_2_6v_n = ngate.not(v5_xtor).and(dualgate).width(0.7.um, euclidian).polygons
-    pl_2_6v_p = pgate.not(v5_xtor).and(dualgate).width(0.55.um, euclidian).polygons
+    pl_2_6v_n = ngate_6V.edges.inside_part(comp).width(0.7.um, euclidian).polygons
+    pl_2_6v_p = pgate_6V.edges.inside_part(comp).width(0.55.um, euclidian).polygons
 
     # Rule PL.2_5V: Gate Width (Channel Length).
     logger.info("Executing rule PL.2_5V")
@@ -133,19 +133,15 @@ if FEOL
 
     # Rule PL.7_3.3V: 45 degree bent gate width is 0.3µm
     logger.info("Executing rule PL.7_3.3V")
-    pl7_poss_fail_l1  = tgate.not_interacting(v5_xtor).not_interacting(dualgate).width(0.3.um, euclidian)
-    pl7_l1 = pl7_poss_fail_l1.edges.with_angle(-44,46).or(pl7_poss_fail_l1.edges.with_angle(-44,46))
+    pl7_l1  = nom_gate.edges.inside_part(comp).with_angle(-43,47).width(0.3.um, euclidian)
     pl7_l1.output("PL.7_3.3V", "PL.7_3.3V : 45 degree bent gate width : 0.3µm")
     pl7_l1.forget
-    pl7_poss_fail_l1.forget
 
     # Rule PL.7_5V: 45 degree bent gate width is 0.7µm
     logger.info("Executing rule PL.7_5V")
-    pl7_poss_fail_l2  = tgate.overlapping(dualgate).width(0.7.um, euclidian)
-    pl7_l2 = pl7_poss_fail_l2.edges.with_angle(-44,46).or(pl7_poss_fail_l2.edges.with_angle(-44,46))
+    pl7_l2 = thick_gate.edges.inside_part(comp).with_angle(-43,47).width(0.7.um, euclidian)
     pl7_l2.output("PL.7_5V", "PL.7_5V : 45 degree bent gate width : 0.7µm")
     pl7_l2.forget
-    pl7_poss_fail_l2.forget
 
 
     # Rule PL.9: Poly2 inter connect connecting 3.3V and 5V areas (area inside and outside Dualgate) are not allowed. They shall be done though metal lines only.

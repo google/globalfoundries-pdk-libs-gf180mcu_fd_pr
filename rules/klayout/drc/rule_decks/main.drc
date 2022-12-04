@@ -420,9 +420,9 @@ border_count                   = border.count()
 poly_count                     = poly_count + border_count
 
 logger.info("Starting deriving base layers.")
-#================================================
-#------------- LAYERS DERIVATIONS ---------------
-#================================================
+#=====================================================
+#------------- BASE LAYERS DERIVATIONS ---------------
+#=====================================================
 
 ncomp      =  comp      & nplus
 pcomp      =  comp      & pplus
@@ -430,6 +430,18 @@ tgate      =  poly2     & comp
 ngate      =  nplus     & tgate
 pgate      =  pplus     & tgate
 natcompsd	 = (nat       & comp.interacting(poly2)) - tgate
+
+nom_gate = tgate.not(dualgate)
+thick_gate = tgate.and(dualgate)
+
+ngate_56V = ngate.and(dualgate)
+pgate_56V = pgate.and(dualgate)
+
+ngate_5V = ngate_56V.and(v5_xtor)
+pgate_5V = pgate_56V.and(v5_xtor)
+
+ngate_6V = ngate_56V.not(v5_xtor)
+pgate_6V = pgate_56V.not(v5_xtor)
 
 lvpwell_dn = lvpwell.interacting(dnwell)
 lvpwell_out = lvpwell.not_interacting(dnwell)
