@@ -265,20 +265,34 @@ def check_klayout_version():
     # ======= Checking Klayout version =======
     klayout_v_ = os.popen("klayout -v").read()
     klayout_v_ = klayout_v_.split("\n")[0]
+    klayout_v_list = []
+
     if klayout_v_ == "":
         logging.error("Klayout is not found. Please make sure klayout is installed.")
         exit(1)
     else:
-        klayout_v = int(klayout_v_.split(".")[-1])
+        klayout_v_list = [int(v) for v in klayout_v_.split(".")]
+
 
     logging.info(f"Your Klayout version is: {klayout_v_}")
 
-    if klayout_v < 8:
-        logging.info(f"Prerequisites at a minimum: KLayout 0.27.8")
-        logging.error(
-            "Using this klayout version has not been assesed in this development. Limits are unknown"
-        )
+    if len(klayout_v_list) < 1 or len(klayout_v_list) > 3:
+        logging.error("Was not able to get klayout version properly.")
         exit(1)
+    elif len(klayout_v_list) == 2:
+        if klayout_v_list[1] <= 27:
+            logging.warning(f"Prerequisites at a minimum: KLayout 0.27.8")
+            logging.error(
+                "Using this klayout version has not been assesed in this development. Limits are unknown"
+            )
+            exit(1)
+    elif len(klayout_v_list) == 3:
+        if klayout_v_list[1] <= 27 and klayout_v_list[2] < 8:
+            logging.warning(f"Prerequisites at a minimum: KLayout 0.27.8")
+            logging.error(
+                "Using this klayout version has not been assesed in this development. Limits are unknown"
+            )
+            exit(1)
     
 def check_layout_path(layout_path):
     """
