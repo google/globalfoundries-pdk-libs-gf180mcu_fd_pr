@@ -435,6 +435,9 @@ ngate      =  nplus     & tgate
 pgate      =  pplus     & tgate
 natcompsd	 = (nat       & comp.interacting(poly2)) - tgate
 
+lvpwell_dn = lvpwell.interacting(dnwell)
+lvpwell_out = lvpwell.not_interacting(dnwell)
+
 #================================================
 #------------------ SWITCHES --------------------
 #================================================
@@ -572,7 +575,10 @@ if CONNECTIVITY_RULES
   connect(dnwell,  ncomp)
   connect(ncomp,  contact)
   connect(pcomp,  contact)
-  connect(lvpwell,  ncomp)
+
+  connect(lvpwell_out,  pcomp)
+  connect(lvpwell_dn, pcomp)
+
   connect(nwell,  ncomp)
   connect(natcompsd,  contact)
   connect(mvsd,  ncomp)

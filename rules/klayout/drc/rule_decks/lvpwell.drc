@@ -15,28 +15,30 @@
 ################################################################################################
 
 if FEOL
+    lvpwell_dn_56V = lvpwell_dn.interacting(dualgate)
+
     #================================================
     #--------------------LVPWELL---------------------
     #================================================
 
     # Rule LPW.1_3.3V: Min. LVPWELL Width. is 0.6µm
     logger.info("Executing rule LPW.1_3.3V")
-    lpw1_l1  = lvpwell.width(0.6.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
+    lpw1_l1  = lvpwell_dn.width(0.6.um, euclidian)
     lpw1_l1.output("LPW.1_3.3V", "LPW.1_3.3V : Min. LVPWELL Width. : 0.6µm")
     lpw1_l1.forget
 
     # Rule LPW.1_5V: Min. LVPWELL Width. is 0.74µm
     logger.info("Executing rule LPW.1_5V")
-    lpw1_l1  = lvpwell.width(0.74.um, euclidian).polygons(0.001).overlapping(dualgate)
+    lpw1_l1  = lvpwell_dn_56V.width(0.74.um, euclidian)
     lpw1_l1.output("LPW.1_5V", "LPW.1_5V : Min. LVPWELL Width. : 0.74µm")
     lpw1_l1.forget
 
     if CONNECTIVITY_RULES
     logger.info("CONNECTIVITY_RULES section")
 
-    connected_lvpwell_3p3v, unconnected_lvpwell_3p3v = conn_space(lvpwell, 0.86, 1.4, euclidian)
+    connected_lvpwell_3p3v, unconnected_lvpwell_3p3v = conn_space(lvpwell_dn, 0.86, 1.4, euclidian)
 
-    connected_lvpwell_5p0v, unconnected_lvpwell_5p0v = conn_space(lvpwell, 0.86, 1.7, euclidian)
+    connected_lvpwell_5p0v, unconnected_lvpwell_5p0v = conn_space(lvpwell_dn, 0.86, 1.7, euclidian)
 
     # Rule LPW.2a_3.3V: Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. is 1.4µm
     logger.info("Executing rule LPW.2a_3.3V")
@@ -67,13 +69,13 @@ if FEOL
 
     # Rule LPW.2a_3.3V_: Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. is 1.4µm
     logger.info("Executing rule LPW.2a_3.3V_")
-    lpw2a_l1  = lvpwell.isolated(1.4.um, euclidian).polygons(0.001).not_interacting(v5_xtor).not_interacting(dualgate)
+    lpw2a_l1  = lvpwell_dn.isolated(1.4.um, euclidian)
     lpw2a_l1.output("LPW.2a_3.3V_", "LPW.2a_3.3V_ : Min. LVPWELL to LVWELL Space (Inside DNWELL) [Different potential]. : 1.4µm")
     lpw2a_l1.forget
 
     # Rule LPW.2a_5V_: Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. is 1.7µm
     logger.info("Executing rule LPW.2a_5V_")
-    lpw2a_l1  = lvpwell.isolated(1.7.um, euclidian).polygons(0.001).overlapping(dualgate)
+    lpw2a_l1  = lvpwell_dn_56V.isolated(1.7.um, euclidian)
     lpw2a_l1.output("LPW.2a_5V_", "LPW.2a_5V_ : Min. LVPWELL to LVPWELL Space (Inside DNWELL) [Different potential]. : 1.7µm")
     lpw2a_l1.forget
 
@@ -81,49 +83,45 @@ if FEOL
 
     # Rule LPW.3_3.3V: Min. DNWELL enclose LVPWELL. is 2.5µm
     logger.info("Executing rule LPW.3_3.3V")
-    lpw3_l1 = dnwell.enclosing(lvpwell, 2.5.um, euclidian).polygons(0.001)
-    lpw3_l2 = lvpwell.not_outside(dnwell).not(dnwell)
-    lpw3_l  = lpw3_l1.or(lpw3_l2).not_interacting(v5_xtor).not_interacting(dualgate)
-    lpw3_l.output("LPW.3_3.3V", "LPW.3_3.3V : Min. DNWELL enclose LVPWELL. : 2.5µm")
+    lpw3_l1 = dnwell.enclosing(lvpwell_dn, 2.5.um, euclidian).polygons(0.001)
+    lpw3_l2 = lvpwell_dn.not(dnwell)
+    lpw3_l = lpw3_l1.or(lpw3_l2)
+    lpw3_l.output("LPW.3", "LPW.3 : Min. DNWELL enclose LVPWELL. : 2.5µm")
     lpw3_l1.forget
     lpw3_l2.forget
     lpw3_l.forget
 
-    # Rule LPW.3_5V: Min. DNWELL enclose LVPWELL. is 2.5µm
-    logger.info("Executing rule LPW.3_5V")
-    lpw3_l1 = dnwell.enclosing(lvpwell, 2.5.um, euclidian).polygons(0.001)
-    lpw3_l2 = lvpwell.not_outside(dnwell).not(dnwell)
-    lpw3_l  = lpw3_l1.or(lpw3_l2).overlapping(dualgate)
-    lpw3_l.output("LPW.3_5V", "LPW.3_5V : Min. DNWELL enclose LVPWELL. : 2.5µm")
-    lpw3_l1.forget
-    lpw3_l2.forget
-    lpw3_l.forget
+    # Rule LPW.4: If LVPWELL is used as resistor, it must be covered by RES_MK (for LVS
+    ## purpose). Width of the resistor determined by LVPWELL. Length by COMP-
+    ## to-COMP space. RES_MK length shall be coinciding with resistor length
+    ## (Touching COMP each side) and width covering the width of LVPWELL.
+    logger.info("Executing rule LPW.4")
+    res_lpw = lvpwell_dn.interacting(res_mk)
+    res_lpw_cont = lvpwell_dn.not(res_mk)
 
-    # rule LPW.4_3.3V is not a DRC check
+    lpw4_l1 = res_lpw.not_interacting(pcomp)
+    lpw4_l2 = res_lpw.interacting(poly2)
+    lpw4_l3 = lvpwell_dn.interacting(res_lpw_cont, 2..2)
+    lpw4_l = lpw4_l1.or(lpw4_l2).or(lpw4_l3)
+    lpw4_l.output("LPW.4", "LPW.4 : If LVPWELL is used as resistor, it must be covered by RES_MK (for LVS
+    purpose). Width of the resistor determined by LVPWELL. Length by COMP-to-COMP space. RES_MK length shall be coinciding with resistor length
+    (Touching COMP each side) and width covering the width of LVPWELL.")
 
-    # rule LPW.4_5V is not a DRC check
-
-    # Rule LPW.5_3.3V: LVPWELL resistors must be enclosed by DNWELL.
-    logger.info("Executing rule LPW.5_3.3V")
-    lpw5_l1 = lvpwell.inside(res_mk).not_inside(dnwell).not_interacting(v5_xtor).not_interacting(dualgate)
-    lpw5_l1.output("LPW.5_3.3V", "LPW.5_3.3V : LVPWELL resistors must be enclosed by DNWELL.")
-    lpw5_l1.forget
-
-    # Rule LPW.5_5V: LVPWELL resistors must be enclosed by DNWELL.
-    logger.info("Executing rule LPW.5_5V")
-    lpw5_l1 = lvpwell.inside(res_mk).not_inside(dnwell).overlapping(dualgate)
-    lpw5_l1.output("LPW.5_5V", "LPW.5_5V : LVPWELL resistors must be enclosed by DNWELL.")
+    # Rule LPW.5: LVPWELL resistors must be enclosed by DNWELL.
+    logger.info("Executing rule LPW.5")
+    lpw5_l1 = lvpwell_dn.and(res_mk).not(dnwell)
+    lpw5_l1.output("LPW.5", "LPW.5_3.3V : LVPWELL resistors must be enclosed by DNWELL.")
     lpw5_l1.forget
 
     # Rule LPW.11: Min. (LVPWELL outside DNWELL) space to DNWELL. is 1.5µm
     logger.info("Executing rule LPW.11")
-    lpw11_l1  = lvpwell.outside(dnwell).separation(dnwell, 1.5.um, euclidian).polygons(0.001)
+    lpw11_l1  = lvpwell_out.separation(dnwell, 1.5.um, euclidian)
     lpw11_l1.output("LPW.11", "LPW.11 : Min. (LVPWELL outside DNWELL) space to DNWELL. : 1.5µm")
     lpw11_l1.forget
 
     # Rule LPW.12: LVPWELL cannot overlap with Nwell.
     logger.info("Executing rule LPW.12")
-    lpw12_l1 = lvpwell.not_outside(nwell)
+    lpw12_l1 = lvpwell_out.and(nwell)
     lpw12_l1.output("LPW.12", "LPW.12 : LVPWELL cannot overlap with Nwell.")
     lpw12_l1.forget
 end #FEOL

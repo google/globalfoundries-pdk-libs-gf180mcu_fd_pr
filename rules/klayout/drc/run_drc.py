@@ -421,7 +421,7 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     list_of_drc_files.append(drc_file)
 
     # ## Run Main DRC
-    run_check(drc_path, "main", layout_path, drc_run_dir, switches)
+    run_check(drc_file, "main", layout_path, drc_run_dir, switches)
 
 
 # ================================================================
