@@ -46,7 +46,7 @@ if METAL_TOP == "6K"
     mt4_l1.output("MT.4", "MT.4 : Minimum MetalTop area : 0.5625µm²")
     mt4_l1.forget
     
-    elsif METAL_TOP == "9K"
+elsif METAL_TOP == "9K"
     logger.info("MetalTop thickness 9k/11k section")
     
     # Rule MT.1: min. metaltop width is 0.44µm
@@ -73,7 +73,7 @@ if METAL_TOP == "6K"
     mt4_l1.output("MT.4", "MT.4 : Minimum MetalTop area : 0.5625µm²")
     mt4_l1.forget
     
-    elsif METAL_TOP == "30K"
+elsif METAL_TOP == "30K"
     logger.info("MetalTop thickness 30K section")
     
     # Rule MT30.1a: Min. thick MetalTop width. is 1.8µm
@@ -141,6 +141,6 @@ if METAL_TOP == "6K"
     
     mt30p8_slct_via.forget
     
-    end #METAL_TOP
+end #METAL_TOP
     
     

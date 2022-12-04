@@ -14,26 +14,7 @@
 # limitations under the License.
 ################################################################################################
 
-{% include "header.drc.template" %}
 
-#================================================
-#----------------- MAIN RUNSET ------------------
-#================================================
-
-logger.info("Starting GF180MCU DRC rules.")
-if FEOL
-  logger.info("Running all FEOL rules")
-end #FEOL
-
-if BEOL
-  logger.info("Running all BEOL rules")
-end #BEOL
-
-{% for file in include_files_list %}
-
-{% include {{ file }} %}
-
-{% endfor %}
 
 exec_end_time = Time.now
 run_time = exec_end_time - exec_start_time

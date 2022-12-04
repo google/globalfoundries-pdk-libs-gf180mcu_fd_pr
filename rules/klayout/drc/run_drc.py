@@ -17,7 +17,7 @@ Run GlobalFoundries 180nm MCU DRC.
 
 Usage:
     run_drc.py (--help| -h)
-    run_drc.py (--path=<file_path>) (--variant=<combined_options>) [--table=<table_name>] [--mp=<num_cores>] [--run_dir=<run_dir_path>] [--topcell=<topcell_name>] [--thr=<thr>] [--run_mode=<run_mode>] [--no_feol] [--no_beol] [--connectivity] [--density] [--density_only] [--antenna] [--antenna_only] [--no_offgrid]
+    run_drc.py (--path=<file_path>) (--variant=<combined_options>) [--table=<table_name>]... [--mp=<num_cores>] [--run_dir=<run_dir_path>] [--topcell=<topcell_name>] [--thr=<thr>] [--run_mode=<run_mode>] [--no_feol] [--no_beol] [--connectivity] [--density] [--density_only] [--antenna] [--antenna_only] [--no_offgrid]
 
 Options:
     --help -h                           Print this help message.
@@ -51,7 +51,8 @@ import pya
 import glob
 from datetime import datetime
 from subprocess import check_call
-from jinja2 import Template
+import shutil
+
 
 
 def get_results(rule_deck, rules, lyrdb, type):
@@ -104,7 +105,7 @@ def generate_drc_run_template(drc_dir : str, run_dir: str, run_tables_list: list
         Absolute path to the generated DRC file.
     """
     if len(run_tables_list) < 1:
-        all_tables = [os.path.basename(f) for f in glob.glob(os.path.join(drc_dir, "rule_decks", "*.drc")) if "antenna" not in f or "density" not in f]
+        all_tables = [os.path.basename(f) for f in glob.glob(os.path.join(drc_dir, "rule_decks", "*.drc")) if "antenna" not in f and "density" not in f and "main" not in f and "tail" not in f]
         deck_name = "main"
     elif len(run_tables_list) == 1:
         deck_name = run_tables_list[0]
@@ -113,14 +114,16 @@ def generate_drc_run_template(drc_dir : str, run_dir: str, run_tables_list: list
         deck_name = "main"
         
     logging.info("## Generating template with for the following rule tables: {}".format(str(all_tables)))
-    template_path = os.path.join(drc_dir, "rule_deck", "main.drc.template")
+    print(run_dir)
+
+    all_tables.insert(0, "main.drc")
+    all_tables.append("tail.drc")
+
     gen_rule_deck_path = os.path.join(run_dir, "{}.drc".format(deck_name))
-
-    with open(template_path) as f:
-        tmpl = Template(f.read())
-
-        with open(gen_rule_deck_path, "w") as rdf:
-            rdf.write(tmpl.render(include_files_list=all_tables))
+    with open(gen_rule_deck_path,'wb') as wfd:
+        for f in all_tables:
+            with open(os.path.join(drc_dir, "rule_decks", f),'rb') as fd:
+                shutil.copyfileobj(fd, wfd)
     
     return gen_rule_deck_path
 
@@ -332,6 +335,7 @@ def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
         Dictionary that holds all switches that needs to be passed to the antenna checks.
     """
 
+    ## Using print because of the multiprocessing
     logging.info(
         "Running Global Foundries 180nm MCU {} checks on design {} on cell {}:".format(path, drc_name, sws["topcell"])
     )
@@ -392,9 +396,9 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     if arguments["--antenna"] or arguments["--antenna_only"]:
         drc_path = os.path.join(rule_deck_full_path, "rule_decks", "antenna.drc")
         list_of_drc_files.append(drc_path)
+        run_check(drc_path, "antenna", layout_path, drc_run_dir, switches)
 
         if (arguments["--antenna_only"]):
-            run_check(drc_path, "antenna", layout_path, drc_run_dir, switches)
             logging.info("## Completed running Antenna checks only.")
             exit()
 
@@ -402,50 +406,22 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     if arguments["--density"] or arguments["--density_only"]:
         drc_path = os.path.join(rule_deck_full_path, "rule_decks", "density.drc")
         list_of_drc_files.append(drc_path)
+        run_check(drc_path, "density", layout_path, drc_run_dir, switches)
 
         if (arguments["--density_only"]):
-            run_check(drc_path, "density", layout_path, drc_run_dir, switches)
             logging.info("## Completed running density checks only.")
             exit()
 
     ## Generate run rule deck from template.
     if not arguments["--table"]:
-        drc_file = generate_drc_run_template()
+        drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir)
     else:
-
-    ## Run Main DRC
-    drc_path = os.path.join(rule_deck_full_path, "rule_decks", "main.drc")
-    run_check(drc_path, "main", layout_path, drc_run_dir, switches)
-
+        drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir, arguments["--table"])
     
-    # # ======================== Reporting results ========================
-    # curr_path = os.path.dirname(os.path.abspath(__file__))
-    # rule_deck_path = [
-    #     f"{curr_path}/gf180mcu.drc",
-    #     f"{curr_path}/gf180mcu_antenna.drc",
-    #     f"{curr_path}/gf180mcu_density.drc",
-    # ]
+    list_of_drc_files.append(drc_file)
 
-    # # Get rules from rule deck
-    # rules = []
-
-    # # Get rules from rule deck
-    # for runset in rule_deck_path:
-    #     with open(runset, "r") as f:
-    #         for line in f:
-    #             if ".output" in line:
-    #                 line_list = line.split('"')
-    #                 if line_list[1] in rules:
-    #                     pass
-    #                 else:
-    #                     rules.append(line_list[1])
-
-    # # Get results
-    # lyrdbs = ["main_drc", "antenna", "density"]
-    # runsets = ["gf180mcu", "gf180mcu_antenna", "gf180mcu_density"]
-    # for i, lyrdb in enumerate(lyrdbs):
-    #     if os.path.exists(f"{name_clean_}_{lyrdb}_gf{arguments['--gf180mcu']}.lyrdb"):
-    #         get_results(runsets[i], rules, name_clean_, lyrdb)
+    # ## Run Main DRC
+    run_check(drc_path, "main", layout_path, drc_run_dir, switches)
 
 
 # ================================================================
@@ -456,15 +432,16 @@ if __name__ == "__main__":
 
     # arguments
     arguments = docopt(__doc__, version="RUN DRC: 1.0")
+    
+    # logs format
+    now_str = datetime.utcnow().strftime("drc_run_%Y_%m_%d_%H_%M_%S")
 
     if arguments["--run_dir"] == "pwd" or arguments["--run_dir"] == "" or arguments["--run_dir"] is None:
-        drc_run_dir = os.path.abspath(os.getcwd())
+        drc_run_dir = os.path.join(os.path.abspath(os.getcwd()), now_str)
     else:
         drc_run_dir = os.path.abspath(arguments["--run_dir"])
     
-
-    # logs format
-    now_str = datetime.utcnow().strftime("drc_run_%Y_%m_%d_%H_%M_%S")
+    os.makedirs(drc_run_dir, exist_ok=True)
 
     logging.basicConfig(
         level=logging.DEBUG,

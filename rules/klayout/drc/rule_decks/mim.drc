@@ -128,7 +128,7 @@ if MIM_OPTION == "A"
     #-------------MIM CAPACITOR OPTION B-------------
     #================================================
     
-    elsif MIM_OPTION == "B"
+elsif MIM_OPTION == "B"
     logger.info("MIM Capacitor Option B section")
     
     mimtm_virtual = fusetop.sized(1.06.um).and(topmin1_metal.interacting(fusetop))
@@ -233,8 +233,8 @@ if MIM_OPTION == "A"
     
     # rule MIMTM.12 is not a DRC check
     
-    else
-    logger.info("No MIM Capacitor Option Selected section")
-    
-    end #MIM_OPTION
+else
+  logger.info("No MIM Capacitor Option Selected section")  
+end #MIM_OPTION
+
     
