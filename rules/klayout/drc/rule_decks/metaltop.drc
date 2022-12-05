@@ -109,7 +109,7 @@ if BEOL
         
         # Rule MT30.6: Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].
         logger.info("Executing rule MT30.6")
-        mt30p6_cond = top_metal.drc( width < 2.5.um)
+        mt30p6_cond = top_metal.width(2.5.um)
         mt30p6_eol = top_metal.edges.with_length(nil, 2.5.um).interacting(mt30p6_cond.first_edges).interacting(mt30p6_cond.second_edges).not(mt30p6_cond.first_edges).not(mt30p6_cond.second_edges)
         mt306_l1 = mt30p6_eol.enclosing(top_via.edges,0.25.um, projection)
         mt306_l1.output("MT30.6", "MT30.6 : Thick MetalTop end-of-line (width <2.5um) enclose underlying via (for example: via5 for 6LM case) [Outside Not Allowed].")

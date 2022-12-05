@@ -54,7 +54,7 @@ if BEOL
 
     # rule V1.3b is not a DRC check
 
-    v1p3c_cond = metal1.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+    v1p3c_cond = metal1.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
     v1p3c_eol = metal1.edges.with_length(nil, 0.34.um).interacting(v1p3c_cond.first_edges).interacting(v1p3c_cond.second_edges).not(v1p3c_cond.first_edges).not(v1p3c_cond.second_edges)
     # Rule V1.3c: metal-1 (< 0.34um) end-of-line overlap. is 0.06µm
     logger.info("Executing rule V1.3c")
@@ -89,7 +89,7 @@ if BEOL
     v14a_l1.output("V1.4a", "V1.4a : metal-2 overlap of via1.")
     v14a_l1.forget
 
-    v1p4b_cond = metal2.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+    v1p4b_cond = metal2.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
     v1p4b_eol = metal2.edges.with_length(nil, 0.34.um).interacting(v1p4b_cond.first_edges).interacting(v1p4b_cond.second_edges).not(v1p4b_cond.first_edges).not(v1p4b_cond.second_edges)
     # Rule V1.4b: metal-2 (< 0.34um) end-of-line overlap. is 0.06µm
     logger.info("Executing rule V1.4b")
