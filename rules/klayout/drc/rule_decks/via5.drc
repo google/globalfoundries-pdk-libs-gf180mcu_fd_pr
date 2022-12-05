@@ -55,7 +55,7 @@ if BEOL
         v53b_l1.output("V5.3b", "V5.3b : metal5  overlap of via5.")
         v53b_l1.forget
 
-        v5p3c_cond = metal5.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+        v5p4b_cond = metaltop.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
         v5p3c_eol = metal5.edges.with_length(nil, 0.34.um).interacting(v5p3c_cond.first_edges).interacting(v5p3c_cond.second_edges).not(v5p3c_cond.first_edges).not(v5p3c_cond.second_edges)
         # Rule V5.3c: metal5 (< 0.34um) end-of-line overlap. is 0.06µm
         logger.info("Executing rule V5.3c")

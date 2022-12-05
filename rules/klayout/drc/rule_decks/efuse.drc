@@ -154,19 +154,19 @@ ef17_l1.forget
 
 # Rule EF.18: PLFUSE must sit on field oxide (NOT COMP), no cross with any COMP, Nplus, Pplus, ESD, SAB, Resistor, Metal1, Metal2.
 logger.info("Executing rule EF.18")
-ef18_l1 = plfuse.not_outside(comp.or(nplus).or(esd).or(sab).or(resistor).or(metal1).or(metal2))
+ef18_l1 = plfuse.not(plfuse.outside(comp).outside(nplus).outside(esd).outside(sab).outside(resistor).outside(metal1).outside(metal2))
 ef18_l1.output("EF.18", "EF.18 : PLFUSE must sit on field oxide (NOT COMP), no cross with any COMP, Nplus, Pplus, ESD, SAB, Resistor, Metal1, Metal2.")
 ef18_l1.forget
 
 # Rule EF.19: Min. PLFUSE space to Metal1, Metal2.
 logger.info("Executing rule EF.19")
-ef19_l1 = plfuse.not_outside(metal1.or(metal2))
+ef19_l1 = plfuse.not(plfuse.outside(metal1).outside(metal2))
 ef19_l1.output("EF.19", "EF.19 : Min. PLFUSE space to Metal1, Metal2.")
 ef19_l1.forget
 
 # Rule EF.20: Min. PLFUSE space to COMP, Nplus, Pplus, Resistor, ESD, SAB. is 2.73µm
 logger.info("Executing rule EF.20")
-ef20_l1  = plfuse.separation(comp.or(nplus).or(esd).or(sab).or(resistor), 2.73.um, euclidian).polygons(0.001)
+ef20_l1 = plfuse.separation(comp + nplus + esd + sab + resistor, 2.73.um, euclidian)
 ef20_l1.output("EF.20", "EF.20 : Min. PLFUSE space to COMP, Nplus, Pplus, Resistor, ESD, SAB. : 2.73µm")
 ef20_l1.forget
 
