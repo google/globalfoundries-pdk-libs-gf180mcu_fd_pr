@@ -50,7 +50,7 @@ if BEOL
     # Rule CO.3: Poly2 overlap of contact. is 0.07µm
     logger.info("Executing rule CO.3")
     co3_l1 = poly2.enclosing(main_contact, 0.07.um, euclidian).polygons(0.001)
-    co3_l2 = cmain_contact.not_outside(poly2).not(poly2)
+    co3_l2 = main_contact.not_outside(poly2).not(poly2)
 
     co3_l  = co3_l1.or(co3_l2)
     co3_l.output("CO.3", "CO.3 : Poly2 overlap of contact. : 0.07µm")
