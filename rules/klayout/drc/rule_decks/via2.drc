@@ -55,8 +55,9 @@ if BEOL
         v23b_l1 = metal2.enclosing(via2, 0.01.um, euclidian).polygons(0.001).or(via2.not_inside(metal2).not(metal2))
         v23b_l1.output("V2.3b", "V2.3b : metal2  overlap of via2.")
         v23b_l1.forget
+        
+        v2p3c_cond = metal2.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
 
-        v2p3c_cond = metal2.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
         v2p3c_eol = metal2.edges.with_length(nil, 0.34.um).interacting(v2p3c_cond.first_edges).interacting(v2p3c_cond.second_edges).not(v2p3c_cond.first_edges).not(v2p3c_cond.second_edges)
         # Rule V2.3c: metal2 (< 0.34um) end-of-line overlap. is 0.06µm
         logger.info("Executing rule V2.3c")
@@ -91,7 +92,8 @@ if BEOL
         v24a_l1.output("V2.4a", "V2.4a : metal3 overlap of via2.")
         v24a_l1.forget
 
-        v2p4b_cond = metal3.drc( width <= 0.34.um).with_length(0.28.um,nil,both)
+        v2p4b_cond = metal3.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
+
         v2p4b_eol = metal3.edges.with_length(nil, 0.34.um).interacting(v2p4b_cond.first_edges).interacting(v2p4b_cond.second_edges).not(v2p4b_cond.first_edges).not(v2p4b_cond.second_edges)
         # Rule V2.4b: metal3 (< 0.34um) end-of-line overlap. is 0.06µm
         logger.info("Executing rule V2.4b")
