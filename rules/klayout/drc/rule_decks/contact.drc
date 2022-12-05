@@ -14,7 +14,7 @@
 # limitations under the License.
 ################################################################################################
 
-if BEOL
+if FEOL
 
     #================================================
     #--------------------CONTACT---------------------
@@ -153,5 +153,5 @@ if BEOL
     co11_l1.output("CO.11", "CO.11 : Contact on field oxide is forbidden.")
     co11_l1.forget
 
-end #BEOL
+end #FEOL
 
