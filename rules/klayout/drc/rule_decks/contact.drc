@@ -51,6 +51,7 @@ if BEOL
     logger.info("Executing rule CO.3")
     co3_l1 = poly2.enclosing(main_contact, 0.07.um, euclidian).polygons(0.001)
     co3_l2 = cmain_contact.not_outside(poly2).not(poly2)
+
     co3_l  = co3_l1.or(co3_l2)
     co3_l.output("CO.3", "CO.3 : Poly2 overlap of contact. : 0.07µm")
     co3_l1.forget
@@ -87,6 +88,7 @@ if BEOL
 
     # Rule CO.6: Metal1 overlap of contact.
     logger.info("Executing rule CO.6")
+
     co6_l1 = contact.enclosed(metal1, 0.005.um, euclidian).polygons(0.001) + contact.not(metal1)
     co6_l1.output("CO.6", "CO.6 : Metal1 overlap of contact.")
     co6_l1.forget
@@ -95,6 +97,7 @@ if BEOL
     logger.info("Executing rule CO.6a")
     cop6a_cond = metal1.width(0.34.um + 1.dbu).with_length(0.24.um, nil, both)
     cop6a_eol = metal1.edges.with_length(nil, 0.34.um).interacting(cop6a_cond.first_edges).interacting(cop6a_cond.second_edges).not(cop6a_cond.first_edges).not(cop6a_cond.second_edges)
+
     co6a_l1 = cop6a_eol.enclosing(contact.edges,0.06.um, projection).polygons(0.001)
     co6a_l1.output("CO.6a", "CO.6a : (i) Metal1 (< 0.34um) end-of-line overlap. : 0.06µm")
     co6a_l1.forget
