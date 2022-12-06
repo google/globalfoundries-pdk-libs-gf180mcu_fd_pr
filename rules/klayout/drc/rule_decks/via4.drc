@@ -87,9 +87,15 @@ if BEOL
 
         # Rule V4.4a: metal5 overlap of via4.
         logger.info("Executing rule V4.4a")
-        v44a_l1 = metal5.enclosing(via4, 0.01.um, euclidian).polygons(0.001).or(via4.not_inside(metal5).not(metal5))
-        v44a_l1.output("V4.4a", "V4.4a : metal5 overlap of via4.")
-        v44a_l1.forget
+        if METAL_LEVEL == "5LM"
+            v44a_l1 = top_metal.enclosing(via4, 0.01.um, euclidian).polygons(0.001).or(via4.not_inside(top_metal).not(top_metal))
+            v44a_l1.output("V4.4a", "V4.4a : metal5 overlap of via4.")
+            v44a_l1.forget
+        else
+            v44a_l1 = metal5.enclosing(via4, 0.01.um, euclidian).polygons(0.001).or(via4.not_inside(metal5).not(metal5))
+            v44a_l1.output("V4.4a", "V4.4a : metal5 overlap of via4.")
+            v44a_l1.forget
+        end
 
         v4p4b_cond = metal5.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
         v4p4b_eol = metal5.edges.with_length(nil, 0.34.um).interacting(v4p4b_cond.first_edges).interacting(v4p4b_cond.second_edges).not(v4p4b_cond.first_edges).not(v4p4b_cond.second_edges)
