@@ -28,43 +28,10 @@ on:
 env:
   GITHUB_TOKEN: ${{ github.token }}
   DOCKER_BUILDKIT: 1
-  IMAGE: ghcr.io/${{ github.repository }}/test
+  IMAGE: ghcr.io/mabrains/pdk_regression
 
 jobs:
-  BuildContainerImage:
-    runs-on: ubuntu-latest
-    steps:
-
-      - uses: actions/checkout@v3
-
-      - name: Build container image
-        run: |
-          docker build -t "$IMAGE" -f- rules/klayout <<EOF
-          FROM gcr.io/hdl-containers/klayout
-
-          RUN apt-get update -qq \
-           && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
-              make \
-              procps \
-              python3-pip \
-           && apt-get autoclean && apt-get clean && apt-get -y autoremove \
-           && rm -rf /var/lib/apt/lists/*
-
-          RUN --mount=type=bind,target=/tmp/ctx pip3 install -r /tmp/ctx/requirements.test.txt
-          EOF
-
-      - name: Push container image to registry
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: pyTooling/Actions/with-post-step@r0
-        with:
-          main: |
-            echo '${{ github.token }}' | docker login ghcr.io -u gha --password-stdin
-            docker push "$IMAGE"
-          post: docker logout ghcr.io
-
-
   Test:
-    needs: BuildContainerImage
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

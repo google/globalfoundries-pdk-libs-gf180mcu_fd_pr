@@ -13,378 +13,483 @@
 # limitations under the License.
 
 """
-Run GlobalFoundries 180nm MCU DRC Regression.
+Run GlobalFoundries 180nm BCDLite DRC Unit Regression.
 
 Usage:
     run_regression.py (--help| -h)
-    run_regression.py (--path=<file_path>)... [--thr=<thr>] [--no_feol] [--no_beol] [--metal_top=<metal_top>] [--mim_option=<mim_option>] [--metal_level=<metal_level>] [--no_offgrid] [--run_name=<run_name>]
+    run_regression.py [--mp=<num>] [--run_name=<run_name>] [--rule_name=<rule_name>] [--table_name=<table_name>]
 
 Options:
     --help -h                           Print this help message.
-    --path=<file_path>                  The input GDS file path.
-    --thr=<thr>                         The number of threads used in run.
-    --no_feol                           Turn off FEOL rules from running.
-    --no_beol                           Turn off BEOL rules from running.
-    --metal_top=<metal_top>             Select top metal thickness option. Allowed values (6K , 9K, 11K, 30K). [default: 9K]
-    --mim_option=<mim_option>           Select MIM capacitor option. Allowed values (A, B, NO_MIM). [default: NO_MIM]
-    --metal_level=<metal_level>         Select the number of metal layers in stack. Allowed values (2, 3, 4, 5, 6). [default: 6]
-    --no_offgrid                        Turn off OFFGRID checking rules.
+    --mp=<num>                          The number of threads used in run.
     --run_name=<run_name>               Select your run name.
+    --rule_name=<rule_name>             Target specific rule.
+    --table_name=<table_name>           Target specific table.
 """
 
 from subprocess import check_call
+import concurrent.futures
+import traceback
 
+import re
 from docopt import docopt
 import os
 import datetime
 import xml.etree.ElementTree as ET
-import csv
 import time
-import re
 import pandas as pd
 import logging
+import glob
+from pathlib import Path
+
+SUPPORTED_TC_EXT = "gds"
 
 
-def call_regression(rule_deck_path, path):
+def parse_results_db(results_database):
+    """
+    This function will parse Klayout database for analysis.
 
-    t0 = time.time()
-    marker_gen = []
-    rules = []
-    ly = 0
+    Parameters
+    ----------
+    results_database : string or Path object
+        Path string to the results file
+    
+    Returns
+    -------
+    set
+        A set that contains all rules in the database with violations
+    """
 
-    # set folder structure for each run
-    x = f"{datetime.datetime.now()}"
-    x = x.replace(" ", "_")
-    name_ext = str(rule_deck_path).replace(".drc", "").split("/")[-1]
-    check_call(f"mkdir run_{x}_{name_ext}", shell=True)
-
-    # Get the same rule deck with gds output
-    with open(rule_deck_path, "r") as f:
-        for line in f:
-            if "GEOMETRY RULES" in line:
-                break
-            if ".output" in line:
-                line_list = line.split(".output")
-                line = line_list[0] + f".output(10000, {ly})\n"
-                ly += 1
-            marker_gen.append(line)
-
-    marker_gen.append(
-        f'\n source.layout.write("{os.getcwd()}/run_{x}_{name_ext}/merged_output.gds") \n'
-    )
-
-    data = "".join(marker_gen)
-    data = re.sub("if\s\$report.*\n.*\.*\n.*\n.*\n.*\n.*\nend", "", data)
-
-    # Create marker drc file
-    marker_file = open(f"run_{x}_{name_ext}/markers.drc", "w")
-    marker_file.write(data)
-    marker_file.close()
-
-    # Getting threads count
-    if args["--thr"]:
-        thrCount = args["--thr"][0]
-    else:
-        thrCount = os.cpu_count() * 2
-
-    # Generate gds
-    iname = path.split(".gds")
-    if "/" in iname[0]:
-        file = iname[0].split("/")
-        check_call(
-            f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={file[-1]}.lyrdb -rd thr={thrCount} {switches} ",
-            shell=True,
-        )
-    else:
-        check_call(
-            f"klayout -b -r run_{x}_{name_ext}/markers.drc -rd input={path} -rd report={iname[0]}.lyrdb -rd thr={thrCount} {switches} ",
-            shell=True,
-        )
-
-    marker_gen = []
-    ly = 0
-    remove_if = False
-
-    # Get the small rule deck with gds output
-    with open(rule_deck_path, "r") as f:
-        for line in f:
-            if 'logger.info("Starting GF180MCU DENSITY DRC rules.")' in line:
-                remove_if = True
-            if remove_if == True:
-                if "CHIP.area" in line or "end\n" in line and "end #" not in line:
-                    line = ""
-            if "GEOMETRY RULES" in line:
-                break
-            if ".output" in line:
-                line_list = line.split('"')
-                rules.append(line_list[1])
-                name_list = line_list[1].split("_")
-                rule = line_list[1]
-                if "3.3V" in name_list[-1]:
-                    rule = "_".join(name_list[:-1]) + '_LV")'
-                elif "5V" in name_list[-1]:
-                    rule = (
-                        "_".join(name_list[:-1])
-                        + f'_MV").or(input(11, 222).texts("{"_".join(name_list[:-1])}_5V")).or(input(11, 222).texts("{"_".join(name_list[:-1])}_MV_5V"))'
-                    )
-                elif "6V" in name_list[-1]:
-                    rule = (
-                        "_".join(name_list[:-1])
-                        + f'_MV").or(input(11, 222).texts("{"_".join(name_list[:-1])}_6V")).or(input(11, 222).texts("{"_".join(name_list[:-1])}_MV_6V"))'
-                    )
-                else:
-                    rule = rule + '")'
-
-                line = f"""(input(2, 222).interacting(input(11, 222).texts("{rule})).interacting(input(10000, {ly})).output("{line_list[1]}_false_positive", "{line_list[1]}_false_positive occurred") \n
-    ((input(6, 222).interacting(input(3, 222).interacting(input(11, 222).texts("{rule}))).or((input(3, 222).interacting(input(11, 222).texts("{rule})).not_interacting(input(6, 222)))).not_interacting(input(10000, {ly})).output("{line_list[1]}_false_negative", "{line_list[1]}_false_negative occurred") \n
-    CHIP.not_interacting(input(11, 222).texts("{rule}).output("{line_list[1]}_not_tested", "{line_list[1]}_not_tested")\n"""
-                ly += 1
-            if "deep" in line:
-                line = ""
-            marker_gen.append(line)
-
-    # Create small drc file
-    marker_file = open(f"run_{x}_{name_ext}/regression.drc", "w")
-    marker_file.write("".join(marker_gen))
-    marker_file.close()
-
-    # Generate databases
-    check_call(
-        f"klayout -b -r run_{x}_{name_ext}/regression.drc -rd input=run_{x}_{name_ext}/merged_output.gds -rd report=database.lyrdb -rd thr={thrCount} {switches}",
-        shell=True,
-    )
-
-    mytree = ET.parse(f"run_{x}_{name_ext}/database.lyrdb")
+    mytree = ET.parse(results_database)
     myroot = mytree.getroot()
 
-    report = [
-        [
-            "Rule_Name",
-            "False_Positive",
-            "False_Negative",
-            "Total_Violations",
-            "Not_Tested",
-            "Known_issues",
-        ]
-    ]
-    conc = [["Rule_Name", "Status"]]
+    all_violating_rules = set()
 
-    # Initial counters
-    not_tested_c = 0
-    passed = 0
-    failed = 0
-    known_issues = 0
+    for z in myroot[7]:  # myroot[7] : List rules with viloations
+        all_violating_rules.add(f"{z[1].text}".replace("'", ""))
 
-    # Get known issues list
-    known_issues_df = pd.read_csv("DRC_Known_issues.csv", usecols=["Rule "])
-    known_issues_list = known_issues_df["Rule "].tolist()
+    return all_violating_rules
 
-    for lrule in rules:
 
-        # Values of each rule in results
-        not_run = 1
-        not_tested = 0
-        falseNeg = 0
-        falsePos = 0
-        total_violation = 0
+def run_test_case(
+    runset_file,
+    drc_dir,
+    layout_path,
+    run_dir,
+    test_type,
+    test_table,
+    test_rule,
+    thrCount,
+    switches="",
+):
+    """
+    This function run a single test case using the correct DRC file.
 
-        # Check whether the rule was run or not
-        for z in myroot[5]:
-            if f"{lrule}_not_tested" == f"{z[0].text}":
-                not_run = 0
-                break
+    Parameters
+    ----------
+    runset_file : string or None
+        Filename of the runset to be used.
+    drc_dir : string or Path
+        Path to the location where all runsets exist.
+    layout_path : stirng or Path object
+        Path string to the layout of the test pattern we want to test.
+    run_dir : stirng or Path object
+        Path to the location where is the regression run is done.
+    test_type : string
+        Type of the test case either pass or fail.
+    test_rule : string
+        Rule under test
+    switches : string
+        String that holds all the DRC run switches required to enable this.
+    
+    Returns
+    -------
+    pd.DataFrame
+        A pandas DataFrame with the rule and rule deck used.
+    """
 
-        # Loop on database to get the violations of required rule
-        for z in myroot[7]:
-            if (
-                f"'{lrule}_not_tested'" == f"{z[1].text}" or not_run == 1
-            ):  # (f"{rule}" in f"{z[1].text}") and ("tested" in f"{z[1].text}"):
-                not_tested += 1
-                break
+    pattern_clean = layout_path.with_suffix("").stem
+    output_loc = f"{run_dir}/{test_table}/{test_rule}/{test_type}_patterns"
+    pattern_results = f"{output_loc}/{pattern_clean}_database.lyrdb"
+    pattern_log = f"{output_loc}/{pattern_clean}_drc.log"
+
+    if runset_file == "nan" or runset_file is None or runset_file == "":
+        return "cannot_find_rule"
+
+    drc_file_path = os.path.join(drc_dir, runset_file)
+
+    call_str = f"klayout -b -r {drc_file_path} -rd input={layout_path} -rd report={pattern_results} -rd thr={thrCount} {switches}"
+    os.makedirs(output_loc, exist_ok=True)
+    check_call(call_str, shell=True)
+
+    if os.path.isfile(pattern_results):
+        rules_with_violations = parse_results_db(pattern_results)
+        print(rules_with_violations)
+        if test_type == "pass":
+            if test_rule in rules_with_violations:
+                return "false_negative"
             else:
-                if (
-                    f"'{lrule}_false_positive'" == f"{z[1].text}"
-                ):  # (f"{rule}" in f"{z[1].text}") and ("positive" in f"{z[1].text}"):
-                    falsePos += 1
-                if (
-                    f"'{lrule}_false_negative'" == f"{z[1].text}"
-                ):  # (f"{rule}" in f"{z[1].text}") and ("negative" in f"{z[1].text}"):
-                    falseNeg += 1
-
-        # failed rules
-        total_violation = falsePos + falseNeg
-
-        report.append(
-            [lrule, falsePos, falseNeg, total_violation, not_tested, known_issues]
-        )
-        if total_violation == 0 and not_tested == 0:
-            conc.append([lrule, "Pass"])
-            passed += 1
-        elif not_tested != 0:
-            conc.append([lrule, "Not_Tested"])
-            not_tested_c += 1
-        elif lrule in known_issues_list:
-            conc.append([lrule, "known_issues"])
-            known_issues += 1
+                return "true_positive"
         else:
-            conc.append([lrule, "Fail"])
-            failed += 1
-
-    # Create final reports files
-    with open(f"run_{x}_{name_ext}/report.csv", "w") as f:
-        writer = csv.writer(f, delimiter=",")
-        writer.writerows(report)
-
-    with open(f"run_{x}_{name_ext}/conclusion.csv", "w") as f:
-        writer = csv.writer(f, delimiter=",")
-        writer.writerows(conc)
-
-    logging.info(f"========= Summary Report in {name_ext} for {path} =========")
-    logging.info(f"Total rules: {len(conc)}")
-    logging.info(f"{not_tested_c} not tested rules")
-    logging.info(f"{passed} passed rules ")
-    logging.info(f"{known_issues} known_issues rules ")
-    logging.info(f"{failed} failed rules ")
-
-    t1 = time.time()
-    logging.info(f"Execution time {t1 - t0} s")
-    logging.info(f"===============================================================")
-
-    if failed > 0:
-        logging.info("Some unit tests has failed. Failing regression:")
-        df = pd.read_csv(f"run_{x}_{name_ext}/conclusion.csv")
-        pd.set_option("display.max_columns", None)
-        pd.set_option("display.max_rows", None)
-        pd.set_option("max_colwidth", None)
-        pd.set_option("display.width", 1000)
-        logging.info("## Full report:")
-        print(df)
-
-        print("\n")
-        logging.info("## Only failed")
-        print(df[df["Status"] == "Fail"])
-
-        exit(1)
-    return report
+            if test_rule in rules_with_violations:
+                return "true_negative"
+            else:
+                return "false_positive"
+    else:
+        return "database_not_found"
 
 
-if __name__ == "__main__":
+def run_all_test_cases(tc_df, run_dir, thrCount):
+    """
+    This function run all test cases from the input dataframe.
 
-    # logs format
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
-        datefmt="%d-%b-%Y %H:%M:%S",
+    Parameters
+    ----------
+    tc_df : pd.DataFrame
+        DataFrame that holds all the test cases information for running.
+    run_dir : string or Path
+        Path string to the location of the testing code and output.
+    thrCount : int
+        Numbe of threads to use per klayout run.
+    
+    Returns
+    -------
+    pd.DataFrame
+        A pandas DataFrame with all test cases information post running.
+    """
+
+    results = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+        future_to_run_id = dict()
+        for i, row in tc_df.iterrows():
+            future_to_run_id[
+                executor.submit(
+                    run_test_case,
+                    str(row["runset"]),
+                    drc_dir,
+                    row["test_path"],
+                    run_dir,
+                    row["test_type"],
+                    row["table_name"],
+                    row["rule_name"],
+                    thrCount,
+                )
+            ] = row["run_id"]
+
+        for future in concurrent.futures.as_completed(future_to_run_id):
+            run_id = future_to_run_id[future]
+            try:
+                status_string = future.result()
+            except Exception as exc:
+                logging.error("%d generated an exception: %s" % (run_id, exc))
+                traceback.print_exc()
+                status_string = "exception"
+
+            info = dict()
+            info["run_id"] = run_id
+            info["run_status"] = status_string
+            results.append(info)
+
+    results_df = pd.DataFrame(results)
+    all_runs_df = tc_df.merge(results_df, on="run_id", how="left")
+
+    return all_runs_df
+
+
+def parse_existing_rules(rule_deck_path, output_path):
+    """
+    This function collects the rule names from the existing drc rule decks.
+
+    Parameters
+    ----------
+    rule_deck_path : string or Path object
+        Path string to the DRC directory where all the DRC files are located.
+    output_path : string or Path
+        Path of the run location to store the output analysis file.
+
+    Returns
+    -------
+    pd.DataFrame
+        A pandas DataFrame with the rule and rule deck used.
+    """
+
+    drc_files = glob.glob(os.path.join(rule_deck_path, "rule_decks", "*.drc"))
+    rules_data = list()
+
+    for runset in drc_files:
+        with open(runset, "r") as f:
+            for line in f:
+                if ".output" in line:
+                    line_list = line.split('"')
+                    rule_info = dict()
+                    rule_info["runset"] = os.path.basename(runset)
+                    rule_info["rule_name"] = line_list[1]
+                    rules_data.append(rule_info)
+
+    df = pd.DataFrame(rules_data)
+    df.drop_duplicates(inplace=True)
+    df.to_csv(os.path.join(output_path, "rule_deck_rules.csv"), index=False)
+    return df
+
+
+def analyze_test_patterns_coverage(rules_df, tc_df, output_path):
+    """
+    This function analyze the test patterns before running the test cases.
+
+    Parameters
+    ----------
+    rules_df : pd.DataFrame
+        DataFrame that holds all the rules that are found in the rule deck.
+    tc_df : pd.DataFrame
+        DataFrame that holds all the test cases and all the information required.
+    output_path : string or Path
+        Path of the run location to store the output analysis file.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame with analysis of the rule testing coverage.
+    """
+    cov_rows_df = (
+        tc_df[["table_name", "rule_name", "test_type", "test_name"]]
+        .groupby(["table_name", "rule_name", "test_type"])
+        .count()
+        .reset_index(drop=False)
+        .rename(columns={"test_name": "count"})
+    )
+    cov_df = cov_rows_df.pivot(
+        index=["table_name", "rule_name"], columns=["test_type"], values=["count"]
+    ).reset_index(drop=False)
+    cov_df.columns = ["_".join(pair) for pair in cov_df.columns]
+    cov_df.rename(
+        columns={
+            "table_name_": "table_name",
+            "rule_name_": "rule_name",
+            "count_fail": "fail_test_patterns_count",
+            "count_pass": "pass_test_patterns_count",
+        },
+        inplace=True,
     )
 
-    # Initial values for DRC report
-    sub_report = []
-    full_report = []
-    final_report = [["Rule_Name", "Status"]]
-    final_detailed_report = [
+    cov_df = cov_df[
         [
-            "Rule_Name",
-            "False_Postive",
-            "False_Negative",
-            "Total_Violations",
-            "Not_Tested",
-            "Known_issues",
+            "table_name",
+            "rule_name",
+            "pass_test_patterns_count",
+            "fail_test_patterns_count",
         ]
     ]
+    cov_df = cov_df.merge(rules_df, on="rule_name", how="outer")
+    cov_df[["pass_test_patterns_count", "fail_test_patterns_count"]] = (
+        cov_df[["pass_test_patterns_count", "fail_test_patterns_count"]]
+        .fillna(0)
+        .astype(int)
+    )
+    cov_df["runset"].fillna("", inplace=True)
+    cov_df.to_csv(os.path.join(output_path, "testcases_coverage.csv"), index=False)
+    return cov_df
+
+
+def analyze_regression_run(tc_cv_df, all_tc_df, output_path):
+    """
+    This function analyze the regression run post running and generate a report with all the required details.
+
+    Parameters
+    ----------
+    tc_cv_df : pd.DataFrame
+        DataFrame that holds the test cases cover report.
+    all_tc_df : pd.DataFrame
+        DataFrame that holds all the test cases and the run results associated.
+    output_path : string or Path
+        Path of the run location to store the output analysis file.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame with analysis of the rule testing coverage.
+    """
+    cov_rows_df = (
+        all_tc_df[["table_name", "rule_name", "test_type", "test_name", "run_status"]]
+        .groupby(["table_name", "rule_name", "test_type", "run_status"])
+        .count()
+        .reset_index(drop=False)
+        .rename(columns={"test_name": "count"})
+    )
+
+    cov_df = cov_rows_df.pivot(
+        index=["table_name", "rule_name"],
+        columns=["test_type", "run_status"],
+        values=["count"],
+    ).reset_index(drop=False)
+    cov_df.columns = ["_".join(pair) for pair in cov_df.columns]
+    cov_df.rename(
+        columns={"table_name__": "table_name", "rule_name__": "rule_name"}, inplace=True
+    )
+
+    cov_df = cov_df.merge(tc_cv_df, on=["rule_name", "table_name"], how="outer")
+    all_count_columns = [c for c in cov_df.columns if "count" in c]
+
+    cov_df[all_count_columns] = cov_df[all_count_columns].fillna(0).astype(int)
+
+    cov_df["runset"].fillna("", inplace=True)
+    cov_df.to_csv(os.path.join(output_path, "regression_run_analysis.csv"), index=False)
+
+    return cov_df
+
+def convert_results_db_to_gds()
+
+def run_regression(drc_dir, testing_dir, run_name, target_table, target_rule, cpu_count):
+    """
+    Running Regression Procedure.
+
+    This function runs the full regression on all test cases.
+
+    Parameters
+    ----------
+    drc_dir : string
+        Path string to the DRC directory where all the DRC files are located.
+    testing_dir : string
+        Path string to the location of the testing code and output.
+    run_name : string
+        Name of the run folder used to store all run output.
+    target_table : string or None
+        Name of table that we want to run regression for. If None, run all found.
+    target_rule : string or None
+        Name of rule that we want to run regression for. If None, run all found.
+    cpu_count : int
+        Number of cpus to use in running testcases.
+    Returns
+    -------
+    bool
+        If all regression passed, it returns true. If any of the rules failed it returns false.
+    """
+    
+    output_path = os.path.join(testing_dir, run_name)
+
+    ## Parse Existing Rules
+    rules_df = parse_existing_rules(drc_dir, output_path)
+    logging.info("## Total number of rules found: {}".format(len(rules_df)))
+    print(rules_df)
+
+    ## Get tc_df with the correct rule deck per rule.
+    tc_df = tc_df.merge(rules_df, how="left", on="rule_name")
+    tc_df["run_id"] = list(range(len(tc_df)))
+
+    print(tc_df)
+    tc_df.to_csv(os.path.join(output_path, "all_test_cases.csv"), index=False)
+
+    ## Do some test cases coverage analysis
+    cov_df = analyze_test_patterns_coverage(rules_df, tc_df, output_path)
+    print(cov_df)
+
+    ## Run all test cases
+    all_tc_df = run_all_test_cases(tc_df, output_path, thrCount)
+    print(all_tc_df)
+    all_tc_df.to_csv(
+        os.path.join(output_path, "all_test_cases_results.csv"), index=False
+    )
+
+    ## Analyze regression run and generate a report
+    regr_df = analyze_regression_run(cov_df, all_tc_df, output_path)
+    print(regr_df)
+
+    ## Check if there any rules that generated false positive or false negative
+    failing_results = all_tc_df[
+        ~all_tc_df["run_status"].isin(["true_positive", "true_negative"])
+    ]
+    print(failing_results)
+    logging.info("## Failing testcases : {}".format(len(failing_results)))
+
+    if len(failing_results) > 0:
+        logging.error("## Some test cases failed .....")
+        return False
+    else:
+        logging.info("## All testcases passed.")
+        return True
+
+def main(args: dict, drc_dir: str, run_name: str):
+    """
+    main run main functionality
+
+    This function is the main execution procedure
+
+    Parameters
+    ----------
+    args : dict
+        Dictionary of arguments passed to the command line.
+    testing_dir : str
+        String that holds the full path of the location of the testing dir.
+    drc_dir : str
+        String that holds the full path of the rule deck files.
+    run_name : str
+        Name of the run that we want to use for this run.
+        
+    """
+
+    # Pandas printing setup
+    pd.set_option("display.max_columns", None)
+    pd.set_option("display.max_rows", None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option("display.width", 1000)
+
+    # No. of threads
+    cpu_count = os.cpu_count() if args["--mp"] == None else int(args["--mp"])
+
+    target_table = args["--table_name"]
+    target_rule = args["--rule_name"]
+    
+    logging.info("## Run folder is: {}".format(run_name))
+    logging.info("## Target Table is: {}".format(target_table))
+    logging.info("## Target rule is: {}".format(target_rule))
 
     # Start of execution time
     t0 = time.time()
 
-    # Reading docopt arguments
-    args = docopt(__doc__)
-
-    # DRC switches definitions
-    switches = ""
-
-    if args["--no_feol"]:
-        switches = switches + "-rd feol=false "
-    else:
-        switches = switches + "-rd feol=true "
-
-    if args["--no_beol"]:
-        switches = switches + "-rd beol=false "
-    else:
-        switches = switches + "-rd beol=true "
-
-    if args["--no_offgrid"]:
-        switches = switches + "-rd offgrid=false "
-    else:
-        switches = switches + "-rd offgrid=true "
-
-    if args["--metal_top"] in ["6K", "9K", "11K", "30K"]:
-        switches = switches + f'-rd metal_top={args["--metal_top"]} '
-    else:
-        logging.error("Top metal thickness allowed values are (6K , 9K, 11K, 30K) only")
-        exit()
-
-    if args["--mim_option"] in ["A", "B", "NO_MIM"]:
-        switches = switches + f'-rd mim_option={args["--mim_option"]} '
-    else:
-        logging.error("MIM capacitor option allowed values are (A, B, NO_MIM) only")
-        exit()
-
-    if args["--metal_level"] in ["2", "3", "4", "5", "6"]:
-        switches = switches + f'-rd metal_level={args["--metal_level"]}LM '
-    else:
-        logging.error(
-            "The number of metal layers in stack allowed values are (2, 3, 4, 5, 6) only"
-        )
-        exit()
-
-    # Starting regression
-    # Getting drc rule decks
-    rule_deck_path = []
-    files = os.listdir(f"..")
-    for file in files:
-        if ".drc" in file:
-            rule_deck_path.append(f"../{file}")
-
-    # Running regression
-    for path in args["--path"]:
-        for runset in rule_deck_path:
-            return_report = call_regression(runset, path)
-            sub_report += return_report[1:]
-        full_report.append(sub_report)
-        sub_report = []
-
-    rule_num = 0
-
-    for rule in full_report[0]:
-        fail = 0
-        no_test = 1
-        falseNeg = 0
-        falsePos = 0
-        for file in range(len(full_report)):
-            falsePos = falsePos + full_report[file][rule_num][1]
-            falseNeg = falseNeg + full_report[file][rule_num][2]
-            fail = fail + full_report[file][rule_num][3]
-            no_test = no_test * full_report[file][rule_num][4]
-
-        final_detailed_report.append([rule[0], falsePos, falseNeg, fail, no_test])
-
-        if fail == 0 and no_test == 0:
-            final_report.append([rule[0], "Pass"])
-        elif no_test != 0:
-            final_report.append([rule[0], "Not_Tested"])
-        else:
-            final_report.append([rule[0], "Fail"])
-        rule_num += 1
-
-    run_name = args["--run_name"]
-
-    with open(f"final_detailed_report_{run_name}.csv", "w") as f:
-        writer = csv.writer(f, delimiter=",")
-        writer.writerows(final_detailed_report)
-
-    with open(f"final_report_{run_name}.csv", "w") as f:
-        writer = csv.writer(f, delimiter=",")
-        writer.writerows(final_report)
+    # Calling main function
+    run_status = run_regression(
+        drc_dir, testing_dir, run_name, target_table, target_rule, cpu_count
+    )
 
     #  End of execution time
-    t1 = time.time()
-    logging.error(f"Total execution time {t1 - t0} s")
+    logging.info("Total execution time {}s".format(time.time() - t0))
+
+    if run_status:
+        logging.info("Test completed successfully.")
+    else:
+        logging.error("Test failed.")
+        exit(1)
+
+
+# ================================================================
+# -------------------------- MAIN --------------------------------
+# ================================================================
+
+if __name__ == "__main__":
+
+    # arguments
+    args = docopt(__doc__, version="DRC Regression: 0.2")
+    
+    run_name = args["--run_name"]
+
+    if run_name is None:
+        # logs format
+        run_name = datetime.utcnow().strftime("unit_tests_%Y_%m_%d_%H_%M_%S")
+
+    testing_dir = os.path.dirname(os.path.abspath(__file__))
+    drc_dir = os.path.dirname(testing_dir)
+    output_path = os.path.join(testing_dir, run_name)
+
+    os.makedirs(output_path, exist_ok=True)
+
+    # logs format
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+        logging.FileHandler(os.path.join(output_path, "{}.log".format(run_name))),
+        logging.StreamHandler()
+        ],
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
+
+    main(args, drc_dir, run_name)
