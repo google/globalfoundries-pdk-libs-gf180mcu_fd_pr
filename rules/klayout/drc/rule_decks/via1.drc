@@ -39,7 +39,7 @@ if BEOL
     selected_via1 = via1.interacting(via1_4x4_loc)
     via1b_l1  = selected_via1.space(0.36.um, euclidian)
     via1b_l1.output("V1.2b", "V1.2b : Via1 Space in 4x4 or larger via1 array : 0.36µm")
-    v12b_l1.forget
+    via1b_l1.forget
     poss_4_4_via1.forget
     via1_4x4_loc.forget
     selected_via1.forget
@@ -58,7 +58,7 @@ if BEOL
     v1p3c_eol_extended_in = v1p3c_eol.extended_in(0.06.um)
     v1p3c_l1 = via1.interacting(v1p3c_eol_extended_in)
     v1p3c_l1.output("V1.3c", "V1.3c : metal1 (< 0.34um) end-of-line overlap. : 0.06µm")
-    v13c_l1.forget
+    v1p3c_l1.forget
     v1p3c_cond.forget
     v1p3c_eol.forget
     v1p3c_eol_extended_in.forget

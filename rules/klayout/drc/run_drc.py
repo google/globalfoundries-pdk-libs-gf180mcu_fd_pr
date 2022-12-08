@@ -430,6 +430,7 @@ def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
     report_path = os.path.join(run_dir, "{}_{}.lyrdb".format(layout_base_name, drc_name))
     new_sws["report"] = report_path
     sws_str = build_switches_string(new_sws)
+    sws_str += f" -rd table_name={drc_name}"
 
     run_str = "klayout -b -r {} {}".format(
         drc_file,
@@ -501,7 +502,7 @@ def run_parallel_run(arguments: dict, rule_deck_full_path: str, layout_path: str
             try:
                 list_res_db_files.append(future.result())
             except Exception as exc:
-                logging.error("%d generated an exception: %s" % (run_name, exc))
+                logging.error("%s generated an exception: %s" % (run_name, str(exc)))
                 traceback.print_exc()
 
     ## Check run

@@ -38,6 +38,12 @@ end
 logger.info("Starting running GF180MCU Klayout DRC runset on %s" % [$input])
 logger.info("Ruby Version for klayout: %s" % [RUBY_VERSION])
 
+if $table_name
+  table_name = $table_name
+else
+  table_name = "main"
+end
+
 if $input
     if $topcell
         source($input, $topcell)

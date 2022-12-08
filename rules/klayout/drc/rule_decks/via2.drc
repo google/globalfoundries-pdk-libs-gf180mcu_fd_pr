@@ -41,7 +41,7 @@ if BEOL
         selected_via2 = via2.interacting(via2_4x4_loc)
         via2b_l1  = selected_via2.space(0.36.um, euclidian)
         via2b_l1.output("V2.2b", "V2.2b : via2 Space in 4x4 or larger via2 array : 0.36µm")
-        v22b_l1.forget
+        via2b_l1.forget
         poss_4_4_via2.forget
         via2_4x4_loc.forget
         selected_via2.forget
@@ -53,6 +53,8 @@ if BEOL
         v23a_l = v23a_l1.or(v23a_l2)
         v23a_l1.output("V2.3a", "V2.3a : metal2 overlap of via2 >= 0.01")
         v23a_l1.forget
+        v23a_l2.forget
+        v23a_l.forget
 
         # rule V2.3b is not a DRC check
         # Rule V2.3c: metal2 (< 0.34um) end-of-line overlap. is 0.06µm
@@ -61,8 +63,8 @@ if BEOL
         v2p3c_eol = metal2.edges.with_length(nil, 0.34.um).interacting(v2p3c_cond.first_edges).interacting(v2p3c_cond.second_edges).not(v2p3c_cond.first_edges).not(v2p3c_cond.second_edges)
         v2p3c_eol_extended_in = v2p3c_eol.extended_in(0.06.um)
         v2p3c_l1 = via2.interacting(v2p3c_eol_extended_in)
-        v23c_l1.output("V2.3c", "V2.3c : metal2 (< 0.34um) end-of-line overlap. : 0.06µm")
-        v23c_l1.forget
+        v2p3c_l1.output("V2.3c", "V2.3c : metal2 (< 0.34um) end-of-line overlap. : 0.06µm")
+        v2p3c_l1.forget
         v2p3c_cond.forget
         v2p3c_eol.forget
         v2p3c_eol_extended_in.forget

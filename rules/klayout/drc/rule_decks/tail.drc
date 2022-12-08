@@ -18,5 +18,6 @@
 
 exec_end_time = Time.now
 run_time = exec_end_time - exec_start_time
-logger.info("DRC Total Run time %f seconds" % [run_time])
+logger.info("%s DRC Total Run time %f seconds" % [table_name, run_time])
+
 

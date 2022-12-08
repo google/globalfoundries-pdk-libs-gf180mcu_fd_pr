@@ -40,7 +40,7 @@ if BEOL
         selected_via5 = via5.interacting(via5_4x4_loc)
         via5b_l1  = selected_via5.space(0.36.um, euclidian)
         via5b_l1.output("V5.2b", "V5.2b : via5 Space in 4x4 or larger via5 array : 0.36µm")
-        v52b_l1.forget
+        via5b_l1.forget
         poss_4_4_via5.forget
         via5_4x4_loc.forget
         selected_via5.forget
@@ -52,6 +52,8 @@ if BEOL
         v53a_l = v53a_l1.or(v53a_l2)
         v53a_l1.output("V5.3a", "V5.3a : metal5 overlap of via5 >= 0.01")
         v53a_l1.forget
+        v53a_l2.forget
+        v53a_l.forget
 
         # rule V5.3b is not a DRC check
         # Rule V5.3c: metal5 (< 0.34um) end-of-line overlap. is 0.06µm
@@ -60,8 +62,8 @@ if BEOL
         v5p3c_eol = metal5.edges.with_length(nil, 0.34.um).interacting(v5p3c_cond.first_edges).interacting(v5p3c_cond.second_edges).not(v5p3c_cond.first_edges).not(v5p3c_cond.second_edges)
         v5p3c_eol_extended_in = v5p3c_eol.extended_in(0.06.um)
         v5p3c_l1 = via5.interacting(v5p3c_eol_extended_in)
-        v53c_l1.output("V5.3c", "V5.3c : metal5 (< 0.34um) end-of-line overlap. : 0.06µm")
-        v53c_l1.forget
+        v5p3c_l1.output("V5.3c", "V5.3c : metal5 (< 0.34um) end-of-line overlap. : 0.06µm")
+        v5p3c_l1.forget
         v5p3c_cond.forget
         v5p3c_eol.forget
         v5p3c_eol_extended_in.forget
