@@ -249,7 +249,7 @@ def generate_klayout_switches(arguments, layout_path):
 
     # No. of threads
     thrCount = (
-        os.cpu_count() * 2 if arguments["--thr"] == None else int(arguments["--thr"])
+        2 if arguments["--thr"] == None else int(arguments["--thr"])
     )
     switches["thr"] = str(int(thrCount))
 
