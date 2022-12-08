@@ -28,7 +28,7 @@ Options:
                                         variant=C: Select  metal_top=9K   mim_option=B  metal_level=5LM
     --topcell=<topcell_name>            Topcell name to use.
     --table=<table_name>                Table name to use to run the rule deck.
-    --mp=<num_cores>                    Run the rule deck in parts in parallel to speed up the run.
+    --mp=<num_cores>                    Run the rule deck in parts in parallel to speed up the run. [default: 1]
     --run_dir=<run_dir_path>            Run directory to save all the results [default: pwd]
     --thr=<thr>                         The number of threads used in run.
     --run_mode=<run_mode>               Select klayout mode Allowed modes (flat , deep, tiling). [default: flat]
@@ -46,13 +46,13 @@ from docopt import docopt
 import os
 import xml.etree.ElementTree as ET
 import logging
-import subprocess
 import pya
 import glob
 from datetime import datetime
 from subprocess import check_call
 import shutil
-
+import concurrent.futures
+import traceback
 
 
 def get_rules_with_violations(results_database):
@@ -90,6 +90,10 @@ def check_drc_results(results_db_files: list):
     results_db_files : list
         A list of strings that represent paths to results databases of all the DRC runs.
     """
+
+    if len(results_db_files) < 1:
+        logging.error("Klayout did not generate any rdb results. Please check run logs")
+        exit(1)
 
     full_violating_rules = set()
 
@@ -197,6 +201,17 @@ def get_top_cell_names(gds_path):
     top_cells = [t.name for t in layout.top_cells()]
     
     return top_cells
+
+def get_list_of_tables(drc_dir: str):
+    """
+    get_list_of_tables get the list of available tables in the drc
+
+    Parameters
+    ----------
+    drc_dir : str
+        Path to the DRC folder to get the list of tables from.
+    """
+    return [os.path.basename(f).replace(".drc", "") for f in glob.glob(os.path.join(drc_dir, "rule_decks", "*.drc")) if "antenna" not in f and "density" not in f and "main" not in f and "tail" not in f]
 
 def get_run_top_cell_name(arguments, layout_path):
     """
@@ -424,7 +439,125 @@ def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
     check_call(run_str, shell=True)
 
     return report_path
-                
+
+def run_parallel_run(arguments: dict, rule_deck_full_path: str, layout_path: str, switches: dict, drc_run_dir: str):
+    """
+    run_single_processor run the drc checks as in a multi-processing.
+
+    Parameters
+    ----------
+    arguments : dict
+        Dictionary that holds the arguments passed to the run_drc script.
+    rule_deck_full_path : str
+        String that holds the path of the rule deck files.
+    layout_path : str
+        Path to the target layout.
+    switches : dict
+        Dictionary that holds all the switches that will be passed to klayout run.
+    drc_run_dir : str
+        Path to the run location.
+    """
+
+    list_rule_deck_files = dict()
+
+    ## Run Antenna if required.
+    if arguments["--antenna"]:
+        drc_path = os.path.join(rule_deck_full_path, "rule_decks", "antenna.drc")
+        list_rule_deck_files["antenna"] = drc_path
+
+    ## Run Density if required.
+    if arguments["--density"]:
+        drc_path = os.path.join(rule_deck_full_path, "rule_decks", "density.drc")
+        list_rule_deck_files["density"] = drc_path
+
+    ## list_res_db_files.append(run_check(drc_path, "antenna", layout_path, drc_run_dir, switches))
+    if not arguments["--table"]:
+        list_of_tables = get_list_of_tables(rule_deck_full_path)
+    else:
+        list_of_tables = arguments["--table"]
+
+    ## Generate run rule deck from template.
+    for t in list_of_tables:
+        drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir, [t])
+        list_rule_deck_files[t] = drc_file
+
+    ## Run All DRC files.
+    list_res_db_files = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+        future_to_run_name = dict()
+        for n in list_rule_deck_files:
+            future_to_run_name[
+                executor.submit(
+                    run_check,
+                    list_rule_deck_files[n],
+                    n,
+                    layout_path,
+                    drc_run_dir,
+                    switches)
+            ] = n
+
+        for future in concurrent.futures.as_completed(future_to_run_name):
+            run_name = future_to_run_name[future]
+            try:
+                list_res_db_files.append(future.result())
+            except Exception as exc:
+                logging.error("%d generated an exception: %s" % (run_name, exc))
+                traceback.print_exc()
+
+    ## Check run
+    check_drc_results(list_res_db_files)
+
+
+def run_single_processor(arguments: dict, rule_deck_full_path: str, layout_path: str, switches: dict, drc_run_dir: str):
+    """
+    run_single_processor run the drc checks as single run.
+
+    Parameters
+    ----------
+    arguments : dict
+        Dictionary that holds the arguments passed to the run_drc script.
+    rule_deck_full_path : str
+        String that holds the path of the rule deck files.
+    layout_path : str
+        Path to the target layout.
+    switches : dict
+        Dictionary that holds all the switches that will be passed to klayout run.
+    drc_run_dir : str
+        Path to the run location.
+    """
+
+    list_res_db_files = []
+
+    ## Run Antenna if required.
+    if arguments["--antenna"] or arguments["--antenna_only"]:
+        drc_path = os.path.join(rule_deck_full_path, "rule_decks", "antenna.drc")
+        list_res_db_files.append(run_check(drc_path, "antenna", layout_path, drc_run_dir, switches))
+
+        if (arguments["--antenna_only"]):
+            logging.info("## Completed running Antenna checks only.")
+            exit()
+
+    ## Run Density if required.
+    if arguments["--density"] or arguments["--density_only"]:
+        drc_path = os.path.join(rule_deck_full_path, "rule_decks", "density.drc")
+        list_res_db_files.append(run_check(drc_path, "density", layout_path, drc_run_dir, switches))
+
+        if (arguments["--density_only"]):
+            logging.info("## Completed running density checks only.")
+            exit()
+
+    ## Generate run rule deck from template.
+    if not arguments["--table"]:
+        drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir)
+    else:
+        drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir, arguments["--table"])
+
+    ## Run Main DRC
+    list_res_db_files.append(run_check(drc_file, "main", layout_path, drc_run_dir, switches))
+
+    ## Check run
+    check_drc_results(list_res_db_files)
+
 def main(drc_run_dir: str, now_str: str, arguments: dict):
     """
     main function to run the DRC.
@@ -463,42 +596,11 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     ## Get run switches
     switches = generate_klayout_switches(arguments, layout_path)
 
-    list_of_drc_files = []
-    list_res_db_files = []
-
-    ## Run Antenna if required.
-    if arguments["--antenna"] or arguments["--antenna_only"]:
-        drc_path = os.path.join(rule_deck_full_path, "rule_decks", "antenna.drc")
-        list_of_drc_files.append(drc_path)
-        list_res_db_files.append(run_check(drc_path, "antenna", layout_path, drc_run_dir, switches))
-
-        if (arguments["--antenna_only"]):
-            logging.info("## Completed running Antenna checks only.")
-            exit()
-
-    ## Run Density if required.
-    if arguments["--density"] or arguments["--density_only"]:
-        drc_path = os.path.join(rule_deck_full_path, "rule_decks", "density.drc")
-        list_of_drc_files.append(drc_path)
-        list_res_db_files.append(run_check(drc_path, "density", layout_path, drc_run_dir, switches))
-
-        if (arguments["--density_only"]):
-            logging.info("## Completed running density checks only.")
-            exit()
-
-    ## Generate run rule deck from template.
-    if not arguments["--table"]:
-        drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir)
+    if int(arguments["--mp"]) == 1 or arguments["--antenna_only"] or arguments["--density_only"]:
+        run_single_processor(arguments, rule_deck_full_path, layout_path, switches, drc_run_dir)
     else:
-        drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir, arguments["--table"])
+        run_parallel_run(arguments, rule_deck_full_path, layout_path, switches, drc_run_dir)
     
-    list_of_drc_files.append(drc_file)
-
-    ## Run Main DRC
-    list_res_db_files.append(run_check(drc_file, "main", layout_path, drc_run_dir, switches))
-
-    ## Check run
-    check_drc_results(list_res_db_files)
 
 
 # ================================================================
