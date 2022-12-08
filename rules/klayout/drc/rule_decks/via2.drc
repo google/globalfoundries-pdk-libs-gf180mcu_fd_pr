@@ -61,7 +61,7 @@ if BEOL
         logger.info("Executing rule V2.3c")
         v2p3c_cond = metal2.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
         v2p3c_eol = metal2.edges.with_length(nil, 0.34.um).interacting(v2p3c_cond.first_edges).interacting(v2p3c_cond.second_edges).not(v2p3c_cond.first_edges).not(v2p3c_cond.second_edges)
-        v2p3c_eol_extended_in = v2p3c_eol.extended_in(0.06.um)
+        v2p3c_eol_extended_in = v2p3c_eol.extended_in(0.06.um - 5.dbu)
         v2p3c_l1 = via2.interacting(v2p3c_eol_extended_in)
         v2p3c_l1.output("V2.3c", "V2.3c : metal2 (< 0.34um) end-of-line overlap. : 0.06µm")
         v2p3c_l1.forget
@@ -95,7 +95,7 @@ if BEOL
         logger.info("Executing rule V2.4b")
         v2p4b_cond = metal3.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
         v2p4b_eol = metal3.edges.with_length(nil, 0.34.um).interacting(v2p4b_cond.first_edges).interacting(v2p4b_cond.second_edges).not(v2p4b_cond.first_edges).not(v2p4b_cond.second_edges)
-        v2p4b_eol_extended_in = v2p4b_eol.extended_in(0.06.um)
+        v2p4b_eol_extended_in = v2p4b_eol.extended_in(0.06.um - 5.dbu)
         v2p4b_l1 = via2.interacting(v2p4b_eol_extended_in)
         v2p4b_l1.output("V2.4b", "V2.4b : metal3 (< 0.34um) end-of-line overlap. : 0.06µm")
         v2p4b_l1.forget
