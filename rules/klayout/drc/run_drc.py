@@ -80,6 +80,7 @@ def get_rules_with_violations(results_database):
 
     return all_violating_rules
 
+
 def check_drc_results(results_db_files: list):
     """
     check_drc_results Checks the results db generated from run and report at the end if the DRC run failed or passed.
@@ -100,7 +101,7 @@ def check_drc_results(results_db_files: list):
     for f in results_db_files:
         violating_rules = get_rules_with_violations(f)
         full_violating_rules.update(violating_rules)
-    
+
     if len(full_violating_rules) > 0:
         logging.error("Klayout DRC run is not clean.")
         logging.error("Violated rules are : {}\n".format(str(full_violating_rules)))
@@ -138,7 +139,7 @@ def get_results(rule_deck, rules, lyrdb, type):
         logging.info("Klayout GDS DRC Clean\n")
 
 
-def generate_drc_run_template(drc_dir : str, run_dir: str, run_tables_list: list =[]):
+def generate_drc_run_template(drc_dir: str, run_dir: str, run_tables_list: list = []):
     """
     generate_drc_run_template will generate the template file to run drc in the run_dir path.
 
@@ -159,7 +160,14 @@ def generate_drc_run_template(drc_dir : str, run_dir: str, run_tables_list: list
         Absolute path to the generated DRC file.
     """
     if len(run_tables_list) < 1:
-        all_tables = [os.path.basename(f) for f in glob.glob(os.path.join(drc_dir, "rule_decks", "*.drc")) if "antenna" not in f and "density" not in f and "main" not in f and "tail" not in f]
+        all_tables = [
+            os.path.basename(f)
+            for f in glob.glob(os.path.join(drc_dir, "rule_decks", "*.drc"))
+            if "antenna" not in f
+            and "density" not in f
+            and "main" not in f
+            and "tail" not in f
+        ]
         deck_name = "main"
     elif len(run_tables_list) == 1:
         deck_name = run_tables_list[0]
@@ -167,20 +175,25 @@ def generate_drc_run_template(drc_dir : str, run_dir: str, run_tables_list: list
     else:
         all_tables = ["{}.drc".format(t) for t in run_tables_list]
         deck_name = "main"
-        
-    logging.info("## Generating template with for the following rule tables: {}".format(str(all_tables)))
+
+    logging.info(
+        "## Generating template with for the following rule tables: {}".format(
+            str(all_tables)
+        )
+    )
     print(run_dir)
 
     all_tables.insert(0, "main.drc")
     all_tables.append("tail.drc")
 
     gen_rule_deck_path = os.path.join(run_dir, "{}.drc".format(deck_name))
-    with open(gen_rule_deck_path,'wb') as wfd:
+    with open(gen_rule_deck_path, "wb") as wfd:
         for f in all_tables:
-            with open(os.path.join(drc_dir, "rule_decks", f),'rb') as fd:
+            with open(os.path.join(drc_dir, "rule_decks", f), "rb") as fd:
                 shutil.copyfileobj(fd, wfd)
-    
+
     return gen_rule_deck_path
+
 
 def get_top_cell_names(gds_path):
     """
@@ -199,8 +212,9 @@ def get_top_cell_names(gds_path):
     layout = pya.Layout()
     layout.read(gds_path)
     top_cells = [t.name for t in layout.top_cells()]
-    
+
     return top_cells
+
 
 def get_list_of_tables(drc_dir: str):
     """
@@ -211,7 +225,15 @@ def get_list_of_tables(drc_dir: str):
     drc_dir : str
         Path to the DRC folder to get the list of tables from.
     """
-    return [os.path.basename(f).replace(".drc", "") for f in glob.glob(os.path.join(drc_dir, "rule_decks", "*.drc")) if "antenna" not in f and "density" not in f and "main" not in f and "tail" not in f]
+    return [
+        os.path.basename(f).replace(".drc", "")
+        for f in glob.glob(os.path.join(drc_dir, "rule_decks", "*.drc"))
+        if "antenna" not in f
+        and "density" not in f
+        and "main" not in f
+        and "tail" not in f
+    ]
+
 
 def get_run_top_cell_name(arguments, layout_path):
     """
@@ -237,12 +259,15 @@ def get_run_top_cell_name(arguments, layout_path):
     else:
         layout_topcells = get_top_cell_names(layout_path)
         if len(layout_topcells) > 1:
-            logging.error("## Layout has mutliple topcells. Please determine which topcell you want to run on.")
+            logging.error(
+                "## Layout has mutliple topcells. Please determine which topcell you want to run on."
+            )
             exit(1)
         else:
             topcell = layout_topcells[0]
-    
+
     return topcell
+
 
 def generate_klayout_switches(arguments, layout_path):
     """
@@ -263,9 +288,7 @@ def generate_klayout_switches(arguments, layout_path):
     switches = dict()
 
     # No. of threads
-    thrCount = (
-        2 if arguments["--thr"] == None else int(arguments["--thr"])
-    )
+    thrCount = 2 if arguments["--thr"] == None else int(arguments["--thr"])
     switches["thr"] = str(int(thrCount))
 
     if arguments["--run_mode"] in ["flat", "deep", "tiling"]:
@@ -278,17 +301,17 @@ def generate_klayout_switches(arguments, layout_path):
         switches["metal_top"] = "30K"
         switches["mim_option"] = "A"
         switches["metal_level"] = "3LM"
-        #switches = switches + f"-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM "
+        # switches = switches + f"-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM "
     elif arguments["--variant"] == "B":
         switches["metal_top"] = "11K"
         switches["mim_option"] = "B"
         switches["metal_level"] = "4LM"
-        #switches = switches + f"-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM "
+        # switches = switches + f"-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM "
     elif arguments["--variant"] == "C":
         switches["metal_top"] = "9K"
         switches["mim_option"] = "B"
         switches["metal_level"] = "5LM"
-        #switches = switches + f"-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM "
+        # switches = switches + f"-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM "
     else:
         logging.error("variant switch allowed values are (A , B, C) only")
         exit()
@@ -317,11 +340,12 @@ def generate_klayout_switches(arguments, layout_path):
         switches["density"] = "true"
     else:
         switches["density"] = "false"
-    
+
     switches["topcell"] = get_run_top_cell_name(arguments, layout_path)
     switches["input"] = layout_path
 
     return switches
+
 
 def check_klayout_version():
     """
@@ -357,7 +381,8 @@ def check_klayout_version():
                 "Using this klayout version has not been assesed in this development. Limits are unknown"
             )
             exit(1)
-    
+
+
 def check_layout_path(layout_path):
     """
     check_layout_type checks if the layout provided is GDS. Otherwise, kill the process. We only support GDS now.
@@ -380,8 +405,9 @@ def check_layout_path(layout_path):
     if not ".gds" in layout_path:
         logging.error("## Layout is not in GDSII format. Please use gds format.")
         exit(1)
-    
+
     return os.path.abspath(layout_path)
+
 
 def build_switches_string(sws: dict):
     """
@@ -395,10 +421,11 @@ def build_switches_string(sws: dict):
     switches_str = ""
     for k in sws:
         switches_str += "-rd {}={} ".format(k, sws[k])
-    
+
     return switches_str
 
-def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
+
+def run_check(drc_file: str, drc_name: str, path: str, run_dir: str, sws: dict):
     """
     run_antenna_check run DRC check based on DRC file provided.
 
@@ -422,26 +449,34 @@ def run_check(drc_file:str, drc_name:str, path: str, run_dir: str, sws: dict):
 
     ## Using print because of the multiprocessing
     logging.info(
-        "Running Global Foundries 180nm MCU {} checks on design {} on cell {}:".format(path, drc_name, sws["topcell"])
+        "Running Global Foundries 180nm MCU {} checks on design {} on cell {}:".format(
+            path, drc_name, sws["topcell"]
+        )
     )
 
     layout_base_name = os.path.basename(path).split(".")[0]
     new_sws = sws.copy()
-    report_path = os.path.join(run_dir, "{}_{}.lyrdb".format(layout_base_name, drc_name))
+    report_path = os.path.join(
+        run_dir, "{}_{}.lyrdb".format(layout_base_name, drc_name)
+    )
     new_sws["report"] = report_path
     sws_str = build_switches_string(new_sws)
     sws_str += f" -rd table_name={drc_name}"
 
-    run_str = "klayout -b -r {} {}".format(
-        drc_file,
-        sws_str
-    )
+    run_str = "klayout -b -r {} {}".format(drc_file, sws_str)
 
     check_call(run_str, shell=True)
 
     return report_path
 
-def run_parallel_run(arguments: dict, rule_deck_full_path: str, layout_path: str, switches: dict, drc_run_dir: str):
+
+def run_parallel_run(
+    arguments: dict,
+    rule_deck_full_path: str,
+    layout_path: str,
+    switches: dict,
+    drc_run_dir: str,
+):
     """
     run_single_processor run the drc checks as in a multi-processing.
 
@@ -494,7 +529,8 @@ def run_parallel_run(arguments: dict, rule_deck_full_path: str, layout_path: str
                     n,
                     layout_path,
                     drc_run_dir,
-                    switches)
+                    switches,
+                )
             ] = n
 
         for future in concurrent.futures.as_completed(future_to_run_name):
@@ -509,7 +545,13 @@ def run_parallel_run(arguments: dict, rule_deck_full_path: str, layout_path: str
     check_drc_results(list_res_db_files)
 
 
-def run_single_processor(arguments: dict, rule_deck_full_path: str, layout_path: str, switches: dict, drc_run_dir: str):
+def run_single_processor(
+    arguments: dict,
+    rule_deck_full_path: str,
+    layout_path: str,
+    switches: dict,
+    drc_run_dir: str,
+):
     """
     run_single_processor run the drc checks as single run.
 
@@ -532,18 +574,22 @@ def run_single_processor(arguments: dict, rule_deck_full_path: str, layout_path:
     ## Run Antenna if required.
     if arguments["--antenna"] or arguments["--antenna_only"]:
         drc_path = os.path.join(rule_deck_full_path, "rule_decks", "antenna.drc")
-        list_res_db_files.append(run_check(drc_path, "antenna", layout_path, drc_run_dir, switches))
+        list_res_db_files.append(
+            run_check(drc_path, "antenna", layout_path, drc_run_dir, switches)
+        )
 
-        if (arguments["--antenna_only"]):
+        if arguments["--antenna_only"]:
             logging.info("## Completed running Antenna checks only.")
             exit()
 
     ## Run Density if required.
     if arguments["--density"] or arguments["--density_only"]:
         drc_path = os.path.join(rule_deck_full_path, "rule_decks", "density.drc")
-        list_res_db_files.append(run_check(drc_path, "density", layout_path, drc_run_dir, switches))
+        list_res_db_files.append(
+            run_check(drc_path, "density", layout_path, drc_run_dir, switches)
+        )
 
-        if (arguments["--density_only"]):
+        if arguments["--density_only"]:
             logging.info("## Completed running density checks only.")
             exit()
 
@@ -551,13 +597,18 @@ def run_single_processor(arguments: dict, rule_deck_full_path: str, layout_path:
     if not arguments["--table"]:
         drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir)
     else:
-        drc_file = generate_drc_run_template(rule_deck_full_path, drc_run_dir, arguments["--table"])
+        drc_file = generate_drc_run_template(
+            rule_deck_full_path, drc_run_dir, arguments["--table"]
+        )
 
     ## Run Main DRC
-    list_res_db_files.append(run_check(drc_file, "main", layout_path, drc_run_dir, switches))
+    list_res_db_files.append(
+        run_check(drc_file, "main", layout_path, drc_run_dir, switches)
+    )
 
     ## Check run
     check_drc_results(list_res_db_files)
+
 
 def main(drc_run_dir: str, now_str: str, arguments: dict):
     """
@@ -589,7 +640,7 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     if not arguments["--path"]:
         logging.error("No provided gds file, please add one")
         exit(1)
-    
+
     ## Check layout type
     layout_path = arguments["--path"]
     layout_path = check_layout_path(layout_path)
@@ -597,11 +648,18 @@ def main(drc_run_dir: str, now_str: str, arguments: dict):
     ## Get run switches
     switches = generate_klayout_switches(arguments, layout_path)
 
-    if int(arguments["--mp"]) == 1 or arguments["--antenna_only"] or arguments["--density_only"]:
-        run_single_processor(arguments, rule_deck_full_path, layout_path, switches, drc_run_dir)
+    if (
+        int(arguments["--mp"]) == 1
+        or arguments["--antenna_only"]
+        or arguments["--density_only"]
+    ):
+        run_single_processor(
+            arguments, rule_deck_full_path, layout_path, switches, drc_run_dir
+        )
     else:
-        run_parallel_run(arguments, rule_deck_full_path, layout_path, switches, drc_run_dir)
-    
+        run_parallel_run(
+            arguments, rule_deck_full_path, layout_path, switches, drc_run_dir
+        )
 
 
 # ================================================================
@@ -612,22 +670,26 @@ if __name__ == "__main__":
 
     # arguments
     arguments = docopt(__doc__, version="RUN DRC: 1.0")
-    
+
     # logs format
     now_str = datetime.utcnow().strftime("drc_run_%Y_%m_%d_%H_%M_%S")
 
-    if arguments["--run_dir"] == "pwd" or arguments["--run_dir"] == "" or arguments["--run_dir"] is None:
+    if (
+        arguments["--run_dir"] == "pwd"
+        or arguments["--run_dir"] == ""
+        or arguments["--run_dir"] is None
+    ):
         drc_run_dir = os.path.join(os.path.abspath(os.getcwd()), now_str)
     else:
         drc_run_dir = os.path.abspath(arguments["--run_dir"])
-    
+
     os.makedirs(drc_run_dir, exist_ok=True)
 
     logging.basicConfig(
         level=logging.DEBUG,
         handlers=[
-        logging.FileHandler(os.path.join(drc_run_dir, "{}.log".format(now_str))),
-        logging.StreamHandler()
+            logging.FileHandler(os.path.join(drc_run_dir, "{}.log".format(now_str))),
+            logging.StreamHandler(),
         ],
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
@@ -635,4 +697,3 @@ if __name__ == "__main__":
 
     # Calling main function
     main(drc_run_dir, now_str, arguments)
-
