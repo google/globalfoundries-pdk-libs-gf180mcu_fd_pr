@@ -57,7 +57,7 @@ if BEOL
     v1p3c_eol = metal1.edges.with_length(nil, 0.34.um).interacting(v1p3c_cond.first_edges).interacting(v1p3c_cond.second_edges).not(v1p3c_cond.first_edges).not(v1p3c_cond.second_edges)
     v1p3c_eol_extended_in = v1p3c_eol.extended_in(0.06.um)
     v1p3c_l1 = via1.interacting(v1p3c_eol_extended_in)
-    v13c_l1.output("V1.3c", "V1.3c : metal1 (< 0.34um) end-of-line overlap. : 0.06µm")
+    v1p3c_l1.output("V1.3c", "V1.3c : metal1 (< 0.34um) end-of-line overlap. : 0.06µm")
     v13c_l1.forget
     v1p3c_cond.forget
     v1p3c_eol.forget
