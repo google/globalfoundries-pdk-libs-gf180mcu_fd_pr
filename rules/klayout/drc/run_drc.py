@@ -46,7 +46,7 @@ from docopt import docopt
 import os
 import xml.etree.ElementTree as ET
 import logging
-import pya
+import klayout.db
 import glob
 from datetime import datetime
 from subprocess import check_call
@@ -209,7 +209,7 @@ def get_top_cell_names(gds_path):
     List of string
         Names of the top cell in the layout.
     """
-    layout = pya.Layout()
+    layout = klayout.db.Layout()
     layout.read(gds_path)
     top_cells = [t.name for t in layout.top_cells()]
 
