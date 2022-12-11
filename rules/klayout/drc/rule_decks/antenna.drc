@@ -57,31 +57,35 @@ else
     threads(16)
 end
 
-# === TILING MODE ===
-if $run_mode == "tiling"
-    # use a tile size of 1mm - not used in deep mode-
-    # tiles(500.um)
-    # use a tile border of 10 micron:
-    # tile_borders(10.um)
-    tiles(1000)
-    logger.info("Tiling  mode is enabled.")
 
-elsif $run_mode == "deep"
-    #=== HIER MODE ===
-    deep
-    logger.info("deep  mode is enabled.")
+#=== HIER MODE ===
+deep
+logger.info("Antenna uses deep  mode.")
 
-elsif $run_mode == "flat"
-    #=== FLAT MODE ===
-    flat
-    logger.info("flat  mode is enabled.")
+# if $run_mode == "tiling"
+#     # use a tile size of 1mm - not used in deep mode-
+#     # tiles(500.um)
+#     # use a tile border of 10 micron:
+#     # tile_borders(10.um)
+#     tiles(1000)
+#     logger.info("Tiling  mode is enabled.")
 
-else
-    #=== HIER MODE ===
-    deep
-    logger.info("flat  mode is enabled.")
+# elsif $run_mode == "deep"
+#     #=== HIER MODE ===
+#     deep
+#     logger.info("deep  mode is enabled.")
 
-end # run_mode
+# elsif $run_mode == "flat"
+#     #=== FLAT MODE ===
+#     flat
+#     logger.info("flat  mode is enabled.")
+
+# else
+#     #=== HIER MODE ===
+#     deep
+#     logger.info("flat  mode is enabled.")
+
+# end # run_mode
 
 #======================================================================================================
 #--------------------------------------- LAYER DEFINITIONS --------------------------------------------

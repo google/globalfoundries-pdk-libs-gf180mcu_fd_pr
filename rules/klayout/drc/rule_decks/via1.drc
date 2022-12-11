@@ -44,45 +44,42 @@ if BEOL
     via1_4x4_loc.forget
     selected_via1.forget
 
+    
     # Rule V1.3a: metal1  overlap of via1.
     logger.info("Executing rule V1.3a")
     v13a_l1 = via1.not(metal1)
     v13a_l1.output("V1.3a", "V1.3a : metal1 overlap of via1 >= 0.0")
     v13a_l1.forget
+    
+    
 
     # rule V1.3b is not a DRC check
     # Rule V1.3c: metal1 (< 0.34um) end-of-line overlap. is 0.06µm
     logger.info("Executing rule V1.3c")
     v1p3c_cond = metal1.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
     v1p3c_eol = metal1.edges.with_length(nil, 0.34.um).interacting(v1p3c_cond.first_edges).interacting(v1p3c_cond.second_edges).not(v1p3c_cond.first_edges).not(v1p3c_cond.second_edges)
-    v1p3c_eol_extended_in = v1p3c_eol.extended_in(0.06.um - 2.dbu)
-    v1p3c_l1 = via1.interacting(v1p3c_eol_extended_in)
+    v1p3c_l1 = via1.edges.enclosed(v1p3c_eol, 0.06.um, projection)
     v1p3c_l1.output("V1.3c", "V1.3c : metal1 (< 0.34um) end-of-line overlap. : 0.06µm")
     v1p3c_l1.forget
     v1p3c_cond.forget
     v1p3c_eol.forget
-    v1p3c_eol_extended_in.forget
         
     logger.info("Executing rule V1.3d")
-    via1_3d_cond_metal = via1.enclosed(metal1, 0.04.um, projection).edges.interacting(via1)
-    via1_3d_check_space = via1.interacting(via1_3d_cond_metal).edges
-    via1_3d_check_corner = via1_3d_cond_metal.extended_in(0.002.um)
-    via1_3d_check = via1_3d_check_space.interacting(via1_3d_check_corner).not(via1_3d_cond_metal)
-    via1_cond_corner = via1_3d_cond_metal.width(0.002.um, angle_limit(135)).polygons
-    via1_3d_check_ext = via1_3d_check.extended_out(0.06.um - 1.dbu)
-    bad_ext = via1_3d_check_ext.interacting(via1_3d_check_ext.not(metal1))
-    via1_3d_l1 = via1.interacting(bad_ext)
+    via1_3d_cond_edges = via1.edges.not_outside(via1.enclosed(metal1, 0.04.um, projection).edges)
+    via1_3d_check_corner = via1_3d_cond_edges.extended_in(0.002.um)
+    via1_3d_check = via1.edges.interacting(via1_3d_check_corner).not(via1_3d_cond_edges)
+    via1_cond_corner = via1_3d_cond_edges.width(0.002.um, angle_limit(135)).polygons
+    via1_3d_l1 = via1_3d_check.enclosed(metal1.edges, 0.06.um, projection).polygons
     via1_3d_l2 = via1.interacting(via1_cond_corner)
     via1_3d_l = via1_3d_l1.or(via1_3d_l2)
     via1_3d_l.output("V1.3d", "V1.3d : If metal1 overlap via1 by < 0.04um on one side, adjacent metal1 edges overlap. : 0.06µm")
     via1_3d_l.forget
     via1_3d_l2.forget
     via1_3d_l1.forget
-    bad_ext.forget
+    via1_3d_cond_edges.forget
+    via1_3d_check_corner.forget
     via1_cond_corner.forget
-    via1_3d_check_ext.forget
     via1_3d_check.forget
-    via1_3d_cond_metal.forget
 
     # rule V1.3e is not a DRC check
 
@@ -100,35 +97,27 @@ if BEOL
     logger.info("Executing rule V1.4b")
     v1p4b_cond = metal2.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
     v1p4b_eol = metal2.edges.with_length(nil, 0.34.um).interacting(v1p4b_cond.first_edges).interacting(v1p4b_cond.second_edges).not(v1p4b_cond.first_edges).not(v1p4b_cond.second_edges)
-    v1p4b_eol_extended_in = v1p4b_eol.extended_in(0.06.um - 2.dbu)
-    v1p4b_l1 = via1.interacting(v1p4b_eol_extended_in)
-    v1p4b_l1.output("V1.4b", "V1.4b : metal2 (< 0.34um) end-of-line overlap. : 0.06µm")
+    v1p4b_l1 = via1.edges.enclosed(v1p4b_eol, 0.06.um, projection)
+    v1p4b_l1.output("V1.4b", "V1.4p : metal2 (< 0.34um) end-of-line overlap. : 0.06µm")
     v1p4b_l1.forget
     v1p4b_cond.forget
     v1p4b_eol.forget
-    v1p4b_eol_extended_in.forget
         
     logger.info("Executing rule V1.4c")
-    via1_4c_cond_metal = via1.enclosed(metal2, 0.04.um, projection).edges.interacting(via1)
-    via1_4c_check_space = via1.interacting(via1_4c_cond_metal).edges
-    via1_4c_check_corner = via1_4c_cond_metal.extended_in(0.002.um)
-    via1_4c_check = via1_4c_check_space.interacting(via1_4c_check_corner).not(via1_4c_cond_metal)
-    via1_cond_corner = via1_4c_cond_metal.width(0.002.um, angle_limit(135)).polygons
-    via1_4c_check_ext = via1_4c_check.extended_out(0.06.um - 1.dbu)
-    bad_ext = via1_4c_check_ext.interacting(via1_4c_check_ext.not(metal2))
-    via1_4c_l1 = via1.interacting(bad_ext)
-    via1_4c_l2 = via1.interacting(via1_cond_corner)
+    via1_4c_cond_edges = via1.edges.not_outside(via1.enclosed(metal2, 0.04.um, projection).edges)
+    via1_4c_check_corner = via1_4c_cond_edges.extended_in(0.002.um)
+    via1_4c_check = via1.edges.interacting(via1_4c_check_corner).not(via1_4c_cond_edges)
+    via1_4c_cond_corner = via1_4c_cond_edges.width(0.002.um, angle_limit(135)).polygons
+    via1_4c_l1 = via1_4c_check.enclosed(metal2.edges, 0.06.um, projection).polygons
+    via1_4c_l2 = via1.interacting(via1_4c_cond_corner)
     via1_4c_l = via1_4c_l1.or(via1_4c_l2)
-    via1_4c_l.output("V1.4c", "V1.4c : If metal2 overlap via1 by < 0.04um on one side, adjacent metal2 edges overlap. : 0.06µm")
+    via1_4c_l.output("V1.3d", "V1.3d : If metal2 overlap via1 by < 0.04um on one side, adjacent metal2 edges overlap. : 0.06µm")
     via1_4c_l.forget
     via1_4c_l2.forget
     via1_4c_l1.forget
-    bad_ext.forget
-    via1_cond_corner.forget
-    via1_4c_check_ext.forget
-    via1_4c_check.forget
-    via1_4c_cond_metal.forget
-    via1_4c_check_space.forget
+    via1_4c_cond_edges.forget
     via1_4c_check_corner.forget
+    via1_4c_cond_corner.forget
+    via1_4c_check.forget
     
 end #BEOL
