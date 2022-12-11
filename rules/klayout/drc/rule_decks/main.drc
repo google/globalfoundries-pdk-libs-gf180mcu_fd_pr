@@ -46,11 +46,11 @@ if $input
     end
 end
 
--if $table_name
--  table_name = $table_name
--else
--  table_name = "main"
--end
+if $table_name
+  table_name = $table_name
+else
+  table_name = "main"
+end
 
 
 logger.info("Loading database to memory is complete.")
