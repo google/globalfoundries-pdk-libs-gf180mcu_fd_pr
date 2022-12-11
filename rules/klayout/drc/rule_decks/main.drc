@@ -195,358 +195,358 @@ end # BEOL
 polygons_count = 0
 logger.info("Read in polygons from layers.")
 
-comp           = polygons(22 , 0 ).merged
+comp           = polygons(22 , 0 )
 count = comp.count()
 logger.info("comp has %d polygons" % [count])
 polygons_count += count
 
-dnwell         = polygons(12 , 0 ).merged
+dnwell         = polygons(12 , 0 )
 count   = dnwell.count()
 logger.info("dnwell has %d polygons" % [count])
 polygons_count  += count
 
-nwell          = polygons(21 , 0 ).merged
+nwell          = polygons(21 , 0 )
 count   = nwell.count()
 logger.info("nwell has %d polygons" % [count])
 polygons_count  += count
 
-lvpwell        = polygons(204, 0 ).merged
+lvpwell        = polygons(204, 0 )
 count   = lvpwell.count()
 logger.info("lvpwell has %d polygons" % [count])
 polygons_count  += count
 
-dualgate       = polygons(55 , 0 ).merged
+dualgate       = polygons(55 , 0 )
 count   = dualgate.count()
 logger.info("dualgate has %d polygons" % [count])
 polygons_count  += count
 
-poly2          = polygons(30 , 0 ).merged
+poly2          = polygons(30 , 0 )
 count   = poly2.count()
 logger.info("poly2 has %d polygons" % [count])
 polygons_count  += count
 
-nplus          = polygons(32 , 0 ).merged
+nplus          = polygons(32 , 0 )
 count   = nplus.count()
 logger.info("nplus has %d polygons" % [count])
 polygons_count  += count
 
-pplus          = polygons(31 , 0 ).merged
+pplus          = polygons(31 , 0 )
 count   = pplus.count()
 logger.info("pplus has %d polygons" % [count])
 polygons_count  += count
 
-sab            = polygons(49 , 0 ).merged
+sab            = polygons(49 , 0 )
 count   = sab.count()
 logger.info("sab has %d polygons" % [count])
 polygons_count  += count
 
-esd            = polygons(24 , 0 ).merged
+esd            = polygons(24 , 0 )
 count   = esd.count()
 logger.info("esd has %d polygons" % [count])
 polygons_count  += count
 
-resistor       = polygons(62 , 0 ).merged
+resistor       = polygons(62 , 0 )
 count   = resistor.count()
 logger.info("resistor has %d polygons" % [count])
 polygons_count  += count
 
-fhres          = polygons(227, 0 ).merged
+fhres          = polygons(227, 0 )
 count   = fhres.count()
 logger.info("fhres has %d polygons" % [count])
 polygons_count  += count
 
-fusetop        = polygons(75 , 0 ).merged
+fusetop        = polygons(75 , 0 )
 count   = fusetop.count()
 logger.info("fusetop has %d polygons" % [count])
 polygons_count  += count
 
-fusewindow_d   = polygons(96 , 1 ).merged
+fusewindow_d   = polygons(96 , 1 )
 count   = fusewindow_d.count()
 logger.info("fusewindow_d has %d polygons" % [count])
 polygons_count  += count
 
-polyfuse       = polygons(220, 0 ).merged
+polyfuse       = polygons(220, 0 )
 count   = polyfuse.count()
 logger.info("polyfuse has %d polygons" % [count])
 polygons_count  += count
 
-mvsd           = polygons(210, 0 ).merged
+mvsd           = polygons(210, 0 )
 count   = mvsd.count()
 logger.info("mvsd has %d polygons" % [count])
 polygons_count  += count
 
-mvpsd          = polygons(11 , 39).merged
+mvpsd          = polygons(11 , 39)
 count   = mvpsd.count()
 logger.info("mvpsd has %d polygons" % [count])
 polygons_count  += count
 
-nat            = polygons(5  , 0 ).merged
+nat            = polygons(5  , 0 )
 count   = nat.count()
 logger.info("nat has %d polygons" % [count])
 polygons_count  += count
 
-comp_dummy     = polygons(22 , 4 ).merged
+comp_dummy     = polygons(22 , 4 )
 count   = comp_dummy.count()
 logger.info("comp_dummy has %d polygons" % [count])
 polygons_count  += count
 
-poly2_dummy    = polygons(30 , 4 ).merged
+poly2_dummy    = polygons(30 , 4 )
 count   = poly2_dummy.count()
 logger.info("poly2_dummy has %d polygons" % [count])
 polygons_count  += count
 
-schottky_diode = polygons(241, 0 ).merged
+schottky_diode = polygons(241, 0 )
 count   = schottky_diode.count()
 logger.info("schottky_diode has %d polygons" % [count])
 polygons_count  += count
 
-zener          = polygons(178, 0 ).merged
+zener          = polygons(178, 0 )
 count   = zener.count()
 logger.info("zener has %d polygons" % [count])
 polygons_count  += count
 
-res_mk         = polygons(110, 5 ).merged
+res_mk         = polygons(110, 5 )
 count   = res_mk.count()
 logger.info("res_mk has %d polygons" % [count])
 polygons_count  += count
 
-opc_drc        = polygons(124, 5 ).merged
+opc_drc        = polygons(124, 5 )
 count   = opc_drc.count()
 logger.info("opc_drc has %d polygons" % [count])
 polygons_count  += count
 
-ndmy           = polygons(111, 5 ).merged
+ndmy           = polygons(111, 5 )
 count   = ndmy.count()
 logger.info("ndmy has %d polygons" % [count])
 polygons_count  += count
 
-pmndmy         = polygons(152, 5 ).merged
+pmndmy         = polygons(152, 5 )
 count   = pmndmy.count()
 logger.info("pmndmy has %d polygons" % [count])
 polygons_count  += count
 
-v5_xtor        = polygons(112, 1 ).merged
+v5_xtor        = polygons(112, 1 )
 count   = v5_xtor.count()
 logger.info("v5_xtor has %d polygons" % [count])
 polygons_count  += count
 
-cap_mk         = polygons(117, 5 ).merged
+cap_mk         = polygons(117, 5 )
 count   = cap_mk.count()
 logger.info("cap_mk has %d polygons" % [count])
 polygons_count  += count
 
-mos_cap_mk     = polygons(166, 5 ).merged
+mos_cap_mk     = polygons(166, 5 )
 count   = mos_cap_mk.count()
 logger.info("mos_cap_mk has %d polygons" % [count])
 polygons_count  += count
 
-ind_mk         = polygons(151, 5 ).merged
+ind_mk         = polygons(151, 5 )
 count   = ind_mk.count()
 logger.info("ind_mk has %d polygons" % [count])
 polygons_count  += count
 
-diode_mk       = polygons(115, 5 ).merged
+diode_mk       = polygons(115, 5 )
 count   = diode_mk.count()
 logger.info("diode_mk has %d polygons" % [count])
 polygons_count  += count
 
-drc_bjt        = polygons(127, 5 ).merged
+drc_bjt        = polygons(127, 5 )
 count   = drc_bjt.count()
 logger.info("drc_bjt has %d polygons" % [count])
 polygons_count  += count
 
-lvs_bjt        = polygons(118, 5 ).merged
+lvs_bjt        = polygons(118, 5 )
 count   = lvs_bjt.count()
 logger.info("lvs_bjt has %d polygons" % [count])
 polygons_count  += count
 
-mim_l_mk       = polygons(117, 10).merged
+mim_l_mk       = polygons(117, 10)
 count   = mim_l_mk.count()
 logger.info("mim_l_mk has %d polygons" % [count])
 polygons_count  += count
 
-latchup_mk     = polygons(137, 5 ).merged
+latchup_mk     = polygons(137, 5 )
 count   = latchup_mk.count()
 logger.info("latchup_mk has %d polygons" % [count])
 polygons_count  += count
 
-guard_ring_mk  = polygons(167, 5 ).merged
+guard_ring_mk  = polygons(167, 5 )
 count   = guard_ring_mk.count()
 logger.info("guard_ring_mk has %d polygons" % [count])
 polygons_count  += count
 
-otp_mk         = polygons(173, 5 ).merged
+otp_mk         = polygons(173, 5 )
 count   = otp_mk.count()
 logger.info("otp_mk has %d polygons" % [count])
 polygons_count  += count
 
-mtpmark        = polygons(122, 5 ).merged
+mtpmark        = polygons(122, 5 )
 count   = mtpmark.count()
 logger.info("mtpmark has %d polygons" % [count])
 polygons_count  += count
 
-neo_ee_mk      = polygons(88 , 17).merged
+neo_ee_mk      = polygons(88 , 17)
 count   = neo_ee_mk.count()
 logger.info("neo_ee_mk has %d polygons" % [count])
 polygons_count  += count
 
-sramcore       = polygons(108, 5 ).merged
+sramcore       = polygons(108, 5 )
 count   = sramcore.count()
 logger.info("sramcore has %d polygons" % [count])
 polygons_count  += count
 
-lvs_rf         = polygons(100, 5 ).merged
+lvs_rf         = polygons(100, 5 )
 count   = lvs_rf.count()
 logger.info("lvs_rf has %d polygons" % [count])
 polygons_count  += count
 
-lvs_drain      = polygons(100, 7 ).merged
+lvs_drain      = polygons(100, 7 )
 count   = lvs_drain.count()
 logger.info("lvs_drain has %d polygons" % [count])
 polygons_count  += count
 
-ind_mk         = polygons(151, 5 ).merged
+ind_mk         = polygons(151, 5 )
 count   = ind_mk.count()
 logger.info("ind_mk has %d polygons" % [count])
 polygons_count  += count
 
-hvpolyrs       = polygons(123, 5 ).merged
+hvpolyrs       = polygons(123, 5 )
 count   = hvpolyrs.count()
 logger.info("hvpolyrs has %d polygons" % [count])
 polygons_count  += count
 
-lvs_io         = polygons(119, 5 ).merged
+lvs_io         = polygons(119, 5 )
 count   = lvs_io.count()
 logger.info("lvs_io has %d polygons" % [count])
 polygons_count  += count
 
-probe_mk       = polygons(13 , 17).merged
+probe_mk       = polygons(13 , 17)
 count   = probe_mk.count()
 logger.info("probe_mk has %d polygons" % [count])
 polygons_count  += count
 
-esd_mk         = polygons(24 , 5 ).merged
+esd_mk         = polygons(24 , 5 )
 count   = esd_mk.count()
 logger.info("esd_mk has %d polygons" % [count])
 polygons_count  += count
 
-lvs_source     = polygons(100, 8 ).merged
+lvs_source     = polygons(100, 8 )
 count   = lvs_source.count()
 logger.info("lvs_source has %d polygons" % [count])
 polygons_count  += count
 
-well_diode_mk  = polygons(153, 51).merged
+well_diode_mk  = polygons(153, 51)
 count   = well_diode_mk.count()
 logger.info("well_diode_mk has %d polygons" % [count])
 polygons_count  += count
 
-ldmos_xtor     = polygons(226, 0 ).merged
+ldmos_xtor     = polygons(226, 0 )
 count   = ldmos_xtor.count()
 logger.info("ldmos_xtor has %d polygons" % [count])
 polygons_count  += count
 
-plfuse         = polygons(125, 5 ).merged
+plfuse         = polygons(125, 5 )
 count   = plfuse.count()
 logger.info("plfuse has %d polygons" % [count])
 polygons_count  += count
 
-efuse_mk       = polygons(80 , 5 ).merged
+efuse_mk       = polygons(80 , 5 )
 count   = efuse_mk.count()
 logger.info("efuse_mk has %d polygons" % [count])
 polygons_count  += count
 
-mcell_feol_mk  = polygons(11 , 17).merged
+mcell_feol_mk  = polygons(11 , 17)
 count   = mcell_feol_mk.count()
 logger.info("mcell_feol_mk has %d polygons" % [count])
 polygons_count  += count
 
-ymtp_mk        = polygons(86 , 17).merged
+ymtp_mk        = polygons(86 , 17)
 count   = ymtp_mk.count()
 logger.info("ymtp_mk has %d polygons" % [count])
 polygons_count  += count
 
-dev_wf_mk      = polygons(128, 17).merged
+dev_wf_mk      = polygons(128, 17)
 count   = dev_wf_mk.count()
 logger.info("dev_wf_mk has %d polygons" % [count])
 polygons_count  += count
 
-comp_label     = polygons(22 , 10).merged
+comp_label     = polygons(22 , 10)
 count   = comp_label.count()
 logger.info("comp_label has %d polygons" % [count])
 polygons_count  += count
 
-poly2_label    = polygons(30 , 10).merged
+poly2_label    = polygons(30 , 10)
 count   = poly2_label.count()
 logger.info("poly2_label has %d polygons" % [count])
 polygons_count  += count
 
-mdiode         = polygons(116, 5 ).merged
+mdiode         = polygons(116, 5 )
 count   = mdiode.count()
 logger.info("mdiode has %d polygons" % [count])
 polygons_count  += count
 
-contact        = polygons(33 , 0 ).merged
+contact        = polygons(33 , 0 )
 count   = contact.count()
 logger.info("contact has %d polygons" % [count])
 polygons_count  += count
 
-metal1_drawn   = polygons(34 , 0 ).merged
+metal1_drawn   = polygons(34 , 0 )
 count   = metal1_drawn.count()
 logger.info("metal1_drawn has %d polygons" % [count])
 polygons_count  += count
 
-metal1_dummy   = polygons(34 , 4 ).merged
+metal1_dummy   = polygons(34 , 4 )
 count   = metal1_dummy.count()
 logger.info("metal1_dummy has %d polygons" % [count])
 polygons_count  += count
 
 metal1         = metal1_drawn.or(metal1_dummy)
 
-metal1_label   = polygons(34 , 10).merged
+metal1_label   = polygons(34 , 10)
 count   = metal1_label.count()
 logger.info("metal1_label has %d polygons" % [count])
 polygons_count  += count
 
-metal1_slot    = polygons(34 , 3 ).merged
+metal1_slot    = polygons(34 , 3 )
 count   = metal1_slot.count()
 logger.info("metal1_slot has %d polygons" % [count])
 polygons_count  += count
 
-metal1_blk     = polygons(34 , 5 ).merged
+metal1_blk     = polygons(34 , 5 )
 count   = metal1_blk.count()
 logger.info("metal1_blk has %d polygons" % [count])
 polygons_count  += count
 
-via1           = polygons(35 , 0 ).merged
+via1           = polygons(35 , 0 )
 count   = via1.count()
 logger.info("via1 has %d polygons" % [count])
 polygons_count  += count
 
 
 if METAL_LEVEL == "2LM"
-  metal2_drawn  = polygons(53 , 0 ).merged
+  metal2_drawn  = polygons(53 , 0 )
   count   = metal2_drawn.count()
   logger.info("metal2_drawn has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_dummy  = polygons(53 , 4 ).merged
+  metal2_dummy  = polygons(53 , 4 )
   count   = metal2_dummy.count()
   logger.info("metal2_dummy has %d polygons" % [count])
   polygons_count  += count
 
   metal2        = metal2_drawn.or(metal2_drawn)
 
-  metal2_label  = polygons(53 , 10).merged
+  metal2_label  = polygons(53 , 10)
   count   = metal2_label.count()
   logger.info("metal2_label has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_slot   = polygons(53 , 3 ).merged
+  metal2_slot   = polygons(53 , 3 )
   count   = metal2_slot.count()
   logger.info("metal2_slot has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_blk    = polygons(53 , 5 ).merged
+  metal2_blk    = polygons(53 , 5 )
   count   = metal2_blk.count()
   logger.info("metal2_blk has %d polygons" % [count])
   polygons_count  += count
@@ -557,62 +557,62 @@ if METAL_LEVEL == "2LM"
   topmin1_metal = metal1
   
 else
-  metal2_drawn   = polygons(36 , 0 ).merged
+  metal2_drawn   = polygons(36 , 0 )
   count   = metal2_drawn.count()
   logger.info("metal2_drawn has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_dummy   = polygons(36 , 4 ).merged
+  metal2_dummy   = polygons(36 , 4 )
   count   = metal2_dummy.count()
   logger.info("metal2_dummy has %d polygons" % [count])
   polygons_count  += count
 
   metal2         = metal2_drawn.or(metal2_dummy)
 
-  metal2_label   = polygons(36 , 10).merged
+  metal2_label   = polygons(36 , 10)
   count   = metal2_label.count()
   logger.info("metal2_label has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_slot    = polygons(36 , 3 ).merged
+  metal2_slot    = polygons(36 , 3 )
   count   = metal2_slot.count()
   logger.info("metal2_slot has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_blk     = polygons(36 , 5 ).merged
+  metal2_blk     = polygons(36 , 5 )
   count   = metal2_blk.count()
   logger.info("metal2_blk has %d polygons" % [count])
   polygons_count  += count
   
-  via2           = polygons(38 , 0 ).merged
+  via2           = polygons(38 , 0 )
   count   = via2.count()
   logger.info("via2 has %d polygons" % [count])
   polygons_count  += count
   
   if METAL_LEVEL == "3LM"
-    metal3_drawn  = polygons(53 , 0 ).merged
+    metal3_drawn  = polygons(53 , 0 )
     count   = metal3_drawn.count()
     logger.info("metal3_drawn has %d polygons" % [count])
     polygons_count  += count
 
-    metal3_dummy  = polygons(53 , 4 ).merged
+    metal3_dummy  = polygons(53 , 4 )
     count   = metal3_dummy.count()
     logger.info("metal3_dummy has %d polygons" % [count])
     polygons_count  += count
 
     metal3        = metal3_drawn.or(metal3_dummy)
 
-    metal3_label  = polygons(53 , 10).merged
+    metal3_label  = polygons(53 , 10)
     count   = metal3_label.count()
     logger.info("metal3_label has %d polygons" % [count])
     polygons_count  += count
     
-    metal3_slot   = polygons(53 , 3 ).merged
+    metal3_slot   = polygons(53 , 3 )
     count   = metal3_slot.count()
     logger.info("metal3_slot has %d polygons" % [count])
     polygons_count  += count
 
-    metal3_blk    = polygons(53 , 5 ).merged
+    metal3_blk    = polygons(53 , 5 )
     count   = metal3_blk.count()
     logger.info("metal3_blk has %d polygons" % [count])
     polygons_count  += count
@@ -622,59 +622,59 @@ else
     top_metal     = metal3
     topmin1_metal = metal2
   else
-    metal3_drawn  = polygons(42 , 0 ).merged
+    metal3_drawn  = polygons(42 , 0 )
     count   = metal3_drawn.count()
     logger.info("metal3_drawn has %d polygons" % [count])
     polygons_count  += count
 
-    metal3_dummy  = polygons(42 , 4 ).merged
+    metal3_dummy  = polygons(42 , 4 )
     count   = metal3_dummy.count()
     logger.info("metal3_dummy has %d polygons" % [count])
     polygons_count  += count
 
     metal3        = metal3_drawn.or(metal3_dummy)
 
-    metal3_label  = polygons(42 , 10).merged
+    metal3_label  = polygons(42 , 10)
     count   = metal3_label.count()
     logger.info("metal3_label has %d polygons" % [count])
     polygons_count  += count
 
-    metal3_slot   = polygons(42 , 3 ).merged
+    metal3_slot   = polygons(42 , 3 )
     count   = metal3_slot.count()
     logger.info("metal3_slot has %d polygons" % [count])
     polygons_count  += count
 
-    metal3_blk    = polygons(42 , 5 ).merged
+    metal3_blk    = polygons(42 , 5 )
     count   = metal3_blk.count()
     logger.info("metal3_blk has %d polygons" % [count])
     polygons_count  += count
 
-    via3           = polygons(40 , 0 ).merged
+    via3           = polygons(40 , 0 )
 
     if METAL_LEVEL == "4LM"
-      metal4_drawn  = polygons(53 , 0 ).merged
+      metal4_drawn  = polygons(53 , 0 )
       count   = metal4_drawn.count()
       logger.info("metal4_drawn has %d polygons" % [count])
       polygons_count  += count
 
-      metal4_dummy  = polygons(53 , 4 ).merged
+      metal4_dummy  = polygons(53 , 4 )
       count   = metal4_dummy.count()
       logger.info("metal4_dummy has %d polygons" % [count])
       polygons_count  += count
 
       metal4        = metal4_drawn.or(metal4_dummy)
       
-      metal4_label  = polygons(53 , 10).merged
+      metal4_label  = polygons(53 , 10)
       count   = metal4_label.count()
       logger.info("metal4_label has %d polygons" % [count])
       polygons_count  += count
       
-      metal4_slot   = polygons(53 , 3 ).merged
+      metal4_slot   = polygons(53 , 3 )
       count   = metal4_slot.count()
       logger.info("metal4_slot has %d polygons" % [count])
       polygons_count  += count
 
-      metal4_blk    = polygons(53 , 5 ).merged
+      metal4_blk    = polygons(53 , 5 )
       count   = metal4_blk.count()
       logger.info("metal4_blk has %d polygons" % [count])
       polygons_count  += count
@@ -684,62 +684,62 @@ else
       top_metal     = metal4
       topmin1_metal = metal3
     else
-      metal4_drawn  = polygons(46 , 0 ).merged
+      metal4_drawn  = polygons(46 , 0 )
       count   = metal4_drawn.count()
       logger.info("metal4_drawn has %d polygons" % [count])
       polygons_count  += count
 
-      metal4_dummy  = polygons(46 , 4 ).merged
+      metal4_dummy  = polygons(46 , 4 )
       count   = metal4_dummy.count()
       logger.info("metal4_dummy has %d polygons" % [count])
       polygons_count  += count
 
       metal4        = metal4_drawn.or(metal4_dummy)
 
-      metal4_label  = polygons(46 , 10).merged
+      metal4_label  = polygons(46 , 10)
       count   = metal4_label.count()
       logger.info("metal4_label has %d polygons" % [count])
       polygons_count  += count
 
-      metal4_slot   = polygons(46 , 3 ).merged
+      metal4_slot   = polygons(46 , 3 )
       count   = metal4_slot.count()
       logger.info("metal4_slot has %d polygons" % [count])
       polygons_count  += count
 
-      metal4_blk    = polygons(46 , 5 ).merged
+      metal4_blk    = polygons(46 , 5 )
       count   = metal4_blk.count()
       logger.info("metal4_blk has %d polygons" % [count])
       polygons_count  += count
 
-      via4          = polygons(41 , 0 ).merged
+      via4          = polygons(41 , 0 )
       count   = via4.count()
       logger.info("via4 has %d polygons" % [count])
       polygons_count  += count
 
       if METAL_LEVEL == "5LM"
-        metal5_drawn  = polygons(53 , 0 ).merged
+        metal5_drawn  = polygons(53 , 0 )
         count   = metal5_drawn.count()
         logger.info("metal5_drawn has %d polygons" % [count])
         polygons_count  += count
 
-        metal5_dummy  = polygons(53 , 4 ).merged
+        metal5_dummy  = polygons(53 , 4 )
         count   = metal5_dummy.count()
         logger.info("metal5_dummy has %d polygons" % [count])
         polygons_count  += count
 
         metal5        = metal5_drawn.or(metal5_dummy)
 
-        metal5_label  = polygons(53 , 10).merged
+        metal5_label  = polygons(53 , 10)
         count   = metal5_label.count()
         logger.info("metal5_label has %d polygons" % [count])
         polygons_count  += count
       
-        metal5_slot   = polygons(53 , 3 ).merged
+        metal5_slot   = polygons(53 , 3 )
         count   = metal5_slot.count()
         logger.info("metal5_slot has %d polygons" % [count])
         polygons_count  += count
 
-        metal5_blk    = polygons(53 , 5 ).merged
+        metal5_blk    = polygons(53 , 5 )
         count   = metal5_blk.count()
         logger.info("metal5_blk has %d polygons" % [count])
         polygons_count  += count
@@ -750,62 +750,62 @@ else
         topmin1_metal = metal4
       else 
         ## 6LM
-        metal5_drawn   = polygons(81 , 0 ).merged
+        metal5_drawn   = polygons(81 , 0 )
         count   = metal5_drawn.count()
         logger.info("metal5_drawn has %d polygons" % [count])
         polygons_count  += count
 
-        metal5_dummy   = polygons(81 , 4 ).merged
+        metal5_dummy   = polygons(81 , 4 )
         count   = metal5_dummy.count()
         logger.info("metal5_dummy has %d polygons" % [count])
         polygons_count  += count
 
         metal5         = metal5_drawn.or(metal5_dummy)
 
-        metal5_label   = polygons(81 , 10).merged
+        metal5_label   = polygons(81 , 10)
         count   = metal5_label.count()
         logger.info("metal5_label has %d polygons" % [count])
         polygons_count  += count
 
-        metal5_slot    = polygons(81 , 3 ).merged
+        metal5_slot    = polygons(81 , 3 )
         count   = metal5_slot.count()
         logger.info("metal5_slot has %d polygons" % [count])
         polygons_count  += count
 
-        metal5_blk     = polygons(81 , 5 ).merged
+        metal5_blk     = polygons(81 , 5 )
         count   = metal5_blk.count()
         logger.info("metal5_blk has %d polygons" % [count])
         polygons_count  += count
 
-        via5           = polygons(82 , 0 ).merged
+        via5           = polygons(82 , 0 )
         count   = via5.count()
         logger.info("via5 has %d polygons" % [count])
         polygons_count  += count
 
 
-        metaltop_drawn = polygons(53 , 0 ).merged
+        metaltop_drawn = polygons(53 , 0 )
         count   = metaltop_drawn.count()
         logger.info("metaltop_drawn has %d polygons" % [count])
         polygons_count  += count
 
-        metaltop_dummy = polygons(53 , 4 ).merged
+        metaltop_dummy = polygons(53 , 4 )
         count   = metaltop_dummy.count()
         logger.info("metaltop_dummy has %d polygons" % [count])
         polygons_count  += count
 
         metaltop       = metaltop_drawn.or(metaltop_dummy)
 
-        metaltop_label = polygons(53 , 10).merged
+        metaltop_label = polygons(53 , 10)
         count   = metaltop_label.count()
         logger.info("metaltop_label has %d polygons" % [count])
         polygons_count  += count
 
-        metaltop_slot  = polygons(53 , 3 ).merged
+        metaltop_slot  = polygons(53 , 3 )
         count   = metaltop_slot.count()
         logger.info("metaltop_slot has %d polygons" % [count])
         polygons_count  += count
 
-        metalt_blk     = polygons(53 , 5 ).merged
+        metalt_blk     = polygons(53 , 5 )
         count   = metalt_blk.count()
         logger.info("metalt_blk has %d polygons" % [count])
         polygons_count  += count
@@ -819,62 +819,62 @@ else
   end
 end
 
-pad            = polygons(37 , 0 ).merged
+pad            = polygons(37 , 0 )
 count   = pad.count()
 logger.info("pad has %d polygons" % [count])
 polygons_count  += count
 
-ubmpperi       = polygons(183, 0 ).merged
+ubmpperi       = polygons(183, 0 )
 count   = ubmpperi.count()
 logger.info("ubmpperi has %d polygons" % [count])
 polygons_count  += count
 
-ubmparray      = polygons(184, 0 ).merged
+ubmparray      = polygons(184, 0 )
 count   = ubmparray.count()
 logger.info("ubmparray has %d polygons" % [count])
 polygons_count  += count
 
-ubmeplate      = polygons(185, 0 ).merged
+ubmeplate      = polygons(185, 0 )
 count   = ubmeplate.count()
 logger.info("ubmeplate has %d polygons" % [count])
 polygons_count  += count
 
-metal1_res     = polygons(110, 11).merged
+metal1_res     = polygons(110, 11)
 count   = metal1_res.count()
 logger.info("metal1_res has %d polygons" % [count])
 polygons_count  += count
 
-metal2_res     = polygons(110, 12).merged
+metal2_res     = polygons(110, 12)
 count   = metal2_res.count()
 logger.info("metal2_res has %d polygons" % [count])
 polygons_count  += count
 
-metal3_res     = polygons(110, 13).merged
+metal3_res     = polygons(110, 13)
 count   = metal3_res.count()
 logger.info("metal3_res has %d polygons" % [count])
 polygons_count  += count
 
-metal4_res     = polygons(110, 14).merged
+metal4_res     = polygons(110, 14)
 count   = metal4_res.count()
 logger.info("metal4_res has %d polygons" % [count])
 polygons_count  += count
 
-metal5_res     = polygons(110, 15).merged
+metal5_res     = polygons(110, 15)
 count   = metal5_res.count()
 logger.info("metal5_res has %d polygons" % [count])
 polygons_count  += count
 
-metal6_res     = polygons(110, 16).merged
+metal6_res     = polygons(110, 16)
 count   = metal6_res.count()
 logger.info("metal6_res has %d polygons" % [count])
 polygons_count  += count
 
-pr_bndry       = polygons(0  , 0 ).merged
+pr_bndry       = polygons(0  , 0 )
 count   = pr_bndry.count()
 logger.info("pr_bndry has %d polygons" % [count])
 polygons_count  += count
 
-border         = polygons(63 , 0 ).merged
+border         = polygons(63 , 0 )
 count   = border.count()
 logger.info("border has %d polygons" % [count])
 polygons_count  += count
