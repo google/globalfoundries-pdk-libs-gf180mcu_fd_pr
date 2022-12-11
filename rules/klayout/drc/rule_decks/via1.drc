@@ -110,7 +110,9 @@ if BEOL
         
     logger.info("Executing rule V1.4c")
     via1_4c_cond_metal = metal2.enclosing(via1, 0.04.um, projection).edges.interacting(via1)
-    via1_4c_check = via1.interacting(via1_4c_cond_metal).edges.not(via1_4c_cond_metal)
+    via1_4c_check_space = via1.interacting(via1_4c_cond_metal).edges
+    via1_4c_check_corner = via1_4c_cond_metal.extended_in(0.002.um)
+    via1_4c_check = via1_4c_check_space.interacting(via1_4c_check_corner).not(via1_4c_cond_metal)
     via1_cond_corner = via1_4c_cond_metal.width(0.002.um, angle_limit(135)).polygons
     via1_4c_check_ext = via1_4c_check.extended_out(0.06.um - 1.dbu)
     bad_ext = via1_4c_check_ext.interacting(via1_4c_check_ext.not(metal2))
@@ -126,5 +128,7 @@ if BEOL
     via1_4c_check_ext.forget
     via1_4c_check.forget
     via1_4c_cond_metal.forget
+    via1_4c_check_space.forget
+    via1_4c_check_corner.forget
     
 end #BEOL
