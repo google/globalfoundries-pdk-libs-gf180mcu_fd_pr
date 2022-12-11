@@ -64,7 +64,7 @@ if BEOL
     v1p3c_eol_extended_in.forget
         
     logger.info("Executing rule V1.3d")
-    via1_3d_cond_metal = metal1.enclosing(via1, 0.04.um, projection).edges.interacting(via1)
+    via1_3d_cond_metal = via1.enclosed(metal1, 0.04.um, projection).edges.interacting(via1)
     via1_3d_check_space = via1.interacting(via1_3d_cond_metal).edges
     via1_3d_check_corner = via1_3d_cond_metal.extended_in(0.002.um)
     via1_3d_check = via1_3d_check_space.interacting(via1_3d_check_corner).not(via1_3d_cond_metal)
@@ -88,7 +88,7 @@ if BEOL
 
     # Rule V1.4a: metal2 overlap of via1.
     logger.info("Executing rule V1.4a")
-    via1_4a_l1 = metal2.enclosing(via1, 0.01.um, euclidian).polygons(0.001)
+    via1_4a_l1 = via1.enclosed(metal2, 0.01.um, euclidian).polygons(0.001)
     via1_4a_l2 = via1.not(metal2)
     via1_4a_l = via1_4a_l1.or(via1_4a_l2)
     via1_4a_l.output("V1.4a", "V1.4a : metal2 overlap of via1 >= 0.01 um")
@@ -109,7 +109,7 @@ if BEOL
     v1p4b_eol_extended_in.forget
         
     logger.info("Executing rule V1.4c")
-    via1_4c_cond_metal = metal2.enclosing(via1, 0.04.um, projection).edges.interacting(via1)
+    via1_4c_cond_metal = via1.enclosed(metal2, 0.04.um, projection).edges.interacting(via1)
     via1_4c_check_space = via1.interacting(via1_4c_cond_metal).edges
     via1_4c_check_corner = via1_4c_cond_metal.extended_in(0.002.um)
     via1_4c_check = via1_4c_check_space.interacting(via1_4c_check_corner).not(via1_4c_cond_metal)
