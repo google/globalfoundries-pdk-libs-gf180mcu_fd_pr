@@ -48,65 +48,73 @@ if FEOL
     # Rule CO.3: Poly2 overlap of contact. is 0.07µm
     logger.info("Executing rule CO.3")
     main_contact = contact.not(sramcore)
-    co3_l = poly2.enclosing(main_contact, 0.07.um, euclidian)
+    co3_l = main_contact.enclosed(poly2, 0.07.um, euclidian)
     co3_l.output("CO.3", "CO.3 : Poly2 overlap of contact. : 0.07µm")
     co3_l.forget
 
     # Rule CO.4: COMP overlap of contact. is 0.07µm
     logger.info("Executing rule CO.4")
-    co4_l = comp.enclosing(main_contact, 0.07.um, euclidian)
+    co4_l = main_contact.enclosed(comp, 0.07.um, euclidian)
     co4_l.output("CO.4", "CO.4 : COMP overlap of contact. : 0.07µm")
     co4_l.forget
 
     # Rule CO.5a: Nplus overlap of contact on COMP (Only for contacts to butted Nplus and Pplus COMP areas). is 0.1µm
     logger.info("Executing rule CO.5a")
     co_5a_ncomp_butted = ncomp.interacting(pcomp)
-    co5a_l1 = co_5a_ncomp_butted.enclosing(contact, 0.1.um, euclidian)
+    co_ncomp_check = contact.interacting(co_5a_ncomp_butted)
+    co5a_l1 = co_ncomp_check.enclosed(co_5a_ncomp_butted, 0.1.um, euclidian)
     co5a_l1.output("CO.5a", "CO.5a : Nplus overlap of contact on COMP (Only for contacts to butted Nplus and Pplus COMP areas). : 0.1µm")
     co5a_l1.forget
+    co_ncomp_check.forget
     co_5a_ncomp_butted.forget
 
     # Rule CO.5b: Pplus overlap of contact on COMP (Only for contacts to butted Nplus and Pplus COMP areas). is 0.1µm
     logger.info("Executing rule CO.5b")
     co_5b_pcomp_butted = pcomp.interacting(ncomp)
-    co5b_l1 = co_5b_pcomp_butted.enclosing(contact, 0.1.um, euclidian)
+    co_pcomp_check = contact.interacting(co_5b_pcomp_butted)
+    co5b_l1 = co_pcomp_check.enclosed(co_5b_pcomp_butted, 0.1.um, euclidian)
     co5b_l1.output("CO.5b", "CO.5b : Pplus overlap of contact on COMP (Only for contacts to butted Nplus and Pplus COMP areas). : 0.1µm")
     co5b_l1.forget
+    co_pcomp_check.forget
     co_5b_pcomp_butted.forget
 
     # Rule CO.6: Metal1 overlap of contact.
     logger.info("Executing rule CO.6")
-    co6_l1 = metal1.enclosing(contact, 0.005.um, euclidian).polygons(0.001) 
+    co6_l1 = contact.enclosed(metal1, 0.005.um, euclidian).polygons(0.001) 
     co6_l2 = contact.not(metal1)
     co6_l = co6_l1.or(co6_l2)
-    co6_l.output("CO.6", "CO.6 : Metal1 overlap of contact.")
+    co6_l.output("CO.6", "CO.6 : Metal1 overlap of contact >= 0.005 um")
     co6_l1.forget
     co6_l2.forget
     co6_l.forget
 
     # Rule CO.6a: (i) Metal1 (< 0.34um) end-of-line overlap. is 0.06µm
     logger.info("Executing rule CO.6a")
-    cop6a_cond = metal1.width(0.34.um + 1.dbu).with_length(0.24.um, nil, both)
-    cop6a_eol = metal1.edges.with_length(nil, 0.34.um).interacting(cop6a_cond.first_edges).interacting(cop6a_cond.second_edges).not(cop6a_cond.first_edges).not(cop6a_cond.second_edges)
-    cop6a_eol_extended_in = cop6a_eol.extended_in(0.06.um)
-    co6a_l1 = contact.interacting(cop6a_eol_extended_in)
-    co6a_l1.output("CO.6a", "CO.6a : (i) Metal1 (< 0.34um) end-of-line overlap. : 0.06µm")
-    co6a_l1.forget
-    cop6a_cond.forget
-    cop6a_eol.forget
-    cop6a_eol_extended_in.forget
+    cont_6a_cond = metal1.width(0.34.um + 1.dbu).with_length(0.28.um,nil,both)
+    cont_6a_eol = metal1.edges.with_length(nil, 0.34.um).interacting(cont_6a_cond.first_edges).interacting(cont_6a_cond.second_edges).not(cont_6a_cond.first_edges).not(cont_6a_cond.second_edges)
+    cont_6a_l1 = contact.edges.enclosed(cont_6a_eol, 0.06.um, projection)
+    cont_6a_l1.output("CO.6a", "CO.6a : (i) Metal1 (< 0.34um) end-of-line overlap contact : 0.06µm")
+    cont_6a_l1.forget
+    cont_6a_cond.forget
+    cont_6a_eol.forget
+    cont_6a_cond.forget
 
     # # Rule CO.6b: (ii) If Metal1 overlaps contact by < 0.04um on one side, adjacent metal1 edges overlap is 0.06µm
     logger.info("Executing rule CO.6b")
-    cop6b_cond_metal = metal1.enclosing(main_contact, 0.04.um, euclidian).polygons(0.005)
-    cop6b_cont = main_contact.interacting(cop6b_cond_metal)
-    co6b_l1_poss = metal1.enclosing(cop6b_cont, 0.06.um, projection).polygons(0.005)
-    co6b_l1 = co6b_l1_poss.interacting(cop6b_cond_metal)
-    co6b_l1.output("CO.6b", "CO.6b : (ii) If Metal1 overlaps contact by < 0.04um on one side, adjacent metal1 edges overlap : 0.06µm")
-    cop6b_cond_metal.forget
-    cop6b_cont.forget
-    co6b_l1_poss.forget
-    co6b_l1.forget
+    cont_6b_cond_edges = main_contact.edges.not_outside(main_contact.enclosed(metal1, 0.04.um, projection).edges)
+    cont_6b_check_corner = cont_6b_cond_edges.extended_in(0.002.um)
+    cont_6b_check = main_contact.edges.interacting(cont_6b_check_corner).not(cont_6b_cond_edges)
+    cont_6b_cond_corner = cont_6b_cond_edges.width(0.002.um, angle_limit(135)).polygons
+    cont_6b_l1 = cont_6b_check.enclosed(metal1.edges, 0.06.um, projection).polygons
+    cont_6b_l2 = main_contact.interacting(cont_6b_cond_corner)
+    cont_6b_l = cont_6b_l1.or(cont_6b_l2)
+    cont_6b_l.output("CO.6b", "CO.6b : (ii) If Metal1 overlaps contact by < 0.04um on one side, adjacent metal1 edges overlap : 0.06µm")
+    cont_6b_l2.forget
+    cont_6b_l1.forget
+    cont_6b_cond_corner.forget
+    cont_6b_check.forget
+    cont_6b_check_corner.forget
+    cont_6b_cond_edges.forget
 
     # rule CO.6c is a guideline rule.
 
