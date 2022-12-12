@@ -533,29 +533,29 @@ polygons_count  += count
 
 
 if METAL_LEVEL == "2LM"
-  metal2_drawn  = get_polygons(53 , 0 )
+  metal2_drawn  = get_polygons(36 , 0 )
   count   = metal2_drawn.count()
   logger.info("metal2_drawn has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_dummy  = get_polygons(53 , 4 )
+  metal2_dummy  = get_polygons(36 , 4 )
   count   = metal2_dummy.count()
   logger.info("metal2_dummy has %d polygons" % [count])
   polygons_count  += count
 
   metal2        = metal2_drawn + metal2_drawn
 
-  metal2_label  = get_polygons(53 , 10)
+  metal2_label  = get_polygons(36 , 10)
   count   = metal2_label.count()
   logger.info("metal2_label has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_slot   = get_polygons(53 , 3 )
+  metal2_slot   = get_polygons(36 , 3 )
   count   = metal2_slot.count()
   logger.info("metal2_slot has %d polygons" % [count])
   polygons_count  += count
 
-  metal2_blk    = get_polygons(53 , 5 )
+  metal2_blk    = get_polygons(36 , 5 )
   count   = metal2_blk.count()
   logger.info("metal2_blk has %d polygons" % [count])
   polygons_count  += count
@@ -599,29 +599,29 @@ else
   polygons_count  += count
   
   if METAL_LEVEL == "3LM"
-    metal3_drawn  = get_polygons(53 , 0 )
+    metal3_drawn  = get_polygons(42 , 0 )
     count   = metal3_drawn.count()
     logger.info("metal3_drawn has %d polygons" % [count])
     polygons_count  += count
 
-    metal3_dummy  = get_polygons(53 , 4 )
+    metal3_dummy  = get_polygons(42 , 4 )
     count   = metal3_dummy.count()
     logger.info("metal3_dummy has %d polygons" % [count])
     polygons_count  += count
 
     metal3        = metal3_drawn + metal3_dummy
 
-    metal3_label  = get_polygons(53 , 10)
+    metal3_label  = get_polygons(42 , 10)
     count   = metal3_label.count()
     logger.info("metal3_label has %d polygons" % [count])
     polygons_count  += count
     
-    metal3_slot   = get_polygons(53 , 3 )
+    metal3_slot   = get_polygons(42 , 3 )
     count   = metal3_slot.count()
     logger.info("metal3_slot has %d polygons" % [count])
     polygons_count  += count
 
-    metal3_blk    = get_polygons(53 , 5 )
+    metal3_blk    = get_polygons(42 , 5 )
     count   = metal3_blk.count()
     logger.info("metal3_blk has %d polygons" % [count])
     polygons_count  += count
@@ -661,29 +661,29 @@ else
     via3           = get_polygons(40 , 0 )
 
     if METAL_LEVEL == "4LM"
-      metal4_drawn  = get_polygons(53 , 0 )
+      metal4_drawn  = get_polygons(46 , 0 )
       count   = metal4_drawn.count()
       logger.info("metal4_drawn has %d polygons" % [count])
       polygons_count  += count
 
-      metal4_dummy  = get_polygons(53 , 4 )
+      metal4_dummy  = get_polygons(46 , 4 )
       count   = metal4_dummy.count()
       logger.info("metal4_dummy has %d polygons" % [count])
       polygons_count  += count
 
       metal4        = metal4_drawn + metal4_dummy
       
-      metal4_label  = get_polygons(53 , 10)
+      metal4_label  = get_polygons(46 , 10)
       count   = metal4_label.count()
       logger.info("metal4_label has %d polygons" % [count])
       polygons_count  += count
       
-      metal4_slot   = get_polygons(53 , 3 )
+      metal4_slot   = get_polygons(46 , 3 )
       count   = metal4_slot.count()
       logger.info("metal4_slot has %d polygons" % [count])
       polygons_count  += count
 
-      metal4_blk    = get_polygons(53 , 5 )
+      metal4_blk    = get_polygons(46 , 5 )
       count   = metal4_blk.count()
       logger.info("metal4_blk has %d polygons" % [count])
       polygons_count  += count
@@ -726,29 +726,29 @@ else
       polygons_count  += count
 
       if METAL_LEVEL == "5LM"
-        metal5_drawn  = get_polygons(53 , 0 )
+        metal5_drawn  = get_polygons(81 , 0 )
         count   = metal5_drawn.count()
         logger.info("metal5_drawn has %d polygons" % [count])
         polygons_count  += count
 
-        metal5_dummy  = get_polygons(53 , 4 )
+        metal5_dummy  = get_polygons(81 , 4 )
         count   = metal5_dummy.count()
         logger.info("metal5_dummy has %d polygons" % [count])
         polygons_count  += count
 
         metal5        = metal5_drawn + metal5_dummy
 
-        metal5_label  = get_polygons(53 , 10)
+        metal5_label  = get_polygons(81 , 10)
         count   = metal5_label.count()
         logger.info("metal5_label has %d polygons" % [count])
         polygons_count  += count
       
-        metal5_slot   = get_polygons(53 , 3 )
+        metal5_slot   = get_polygons(81 , 3 )
         count   = metal5_slot.count()
         logger.info("metal5_slot has %d polygons" % [count])
         polygons_count  += count
 
-        metal5_blk    = get_polygons(53 , 5 )
+        metal5_blk    = get_polygons(81 , 5 )
         count   = metal5_blk.count()
         logger.info("metal5_blk has %d polygons" % [count])
         polygons_count  += count
