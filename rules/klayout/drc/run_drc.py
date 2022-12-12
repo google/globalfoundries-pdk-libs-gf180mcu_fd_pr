@@ -385,7 +385,7 @@ def check_klayout_version():
 
 def check_layout_path(layout_path):
     """
-    check_layout_type checks if the layout provided is GDS. Otherwise, kill the process. We only support GDS now.
+    check_layout_type checks if the layout provided is GDS or OAS. Otherwise, kill the process. We only support GDS or OAS now.
 
     Parameters
     ----------
@@ -402,8 +402,8 @@ def check_layout_path(layout_path):
         logging.error("## GDS file path provided doesn't exist or not a file.")
         exit(1)
 
-    if not ".gds" in layout_path:
-        logging.error("## Layout is not in GDSII format. Please use gds format.")
+    if not ".gds" in layout_path or not ".oas" in layout_path:
+        logging.error("## Layout is not in GDSII or OASIS format. Please use gds format.")
         exit(1)
 
     return os.path.abspath(layout_path)
