@@ -402,7 +402,7 @@ def check_layout_path(layout_path):
         logging.error("## GDS file path provided doesn't exist or not a file.")
         exit(1)
 
-    if not ".gds" in layout_path or not ".oas" in layout_path:
+    if not ".gds" in layout_path and not ".oas" in layout_path:
         logging.error("## Layout is not in GDSII or OASIS format. Please use gds format.")
         exit(1)
 
