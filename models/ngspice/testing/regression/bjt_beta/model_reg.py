@@ -13,7 +13,7 @@
 # limitations under the License.
 """
 Usage:
-  models_regression.py [--num_cores=<num>]
+  model_reg.py [--num_cores=<num>]
 
   -h, --help             Show help text.
   -v, --version          Show version.
