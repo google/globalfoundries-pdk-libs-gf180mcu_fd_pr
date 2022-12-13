@@ -58,19 +58,34 @@ def call_simulator(file_name):
 def ext_measured(dev_data_path, device, corners):
     # Read Data
     df = pd.read_excel(dev_data_path)
+    
+    length = []
+    width = []
 
+    for i in range(len(df)):
+
+        a_str = df["Unnamed: 2"][i]  # area_string parameter in the format "mim_1p5fF(100u x100u )"
+        if type(a_str) == str :
+
+            length.append(float(a_str.split("(")[1].split("x")[0].split("u")[0]))
+            width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
+        
+        else :
+            length.append(a_str)
+            width.append(a_str)
+    
     all_dfs = []
     for corner in corners:
-        idf = df[["l", "w", f"mimcap_{corner}"]].copy()
+        idf = df[[f"mimcap_{corner}"]].copy()
         idf.rename(
             columns={
                 f"mimcap_{corner}": "mimcap_measured",
-                "l": "length",
-                "w": "width",
             },
             inplace=True,
         )
         idf["corner"] = corner
+        idf["length"] = length
+        idf["width"] = width
         all_dfs.append(idf)
 
     df = pd.concat(all_dfs)
@@ -92,8 +107,8 @@ def run_sim(dirpath, device, length, width, corner, temp=25):
     info["width"] = width
     info["length"] = length
 
-    width_str = "{:.8f}".format(width)
-    length_str = "{:.8f}".format(length)
+    width_str = "{:.0f}".format(width)
+    length_str = "{:.0f}".format(length)
     temp_str = "{:.1f}".format(temp)
 
     netlist_path = f"{dirpath}/{device}_netlists/netlist_w{width_str}_l{length_str}_t{temp_str}_{corner}.spice"
@@ -177,10 +192,7 @@ def main():
     # mimcap var.
     corners = ["typical", "ff", "ss"]
 
-    devices = [
-        #"cap_mim_1f5fF",      
-        #"cap_mim_1f0fF",            
-        #"cap_mim_2f0fF" 
+    devices = [ 
         "cap_mim_1f5_m2m3_noshield",
         "cap_mim_1f0_m3m4_noshield",
         "cap_mim_2f0_m4m5_noshield",
