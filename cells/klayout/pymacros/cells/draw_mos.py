@@ -157,7 +157,7 @@ def draw_nmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 pya.Trans.new(pya.Point.new(((l + ld + ld_violat + cont2ply - cmp2cont) * i + 2 * (ld + ld_violat) + l - cont_size - dx), dy)),
                 pya.Point.new(-(cont2cont+cont_size), 0), pya.Point.new(0, (cont2cont+cont_size)), nx, ny))
             # Metals
-            cell.shapes(metal1).insert(pya.Box((ld + 2 * ld_violat + l + cont2ply - cmp2cont)*(i + 1) - metal_violat, metal_violat,
+            cell.shapes(metal1).insert(pya.Box((ld + 2 * ld_violat + l + cont2ply - cmp2cont)*(i + 1) - metal_violat, - metal_violat,
              ld + metal_violat + ld_violat + (ld + ld_violat + l + cont2ply - cmp2cont)*(i + 1) - (cont_size-2*cmp2cont), w + metal_violat))
 
     # Adding diffusion to avoid contact violation
@@ -578,7 +578,7 @@ def draw_pmos(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 pya.Trans.new(pya.Point.new(((l + ld + ld_violat + cont2ply - cmp2cont) * i + 2 * (ld + ld_violat) + l - cont_size - dx), dy)),
                 pya.Point.new(-(cont2cont+cont_size), 0), pya.Point.new(0, (cont2cont+cont_size)), nx, ny))
             # Metals
-            cell.shapes(metal1).insert(pya.Box((ld + 2 * ld_violat + l + cont2ply - cmp2cont)*(i + 1) - metal_violat, metal_violat,
+            cell.shapes(metal1).insert(pya.Box((ld + 2 * ld_violat + l + cont2ply - cmp2cont)*(i + 1) - metal_violat, - metal_violat,
              ld + metal_violat + ld_violat + (ld + ld_violat + l + cont2ply - cmp2cont)*(i + 1) - (cont_size-2*cmp2cont), w + metal_violat))
 
     # Adding diffusion to avoid contact violation
