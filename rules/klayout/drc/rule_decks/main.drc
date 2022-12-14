@@ -913,9 +913,11 @@ pgate_5V = pgate_56V.and(v5_xtor)
 ngate_6V = ngate_56V.not(v5_xtor)
 pgate_6V = pgate_56V.not(v5_xtor)
 
-lvpwell_dn = lvpwell.interacting(dnwell)
+lvpwell_dn = lvpwell.inside(dnwell)
 lvpwell_out = lvpwell.not_interacting(dnwell)
 
+nwell_dn = nwell.inside(dnwell)
+nwell_n_dn = nwell.not_interacting(dnwell)
 
 #================================================
 #------------- LAYERS CONNECTIONS ---------------
