@@ -40,13 +40,15 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 DEFAULT_TEMP = 25.0
 PASS_THRESH = 2.0
 
-def find_mimcap(filename):
+
+def find_moscap(filename):
     """
-    Find mimcap in log
+    Find moscap in log
     """
     cmd = 'grep "cv" {} | head -n 1'.format(filename)
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     return float(process.communicate()[0][:-1].decode("utf-8").split("=")[1])
+
 
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
@@ -55,50 +57,96 @@ def call_simulator(file_name):
     """
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
+
 def ext_measured(dev_data_path, device, corners):
     # Read Data
     df = pd.read_excel(dev_data_path)
-    
+
     length = []
     width = []
+    corner = []
+    moscap_meas = []
 
     for i in range(len(df)):
 
-        a_str = df["Unnamed: 2"][i]  # area_string parameter in the format "mim_1p5fF(100u x100u )"
-        if type(a_str) == str :
+        a_str = df["Unnamed: 2"][i]  # area_string parameter
+        moscap_corners = df["corners"][i]
+        moscap_val = df[f"CV (fF)"][i]
 
-            length.append(float(a_str.split("(")[1].split("x")[0].split("u")[0]))
-            width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
-        
-        else :
-            length.append(a_str)
-            width.append(a_str)
-    
-    all_dfs = []
-    for corner in corners:
-        idf = df[[f"mimcap_{corner}"]].copy()
-        idf.rename(
-            columns={
-                f"mimcap_{corner}": "mimcap_measured",
-            },
-            inplace=True,
-        )
-        idf["corner"] = corner
-        idf["length"] = length
-        idf["width"] = width
-        all_dfs.append(idf)
+        if ("nmos" in str(a_str)) and ("nmos" in device):
 
-    df = pd.concat(all_dfs)
+            if ("b" in str(a_str)) and ("b" in device):
+
+                length.append(float(a_str.split("(")[1].split("x")[0].split("u")[0]))
+                width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
+                moscap_meas.append(float(moscap_val))
+
+                if type(moscap_corners) == str:
+
+                    corner.append((moscap_corners.split("_")[-1]))
+
+                else:
+                    corner.append(moscap_corners)
+
+            elif ("b" not in str(a_str)) and ("b" not in device):
+
+                length.append(float(a_str.split("(")[1].split("x")[0].split("u")[0]))
+                width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
+                moscap_meas.append(float(moscap_val))
+
+                if type(moscap_corners) == str:
+
+                    corner.append((moscap_corners.split("_")[-1]))
+
+                else:
+                    corner.append(moscap_corners)
+
+        if ("pmos" in str(a_str)) and ("pmos" in device):
+
+            if ("b" in str(a_str)) and ("b" in device):
+
+                length.append(float(a_str.split("(")[1].split("x")[0].split("u")[0]))
+                width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
+                moscap_meas.append(float(moscap_val))
+
+                if type(moscap_corners) == str:
+
+                    corner.append((moscap_corners.split("_")[-1]))
+
+                else:
+                    corner.append(moscap_corners)
+
+            elif ("b" not in str(a_str)) and ("b" not in device):
+                length.append(float(a_str.split("(")[1].split("x")[0].split("u")[0]))
+                width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
+                moscap_meas.append(float(moscap_val))
+
+                if type(moscap_corners) == str:
+
+                    corner.append((moscap_corners.split("_")[-1]))
+
+                else:
+                    corner.append(moscap_corners)
+
+    idf = {}
+
+    idf["length"] = length
+    idf["width"] = width
+    idf["corner"] = corner
+    idf["moscap_measured"] = moscap_meas
+
+    df = pd.DataFrame(idf)
     df["temp"] = DEFAULT_TEMP
     df["device"] = device
     df.dropna(axis=0, inplace=True)
-    df = df[["device", "corner", "length", "width", "temp", "mimcap_measured"]]
+    df = df[["device", "corner", "length", "width", "temp", "moscap_measured"]]
+
     return df
+
 
 def run_sim(dirpath, device, length, width, corner, temp=25):
     """ Run simulation at specific information and corner """
-    netlist_tmp = "./device_netlists/mimcap.spice"
-
+    netlist_tmp = "./device_netlists/moscap.spice"
 
     info = {}
     info["device"] = device
@@ -107,8 +155,8 @@ def run_sim(dirpath, device, length, width, corner, temp=25):
     info["width"] = width
     info["length"] = length
 
-    width_str = "{:.0f}".format(width)
-    length_str = "{:.0f}".format(length)
+    width_str = "{:.1f}".format(width)
+    length_str = "{:.1f}".format(length)
     temp_str = "{:.1f}".format(temp)
 
     netlist_path = f"{dirpath}/{device}_netlists/netlist_w{width_str}_l{length_str}_t{temp_str}_{corner}.spice"
@@ -131,19 +179,22 @@ def run_sim(dirpath, device, length, width, corner, temp=25):
     # Running ngspice for each netlist
     try:
         call_simulator(netlist_path)
-        # Find mimcap in log
+        # Find moscap in log
         try:
-            mim = find_mimcap(f"{netlist_path}.log")
-            
+            moscap = find_moscap(f"{netlist_path}.log")
+
         except Exception as e:
-            mim = 0.0
-        
+            moscap = 0.0
+
     except Exception as e:
-        mim = 0.0
-    
-    info["mim_sim_unscaled"] = mim
+        moscap = 0.0
+
+    # print(moscap)
+
+    info["moscap_sim_unscaled"] = moscap
 
     return info
+
 
 def run_sims(df, dirpath, num_workers=mp.cpu_count()):
 
@@ -171,11 +222,9 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
                 print("Test case generated an exception: %s" % (exc))
 
     df = pd.DataFrame(results)
-    df = df[
-        ["device", "corner", "length", "width", "temp","mim_sim_unscaled"]
-    ]
+    df = df[["device", "corner", "length", "width", "temp", "moscap_sim_unscaled"]]
 
-    df["mim_sim"] = df["mim_sim_unscaled"]
+    df["moscap_sim"] = df["moscap_sim_unscaled"]
     return df
 
 
@@ -187,16 +236,23 @@ def main():
     pd.set_option("max_colwidth", None)
     pd.set_option("display.width", 1000)
 
-    main_regr_dir = "mimcap_regr"
+    main_regr_dir = "moscap_regr"
 
-    # mimcap var.
+    # moscap var.
     corners = ["typical", "ff", "ss"]
 
-    devices = [ 
-        "cap_mim_1f5_m2m3_noshield",
-        "cap_mim_1f0_m3m4_noshield",
-        "cap_mim_2f0_m4m5_noshield",
+    devices = [
+        "cap_nmos_03v3",
+        "cap_pmos_03v3",
+        "cap_nmos_03v3_b",
+        "cap_pmos_03v3_b",
+        "cap_nmos_06v0",
+        "cap_pmos_06v0",
+        "cap_nmos_06v0_b",
+        "cap_pmos_06v0_b",
     ]
+
+    # devices = [devices_3p3, devices_6p0]
 
     for i, dev in enumerate(devices):
         dev_path = f"{main_regr_dir}/{dev}"
@@ -209,22 +265,27 @@ def main():
         print("######" * 10)
         print(f"# Checking Device {dev}")
 
-        mim_data_files = glob.glob(
-            f"../../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx"
-        )
-        if len(mim_data_files) < 1:
-            print("# Can't find mimcap file for device: {}".format(dev))
-            mim_file = ""
+        if "3v3" in dev:
+            dev_ind = "3p3"
         else:
-            mim_file = mim_data_files[0]
-        print("# mimcap data points file : ", mim_file)
+            dev_ind = "6p0"
 
-        if mim_file == "" :
+        moscap3p3_data_files = glob.glob(
+            f"../../180MCU_SPICE_DATA/Cap/moscap_cv_{dev_ind}.nl_out.xlsx"
+        )
+        if len(moscap3p3_data_files) < 1:
+            print("# Can't find moscap_3p3 file for device: {}".format(dev))
+            moscap3p3_file = ""
+        else:
+            moscap3p3_file = moscap3p3_data_files[0]
+        print("# moscap_3p3 data points file : ", moscap3p3_file)
+
+        if moscap3p3_file == "":
             print(f"# No datapoints available for validation for device {dev}")
             continue
-            
-        if mim_file != "":
-            meas_df = ext_measured(mim_file, dev, corners)
+
+        if moscap3p3_file != "":
+            meas_df = ext_measured(moscap3p3_file, dev, corners)
         else:
             meas_df = []
 
@@ -238,9 +299,9 @@ def main():
         )
 
         merged_df["error"] = (
-            np.abs(merged_df["mim_sim"] - merged_df["mimcap_measured"])
+            np.abs(merged_df["moscap_sim"] - merged_df["moscap_measured"])
             * 100.0
-            / merged_df["mimcap_measured"]
+            / merged_df["moscap_measured"]
         )
 
         merged_df.to_csv(f"{dev_path}/error_analysis.csv", index=False)
@@ -260,7 +321,6 @@ def main():
             print("# Device {} has failed regression. Needs more analysis.".format(dev))
 
         print("\n\n")
-        
 
 
 # # ================================================================
@@ -279,5 +339,3 @@ if __name__ == "__main__":
 
     # Calling main function
     main()
-
-    
