@@ -212,7 +212,8 @@ if FEOL
     # Rule DF.6_3.3V: Min. COMP extend beyond gate (it also means source/drain overhang). is 0.24µm
     logger.info("Executing rule DF.6_3.3V")
     df6_exclude = otp_mk.or(ymtp_mk).or(sramcore).or(mvsd).or(mvpsd)
-    df6_sd = nsd.or(psd).not(df6_exclude)
+    #Get outer S/D for MOS (S/D that interact exactly one gate)
+    df6_sd = nsd.interacting(ngate,1..1).or(psd.interacting(pgate,1..1)).not(df6_exclude)                                 
     df6_l1 = df6_sd.not_interacting(v5_xtor).not_interacting(dualgate).width(0.24.um, euclidian).polygons(0.001)
     df6_l1.output("DF.6_3.3V", "DF.6_3.3V : Min. COMP extend beyond gate (it also means source/drain overhang). : 0.24µm")
     df6_l1.forget
