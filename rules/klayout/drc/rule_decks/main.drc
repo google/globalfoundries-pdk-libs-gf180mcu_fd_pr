@@ -894,11 +894,27 @@ logger.info("Starting deriving base layers.")
 #------------- BASE LAYERS DERIVATIONS ---------------
 #=====================================================
 
-ncomp      =  comp      & nplus
-pcomp      =  comp      & pplus
-tgate      =  poly2     & comp
-ngate      =  nplus     & tgate
-pgate      =  pplus     & tgate
+ncomp           = comp.and(nplus)
+pcomp           = comp.and(pplus)
+tgate           = poly2.and(comp).not(res_mk)
+
+ngate           = nplus.and(tgate)
+nsd             = ncomp.not(nwell).interacting(ngate).not(ngate).not(res_mk)
+ptap            = pcomp.not(nwell).or(pcomp.and(lvpwell)).not(res_mk)
+
+pgate           = pplus.and(tgate)
+psd             = pcomp.and(nwell).interacting(pgate).not(pgate).not(res_mk)
+ntap            = ncomp.and(nwell).or(ncomp.and(dnwell).not(lvpwell)).not(res_mk)
+
+ngate_dw        = ngate.and(lvpwell).and(dnwell)
+ptap_dw         = ptap.and(dnwell).outside(well_diode_mk)
+
+pgate_dw        = pgate.and(dnwell).not(lvpwell)
+ntap_dw         = ntap.and(dnwell)
+
+psd_dw          = pcomp.not(lvpwell).and(dnwell).interacting(pgate_dw).not(pgate_dw).not(res_mk)
+nsd_dw          = ncomp.and(dnwell).not(lvpwell).interacting(ngate_dw).not(ngate_dw).not(res_mk)
+
 natcompsd	 = (nat       & comp.interacting(poly2)) - tgate
 
 nom_gate = tgate.not(dualgate)
