@@ -899,24 +899,27 @@ pcomp           = comp.and(pplus)
 tgate           = poly2.and(comp).not(res_mk)
 
 ngate           = nplus.and(tgate)
-nsd             = ncomp.not(nwell).interacting(ngate).not(ngate).not(res_mk)
+nactive         = ncomp.not(nwell)
+nsd             = nactive.interacting(ngate).not(ngate).not(res_mk)
 ptap            = pcomp.not(nwell).or(pcomp.and(lvpwell)).not(res_mk)
 
 pgate           = pplus.and(tgate)
-psd             = pcomp.and(nwell).interacting(pgate).not(pgate).not(res_mk)
+pactive         = pcomp.and(nwell)
+psd             = pactive.interacting(pgate).not(pgate).not(res_mk)
 ntap            = ncomp.and(nwell).or(ncomp.and(dnwell).not(lvpwell)).not(res_mk)
 
-ngate_dw        = ngate.and(lvpwell).and(dnwell)
-ptap_dw         = ptap.and(dnwell).outside(well_diode_mk)
+ngate_dn        = ngate.and(lvpwell).and(dnwell)
+ptap_dn         = ptap.and(dnwell).outside(well_diode_mk)
 
-pgate_dw        = pgate.and(dnwell).not(lvpwell)
-ntap_dw         = ntap.and(dnwell)
+pgate_dn        = pgate.and(dnwell).not(lvpwell)
+ntap_dn         = ntap.and(dnwell)
 
-psd_dw          = pcomp.not(lvpwell).and(dnwell).interacting(pgate_dw).not(pgate_dw).not(res_mk)
-nsd_dw          = ncomp.and(dnwell).not(lvpwell).interacting(ngate_dw).not(ngate_dw).not(res_mk)
+psd_dn          = pcomp.not(lvpwell).and(dnwell).interacting(pgate_dn).not(pgate_dn).not(res_mk)
+nsd_dn          = ncomp.and(dnwell).not(lvpwell).interacting(ngate_dn).not(ngate_dn).not(res_mk)
 
 natcompsd	 = (nat       & comp.interacting(poly2)) - tgate
 
+# Gate
 nom_gate = tgate.not(dualgate)
 thick_gate = tgate.and(dualgate)
 
@@ -929,9 +932,18 @@ pgate_5V = pgate_56V.and(v5_xtor)
 ngate_6V = ngate_56V.not(v5_xtor)
 pgate_6V = pgate_56V.not(v5_xtor)
 
+# DNWELL
+dnwell_3p3v = dnwell.not_interacting(v5_xtor).not_interacting(dualgate)
+dnwell_56v = dnwell.overlapping(dualgate)
+
+# LVPWELL
 lvpwell_dn = lvpwell.interacting(dnwell)
 lvpwell_out = lvpwell.not_interacting(dnwell)
 
+lvpwell_dn3p3v = lvpwell.and(dnwell_3p3v)
+lvpwell_dn56v = lvpwell.and(dnwell_56v)
+
+# NWELL
 nwell_dn = nwell.interacting(dnwell)
 nwell_n_dn = nwell.not_interacting(dnwell)
 
