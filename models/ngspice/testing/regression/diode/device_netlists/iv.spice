@@ -29,9 +29,10 @@ dn1 n 0 {{device}} AREA = {{area}}p PJ = {{pj}}u
 .control
 set filetype=ascii
 
-dc Vn -12.13 1.13 0.13
+dc Vn -40.41 1.41 0.41
 print abs(i(Vn))
-wrdata {{device}}_{{Id_sim}}_{{corner}}/simulated_{{Id_sim}}/{{i}}_simulated_A{{area}}_P{{pj}}.csv abs(i(Vn))
+
+wrdata diode_regr/{{device}}/simulated_iv/simulated_A{{area}}_P{{pj}}_t{{temp}}_{{corner}}.csv abs(i(Vn))
 .endc
 
 

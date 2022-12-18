@@ -1,0 +1,28 @@
+*Xyce Common Source Circuit
+** library calling
+
+
+*****************
+** main netlist
+*****************
+Ich 0 p dc 10u
+
+
+xcn p 0 cap_nmos_03v3 L=50u W=50u
+* PJ=40u
+
+
+*****************
+** Analysis
+*****************
+.ic v(p)=0.0
+.tran 10ns 2000us
+
+.meas tran CV FIND par('(10.0e-6  * time / v(p))*1.0e15') AT=2000us
+
+
+
+.include "../../design.xyce"
+.lib "../../sm141064.xyce" moscap_typical
+
+.end
