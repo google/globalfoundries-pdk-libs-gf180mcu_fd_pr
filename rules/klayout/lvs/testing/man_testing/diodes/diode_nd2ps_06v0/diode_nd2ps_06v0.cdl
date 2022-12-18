@@ -1,0 +1,61 @@
+************************************************************************
+* auCdl Netlist:
+* 
+* Library Name:  TCG_Library
+* Top Cell Name: diode_nd2ps_06v0
+* View Name:     schematic
+* Netlisted on:  Nov 24 09:18:14 2021
+************************************************************************
+
+*.BIPOLAR
+*.RESI = 2000 
+*.RESVAL
+*.CAPVAL
+*.DIOPERI
+*.DIOAREA
+*.EQUATION
+*.SCALE METER
+*.MEGA
+.PARAM
+
+*.GLOBAL vdd!
+
+*.PIN vdd!
+
+************************************************************************
+* Library Name: TCG_Library
+* Cell Name:    diode_nd2ps_06v0
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT diode_nd2ps_06v0 I1_0_0_0_0_R0_MINUS I1_0_1_0_0_R0_MINUS I1_0_2_0_0_R0_MINUS 
++ I1_0_3_0_0_R0_MINUS I1_1_0_0_0_R0_MINUS I1_1_1_0_0_R0_MINUS 
++ I1_1_2_0_0_R0_MINUS I1_1_3_0_0_R0_MINUS I1_2_0_0_0_R0_MINUS 
++ I1_2_1_0_0_R0_MINUS I1_2_2_0_0_R0_MINUS I1_2_3_0_0_R0_MINUS 
++ I1_3_0_0_0_R0_MINUS I1_3_1_0_0_R0_MINUS I1_3_2_0_0_R0_MINUS 
++ I1_3_3_0_0_R0_MINUS I1_default_MINUS vdd!
+*.PININFO I1_0_0_0_0_R0_MINUS:I I1_0_1_0_0_R0_MINUS:I I1_0_2_0_0_R0_MINUS:I 
+*.PININFO I1_0_3_0_0_R0_MINUS:I I1_1_0_0_0_R0_MINUS:I I1_1_1_0_0_R0_MINUS:I 
+*.PININFO I1_1_2_0_0_R0_MINUS:I I1_1_3_0_0_R0_MINUS:I I1_2_0_0_0_R0_MINUS:I 
+*.PININFO I1_2_1_0_0_R0_MINUS:I I1_2_2_0_0_R0_MINUS:I I1_2_3_0_0_R0_MINUS:I 
+*.PININFO I1_3_0_0_0_R0_MINUS:I I1_3_1_0_0_R0_MINUS:I I1_3_2_0_0_R0_MINUS:I 
+*.PININFO I1_3_3_0_0_R0_MINUS:I I1_default_MINUS:I vdd!:I
+DI1_3_3_0_0_R0 vdd! I1_3_3_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=10n PJ=400u
+DI1_3_2_0_0_R0 vdd! I1_3_2_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=1.32n PJ=226.4u
+DI1_3_1_0_0_R0 vdd! I1_3_1_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=110p PJ=202.2u
+DI1_3_0_0_0_R0 vdd! I1_3_0_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=36p PJ=200.72u
+DI1_2_3_0_0_R0 vdd! I1_2_3_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=1.32n PJ=226.4u
+DI1_2_2_0_0_R0 vdd! I1_2_2_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=174.24p PJ=52.8u
+DI1_2_1_0_0_R0 vdd! I1_2_1_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=14.52p PJ=28.6u
+DI1_2_0_0_0_R0 vdd! I1_2_0_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=4.752p PJ=27.12u
+DI1_1_3_0_0_R0 vdd! I1_1_3_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=110p PJ=202.2u
+DI1_1_2_0_0_R0 vdd! I1_1_2_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=14.52p PJ=28.6u
+DI1_1_1_0_0_R0 vdd! I1_1_1_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=1.21p PJ=4.4u
+DI1_1_0_0_0_R0 vdd! I1_1_0_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=396f PJ=2.92u
+DI1_0_3_0_0_R0 vdd! I1_0_3_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=36p PJ=200.72u
+DI1_0_2_0_0_R0 vdd! I1_0_2_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=4.752p PJ=27.12u
+DI1_0_1_0_0_R0 vdd! I1_0_1_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=396f PJ=2.92u
+DI1_0_0_0_0_R0 vdd! I1_0_0_0_0_R0_MINUS diode_nd2ps_06v0 m=1 AREA=203.4f PJ=1.85u
+DI1_default vdd! I1_default_MINUS diode_nd2ps_06v0 m=1 AREA=1p PJ=4u
+.ENDS
+

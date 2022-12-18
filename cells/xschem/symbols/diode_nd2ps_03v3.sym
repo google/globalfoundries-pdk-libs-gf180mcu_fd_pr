@@ -1,0 +1,40 @@
+v {xschem version=3.0.0 file_version=1.2
+
+* Copyright 2022 GlobalFoundries PDK Authors
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     https://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+}
+G {}
+K {type=diode
+format="@name @pinlist @model area='@r_w * @r_l ' pj='2*@r_w + 2*@r_l ' m=@m"
+template="name=D1
+model=diode_nd2ps_03v3
+r_w=1u
+r_l=1u
+m=1"
+}
+V {}
+S {}
+E {}
+L 4 0 5 0 30 {}
+L 4 0 -30 0 -5 {}
+L 4 -10 5 10 5 {}
+B 5 -2.5 -32.5 2.5 -27.5 {name=p dir=inout pinnumber=1 propag=1 goto=1}
+B 5 -2.5 27.5 2.5 32.5 {name=m dir=inout pinnumber=2 goto=0}
+P 4 4 0 5 -10 -5 10 -5 0 5 {fill=true}
+T {@name} 20 -28.75 0 0 0.2 0.2 {}
+T {W=@r_w} -15 -13.75 0 1 0.2 0.2 {layer=13}
+T {@model} 20 -16.25 0 0 0.2 0.2 {}
+T {L=@r_l} -15 -1.25 0 1 0.2 0.2 {layer=13}
+T {m=@m} -15 11.25 0 1 0.2 0.2 {layer=13}

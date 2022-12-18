@@ -1,5 +1,5 @@
 ***************************
-** pmos_3p3_cv
+** pfet_03v3_cv
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -34,7 +34,7 @@ vbs S_tn 0 dc=0
 * pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
 
 * circuit
-mn D_tn G_tn S_tn S_tn pmos_3p3 W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
+mn D_tn G_tn S_tn S_tn pfet_03v3 W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
 
 .control
 set filetype=ascii
@@ -64,7 +64,7 @@ foreach t 25
 	
 	print @mn[cgb]
         
-        wrdata pmos_3p3_cv/simulated_Cgc/{{i}}_simulated_W{{width}}_L{{length}}.csv {@mn[cgb]*1e15} 
+        wrdata pfet_03v3_cv/simulated_Cgc/{{i}}_simulated_W{{width}}_L{{length}}.csv {@mn[cgb]*1e15} 
         
         reset
         let vbs_counter = vbs_counter + 1

@@ -11,7 +11,7 @@ V1 in 0 dc {volt} ac 1
 * Iopen 0 open 0
 
 R1 in out 1G
-xq1 out 0 0 vpnp_0p42x10
+xq1 out 0 0 pnp_10p00x00p42
 
 .meas AC freq when Vdb(out)=-3 PRECISION=15
 

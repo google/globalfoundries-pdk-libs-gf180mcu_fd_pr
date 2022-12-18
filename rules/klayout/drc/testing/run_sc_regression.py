@@ -25,15 +25,17 @@ Options:
     --thr=<thr>         The number of threads used in run.
 
 """
+from subprocess import check_call
+
 from docopt import docopt
 import os
 import xml.etree.ElementTree as ET
-import csv
+import pandas as pd
 import time
 import concurrent.futures
 
 
-def get_results(rule_deck_path, iname, file, x):
+def get_results(results_file_path):
     """
     The function takes the path of the rule deck and the path of the gds file as inputs, then it runs
     the DRC using the rule deck on the gds file and returns the name of the gds file, the name of the
@@ -43,13 +45,12 @@ def get_results(rule_deck_path, iname, file, x):
     :param path: The path to the GDS file you want to check
     :return: the file name, the rule deck name, the violated rules and the status of the file.
     """
-    mytree = ET.parse(f"{iname[0]}_{x}.lyrdb")
+    mytree = ET.parse(results_file_path)
     myroot = mytree.getroot()
 
     violated = []
 
     for lrule in rules:
-
         # Loop on database to get the violations of required rule
         for z in myroot[7]:
             if f"'{lrule}'" == f"{z[1].text}":
@@ -57,15 +58,12 @@ def get_results(rule_deck_path, iname, file, x):
                 break
 
     if len(violated) > 0:
-        status = "Not_clean"
+        status = "not_clean"
     else:
-        status = "Clean"
+        status = "clean"
 
-    rule_deck = rule_deck_path.split("../")
+    return " ".join(violated), len(violated), status
 
-    print(f"\n The file {file[-1]} has violated rule deck {rule_deck[-1]} in: {len(violated)} rule/s which are: {violated} \n")
-    print(f" The file {file[-1]} with rule deck {rule_deck[-1]} is {status} \n")
-    return file[-1], rule_deck[-1], ' '.join(violated), status
 
 def call_simulator(arg):
     """
@@ -76,7 +74,14 @@ def call_simulator(arg):
     :param path: The path to the GDS file you want to simulate
     :param thrCount: number of threads to use
     """
-    os.system(arg)
+    try:
+        check_call(arg, shell=True)
+        return True
+    except Exception as e:
+        print("## Run generated exception: ", arg)
+        print(str(e))
+        return False
+
 
 if __name__ == "__main__":
 
@@ -86,7 +91,7 @@ if __name__ == "__main__":
     if os.path.exists("sc"):
         os.system("rm -rf sc")
 
-    report = [["File_Name", "Rule Deck", "Rules", "Status"]]
+    report_header = ["File_Name", "Rule Deck", "Rules", "Status"]
 
     # Get threads count
     if args["--thr"]:
@@ -94,13 +99,11 @@ if __name__ == "__main__":
     else:
         thrCount = os.cpu_count() * 2
 
-    os.system("klayout -v")
-
     rule_deck_path = []
     rules = []
-    runs = []
+    runs = dict()
 
-    files = os.listdir('..')
+    files = os.listdir("..")
 
     for file in files:
         if ".drc" in file:
@@ -108,17 +111,18 @@ if __name__ == "__main__":
 
     # Get rules names
     for runset in rule_deck_path:
-        with open(runset, 'r') as f:
+        with open(runset, "r") as f:
             for line in f:
-                if 'GEOMETRY RULES' in line:
+                if "GEOMETRY RULES" in line:
                     break
                 if ".output" in line:
                     line_list = line.split('"')
                     rules.append(line_list[1])
 
     # Create GDS splitter script
-    with open('split_gds.rb', 'w') as f:
-        f.write(''' layout = RBA::Layout::new
+    with open("split_gds.rb", "w") as f:
+        f.write(
+            """ layout = RBA::Layout::new
                     layout.read($input)
                     Dir.mkdir("sc") unless File.exists?("sc")
 
@@ -129,61 +133,90 @@ if __name__ == "__main__":
                         new_top = ly2.add_cell("#{cell.name}")
                         ly2.cell(new_top).copy_tree(layout.cell("#{cell.name}"))
                         ly2.write("sc/#{cell.name}.gds")
-                    end''')
+                    end"""
+        )
 
     # Split standard cells top-cells into multiple gds files
     for path in args["--path"]:
-        iname = path.split('.gds')
-        file = iname[0].split('/')
+        iname = path.split(".gds")
+        file = iname[0].split("/")
         if "sc" in file[-1]:
+            print("## Extracting top cells for : ", path)
             os.system(f"klayout -b -r split_gds.rb -rd input={path}")
             print(f"File {path} was splitted into multiple gds files")
+        else:
+            print(
+                f"## {path} Not a standard cells library GDS. We will use the full GDS. No splitting required."
+            )
 
+    ## If this was a standard cells library, get the new list of files.
     if os.path.exists("sc"):
-        other_files = os.listdir('sc')
+        other_files = os.listdir("sc")
         args["--path"] = args["--path"] + other_files
 
-    # Get input data for simulator
+    # Get input data for klayout runs and create the run list.
     for path in args["--path"]:
         x = 0
-        iname = path.split('.gds')
-        file = iname[0].split('/')
+        iname = path.split(".gds")
+        file = iname[0].split("/")
         if "sc" in file[-1]:
             continue
         if "/" not in path:
             path = f"sc/{path}"
-        iname = path.split('.gds')
-        file = iname[0].split('/')
+        iname = path.split(".gds")
+        file = iname[0].split("/")
         for runset in rule_deck_path:
             arg = f"klayout -b -r {runset} -rd input={path} -rd report={file[-1]}_{x}.lyrdb -rd thr={thrCount} -rd conn_drc=true"
-            runs.append(arg)
+            run_id = f"{runset}|{path}|{file[-1]}_{x}.lyrdb"
+            runs[run_id] = arg
             x += 1
 
-    # Run DRC
-    with concurrent.futures.ProcessPoolExecutor(max_workers=thrCount) as executor:
-        for run in runs:
-            executor.submit(call_simulator, run)
+    print("## We will run klayout {} runs".format(len(runs)))
 
-    # Get results
-    for path in args["--path"]:
-        x = 0
-        iname = path.split('.gds')
-        file = iname[0].split('/')
-        if "sc" in file[-1]:
-            continue
-        if "/" not in path:
-            path = f"sc/{path}"
-        iname = path.split('.gds')
-        file = iname[0].split('/')
-        for runset in rule_deck_path:
-            if os.path.exists(f"{iname[0]}_{x}.lyrdb"):
-                file, rule_deck, violations, status = get_results(runset, iname, file, x)
-                report.append([file, rule_deck, violations, status])
-            x += 1
+    # Run All DRC runs.
+    report = []
 
-    with open(f'sc_drc_report.csv', 'w') as f:
-        writer = csv.writer(f, delimiter=',')
-        writer.writerows(report)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=thrCount) as executor:
+        # Start the load operations and mark each future with its URL
+        future_to_run_id = {executor.submit(call_simulator, runs[r]): r for r in runs}
+        for future in concurrent.futures.as_completed(future_to_run_id):
+            run_id = future_to_run_id[future]
+            run_info = run_id.split("|")
+            info = dict()
+            info["file_path"] = run_info[1]
+            info["runset"] = run_info[0]
+            info["results_file"] = run_info[2]
+            results_db_path = os.path.join(
+                os.path.dirname(os.path.abspath(run_info[1])), run_info[2]
+            )
+
+            try:
+                run_status = future.result()
+                if run_status:
+                    violators, num_rules_violated, db_status = get_results(
+                        results_db_path
+                    )
+                    info["rules_violated"] = violators
+                    info["num_rules_violated"] = num_rules_violated
+                    info["run_status"] = db_status
+                else:
+                    info["rules_violated"] = ""
+                    info["num_rules_violated"] = 0
+                    info["run_status"] = "run throws exception"
+
+                report.append(info)
+
+            except Exception as exc:
+                print("%r generated an exception: %s" % (run_id, exc))
+
+    df = pd.DataFrame(report)
+    df.to_csv("ip_cells_run_report.csv", index=False)
+    pd.set_option("display.max_columns", None)
+    pd.set_option("display.max_rows", None)
+    pd.set_option("max_colwidth", None)
+    pd.set_option("display.width", 1000)
+
+    print(df)
 
     if os.path.exists("split_gds.rb"):
         os.remove("split_gds.rb")
@@ -192,4 +225,10 @@ if __name__ == "__main__":
         os.system("rm -rf sc")
 
     t1 = time.time()
-    print(f'Total execution time {t1 - t0} s')
+    print(f"Total execution time {t1 - t0} s")
+
+    if (df["run_status"] != "clean").any():
+        print("## Run failed as there are failures or violations.")
+        exit(1)
+    else:
+        print("## Run passed with no violations or failures.")

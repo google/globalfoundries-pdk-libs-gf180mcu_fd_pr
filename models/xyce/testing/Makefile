@@ -43,9 +43,9 @@ Add_run-dir:
 
 .ONESHELL:
 smoke-test:
+	@echo "========== Runing models_xyce SMOKE TEST regression =========="
 	@cd $(Testing_DIR)/smoke_test
 	@python3 xyce_smoke_test.py
-
 
 #================================
 # ---------- models-MOS----------
@@ -70,8 +70,11 @@ models-MOS: Add_run-dir
 
 .ONESHELL:
 models-BJT: Add_run-dir
+	@cd $(Testing_DIR)/$(run_folder)/bjt_iv
+	@echo "========== Runing models_xyce-BJT regression (IV Characteristics) ==========" |& tee -a ../run_log.log 
+	@ python3 models_regression.py |& tee -a ../run_log.log
 	@cd $(Testing_DIR)/$(run_folder)/bjt_cj
-	@echo "========== Runing models_xyce-BJT regression ==========" |& tee -a ../run_log.log 
+	@echo "========== Runing models_xyce-BJT regression (CV Characteristics) ==========" |& tee -a ../run_log.log 
 	@ python3 models_regression.py |& tee -a ../run_log.log
 
 
