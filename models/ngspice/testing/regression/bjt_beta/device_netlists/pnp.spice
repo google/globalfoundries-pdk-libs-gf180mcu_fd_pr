@@ -19,8 +19,8 @@ xq1 c b 0 {{device}}
 set filetype=ascii
 
 dc Vbp -0.2 -1.2 -0.01 Vcp -1 -3 -1
-wrdata pnp/simulated_Ic/{{i}}_simulated_{{device}}.csv i(Vcp)
-wrdata pnp/simulated_Ib/{{i}}_simulated_{{device}}.csv i(Vbp)
+wrdata bjt_beta_regr/pnp/ic_simulated/simulated_{{device}}_t{{temp}}.csv -i(Vcp)
+wrdata bjt_beta_regr/pnp/ib_simulated/simulated_{{device}}_t{{temp}}.csv -i(Vbp)
 .endc
 
 .include "../../../design.ngspice"
