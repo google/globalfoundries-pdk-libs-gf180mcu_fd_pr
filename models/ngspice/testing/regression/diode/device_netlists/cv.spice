@@ -42,7 +42,8 @@ DC Vn $&vn_min $&vn_max $&vn_step
 
 print  @dn[cd]*1000000000000000
     
-wrdata {{device}}_{{Id_sim}}_{{corner}}/simulated_{{Id_sim}}/{{i}}_simulated_A{{area}}_P{{pj}}.csv  @dn[cd]*1000000000000000
+wrdata diode_regr/{{device}}/simulated_cv/simulated_A{{area}}_P{{pj}}_t{{temp}}_{{corner}}.csv  @dn[cd]*1000000000000000
+
 
 .endc
 
