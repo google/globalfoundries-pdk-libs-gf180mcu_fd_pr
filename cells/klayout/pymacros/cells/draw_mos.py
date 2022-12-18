@@ -225,6 +225,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 )
             )
             # Metals
+            
             cell.shapes(metal1).insert(
                 pya.Box(
                     (ld + 2 * ld_violat + l + cont2ply - cmp2cont) * (i + 1)
@@ -1572,6 +1573,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 )
             )
             # Metals
+
             cell.shapes(metal1).insert(
                 pya.Box(
                     (ld + 2 * ld_violat + l + cont2ply - cmp2cont) * (i + 1)
