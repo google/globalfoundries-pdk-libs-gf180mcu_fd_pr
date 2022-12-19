@@ -63,9 +63,9 @@ if FEOL
 
     end #CONNECTIVITY_RULES
 
-    # Rule MDN.3a: Min transistor channel length is 0.6µm.
+    # Rule MDN.3a: Min transistor channel length is 0.6µm
     logger.info("Executing rule MDN.3a")
-    mdn3a_l1 = mvsd.enclosed(poly_mdn, 0.6.um, euclidian).polygons(0.001)
+    mdn3a_l1 = poly_mdn.enclosing(mvsd, 0.6.um, euclidian).polygons(0.001)
     mdn3a_l1.output("MDN.3a", "MDN.3a : Min transistor channel length. : 0.6µm")
     mdn3a_l1.forget
 
@@ -75,6 +75,7 @@ if FEOL
     mdn3b_l1 = ldnmos_edges.inside_part(ncomp).not(mdn3b_pass)
     mdn3b_l1.output("MDN.3b", "MDN.3b : Max transistor channel length: 20um")
     mdn3b_l1.forget
+    mdn3b_pass.forget
 
     # Rule MDN.4a: Min transistor channel width is 4µm.
     logger.info("Executing rule MDN.4a")
@@ -82,6 +83,7 @@ if FEOL
     mdn4a_l1 = ldnmos_gate_ends.and(mdn4a_fail).extended(0, 0, 0.001, 0.001)
     mdn4a_l1.output("MDN.4a", "MDN.4a : Min transistor channel width. : 4µm")
     mdn4a_l1.forget
+    mdn4a_fail.forget
 
     # Rule MDN.4b: Max transistor channel width is 50um.
     logger.info("Executing rule MDN.4b")
@@ -89,7 +91,7 @@ if FEOL
     mdn4b_l1 = ldnmos_gate_ends.not(mdn4b_pass).extended(0, 0, 0.001, 0.001)
     mdn4b_l1.output("MDN.4b", "MDN.4b : Max transistor channel width : 50 um ")
     mdn4b_l1.forget
-    ldnmos_gate_ends.forget
+    mdn4b_pass.forget
 
     pcomp_mdn5a = pcomp.not_interacting(ncomp).inside(ldmos_xtor).inside(dualgate)
     # Rule MDN.5ai: Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap non-butted). PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed.
@@ -364,6 +366,11 @@ if FEOL
     mdn_17_mos_in_gr.forget
 
     mdn_17_gr_in_ldmos_mk.forget
+
+    ldnmos_gate_ends.forget
+    ldnmos_edges.forget
+    ldnmos.forget
+    poly_mdn.forget
 
 end #FEOL
 

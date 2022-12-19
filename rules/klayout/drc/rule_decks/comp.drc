@@ -83,8 +83,7 @@ if FEOL
 
     # Rule DF.2b: Max. COMP width for all cases except those used for capacitors, marked by ‘MOS_CAP_MK’ layer. is 100um
     logger.info("Executing rule DF.2b")
-    df_2b = comp.not(mos_cap_mk).width(100.um + 1.dbu).polygons(0.001)
-    df2b_l1 = comp.not(mos_cap_mk).not_interacting(df_2b)
+    df2b_l1 = comp.not(mos_cap_mk).sized(-50.um).sized(50.um)
     df2b_l1.output("DF.2b", "DF.2b : Max. COMP width for all cases except those used for capacitors, marked by 'MOS_CAP_MK' layer: 100um")
     df2b_l1.forget
 
@@ -278,7 +277,7 @@ if FEOL
 
     # Rule DF.12: COMP not covered by Nplus or Pplus is forbidden (except those COMP under marking).
     logger.info("Executing rule DF.12")
-    df12_l1 = comp.not_interacting(schottky_diode).not(nplus.or(pplus))
+    df12_l1 = comp.not_interacting(schottky_diode).not(nplus).not(pplus)
     df12_l1.output("DF.12", "DF.12 : COMP not covered by Nplus or Pplus is forbidden (except those COMP under marking).")
     df12_l1.forget
 

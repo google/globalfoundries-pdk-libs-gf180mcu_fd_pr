@@ -17,7 +17,7 @@ Run GlobalFoundries 180nm MCU DRC.
 
 Usage:
     run_drc.py (--help| -h)
-    run_drc.py (--path=<file_path>) (--variant=<combined_options>) [--table=<table_name>]... [--mp=<num_cores>] [--run_dir=<run_dir_path>] [--topcell=<topcell_name>] [--thr=<thr>] [--run_mode=<run_mode>] [--no_feol] [--no_beol] [--connectivity] [--density] [--density_only] [--antenna] [--antenna_only] [--no_offgrid]
+    run_drc.py (--path=<file_path>) (--variant=<combined_options>) [--verbose] [--table=<table_name>]... [--mp=<num_cores>] [--run_dir=<run_dir_path>] [--topcell=<topcell_name>] [--thr=<thr>] [--run_mode=<run_mode>] [--no_feol] [--no_beol] [--connectivity] [--density] [--density_only] [--antenna] [--antenna_only] [--no_offgrid]
 
 Options:
     --help -h                           Print this help message.
@@ -40,13 +40,14 @@ Options:
     --antenna                           Turn on Antenna checks.
     --antenna_only                      Turn on Antenna checks only.
     --no_offgrid                        Turn off OFFGRID checking rules.
+    --verbose                           Detailed rule execution log for debugging.
 """
 
 from docopt import docopt
 import os
 import xml.etree.ElementTree as ET
 import logging
-import pya
+import klayout.db
 import glob
 from datetime import datetime
 from subprocess import check_call
@@ -209,7 +210,7 @@ def get_top_cell_names(gds_path):
     List of string
         Names of the top cell in the layout.
     """
-    layout = pya.Layout()
+    layout = klayout.db.Layout()
     layout.read(gds_path)
     top_cells = [t.name for t in layout.top_cells()]
 
@@ -315,6 +316,11 @@ def generate_klayout_switches(arguments, layout_path):
     else:
         logging.error("variant switch allowed values are (A , B, C) only")
         exit()
+
+    if arguments["--verbose"]:
+        switches["verbose"] = "true"
+    else:
+        switches["verbose"] = "false"
 
     if arguments["--no_feol"]:
         switches["feol"] = "false"

@@ -20,26 +20,29 @@ if FEOL
     #-------------------10V LDPMOS-------------------
     #================================================
 
-    mdp_source = (pcomp).interacting(poly2.and(dualgate).and(ldmos_xtor).and(mvpsd)).not(poly2)
-    ldpmos     = poly2.and(pcomp).and(dualgate).not(mvpsd).inside(ldmos_xtor)
+    poly_mdp          = poly2.and(pcomp).inside(ldmos_xtor).inside(dualgate)
+    mdp_source        = pcomp.interacting(poly_mdp.and(mvpsd)).not(poly2)
+    ldpmos            = poly_mdp.not(mvpsd)
+    ldpmos_edges      = ldpmos.edges
+    ldpmos_gate_ends  = ldpmos_edges.outside_part(pcomp)   # defines the width
+    ldpmos_gate_sides = ldpmos_edges.inside_part(pcomp)    # defines the length
+    ldpmos_edges.forget
+
     # Rule MDP.1: Minimum transistor channel length. is 0.6µm
     logger.info("Executing rule MDP.1")
-    mdp1_l1 = poly2.and(comp).inside(ldmos_xtor).inside(dualgate).enclosing(mvpsd, 0.6.um, euclidian).polygons(0.001)
+    mdp1_l1 = poly_mdp.enclosing(mvpsd, 0.6.um, euclidian).polygons(0.001)
     mdp1_l1.output("MDP.1", "MDP.1 : Minimum transistor channel length. : 0.6µm")
     mdp1_l1.forget
 
-    mvpsd_mdp = mvpsd.edges.and(pcomp).and(poly2)
     # Rule MDP.1a: Max transistor channel length.
     logger.info("Executing rule MDP.1a")
-    mdp1a_l1 = poly2.edges.and(pcomp).or(mvpsd_mdp).and(ldmos_xtor).and(dualgate).not(pgate.not(mvpsd).edges.interacting(poly2.edges.and(pcomp).or(mvpsd_mdp)).width(20.001.um).edges)
+    mdp1a_l1 = ldpmos_gate_sides.not(ldpmos.width(20.um + 1.dbu, projection).edges).extended(0, 0, 0.001, 0.001)
     mdp1a_l1.output("MDP.1a", "MDP.1a : Max transistor channel length.")
     mdp1a_l1.forget
 
-    mvpsd_mdp.forget
-
     # Rule MDP.2: Minimum transistor channel width. is 4µm
     logger.info("Executing rule MDP.2")
-    mdp2_l1  = poly2.and(comp).inside(ldmos_xtor).inside(dualgate).edges.not(mvpsd).interacting(mvpsd).width(4.um, euclidian).polygons(0.001)
+    mdp2_l1 = ldpmos_gate_ends.and(ldpmos.width(4.um, projection).edges).extended(0, 0, 0.001, 0.001)
     mdp2_l1.output("MDP.2", "MDP.2 : Minimum transistor channel width. : 4µm")
     mdp2_l1.forget
 
@@ -337,6 +340,12 @@ if FEOL
     mdp17c_l1 = dnwell.with_holes.not_covering(ncomp)
     mdp17c_l1.output("MDP.17c", "MDP.17c : DNWELL guard ring shall have NCOMP tab to be connected to highest potential")
     mdp17c_l1.forget
-    
+
+    mdp_source.forget
+    ldpmos.forget
+    poly_mdp.forget
+    ldpmos_gate_ends.forget
+    ldpmos_gate_sides.forget
+
 end
 
