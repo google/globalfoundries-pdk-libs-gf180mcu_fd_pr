@@ -46,12 +46,6 @@ def call_simulator(file_name):
     )
 
 
-def find_bjt(filepath):
-    """check if bjt exists in csv files"""
-
-    return os.path.exists(filepath)
-
-
 def ext_npn_measured(icvc_file: str, devices: str, dev_path: str):
     """Extracting the measured data of npn devices from excel sheet
 
@@ -333,15 +327,17 @@ def run_sim(dirpath, device, temp):
     # Running ngspice for each netlist
     try:
         call_simulator(netlist_path)
-        # Find bjt in csv
-        if find_bjt(result_path):
+
+        # check if results stored in csv file or not!
+        if os.path.exists(result_path):
             bjt_simu_ib = result_path
         else:
             bjt_simu_ib = "None"
+
     except Exception:
         bjt_simu_ib = "None"
 
-    info["beta_sim_ib_unscaled"] = bjt_simu_ib
+    info["ib_simulated"] = bjt_simu_ib
 
     return info
 
@@ -406,17 +402,112 @@ def run_sims(df, dirpath: str, num_workers=mp.cpu_count()):
                 2: "simulated_ibp_step2",
                 3: "simulated_ibp_step3",
                 4: "simulated_ibp_step4",
-                5: "simulated_ibp_step3",
+                5: "simulated_ibp_step5",
             },
             inplace=True,
         )
         sdf.to_csv(sf[i])
+
     df = pd.DataFrame(results)
 
-    df = df[["device", "temp", "beta_sim_ib_unscaled"]]
-    df["beta_ib_sim"] = df["beta_sim_ib_unscaled"]
-
     return df
+
+
+def error_cal(merged_df, dev_path):
+
+    # adding error columns to the merged dataframe
+    merged_dfs = list()
+
+    # the final data frame containg all devices, error calculation
+    merged_all = list()
+
+    for i in range(len(merged_df)):
+
+        measured_data = pd.read_csv(merged_df[f"ib_measured"][i])
+        simulated_data = pd.read_csv(merged_df[f"ib_simulated"][i])
+
+        result_data = simulated_data.merge(measured_data, how="left")
+
+        result_data["corner"] = "typical"
+        result_data["device"] = (
+            merged_df[f"ib_measured"][i]
+            .split("/")[-1]
+            .split("d_")[1]
+            .split("_t")[0]
+        )
+        result_data["temp"] = (
+            merged_df[f"ib_measured"][i]
+            .split("/")[-1]
+            .split("_")[3]
+            .split("t")[1]
+            .split(".")[0]
+        )
+
+        result_data["step1_error"] = (
+            np.abs(
+                result_data[f"simulated_ibp_step1"]
+                - result_data[f"measured_ibp_step1"]
+            )
+            * 100.0
+            / result_data[f"measured_ibp_step1"]
+        )
+
+        result_data["step2_error"] = (
+            np.abs(
+                result_data[f"simulated_ibp_step2"]
+                - result_data[f"measured_ibp_step2"]
+            )
+            * 100.0
+            / result_data[f"measured_ibp_step2"]
+        )
+
+        result_data["step3_error"] = (
+            np.abs(
+                result_data[f"simulated_ibp_step3"]
+                - result_data[f"measured_ibp_step3"]
+            )
+            * 100.0
+            / result_data[f"measured_ibp_step3"]
+        )
+
+        result_data["step4_error"] = (
+            np.abs(
+                result_data[f"simulated_ibp_step4"]
+                - result_data[f"measured_ibp_step4"]
+            )
+            * 100.0
+            / result_data[f"measured_ibp_step4"]
+        )
+
+        result_data["step5_error"] = (
+            np.abs(
+                result_data[f"simulated_ibp_step5"]
+                - result_data[f"measured_ibp_step5"]
+            )
+            * 100.0
+            / result_data[f"measured_ibp_step5"]
+        )
+
+        result_data["error"] = (
+            np.abs(
+                result_data["step1_error"]
+                + result_data["step2_error"]
+                + result_data["step3_error"]
+                + result_data["step4_error"]
+                + result_data["step5_error"]
+            )
+            / 5
+        )
+
+        merged_dfs.append(result_data)
+        merged_out = pd.concat(merged_dfs)
+
+        merged_all.append(merged_out)
+
+    merged_all = pd.concat(merged_all)
+    merged_all.to_csv(f"{dev_path}/error_analysis_all.csv", index=False)
+
+    return merged_all
 
 
 def main():
@@ -493,14 +584,64 @@ def main():
             len(meas_df) * meas_len,
         )
 
-        #assuming number of used cores is 3 
+        # assuming number of used cores is 3
+        # calling run_sims function for simulating devices
         sim_df = run_sims(meas_df, dev_path, 3)
-        print(sim_df)
 
         # Merging measured dataframe with the simulated one
         merged_df = meas_df.merge(sim_df, on=["device", "temp"], how="left")
 
-        merged_all = list()     
+        # passing dataframe to the error_calculation function
+        # merged_all contains all simulated, measured, error data
+        merged_all = error_cal(merged_df, dev_path)
+
+        # calculating the error of each device and reporting it
+        for dev in list_dev:
+            min_error_total = float()
+            max_error_total = float()
+            error_total = float()
+            number_of_existance = int()
+            # number of rows in the final excel sheet
+            num_rows = merged_all["device"].count()
+            for n in range(num_rows):
+                if dev == merged_all["device"][n]:
+                    number_of_existance += 1
+                    error_total += merged_all["error"][n]
+                    if merged_all["error"][n] > max_error_total:
+                        max_error_total = merged_all["error"][n]
+                    elif merged_all["error"][n] < min_error_total:
+                        min_error_total = merged_all["error"][n]
+
+            mean_error_total = error_total / number_of_existance
+
+            # Making sure that min, max, mean errors are not > 100%
+            if min_error_total > 100:
+                min_error_total = 100
+
+            if max_error_total > 100:
+                max_error_total = 100
+
+            if mean_error_total > 100:
+                mean_error_total = 100
+
+            # printing min, max, mean errors to the consol
+            print(
+                "# Device {} min error: {:.2f}".format(dev, min_error_total),
+                ", max error: {:.2f}, mean error {:.2f}".format(
+                    max_error_total, mean_error_total
+                ),
+            )
+
+            if max_error_total < PASS_THRESH:
+                print("# Device {} has passed regression.".format(dev))
+            else:
+                print(
+                    "# Device {} has failed regression. Needs more analysis.".format(
+                        dev
+                    )
+                )
+
+        print("\n\n")
 
 
 # # ================================================================
