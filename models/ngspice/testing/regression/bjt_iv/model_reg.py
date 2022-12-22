@@ -46,16 +46,18 @@ def call_simulator(file_name):
     )
 
 
-def ext_npn_measured(icvc_file: str, devices: str, dev_path: str):
+def ext_npn_measured(
+    icvc_file: str, devices: list, dev_path: str
+) -> pd.DataFrame:
     """Extracting the measured data of npn devices from excel sheet
 
     Args:
          icvc_file(str): path to the data sheet
-         devices(str): list for undertest devices
+         devices(list): list for undertest devices
          dev_path(str): A path where extracted data is stored
 
     Returns:
-         df_measured: A data frame contains all extracted data
+         df_measured(pd.DataFrame): A data frame contains all extracted data
 
     """
 
@@ -164,16 +166,18 @@ def ext_npn_measured(icvc_file: str, devices: str, dev_path: str):
     return df
 
 
-def ext_pnp_measured(icvc_file: str, devices: str, dev_path: str):
+def ext_pnp_measured(
+    icvc_file: str, devices: list, dev_path: str
+) -> pd.DataFrame:
     """Extracting the measured data of pnp devices from excel sheet
 
     Args:
          icvc_file(str): path to the data sheet
-         devices(str): list for undertest devices
+         devices(list): list for undertest devices
          dev_path(str): A path where extracted data is stored
 
     Returns:
-         df_measured: A data frame contains all extracted data
+         df_measured(pd.DataFrame): A data frame contains all extracted data
 
     """
 
@@ -282,15 +286,15 @@ def ext_pnp_measured(icvc_file: str, devices: str, dev_path: str):
     return df
 
 
-def run_sim(dirpath, device, temp):
+def run_sim(dirpath: str, device: str, temp: float) -> dict:
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
         device(str): the device instance will be simulated
-        temp: a specific temp for simulation
+        temp(float): a specific temp for simulation
 
     Returns:
-        info(dict): results are stored in
+        info(dict): results are stored in,
         and passed to the run_sims function to extract data
     """
 
@@ -342,17 +346,19 @@ def run_sim(dirpath, device, temp):
     return info
 
 
-def run_sims(df, dirpath: str, num_workers=mp.cpu_count()):
+def run_sims(
+    df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()
+) -> pd.DataFrame:
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
     Args:
-        df: input dataframe passed from the ext_measured function
+        df(pd.DataFrame): dataframe passed from the ext_measured function
         dirpath(str): the path to the file where we write data
         num_workers=mp.cpu_count() (int): num of cpu used
 
     Returns:
-        df: dataframe contains simulated results
+        df(pd.DataFrame): dataframe contains simulated results
     """
 
     results = list()
@@ -413,30 +419,34 @@ def run_sims(df, dirpath: str, num_workers=mp.cpu_count()):
     return df
 
 
-def error_cal(merged_df, dev_path):
+def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
+    """error function calculates the error between measured, simulated data
+
+    Args:
+        merged_df(pd.DataFrame): Dataframe contains devices and csv files
+          which represent measured, simulated data
+        dev_path(str): The path in which we write data
+    """
 
     # adding error columns to the merged dataframe
     merged_dfs = list()
 
-    # the final data frame containg all devices, error calculation
-    merged_all = list()
-
     for i in range(len(merged_df)):
 
-        measured_data = pd.read_csv(merged_df[f"ib_measured"][i])
-        simulated_data = pd.read_csv(merged_df[f"ib_simulated"][i])
+        measured_data = pd.read_csv(merged_df["ib_measured"][i])
+        simulated_data = pd.read_csv(merged_df["ib_simulated"][i])
 
         result_data = simulated_data.merge(measured_data, how="left")
 
         result_data["corner"] = "typical"
         result_data["device"] = (
-            merged_df[f"ib_measured"][i]
+            merged_df["ib_measured"][i]
             .split("/")[-1]
             .split("d_")[1]
             .split("_t")[0]
         )
         result_data["temp"] = (
-            merged_df[f"ib_measured"][i]
+            merged_df["ib_measured"][i]
             .split("/")[-1]
             .split("_")[3]
             .split("t")[1]
@@ -445,47 +455,47 @@ def error_cal(merged_df, dev_path):
 
         result_data["step1_error"] = (
             np.abs(
-                result_data[f"simulated_ibp_step1"]
-                - result_data[f"measured_ibp_step1"]
+                result_data["simulated_ibp_step1"]
+                - result_data["measured_ibp_step1"]
             )
             * 100.0
-            / result_data[f"measured_ibp_step1"]
+            / result_data["measured_ibp_step1"]
         )
 
         result_data["step2_error"] = (
             np.abs(
-                result_data[f"simulated_ibp_step2"]
-                - result_data[f"measured_ibp_step2"]
+                result_data["simulated_ibp_step2"]
+                - result_data["measured_ibp_step2"]
             )
             * 100.0
-            / result_data[f"measured_ibp_step2"]
+            / result_data["measured_ibp_step2"]
         )
 
         result_data["step3_error"] = (
             np.abs(
-                result_data[f"simulated_ibp_step3"]
-                - result_data[f"measured_ibp_step3"]
+                result_data["simulated_ibp_step3"]
+                - result_data["measured_ibp_step3"]
             )
             * 100.0
-            / result_data[f"measured_ibp_step3"]
+            / result_data["measured_ibp_step3"]
         )
 
         result_data["step4_error"] = (
             np.abs(
-                result_data[f"simulated_ibp_step4"]
-                - result_data[f"measured_ibp_step4"]
+                result_data["simulated_ibp_step4"]
+                - result_data["measured_ibp_step4"]
             )
             * 100.0
-            / result_data[f"measured_ibp_step4"]
+            / result_data["measured_ibp_step4"]
         )
 
         result_data["step5_error"] = (
             np.abs(
-                result_data[f"simulated_ibp_step5"]
-                - result_data[f"measured_ibp_step5"]
+                result_data["simulated_ibp_step5"]
+                - result_data["measured_ibp_step5"]
             )
             * 100.0
-            / result_data[f"measured_ibp_step5"]
+            / result_data["measured_ibp_step5"]
         )
 
         result_data["error"] = (
@@ -501,13 +511,8 @@ def error_cal(merged_df, dev_path):
 
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
-
-        merged_all.append(merged_out)
-
-    merged_all = pd.concat(merged_all)
-    merged_all.to_csv(f"{dev_path}/error_analysis_all.csv", index=False)
-
-    return merged_all
+        merged_out.to_csv(f"{dev_path}/error_analysis.csv", index=False)
+    return None
 
 
 def main():
@@ -520,7 +525,7 @@ def main():
     pd.set_option("display.width", 1000)
 
     main_regr_dir = "bjt_iv_regr"
-    devices = ["npn", "pnp"]
+    devices = ["npn","pnp"]
 
     npn_devices = [
         "npn_10p00x10p00",
@@ -587,13 +592,17 @@ def main():
         # assuming number of used cores is 3
         # calling run_sims function for simulating devices
         sim_df = run_sims(meas_df, dev_path, 3)
-
+        
         # Merging measured dataframe with the simulated one
         merged_df = meas_df.merge(sim_df, on=["device", "temp"], how="left")
 
         # passing dataframe to the error_calculation function
+        # calling error function for creating statistical csv file
+        error_cal(merged_df, dev_path)
+
+        # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
-        merged_all = error_cal(merged_df, dev_path)
+        merged_all = pd.read_csv(f"{dev_path}/error_analysis.csv")
 
         # calculating the error of each device and reporting it
         for dev in list_dev:
@@ -601,8 +610,10 @@ def main():
             max_error_total = float()
             error_total = float()
             number_of_existance = int()
+
             # number of rows in the final excel sheet
             num_rows = merged_all["device"].count()
+
             for n in range(num_rows):
                 if dev == merged_all["device"][n]:
                     number_of_existance += 1
@@ -640,6 +651,7 @@ def main():
                         dev
                     )
                 )
+            print("\n\n")
 
         print("\n\n")
 
