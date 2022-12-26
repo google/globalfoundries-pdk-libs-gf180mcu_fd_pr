@@ -20,10 +20,12 @@ set filetype=ascii
 
 dc Vcp 0 -3 -0.1 Ib -1u -9u -2u
 print -i(Vcp)
-wrdata pnp/simulated_IcVc/{{i}}_simulated_{{device}}.csv i(Vcp)
+wrdata bjt_iv_regr/pnp/ib_simulated/simulated_{{device}}_t{{temp}}.csv i(Vcp)
 .endc
 
 .include "../../../design.ngspice"
 .lib "../../../sm141064.ngspice" bjt_typical
+
+
 
 .end
