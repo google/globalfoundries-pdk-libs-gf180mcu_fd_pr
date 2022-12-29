@@ -53,8 +53,14 @@ smoke-test:
 .ONESHELL:
 models-MOS: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/mos_iv_vgs
-	@echo "========== Runing models_ngspice-MOS regression ==========" |& tee -a ../run_log.log 
-	@python3 models_regression.py |& tee -a ../run_log.log 
+	@echo "========== Runing models_ngspice-MOS-VGS regression ==========" |& tee -a ../run_log.log 
+	@python3 models_regression.py |& tee -a ../run_log.log
+	@cd $(Testing_DIR)/$(run_folder)/mos_iv_vbs
+	@echo "========== Runing models_ngspice-MOS-VBS regression ==========" |& tee -a ../run_log.log 
+	@python3 models_regression.py |& tee -a ../run_log.log 	 
+	@cd $(Testing_DIR)/$(run_folder)/mos_cv
+	@echo "========== Runing models_ngspice-MOS-CV regression ==========" |& tee -a ../run_log.log 
+	@python3 models_regression.py |& tee -a ../run_log.log 	
 # @cd ../mos_iv_vbs
 # @python3 models_regression.py |& tee -a ../run_log.log  
 
@@ -70,10 +76,14 @@ models-MOS: Add_run-dir
 .ONESHELL:
 models-BJT: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/bjt_cj
-	@echo "========== Runing models_ngspice-BJT regression ==========" |& tee -a ../run_log.log 
+	@echo "========== Runing models_ngspice-BJT-cj regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-
-
+	@cd $(Testing_DIR)/$(run_folder)/bjt_iv
+	@echo "========== Runing models_ngspice-BJT-iv regression ==========" |& tee -a ../run_log.log 
+	@python3 models_regression.py |& tee -a ../run_log.log
+	@cd $(Testing_DIR)/$(run_folder)/bjt_beta
+	@echo "========== Runing models_ngspice-BJT-beta regression ==========" |& tee -a ../run_log.log 
+	@python3 models_regression.py |& tee -a ../run_log.log
 # .ONESHELL:
 # clean-models-BJT:
 # 	@echo "==== Cleaning models-BJT old runs ===="
