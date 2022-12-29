@@ -34,6 +34,7 @@ import subprocess
 import glob
 pd.options.mode.chained_assignment = None  # default='warn'
 # constants
+PASS_THRESH = 2.0
 MOS = [0, -0.825, -1.65, -2.48, -3.3]
 PMOS3P3_VPS = [0, 0.825, 1.65, 2.48, 3.3]
 NMOS6P0_VPS = [0, -0.75, -1.5, -2.25, -3]
@@ -76,7 +77,7 @@ def ext_measured(dev_data_path, device):
     # for pmos
     if device in ["pfet_03v3_iv", "pfet_06v0_iv"]:
         idf = df[["-Id (A)", "-vgs ", "vbs =0" , f"vbs ={mos[1]}" , f"vbs ={mos[2]}" ,f"vbs ={mos[3]}" ,f"vbs ={mos[4]}"]].copy()
-        idf.rename(columns={"-vgs ": "measured_vgs0",
+        idf.rename(columns={"-vgs ": "vgs",
                             "vbs =0": "measured_vbs0 =0",
                             f"vbs ={mos[1]}": f"measured_vbs0 ={mos[1]}",
                             f"vbs ={mos[2]}": f"measured_vbs0 ={mos[2]}",
@@ -86,7 +87,7 @@ def ext_measured(dev_data_path, device):
     else:
         # for nmos
         idf = df[["Id (A)", "vgs ", "vbs =0" , f"vbs ={mos[1]}" , f"vbs ={mos[2]}" ,f"vbs ={mos[3]}" ,f"vbs ={mos[4]}"]].copy()
-        idf.rename(columns={"vgs ": "measured_vgs0",
+        idf.rename(columns={"vgs ": "vgs",
                             "vbs =0": "measured_vbs0 =0",
                             f"vbs ={mos[1]}": f"measured_vbs0 ={mos[1]}",
                             f"vbs ={mos[2]}": f"measured_vbs0 ={mos[2]}",
@@ -120,7 +121,7 @@ def ext_measured(dev_data_path, device):
 
                 idf.rename(
                     columns={
-                        "-vgs (V)": "measured_vgs1",
+                        "-vgs (V)": "vgs",
                         f"vbs =0.{i+1}": f"measured_vbs{i+1} =0",
                         f"vbs ={mos[1]}.{i+1}": f"measured_vbs{i+1} ={mos[1]}",
                         f"vbs ={mos[2]}.{i+1}": f"measured_vbs{i+1} ={mos[2]}",
@@ -135,7 +136,7 @@ def ext_measured(dev_data_path, device):
 
                 idf.rename(            
                     columns={
-                        f"-vgs (V).{i}": f"measured_vgs{i+1}",
+                        f"-vgs (V).{i}": "vgs",
                         f"vbs =0.{i+1}": f"measured_vbs{i+1} =0",
                         f"vbs ={mos[1]}.{i+1}": f"measured_vbs{i+1} ={mos[1]}",
                         f"vbs ={mos[2]}.{i+1}": f"measured_vbs{i+1} ={mos[2]}",
@@ -150,7 +151,7 @@ def ext_measured(dev_data_path, device):
 
                 idf.rename(
                     columns={
-                        "vgs (V)": "measured_vgs1",
+                        "vgs (V)": "vgs",
                         f"vbs =0.{i+1}": f"measured_vbs{i+1} =0",
                         f"vbs ={mos[1]}.{i+1}": f"measured_vbs{i+1} ={mos[1]}",
                         f"vbs ={mos[2]}.{i+1}": f"measured_vbs{i+1} ={mos[2]}",
@@ -165,7 +166,7 @@ def ext_measured(dev_data_path, device):
 
                 idf.rename(            
                     columns={
-                        f"vgs (V).{i}": f"measured_vgs{i+1}",
+                        f"vgs (V).{i}": f"vgs",
                         f"vbs =0.{i+1}": f"measured_vbs{i+1} =0",
                         f"vbs ={mos[1]}.{i+1}": f"measured_vbs{i+1} ={mos[1]}",
                         f"vbs ={mos[2]}.{i+1}": f"measured_vbs{i+1} ={mos[2]}",
@@ -196,7 +197,7 @@ def call_simulator(file_name):
 
 
 
-def run_sim(dirpath, device, length, width,  temp=25):
+def run_sim(dirpath, device,  width, length,  temp=25):
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
@@ -215,15 +216,15 @@ def run_sim(dirpath, device, length, width,  temp=25):
     info = {}
     info["device"] = device
     info["temp"] = temp
-    info["width"] = width
     info["length"] = length
+    info["width"] = width
 
     width_str = (width)
     length_str = (length)
     temp_str = (temp)
 
     netlist_path = f"{dirpath}/{device}_netlists/netlist_w{width_str}_l{length_str}_t{temp_str}.spice"
-    result_path = f"{dirpath}/simulated_Id/T{temp}_simulated_W{width_str}_L{length_str}.csv"
+    result_path = f"{dirpath}/simulated_Id/T{temp}_simulated_L{length_str}_W{width_str}.csv"
     os.makedirs(f"{dirpath}/simulated_Id", exist_ok=True)
 
     with open(netlist_tmp) as f:
@@ -235,7 +236,11 @@ def run_sim(dirpath, device, length, width,  temp=25):
                     device=device,
                     width=width_str,
                     length=length_str,
-                    temp=temp_str
+                    temp=temp_str,
+                    AD=float(width_str) * 0.24,
+                    PD=2 * (float(width_str) + 0.24),
+                    AS=float(width_str) * 0.24,
+                    PS=2 * (float(width_str) + 0.24)
                 )
             )
 
@@ -283,8 +288,8 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                     run_sim,
                     dirpath,
                     device,
-                    row["L (um)"],
                     row["W (um)"],
+                    row["L (um)"],
                     row["temp"]
                 )
             )
@@ -296,10 +301,9 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
             except Exception as exc:
                 print("Test case generated an exception: %s" % (exc))
 
-    df = pd.DataFrame(results)
 
     sf = glob.glob(f"{dirpath}/simulated_Id/*.csv")
- 
+    
     # sweeping on all generated cvs files
     for i in range(len(sf)):
         sdf = pd.read_csv(
@@ -318,10 +322,6 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
 
         # Writing final simulated data 1
         sdf = pd.DataFrame(new_array)
-        sdf.to_csv(
-            sf[i],
-            index=False,
-        )
         sdf.rename(
             columns={
                 0: "vgs",
@@ -333,12 +333,12 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
             },
             inplace=True,
         )
-        sdf.to_csv(sf[i])
+        sdf.to_csv(sf[i],index=False)
 
     df = pd.DataFrame(results)
     return df
 
-def error_cal(sim_df: pd.DataFrame,meas_df: pd.DataFrame, dev_path: str) -> None:
+def error_cal(df: pd.DataFrame,sim_df: pd.DataFrame,meas_df: pd.DataFrame, dev_path: str,device) -> None:
     """error function calculates the error between measured, simulated data
 
     Args:
@@ -349,25 +349,106 @@ def error_cal(sim_df: pd.DataFrame,meas_df: pd.DataFrame, dev_path: str) -> None
 
     # adding error columns to the merged dataframe
     merged_dfs = list()
+    loops = df["L (um)"].count()
+    temp_range = int(loops / 3)
+    df["temp"]=25
+    df["temp"][temp_range:2*temp_range]=-40
+    df["temp"][2*temp_range:3*temp_range]=125
+    if device=="pfet_03v3_iv":
+        mos=PMOS3P3_VPS
+    elif  device=="pfet_06v0_iv":
+        mos=PMOS6P0_VPS
+    elif  device=="nfet_06v0_iv" or device == "nfet_06v0_nvt_iv":
+        mos=NMOS6P0_VPS
+    else:
+        mos= MOS   
+    
+    for i in range(len(sim_df)):
+        l=df["L (um)"].iloc[int(i)]
+        w=df["W (um)"].iloc[int(i)]
+        t=df["temp"].iloc[int(i)]
 
-    for i in range(len(meas_df)):
+        sim_path=f"mos_iv_regr/{device}/simulated_Id/T{t}_simulated_L{l}_W{w}.csv"
 
+        simulated_data = pd.read_csv(sim_path)
 
-        simulated_data = pd.read_csv(sim_df[i])
-
+        measured_data=meas_df[[
+                         f"measured_vbs{i} =0",
+                         f"measured_vbs{i} ={mos[1]}",
+                         f"measured_vbs{i} ={mos[2]}",
+                         f"measured_vbs{i} ={mos[3]}",
+                        f"measured_vbs{i} ={mos[4]}"
+                        ]].copy()
+        measured_data.rename(            
+                    columns={
+                        f"measured_vbs{i} =0":"measured_vbs1",
+                        f"measured_vbs{i} ={mos[1]}":"measured_vbs2",
+                        f"measured_vbs{i} ={mos[2]}":"measured_vbs3",
+                        f"measured_vbs{i} ={mos[3]}":"measured_vbs4",
+                        f"measured_vbs{i} ={mos[4]}":"measured_vbs5"
+                    },
+                    inplace=True,
+                )                
+        measured_data["vgs"]=simulated_data["vgs"]
+                 
         result_data = simulated_data.merge(measured_data, how="left")
 
-       
-
+    
         result_data["step1_error"] = (
             np.abs(
-                result_data["simulated_ibp_step1"]
-                - result_data["measured_ibp_step1"]
+                result_data[f"measured_vbs1"]
+                - result_data["vb1"]
             )
             * 100.0
-            / result_data["measured_ibp_step1"]
+            / (result_data["measured_vbs1"])
+        )
+        result_data["step2_error"] = (
+            np.abs(
+                result_data[ "measured_vbs2"]
+                - result_data["vb2"]
+            )
+            * 100.0
+            / (result_data[ "measured_vbs2"])
+        )
+        result_data["step3_error"] = (
+            np.abs(
+                result_data[ "measured_vbs3"]
+                - result_data["vb2"]
+            )
+            * 100.0
+            / (result_data[ "measured_vbs3"])
+        )
+        result_data["step4_error"] = (
+            np.abs(
+                result_data[ "measured_vbs4"]
+                - result_data["vb2"]
+            )
+            * 100.0
+            / (result_data[ "measured_vbs4"])
+        )                
+        result_data["step5_error"] = (
+            np.abs(
+                result_data[ "measured_vbs5"]
+                - result_data["vb2"]
+            )
+            * 100.0
+            / (result_data[ "measured_vbs5"])
+        )
+        result_data["error"] = (
+            np.abs(
+                result_data["step1_error"]
+                + result_data["step2_error"]
+                + result_data["step3_error"]
+                + result_data["step4_error"]
+                + result_data["step5_error"]
+            )
+            / 5
         )
 
+        merged_dfs.append(result_data)
+        merged_out = pd.concat(merged_dfs)
+        merged_out.to_csv(f"{dev_path}/error_analysis.csv", index=False)
+    return None
 
 def main():
     """Main function applies all regression steps"""
@@ -420,19 +501,69 @@ def main():
         df1 = pd.read_csv(f"mos_iv_regr/{dev}/{dev}.csv")
         df = df1[["L (um)", "W (um)"]].copy()
         df.dropna(inplace=True)
+        
         sim_df = run_sims(df ,dev_path, dev, 3)
         print("# Device {} number of measured_datapoints : ".format(dev), len(sim_df)*len(meas_df))
         print("# Device {} number of simulated datapoints : ".format(dev), len(sim_df)*len(meas_df))
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
-        
-        #error_cal(sim_df,meas_df, dev_path)
+        # meas_df.to_csv("f.csv")
+        # exit()
+        error_cal(df,sim_df,meas_df, dev_path,dev)
 
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
         
-        #merged_all = pd.read_csv(f"{dev_path}/error_analysis.csv")
+        merged_all = pd.read_csv(f"{dev_path}/error_analysis.csv")
+
+    # calculating the error of each device and reporting it
+        min_error_total = float()
+        max_error_total = float()
+        error_total = float()
+
+        # number of rows in the final excel sheet
+        num_rows = merged_all["error"].count()
+
+        for n in range(num_rows):
+            error_total += merged_all["error"][n]
+            if merged_all["error"][n] > max_error_total:
+                max_error_total = merged_all["error"][n]
+            elif merged_all["error"][n] < min_error_total:
+                min_error_total = merged_all["error"][n]
+
+        mean_error_total = error_total / num_rows
+
+        # Making sure that min, max, mean errors are not > 100%
+        if min_error_total > 100:
+            min_error_total = 100
+
+        if max_error_total > 100:
+            max_error_total = 100
+
+        if mean_error_total > 100:
+            mean_error_total = 100
+
+        # printing min, max, mean errors to the consol
+        print(
+            "# Device {} min error: {:.2f}".format(dev, min_error_total),
+            ", max error: {:.2f}, mean error {:.2f}".format(
+                max_error_total, mean_error_total
+            ),
+        )
+
+        if max_error_total < PASS_THRESH:
+            print("# Device {} has passed regression.".format(dev))
+        else:
+            print(
+                "# Device {} has failed regression. Needs more analysis.".format(
+                    dev
+                )
+            )
+        print("\n\n")
+
+    print("\n\n")
+
 
 # # ================================================================
 # -------------------------- MAIN --------------------------------
