@@ -14,7 +14,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-Vb b 0 dc -3.3
+Vb b 0 dc -3.0
 
 .temp {{temp}}
 .options tnom={{temp}}
@@ -23,7 +23,7 @@ Vb b 0 dc -3.3
 xq1 0 0 0 b {{device}}
 
 
-.DC Vb 0 -3.3 -0.1
+.DC Vb 0 -3.0 -0.1
 
 .control
 
@@ -31,7 +31,7 @@ save all @q.xq1.q0[csub]
 run 
 print  @q.xq1.q0[csub]
 
-wrdata {{device}}_{{cv_sim}}_{{corner}}_T{{temp}}/simulated_{{cv_sim}}/2_simulated_{{device}}.csv @q.xq1.q0[csub]*1.0e15
+wrdata {{dirpath}}/cj_simulated/simulated_{{device}}_t{{temp}}_{{cap}}_{{corner}}.csv @q.xq1.q0[csub]*1.0e15
 
 .endc
 
