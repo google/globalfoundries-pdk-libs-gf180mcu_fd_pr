@@ -536,8 +536,6 @@ def main():
         else:
             meas_df = []
 
-        # meas_df.to_csv("dd.csv")
-        # exit()
         df1 = pd.read_csv(f"mos_iv_regr/{dev}/{dev}.csv")
         df = df1[["L (um)", "W (um)"]].copy()
         df.dropna(inplace=True)
@@ -554,8 +552,6 @@ def main():
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
-        # meas_df.to_csv("f.csv")
-        # exit()
         error_cal(df, sim_df, meas_df, dev_path, dev)
 
         # reading from the csv file contains all error data
