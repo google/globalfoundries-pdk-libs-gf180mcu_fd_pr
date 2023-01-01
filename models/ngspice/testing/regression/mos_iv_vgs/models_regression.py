@@ -91,6 +91,7 @@ def ext_measured(dev_data_path, device):
                 f"vgs ={mos[2]}",
                 f"vgs ={mos[3]}",
                 f"vgs ={mos[4]}",
+                f"vgs ={mos[5]}",
             ]
         ].copy()
         idf.rename(
@@ -101,6 +102,7 @@ def ext_measured(dev_data_path, device):
                 f"vgs ={mos[2]}": f"measured_vgs0 ={mos[2]}",
                 f"vgs ={mos[3]}": f"measured_vgs0 ={mos[3]}",
                 f"vgs ={mos[4]}": f"measured_vgs0 ={mos[4]}",
+                f"vgs ={mos[5]}": f"measured_vgs0 ={mos[5]}",
             },
             inplace=True,
         )
@@ -115,6 +117,7 @@ def ext_measured(dev_data_path, device):
                 f"vgs ={mos[2]}",
                 f"vgs ={mos[3]}",
                 f"vgs ={mos[4]}",
+                f"vgs ={mos[5]}",
             ]
         ].copy()
         idf.rename(
@@ -125,6 +128,7 @@ def ext_measured(dev_data_path, device):
                 f"vgs ={mos[2]}": f"measured_vgs0 ={mos[2]}",
                 f"vgs ={mos[3]}": f"measured_vgs0 ={mos[3]}",
                 f"vgs ={mos[4]}": f"measured_vgs0 ={mos[4]}",
+                f"vgs ={mos[5]}": f"measured_vgs0 ={mos[5]}",
             },
             inplace=True,
         )
@@ -163,6 +167,7 @@ def ext_measured(dev_data_path, device):
                         f"vgs ={mos[2]}.{i+1}",
                         f"vgs ={mos[3]}.{i+1}",
                         f"vgs ={mos[4]}.{i+1}",
+                        f"vgs ={mos[5]}.{i+1}",
                     ]
                 ].copy()
 
@@ -174,6 +179,7 @@ def ext_measured(dev_data_path, device):
                         f"vgs ={mos[2]}.{i+1}": f"measured_vgs{i+1} ={mos[2]}",
                         f"vgs ={mos[3]}.{i+1}": f"measured_vgs{i+1} ={mos[3]}",
                         f"vgs ={mos[4]}.{i+1}": f"measured_vgs{i+1} ={mos[4]}",
+                        f"vgs ={mos[5]}.{i+1}": f"measured_vgs{i+1} ={mos[5]}",
                     },
                     inplace=True,
                 )
@@ -186,6 +192,7 @@ def ext_measured(dev_data_path, device):
                         f"vgs ={mos[2]}.{i+1}",
                         f"vgs ={mos[3]}.{i+1}",
                         f"vgs ={mos[4]}.{i+1}",
+                        f"vgs ={mos[5]}.{i+1}",
                     ]
                 ].copy()
 
@@ -197,6 +204,7 @@ def ext_measured(dev_data_path, device):
                         f"vgs ={mos[2]}.{i+1}": f"measured_vgs{i+1} ={mos[2]}",
                         f"vgs ={mos[3]}.{i+1}": f"measured_vgs{i+1} ={mos[3]}",
                         f"vgs ={mos[4]}.{i+1}": f"measured_vgs{i+1} ={mos[4]}",
+                        f"vgs ={mos[5]}.{i+1}": f"measured_vgs{i+1} ={mos[5]}",
                     },
                     inplace=True,
                 )
@@ -210,6 +218,7 @@ def ext_measured(dev_data_path, device):
                         f"vgs ={mos[2]}.{i+1}",
                         f"vgs ={mos[3]}.{i+1}",
                         f"vgs ={mos[4]}.{i+1}",
+                        f"vgs ={mos[5]}.{i+1}",
                     ]
                 ].copy()
 
@@ -221,6 +230,7 @@ def ext_measured(dev_data_path, device):
                         f"vgs ={mos[2]}.{i+1}": f"measured_vgs{i+1} ={mos[2]}",
                         f"vgs ={mos[3]}.{i+1}": f"measured_vgs{i+1} ={mos[3]}",
                         f"vgs ={mos[4]}.{i+1}": f"measured_vgs{i+1} ={mos[4]}",
+                        f"vgs ={mos[5]}.{i+1}": f"measured_vgs{i+1} ={mos[5]}",
                     },
                     inplace=True,
                 )
@@ -233,6 +243,7 @@ def ext_measured(dev_data_path, device):
                         f"vgs ={mos[2]}.{i+1}",
                         f"vgs ={mos[3]}.{i+1}",
                         f"vgs ={mos[4]}.{i+1}",
+                        f"vgs ={mos[5]}.{i+1}",
                     ]
                 ].copy()
 
@@ -244,6 +255,7 @@ def ext_measured(dev_data_path, device):
                         f"vgs ={mos[2]}.{i+1}": f"measured_vgs{i+1} ={mos[2]}",
                         f"vgs ={mos[3]}.{i+1}": f"measured_vgs{i+1} ={mos[3]}",
                         f"vgs ={mos[4]}.{i+1}": f"measured_vgs{i+1} ={mos[4]}",
+                        f"vgs ={mos[5]}.{i+1}": f"measured_vgs{i+1} ={mos[5]}",
                     },
                     inplace=True,
                 )
@@ -436,7 +448,9 @@ def error_cal(
         id_rds(str): select id or rds
 
     """
-
+    id_rd=0
+    if id_rds=="Rds":
+        id_rd=1
     # adding error columns to the merged dataframe
     merged_dfs = list()
     loops = df["L (um)"].count()
@@ -466,20 +480,22 @@ def error_cal(
 
         measured_data = meas_df[
             [
-                f"measured_vgs{2*i} ={mos[0]}",
-                f"measured_vgs{2*i} ={mos[1]}",
-                f"measured_vgs{2*i} ={mos[2]}",
-                f"measured_vgs{2*i} ={mos[3]}",
-                f"measured_vgs{2*i} ={mos[4]}",
+                f"measured_vgs{2*i+id_rd} ={mos[0]}",
+                f"measured_vgs{2*i+id_rd} ={mos[1]}",
+                f"measured_vgs{2*i+id_rd} ={mos[2]}",
+                f"measured_vgs{2*i+id_rd} ={mos[3]}",
+                f"measured_vgs{2*i+id_rd} ={mos[4]}",
+                f"measured_vgs{2*i+id_rd} ={mos[5]}",
             ]
         ].copy()
         measured_data.rename(
             columns={
-                f"measured_vgs{2*i} ={mos[0]}": "measured_vgs1",
-                f"measured_vgs{2*i} ={mos[1]}": "measured_vgs2",
-                f"measured_vgs{2*i} ={mos[2]}": "measured_vgs3",
-                f"measured_vgs{2*i} ={mos[3]}": "measured_vgs4",
-                f"measured_vgs{2*i} ={mos[4]}": "measured_vgs5",
+                f"measured_vgs{2*i+id_rd} ={mos[0]}": "measured_vgs1",
+                f"measured_vgs{2*i+id_rd} ={mos[1]}": "measured_vgs2",
+                f"measured_vgs{2*i+id_rd} ={mos[2]}": "measured_vgs3",
+                f"measured_vgs{2*i+id_rd} ={mos[3]}": "measured_vgs4",
+                f"measured_vgs{2*i+id_rd} ={mos[4]}": "measured_vgs5",
+                f"measured_vgs{2*i+id_rd} ={mos[5]}": "measured_vgs6",
             },
             inplace=True,
         )
@@ -503,7 +519,7 @@ def error_cal(
             / (result_data["measured_vgs3"])
         )
         result_data["step4_error"] = (
-            np.abs(result_data["measured_vgs4"] - result_data["vb2"])
+            np.abs(result_data["measured_vgs4"] - result_data["vb4"])
             * 100.0
             / (result_data["measured_vgs4"])
         )
@@ -511,6 +527,11 @@ def error_cal(
             np.abs(result_data["measured_vgs5"] - result_data["vb5"])
             * 100.0
             / (result_data["measured_vgs5"])
+        )        
+        result_data["step6_error"] = (
+            np.abs(result_data["measured_vgs6"] - result_data["vb6"])
+            * 100.0
+            / (result_data["measured_vgs6"])
         )
         result_data["error"] = (
             np.abs(
@@ -519,8 +540,9 @@ def error_cal(
                 + result_data["step3_error"]
                 + result_data["step4_error"]
                 + result_data["step5_error"]
+                + result_data["step6_error"]
             )
-            / 5
+            / 6
         )
 
         merged_dfs.append(result_data)

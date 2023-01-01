@@ -421,7 +421,7 @@ def error_cal(df: pd.DataFrame,sim_df: pd.DataFrame,meas_df: pd.DataFrame, dev_p
         result_data["step4_error"] = (
             np.abs(
                 result_data[ "measured_vbs4"]
-                - result_data["vb2"]
+                - result_data["vb4"]
             )
             * 100.0
             / (result_data[ "measured_vbs4"])
