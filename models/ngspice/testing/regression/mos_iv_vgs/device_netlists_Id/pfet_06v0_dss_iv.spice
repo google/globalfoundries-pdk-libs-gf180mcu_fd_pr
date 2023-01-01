@@ -30,7 +30,7 @@ set filetype=ascii
 
 dc Vds 0 -6.6 -0.05 Vgs -1 -6 -1
 print -i(Vds)
-wrdata pfet_06v0_dss_iv/simulated_Id/{{i}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
+wrdata mos_iv_regr/pfet_06v0_dss_iv/simulated_Id/T{{temp}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
 .endc
 
 

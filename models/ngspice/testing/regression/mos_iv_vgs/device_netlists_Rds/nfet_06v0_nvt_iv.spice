@@ -59,7 +59,7 @@ foreach t {{temp}}
         * ** parameters calculation
         let Rds = 1/@mn[gds]
         print Rds
-        wrdata nfet_06v0_nvt_iv/simulated_Rds/{{i}}_simulated_W{{width}}_L{{length}}.csv Rds 
+        wrdata mos_iv_regr/nfet_06v0_nvt_iv/simulated_Rds/T{{temp}}_simulated_W{{width}}_L{{length}}.csv Rds 
         reset
         let vgs_counter = vgs_counter + 1
     end
