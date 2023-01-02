@@ -502,6 +502,12 @@ def error_cal(
         measured_data["vds"] = simulated_data["vds"]
 
         result_data = simulated_data.merge(measured_data, how="left")
+        # only for dss
+        if device in ["nfet_03v3_dss_iv",
+        "pfet_03v3_dss_iv",
+        "nfet_06v0_dss_iv",
+        "pfet_06v0_dss_iv"]:
+            result_data.loc[0]=1
 
         result_data["step1_error"] = (
             np.abs(result_data["measured_vgs1"] - result_data["vb1"])
