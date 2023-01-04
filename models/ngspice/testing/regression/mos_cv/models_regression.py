@@ -483,7 +483,6 @@ def error_cal(
     """
 
     # adding error columns to the merged dataframe
-    merged_dfs = list()
     if device == "pfet_03v3":
         mos = PMOS3P3_VPS
         mos1 = PMOS3P3_VPS1
@@ -499,12 +498,13 @@ def error_cal(
     else:
         mos = MOS
         mos1 = MOS1
-    caps=["c","d","s"]
+    caps=["c","s","d"]
     
     for cap in caps:
+        merged_dfs = list()
         if cap=="c":
             meas_df=meas_df1
-        elif cap=="d":
+        elif cap=="s":
             meas_df=meas_df2
         else:
             meas_df=meas_df3
@@ -558,6 +558,8 @@ def error_cal(
                         inplace=True,
                     )
                 measured_data["vgs"] = simulated_data["vgs"]
+                result_data = simulated_data.merge(measured_data, how="left")
+
             else:
                 measured_data = meas_df[
                     [
@@ -576,10 +578,12 @@ def error_cal(
                     },
                     inplace=True,
                 )
+                
                 measured_data["vds"] = simulated_data["vds"]
+              
 
 
-            result_data = simulated_data.merge(measured_data, how="left")
+                result_data = simulated_data.merge(measured_data, how="left")
 
   
             if cap =="c":
