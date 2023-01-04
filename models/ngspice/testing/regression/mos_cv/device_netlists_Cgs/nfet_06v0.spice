@@ -34,7 +34,7 @@ vs S_tn 0 dc=0
 * pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
 
 * circuit
-mn D_tn G_tn S_tn S_tn nfet_06v0 W = 200u L = 0.28u nf=20 ad= 24u pd=200.48u as=24u ps=200.48u
+mn D_tn G_tn S_tn S_tn nfet_06v0 W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
 
 .control
 set filetype=ascii

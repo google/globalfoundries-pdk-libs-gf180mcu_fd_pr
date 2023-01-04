@@ -334,7 +334,6 @@ def run_sim(dirpath, device, width, length, nf):
         s = f"simulated_W{width_str}_L{length_str}.csv"
         result_path = f"{dirpath}/simulated_Cg{cap}/{s}"
         os.makedirs(f"{dirpath}/simulated_Cg{cap}", exist_ok=True)
-
         with open(netlist_tmp) as f:
             tmpl = Template(f.read())
             os.makedirs(f"{dirpath}/{device}_netlists_Cg{cap}", exist_ok=True)
@@ -416,7 +415,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 header=None,
                 delimiter=r"\s+",
             )
-            if cap=="c":
+            if cap=="c" and device in ["nfet_03v3","pfet_03v3"]:
                 div_by=len(MOS)
             else:
                 div_by=len(MOS1)
@@ -519,25 +518,45 @@ def error_cal(
             simulated_data = pd.read_csv(sim_path)
 
             if cap =="c":
-                measured_data = meas_df[
-                    [
-                        f"measured_vbs{i}={mos[0]}",
-                        f"measured_vbs{i}={mos[1]}",
-                        f"measured_vbs{i}={mos[2]}",
-                        f"measured_vbs{i}={mos[3]}",
-                        f"measured_vbs{i}={mos[4]}"
-                    ]
-                ].copy()
-                measured_data.rename(
-                    columns={
-                        f"measured_vbs{i}={mos[0]}": "measured_v1",
-                        f"measured_vbs{i}={mos[1]}": "measured_v2",
-                        f"measured_vbs{i}={mos[2]}": "measured_v3",
-                        f"measured_vbs{i}={mos[3]}": "measured_v4",
-                        f"measured_vbs{i}={mos[4]}": "measured_v5"
-                    },
-                    inplace=True,
-                )
+                if device in ["nfet_03v3","pfet_03v3"]:
+                    measured_data = meas_df[
+                        [
+                            f"measured_vbs{i}={mos[0]}",
+                            f"measured_vbs{i}={mos[1]}",
+                            f"measured_vbs{i}={mos[2]}",
+                            f"measured_vbs{i}={mos[3]}",
+                            f"measured_vbs{i}={mos[4]}"
+                        ]
+                    ].copy()
+                    measured_data.rename(
+                        columns={
+                            f"measured_vbs{i}={mos[0]}": "measured_v1",
+                            f"measured_vbs{i}={mos[1]}": "measured_v2",
+                            f"measured_vbs{i}={mos[2]}": "measured_v3",
+                            f"measured_vbs{i}={mos[3]}": "measured_v4",
+                            f"measured_vbs{i}={mos[4]}": "measured_v5"
+                        },
+                        inplace=True,
+                    )
+                else:
+
+                    measured_data = meas_df[
+                        [
+                            f"measured_vbs{i}={mos[0]}",
+                            f"measured_vbs{i}={mos[1]}",
+                            f"measured_vbs{i}={mos[2]}",
+                            f"measured_vbs{i}={mos[3]}"
+                        ]
+                    ].copy()
+                    measured_data.rename(
+                        columns={
+                            f"measured_vbs{i}={mos[0]}": "measured_v1",
+                            f"measured_vbs{i}={mos[1]}": "measured_v2",
+                            f"measured_vbs{i}={mos[2]}": "measured_v3",
+                            f"measured_vbs{i}={mos[3]}": "measured_v4"
+                        },
+                        inplace=True,
+                    )
                 measured_data["vgs"] = simulated_data["vgs"]
             else:
                 measured_data = meas_df[
@@ -585,22 +604,34 @@ def error_cal(
                     * 100.0
                     / (result_data["measured_v4"])
                 )
-                result_data["step5_error"] = (
-                    np.abs(result_data["measured_v5"] - result_data["vb5"])
-                    * 100.0
-                    / (result_data["measured_v5"])
-                )        
+                if device in ["nfet_03v3","pfet_03v3"]:
+                    result_data["step5_error"] = (
+                        np.abs(result_data["measured_v5"] - result_data["vb5"])
+                        * 100.0
+                        / (result_data["measured_v5"])
+                    )        
 
-                result_data["error"] = (
-                    np.abs(
-                        result_data["step1_error"]
-                        + result_data["step2_error"]
-                        + result_data["step3_error"]
-                        + result_data["step4_error"]
-                        + result_data["step5_error"]
+                    result_data["error"] = (
+                        np.abs(
+                            result_data["step1_error"]
+                            + result_data["step2_error"]
+                            + result_data["step3_error"]
+                            + result_data["step4_error"]
+                            + result_data["step5_error"]
+                        )
+                        / 5
                     )
-                    / 5
-                )
+                else:
+                    result_data["error"] = (
+                        np.abs(
+                            result_data["step1_error"]
+                            + result_data["step2_error"]
+                            + result_data["step3_error"]
+                            + result_data["step4_error"]
+                        )
+                        / 4
+                    )
+
             else:
                 result_data["step1_error"] = (
                     np.abs(result_data["measured_v1"] - result_data["vgs1"])
