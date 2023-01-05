@@ -36,11 +36,11 @@ PASS_THRESH = 2.0
 
 MOS = [0, -0.825, -1.65, -2.475, -3.3]
 PMOS3P3_VPS = ["-0", 0.825, 1.65, 2.475, 3.3]
-NMOS6P0_VPS = [0,-1, -2, -3]
-PMOS6P0_VPS = ["-0",1, 2, 3]
+NMOS6P0_VPS = [0, -1, -2, -3]
+PMOS6P0_VPS = ["-0", 1, 2, 3]
 
 MOS1 = [0, 1.1, 2.2, 3.3]
-PMOS3P3_VPS1 = ["-0" , -1.1, -2.2 , -3.3]
+PMOS3P3_VPS1 = ["-0", -1.1, -2.2, -3.3]
 NMOS6P0_VPS1 = [0, 2, 4, 6]
 PMOS6P0_VPS1 = ["-0", -2, -4, -6]
 # #######################
@@ -60,12 +60,10 @@ def ext_measured(dev_data_path, device):
 
     # Read Data
     read_file = pd.read_excel(dev_data_path)
-    read_file.to_csv(
-        f"mos_cv_regr/{device}/{device}.csv", index=False, header=True
-    )
+    read_file.to_csv(f"mos_cv_regr/{device}/{device}.csv", index=False, header=True)
 
     df = pd.read_csv(f"mos_cv_regr/{device}/{device}.csv")
-    loops = int( 0.5 * df["L (um)"].count())
+    loops = int(0.5 * df["L (um)"].count())
     all_dfs1 = []
     all_dfs2 = []
     all_dfs3 = []
@@ -86,29 +84,26 @@ def ext_measured(dev_data_path, device):
         mos = MOS
         mos1 = MOS1
 
-    vgs="Vgs (V)"
-    vds="Vds (V)"
-    if device in ["pfet_03v3","pfet_06v0"]:
-            vgs="-Vgs (V)"
-            vds="-Vds (V)"
+    vgs = "Vgs (V)"
+    vds = "Vds (V)"
+    if device in ["pfet_03v3", "pfet_06v0"]:
+        vgs = "-Vgs (V)"
+        vds = "-Vds (V)"
     for i in range(loops):
-        width = df["W (um)"].iloc[ i]
+        width = df["W (um)"].iloc[i]
         length = df["L (um)"].iloc[i]
-  
-
 
         if i == 0:
 
-
-            if device in ["nfet_03v3","pfet_03v3"]:
+            if device in ["nfet_03v3", "pfet_03v3"]:
                 idf1 = df[
                     [
-                        vgs ,
+                        vgs,
                         f"Vbs={mos[0]}",
                         f"Vbs={mos[1]}",
                         f"Vbs={mos[2]}",
                         f"Vbs={mos[3]}",
-                        f"Vbs={mos[4]}"
+                        f"Vbs={mos[4]}",
                     ]
                 ].copy()
 
@@ -119,18 +114,18 @@ def ext_measured(dev_data_path, device):
                         f"Vbs={mos[1]}": f"measured_vbs{i}={mos[1]}",
                         f"Vbs={mos[2]}": f"measured_vbs{i}={mos[2]}",
                         f"Vbs={mos[3]}": f"measured_vbs{i}={mos[3]}",
-                        f"Vbs={mos[4]}": f"measured_vbs{i}={mos[4]}"
+                        f"Vbs={mos[4]}": f"measured_vbs{i}={mos[4]}",
                     },
                     inplace=True,
                 )
             else:
                 idf1 = df[
                     [
-                        vgs ,
+                        vgs,
                         f"Vbs={mos[0]}",
                         f"Vbs={mos[1]}",
                         f"Vbs={mos[2]}",
-                        f"Vbs={mos[3]}"
+                        f"Vbs={mos[3]}",
                     ]
                 ].copy()
 
@@ -140,17 +135,17 @@ def ext_measured(dev_data_path, device):
                         f"Vbs={mos[0]}": f"measured_vbs{i}={mos[0]}",
                         f"Vbs={mos[1]}": f"measured_vbs{i}={mos[1]}",
                         f"Vbs={mos[2]}": f"measured_vbs{i}={mos[2]}",
-                        f"Vbs={mos[3]}": f"measured_vbs{i}={mos[3]}"
+                        f"Vbs={mos[3]}": f"measured_vbs{i}={mos[3]}",
                     },
                     inplace=True,
-                )    
+                )
             idf2 = df[
                 [
                     vds,
                     f"Vgs={mos1[0]}",
                     f"Vgs={mos1[1]}",
                     f"Vgs={mos1[2]}",
-                    f"Vgs={mos1[3]}"
+                    f"Vgs={mos1[3]}",
                 ]
             ].copy()
 
@@ -160,7 +155,7 @@ def ext_measured(dev_data_path, device):
                     f"Vgs={mos1[0]}": f"measured_vgs{i}={mos1[0]}",
                     f"Vgs={mos1[1]}": f"measured_vgs{i}={mos1[1]}",
                     f"Vgs={mos1[2]}": f"measured_vgs{i}={mos1[2]}",
-                    f"Vgs={mos1[3]}": f"measured_vgs{i}={mos1[3]}"
+                    f"Vgs={mos1[3]}": f"measured_vgs{i}={mos1[3]}",
                 },
                 inplace=True,
             )
@@ -170,7 +165,7 @@ def ext_measured(dev_data_path, device):
                     f"Vgs={mos1[0]}.{i+1}",
                     f"Vgs={mos1[1]}.{i+1}",
                     f"Vgs={mos1[2]}.{i+1}",
-                    f"Vgs={mos1[3]}.{i+1}"
+                    f"Vgs={mos1[3]}.{i+1}",
                 ]
             ].copy()
 
@@ -180,13 +175,13 @@ def ext_measured(dev_data_path, device):
                     f"Vgs={mos1[0]}.{i+1}": f"measured_vgs{i}={mos1[0]}",
                     f"Vgs={mos1[1]}.{i+1}": f"measured_vgs{i}={mos1[1]}",
                     f"Vgs={mos1[2]}.{i+1}": f"measured_vgs{i}={mos1[2]}",
-                    f"Vgs={mos1[3]}.{i+1}": f"measured_vgs{i}={mos1[3]}"
+                    f"Vgs={mos1[3]}.{i+1}": f"measured_vgs{i}={mos1[3]}",
                 },
                 inplace=True,
-            )           
+            )
         else:
-            
-            if device in ["nfet_03v3","pfet_03v3"]:
+
+            if device in ["nfet_03v3", "pfet_03v3"]:
                 idf1 = df[
                     [
                         vgs,
@@ -194,7 +189,7 @@ def ext_measured(dev_data_path, device):
                         f"Vbs={mos[1]}.{i}",
                         f"Vbs={mos[2]}.{i}",
                         f"Vbs={mos[3]}.{i}",
-                        f"Vbs={mos[4]}.{i}"
+                        f"Vbs={mos[4]}.{i}",
                     ]
                 ].copy()
 
@@ -205,7 +200,7 @@ def ext_measured(dev_data_path, device):
                         f"Vbs={mos[1]}.{i}": f"measured_vbs{i}={mos[1]}",
                         f"Vbs={mos[2]}.{i}": f"measured_vbs{i}={mos[2]}",
                         f"Vbs={mos[3]}.{i}": f"measured_vbs{i}={mos[3]}",
-                        f"Vbs={mos[4]}.{i}": f"measured_vbs{i}={mos[4]}"
+                        f"Vbs={mos[4]}.{i}": f"measured_vbs{i}={mos[4]}",
                     },
                     inplace=True,
                 )
@@ -216,7 +211,7 @@ def ext_measured(dev_data_path, device):
                         f"Vbs={mos[0]}.{i}",
                         f"Vbs={mos[1]}.{i}",
                         f"Vbs={mos[2]}.{i}",
-                        f"Vbs={mos[3]}.{i}"
+                        f"Vbs={mos[3]}.{i}",
                     ]
                 ].copy()
 
@@ -226,17 +221,17 @@ def ext_measured(dev_data_path, device):
                         f"Vbs={mos[0]}.{i}": f"measured_vbs{i}={mos[0]}",
                         f"Vbs={mos[1]}.{i}": f"measured_vbs{i}={mos[1]}",
                         f"Vbs={mos[2]}.{i}": f"measured_vbs{i}={mos[2]}",
-                        f"Vbs={mos[3]}.{i}": f"measured_vbs{i}={mos[3]}"
+                        f"Vbs={mos[3]}.{i}": f"measured_vbs{i}={mos[3]}",
                     },
                     inplace=True,
-                )                    
+                )
             idf2 = df[
                 [
                     vds,
                     f"Vgs={mos1[0]}.{2*i}",
                     f"Vgs={mos1[1]}.{2*i}",
                     f"Vgs={mos1[2]}.{2*i}",
-                    f"Vgs={mos1[3]}.{2*i}"
+                    f"Vgs={mos1[3]}.{2*i}",
                 ]
             ].copy()
 
@@ -246,7 +241,7 @@ def ext_measured(dev_data_path, device):
                     f"Vgs={mos1[0]}.{2*i}": f"measured_vgs{i}={mos1[0]}",
                     f"Vgs={mos1[1]}.{2*i}": f"measured_vgs{i}={mos1[1]}",
                     f"Vgs={mos1[2]}.{2*i}": f"measured_vgs{i}={mos1[2]}",
-                    f"Vgs={mos1[3]}.{2*i}": f"measured_vgs{i}={mos1[3]}"
+                    f"Vgs={mos1[3]}.{2*i}": f"measured_vgs{i}={mos1[3]}",
                 },
                 inplace=True,
             )
@@ -256,7 +251,7 @@ def ext_measured(dev_data_path, device):
                     f"Vgs={mos1[0]}.{2*i + 1}",
                     f"Vgs={mos1[1]}.{2*i + 1}",
                     f"Vgs={mos1[2]}.{2*i + 1}",
-                    f"Vgs={mos1[3]}.{2*i + 1}"
+                    f"Vgs={mos1[3]}.{2*i + 1}",
                 ]
             ].copy()
 
@@ -266,7 +261,7 @@ def ext_measured(dev_data_path, device):
                     f"Vgs={mos1[0]}.{2*i + 1}": f"measured_vgs{i}={mos1[0]}",
                     f"Vgs={mos1[1]}.{2*i + 1}": f"measured_vgs{i}={mos1[1]}",
                     f"Vgs={mos1[2]}.{2*i + 1}": f"measured_vgs{i}={mos1[2]}",
-                    f"Vgs={mos1[3]}.{2*i + 1}": f"measured_vgs{i}={mos1[3]}"
+                    f"Vgs={mos1[3]}.{2*i + 1}": f"measured_vgs{i}={mos1[3]}",
                 },
                 inplace=True,
             )
@@ -276,8 +271,8 @@ def ext_measured(dev_data_path, device):
         idf2["W (um)"] = width
         idf2["L (um)"] = length
         idf3["W (um)"] = width
-        idf3["L (um)"] = length        
-        
+        idf3["L (um)"] = length
+
         idf1.dropna(inplace=True)
         all_dfs1.append(idf1)
         idf2.dropna(inplace=True)
@@ -289,8 +284,8 @@ def ext_measured(dev_data_path, device):
     dfs2 = pd.concat(all_dfs2, axis=1)
     dfs2.drop_duplicates(inplace=True)
     dfs3 = pd.concat(all_dfs3, axis=1)
-    dfs3.drop_duplicates(inplace=True)        
-    return dfs1,dfs2,dfs3
+    dfs3.drop_duplicates(inplace=True)
+    return dfs1, dfs2, dfs3
 
 
 def call_simulator(file_name):
@@ -298,9 +293,7 @@ def call_simulator(file_name):
     Args:
         file_name (str): Netlist file name.
     """
-    return os.system(
-        f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log"
-    )
+    return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
 def run_sim(dirpath, device, width, length, nf):
@@ -317,7 +310,7 @@ def run_sim(dirpath, device, width, length, nf):
         info(dict): results are stored in,
         and passed to the run_sims function to extract data
     """
-    caps=["c","d","s"]
+    caps = ["c", "d", "s"]
     for cap in caps:
         netlist_tmp = f"device_netlists_Cg{cap}/{device}.spice"
 
@@ -327,7 +320,7 @@ def run_sim(dirpath, device, width, length, nf):
         info["width"] = width
         width_str = width
         length_str = length
-        nf_str=nf
+        nf_str = nf
 
         s = f"netlist_w{width_str}_l{length_str}.spice"
         netlist_path = f"{dirpath}/{device}_netlists_Cg{cap}/{s}"
@@ -339,12 +332,7 @@ def run_sim(dirpath, device, width, length, nf):
             os.makedirs(f"{dirpath}/{device}_netlists_Cg{cap}", exist_ok=True)
             with open(netlist_path, "w") as netlist:
                 netlist.write(
-                    tmpl.render(
-                        width=width_str,
-                        length=length_str,
-                        nf=nf_str
-            
-                    )
+                    tmpl.render(width=width_str, length=length_str, nf=nf_str)
                 )
 
         # Running ngspice for each netlist
@@ -381,19 +369,12 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
     results = []
     df["nf"] = 1
     df["nf"][0] = 20
-    with concurrent.futures.ThreadPoolExecutor(
-        max_workers=num_workers
-    ) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures_list = []
         for j, row in df.iterrows():
             futures_list.append(
                 executor.submit(
-                    run_sim,
-                    dirpath,
-                    device,
-                    row["W (um)"],
-                    row["L (um)"],
-                    row["nf"]
+                    run_sim, dirpath, device, row["W (um)"], row["L (um)"], row["nf"]
                 )
             )
 
@@ -404,8 +385,8 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
             except Exception as exc:
                 print("Test case generated an exception: %s" % (exc))
 
-    caps=["c","d","s"]
-    for cap in caps:            
+    caps = ["c", "d", "s"]
+    for cap in caps:
         sf = glob.glob(f"{dirpath}/simulated_Cg{cap}/*.csv")
 
         # sweeping on all generated cvs files
@@ -415,10 +396,10 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 header=None,
                 delimiter=r"\s+",
             )
-            if cap=="c" and device in ["nfet_03v3","pfet_03v3"]:
-                div_by=len(MOS)
+            if cap == "c" and device in ["nfet_03v3", "pfet_03v3"]:
+                div_by = len(MOS)
             else:
-                div_by=len(MOS1)
+                div_by = len(MOS1)
 
             sweep = int(sdf[0].count() / div_by)
             new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
@@ -427,11 +408,11 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
             times = int(sdf.shape[0] / sweep)
 
             for j in range(times):
-                new_array[:, (j + 1)] = sdf.iloc[j * sweep: (j + 1) * sweep, 1]
+                new_array[:, (j + 1)] = sdf.iloc[j * sweep : (j + 1) * sweep, 1]
 
             # Writing final simulated data 1
             sdf = pd.DataFrame(new_array)
-            if (cap=="c"):
+            if cap == "c":
                 sdf.rename(
                     columns={
                         0: "vgs",
@@ -439,7 +420,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                         2: "vb2",
                         3: "vb3",
                         4: "vb4",
-                        5: "vb5"
+                        5: "vb5",
                     },
                     inplace=True,
                 )
@@ -498,16 +479,16 @@ def error_cal(
     else:
         mos = MOS
         mos1 = MOS1
-    caps=["c","s","d"]
-    
+    caps = ["c", "s", "d"]
+
     for cap in caps:
         merged_dfs = list()
-        if cap=="c":
-            meas_df=meas_df1
-        elif cap=="s":
-            meas_df=meas_df2
+        if cap == "c":
+            meas_df = meas_df1
+        elif cap == "s":
+            meas_df = meas_df2
         else:
-            meas_df=meas_df3
+            meas_df = meas_df3
 
         for i in range(len(sim_df)):
             length = df["L (um)"].iloc[int(i)]
@@ -517,15 +498,15 @@ def error_cal(
 
             simulated_data = pd.read_csv(sim_path)
 
-            if cap =="c":
-                if device in ["nfet_03v3","pfet_03v3"]:
+            if cap == "c":
+                if device in ["nfet_03v3", "pfet_03v3"]:
                     measured_data = meas_df[
                         [
                             f"measured_vbs{i}={mos[0]}",
                             f"measured_vbs{i}={mos[1]}",
                             f"measured_vbs{i}={mos[2]}",
                             f"measured_vbs{i}={mos[3]}",
-                            f"measured_vbs{i}={mos[4]}"
+                            f"measured_vbs{i}={mos[4]}",
                         ]
                     ].copy()
                     measured_data.rename(
@@ -534,7 +515,7 @@ def error_cal(
                             f"measured_vbs{i}={mos[1]}": "measured_v2",
                             f"measured_vbs{i}={mos[2]}": "measured_v3",
                             f"measured_vbs{i}={mos[3]}": "measured_v4",
-                            f"measured_vbs{i}={mos[4]}": "measured_v5"
+                            f"measured_vbs{i}={mos[4]}": "measured_v5",
                         },
                         inplace=True,
                     )
@@ -545,7 +526,7 @@ def error_cal(
                             f"measured_vbs{i}={mos[0]}",
                             f"measured_vbs{i}={mos[1]}",
                             f"measured_vbs{i}={mos[2]}",
-                            f"measured_vbs{i}={mos[3]}"
+                            f"measured_vbs{i}={mos[3]}",
                         ]
                     ].copy()
                     measured_data.rename(
@@ -553,7 +534,7 @@ def error_cal(
                             f"measured_vbs{i}={mos[0]}": "measured_v1",
                             f"measured_vbs{i}={mos[1]}": "measured_v2",
                             f"measured_vbs{i}={mos[2]}": "measured_v3",
-                            f"measured_vbs{i}={mos[3]}": "measured_v4"
+                            f"measured_vbs{i}={mos[3]}": "measured_v4",
                         },
                         inplace=True,
                     )
@@ -566,7 +547,7 @@ def error_cal(
                         f"measured_vgs{i}={mos1[0]}",
                         f"measured_vgs{i}={mos1[1]}",
                         f"measured_vgs{i}={mos1[2]}",
-                        f"measured_vgs{i}={mos1[3]}"
+                        f"measured_vgs{i}={mos1[3]}",
                     ]
                 ].copy()
                 measured_data.rename(
@@ -574,20 +555,17 @@ def error_cal(
                         f"measured_vgs{i}={mos1[0]}": "measured_v1",
                         f"measured_vgs{i}={mos1[1]}": "measured_v2",
                         f"measured_vgs{i}={mos1[2]}": "measured_v3",
-                        f"measured_vgs{i}={mos1[3]}": "measured_v4"
+                        f"measured_vgs{i}={mos1[3]}": "measured_v4",
                     },
                     inplace=True,
                 )
-                
-                measured_data["vds"] = simulated_data["vds"]
-              
 
+                measured_data["vds"] = simulated_data["vds"]
 
                 result_data = simulated_data.merge(measured_data, how="left")
 
-  
-            if cap =="c":
-                  
+            if cap == "c":
+
                 result_data["step1_error"] = (
                     np.abs(result_data["measured_v1"] - result_data["vb1"])
                     * 100.0
@@ -608,12 +586,12 @@ def error_cal(
                     * 100.0
                     / (result_data["measured_v4"])
                 )
-                if device in ["nfet_03v3","pfet_03v3"]:
+                if device in ["nfet_03v3", "pfet_03v3"]:
                     result_data["step5_error"] = (
                         np.abs(result_data["measured_v5"] - result_data["vb5"])
                         * 100.0
                         / (result_data["measured_v5"])
-                    )        
+                    )
 
                     result_data["error"] = (
                         np.abs(
@@ -670,9 +648,7 @@ def error_cal(
             merged_dfs.append(result_data)
             merged_out = pd.concat(merged_dfs)
             merged_out.fillna(0, inplace=True)
-            merged_out.to_csv(
-                f"{dev_path}/error_analysis_Cg{cap}.csv", index=False
-            )
+            merged_out.to_csv(f"{dev_path}/error_analysis_Cg{cap}.csv", index=False)
     return None
 
 
@@ -686,30 +662,20 @@ def main():
 
     main_regr_dir = "mos_cv_regr"
 
-    devices = [
-        "nfet_03v3",
-        "pfet_03v3",
-        "nfet_06v0",
-        "pfet_06v0",
-        "nfet_06v0_nvt"
-    ]
-    measured_data = ["3p3_cv","6p0_cv","6p0_nat_cv"]
+    devices = ["nfet_03v3", "pfet_03v3", "nfet_06v0", "pfet_06v0", "nfet_06v0_nvt"]
+    measured_data = ["3p3_cv", "6p0_cv", "6p0_nat_cv"]
     if os.path.exists(main_regr_dir) and os.path.isdir(main_regr_dir):
         shutil.rmtree(main_regr_dir)
 
     for i, dev in enumerate(devices):
         dev_path = f"{main_regr_dir}/{dev}"
 
-
         os.makedirs(f"{dev_path}", exist_ok=False)
 
         print("######" * 10)
         print(f"# Checking Device {dev}")
 
-        data_files = glob.glob(
-            f"measured_data/{measured_data[int(i*0.5)]}.nl_out.xlsx"
-
-        )
+        data_files = glob.glob(f"measured_data/{measured_data[int(i*0.5)]}.nl_out.xlsx")
         if len(data_files) < 1:
             print("# Can't find file for device: {}".format(dev))
             file = ""
@@ -718,7 +684,7 @@ def main():
         print("#  data points file : ", file)
 
         if file != "":
-            meas_df1,meas_df2,meas_df3 = ext_measured(file, dev)
+            meas_df1, meas_df2, meas_df3 = ext_measured(file, dev)
         else:
             meas_df1 = []
             meas_df2 = []
@@ -730,27 +696,27 @@ def main():
         df1 = pd.read_csv(f"mos_cv_regr/{dev}/{dev}.csv")
         df2 = df1[["L (um)", "W (um)"]].copy()
         df2.dropna(inplace=True)
-        loops = int( 0.5 * df2["L (um)"].count())
-        df=df2[["L (um)", "W (um)"]].iloc[0:loops]
+        loops = int(0.5 * df2["L (um)"].count())
+        df = df2[["L (um)", "W (um)"]].iloc[0:loops]
         sim_df_id = run_sims(df, dev_path, dev)
 
         print(
             "# Device {} number of measured_datapoints for cv : ".format(dev),
-            len(sim_df_id) * (len(meas_df1)+len(meas_df2)+len(meas_df3)),
+            len(sim_df_id) * (len(meas_df1) + len(meas_df2) + len(meas_df3)),
         )
         print(
             "# Device {} number of simulated datapoints for cv : ".format(dev),
-            len(sim_df_id) * (len(meas_df1)+len(meas_df2)+len(meas_df3)),
+            len(sim_df_id) * (len(meas_df1) + len(meas_df2) + len(meas_df3)),
         )
         print("\n\n")
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
 
-        error_cal(df, sim_df_id, meas_df1,meas_df2,meas_df3, dev_path, dev)
+        error_cal(df, sim_df_id, meas_df1, meas_df2, meas_df3, dev_path, dev)
 
-        caps=["c","d","s"]
-    
+        caps = ["c", "d", "s"]
+
         for cap in caps:
             # reading from the csv file contains all error data
             # merged_all contains all simulated, measured, error data
@@ -794,11 +760,7 @@ def main():
             if max_error_total < PASS_THRESH:
                 print("# Device {} has passed regression.".format(dev))
             else:
-                print(
-                    "# Device {} has failed regression.".format(
-                        dev
-                    )
-                )
+                print("# Device {} has failed regression.".format(dev))
             print("\n\n")
     print("\n\n")
 

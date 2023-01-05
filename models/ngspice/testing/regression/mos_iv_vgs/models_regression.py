@@ -55,9 +55,7 @@ def ext_measured(dev_data_path, device):
 
     # Read Data
     read_file = pd.read_excel(dev_data_path)
-    read_file.to_csv(
-        f"mos_iv_regr/{device}/{device}.csv", index=False, header=True
-    )
+    read_file.to_csv(f"mos_iv_regr/{device}/{device}.csv", index=False, header=True)
     df = pd.read_csv(f"mos_iv_regr/{device}/{device}.csv")
     loops = df["L (um)"].count()
     all_dfs = []
@@ -276,9 +274,7 @@ def call_simulator(file_name):
     Args:
         file_name (str): Netlist file name.
     """
-    return os.system(
-        f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log"
-    )
+    return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
 def run_sim(dirpath, device, id_rds, width, length, temp=25):
@@ -363,13 +359,11 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
     loops = df["L (um)"].count()
     temp_range = int(loops / 3)
     df["temp"] = 25
-    df["temp"][temp_range: 2 * temp_range] = -40
-    df["temp"][2 * temp_range: 3 * temp_range] = 125
+    df["temp"][temp_range : 2 * temp_range] = -40
+    df["temp"][2 * temp_range : 3 * temp_range] = 125
 
     results = []
-    with concurrent.futures.ThreadPoolExecutor(
-        max_workers=num_workers
-    ) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures_list = []
         for j, row in df.iterrows():
             futures_list.append(
@@ -407,7 +401,7 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
         times = int(sdf.shape[0] / sweep)
 
         for j in range(times):
-            new_array[:, (j + 1)] = sdf.iloc[j * sweep: (j + 1) * sweep, 1]
+            new_array[:, (j + 1)] = sdf.iloc[j * sweep : (j + 1) * sweep, 1]
 
         # Writing final simulated data 1
         sdf = pd.DataFrame(new_array)
@@ -448,16 +442,16 @@ def error_cal(
         id_rds(str): select id or rds
 
     """
-    id_rd=0
-    if id_rds=="Rds":
-        id_rd=1
+    id_rd = 0
+    if id_rds == "Rds":
+        id_rd = 1
     # adding error columns to the merged dataframe
     merged_dfs = list()
     loops = df["L (um)"].count()
     temp_range = int(loops / 3)
     df["temp"] = 25
-    df["temp"][temp_range: 2 * temp_range] = -40
-    df["temp"][2 * temp_range: 3 * temp_range] = 125
+    df["temp"][temp_range : 2 * temp_range] = -40
+    df["temp"][2 * temp_range : 3 * temp_range] = 125
     if device == "pfet_03v3_iv" or device == "pfet_03v3_dss_iv":
         mos = PMOS3P3_VGS
     elif device == "pfet_06v0_iv" or device == "pfet_06v0_dss_iv":
@@ -503,11 +497,13 @@ def error_cal(
 
         result_data = simulated_data.merge(measured_data, how="left")
         # only for dss
-        if device in ["nfet_03v3_dss_iv",
-        "pfet_03v3_dss_iv",
-        "nfet_06v0_dss_iv",
-        "pfet_06v0_dss_iv"]:
-            result_data.loc[0]=1
+        if device in [
+            "nfet_03v3_dss_iv",
+            "pfet_03v3_dss_iv",
+            "nfet_06v0_dss_iv",
+            "pfet_06v0_dss_iv",
+        ]:
+            result_data.loc[0] = 1
 
         result_data["step1_error"] = (
             np.abs(result_data["measured_vgs1"] - result_data["vb1"])
@@ -533,7 +529,7 @@ def error_cal(
             np.abs(result_data["measured_vgs5"] - result_data["vb5"])
             * 100.0
             / (result_data["measured_vgs5"])
-        )        
+        )
         result_data["step6_error"] = (
             np.abs(result_data["measured_vgs6"] - result_data["vb6"])
             * 100.0
@@ -554,9 +550,7 @@ def error_cal(
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
         merged_out.fillna(0, inplace=True)
-        merged_out.to_csv(
-            f"{dev_path}/error_analysis_{id_rds}.csv", index=False
-        )
+        merged_out.to_csv(f"{dev_path}/error_analysis_{id_rds}.csv", index=False)
     return None
 
 
@@ -593,9 +587,7 @@ def main():
         print("######" * 10)
         print(f"# Checking Device {dev}")
 
-        data_files = glob.glob(
-            f"../../180MCU_SPICE_DATA/MOS/{dev}.nl_out.xlsx"
-        )
+        data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{dev}.nl_out.xlsx")
         if len(data_files) < 1:
             print("# Can't find file for device: {}".format(dev))
             file = ""
@@ -628,9 +620,7 @@ def main():
             len(sim_df_rds) * len(meas_df),
         )
         print(
-            "# Device {} number of simulated datapoints for Rds : ".format(
-                dev
-            ),
+            "# Device {} number of simulated datapoints for Rds : ".format(dev),
             len(sim_df_rds) * len(meas_df),
         )
         print("\n\n")
@@ -684,11 +674,7 @@ def main():
             if max_error_total < PASS_THRESH:
                 print("# Device {} has passed regression.".format(dev))
             else:
-                print(
-                    "# Device {} has failed regression.".format(
-                        dev
-                    )
-                )
+                print("# Device {} has failed regression.".format(dev))
             print("\n\n")
 
     print("\n\n")
