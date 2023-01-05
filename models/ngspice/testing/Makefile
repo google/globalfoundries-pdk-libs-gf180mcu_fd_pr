@@ -25,7 +25,7 @@ run_folder  := $(shell date +'run_%Y_%m_%d_%H:%M:%S')
 
 all : test-models_ngspice
 
-test-models_ngspice: smoke-test models-MOS  models-BJT models-diode models-MOSCAP models-MIMCAP models-RES 
+test-models_ngspice: models-MOS  models-BJT models-diode models-MOSCAP models-MIMCAP models-RES 
 
 #================================
 #---------- Create Run ----------
@@ -34,7 +34,7 @@ test-models_ngspice: smoke-test models-MOS  models-BJT models-diode models-MOSCA
 .ONESHELL:
 Add_run-dir:
 	@cd $(Testing_DIR)
-	@ [ ! -d "$(run_folder)/" ] && cp -rf $(Testing_DIR)/regression $(Testing_DIR)/$(run_folder)
+	@ [ ! -d "$(run_folder)/" ] && mkdir $(Testing_DIR)/$(run_folder)
 
 #================================
 #---------- smoke-test ----------
@@ -51,118 +51,115 @@ smoke-test:
 #================================
 
 .ONESHELL:
-models-MOS: Add_run-dir
+models-MOS:Add_run-dir models-MOS-vgs models-MOS-vbs models-MOS-cv
+
+
+.ONESHELL:
+models-MOS-vgs:Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/mos_iv_vgs  $(Testing_DIR)/$(run_folder)/mos_iv_vgs
 	@cd $(Testing_DIR)/$(run_folder)/mos_iv_vgs
 	@echo "========== Runing models_ngspice-MOS-VGS regression ==========" |& tee -a ../run_log.log 
-	@python3 models_regression.py |& tee -a ../run_log.log
+	@python3 models_regression.py |& tee -a ../run_log.log	 
+
+.ONESHELL:
+models-MOS-vbs:Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/mos_iv_vbs  $(Testing_DIR)/$(run_folder)/mos_iv_vbs
 	@cd $(Testing_DIR)/$(run_folder)/mos_iv_vbs
 	@echo "========== Runing models_ngspice-MOS-VBS regression ==========" |& tee -a ../run_log.log 
-	@python3 models_regression.py |& tee -a ../run_log.log 	 
+	@python3 models_regression.py |& tee -a ../run_log.log 	 	
+
+.ONESHELL:
+models-MOS-cv:Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/mos_cv  $(Testing_DIR)/$(run_folder)/mos_cv
 	@cd $(Testing_DIR)/$(run_folder)/mos_cv
 	@echo "========== Runing models_ngspice-MOS-CV regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log 	
-# @cd ../mos_iv_vbs
-# @python3 models_regression.py |& tee -a ../run_log.log  
-
-# .ONESHELL:
-# clean-models-MOS:
-# 	@echo "==== Cleaning models-MOS old runs ===="
-# 	@cd $(Testing_DIR)/$(run_folder)/mos_iv_vgs && rm -rf nmos_* pmos_*
-
 #================================
 # ---------- models-BJT----------
 #================================
 
 .ONESHELL:
-models-BJT: Add_run-dir
+models-BJT: Add_run-dir models-BJT-cj models-BJT-beta models-BJT-iv
+
+.ONESHELL:
+models-BJT-cj:Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/bjt_cj  $(Testing_DIR)/$(run_folder)/bjt_cj
 	@cd $(Testing_DIR)/$(run_folder)/bjt_cj
 	@echo "========== Runing models_ngspice-BJT-cj regression ==========" |& tee -a ../run_log.log 
-	@python3 models_regression.py |& tee -a ../run_log.log
-	@cd $(Testing_DIR)/$(run_folder)/bjt_iv
-	@echo "========== Runing models_ngspice-BJT-iv regression ==========" |& tee -a ../run_log.log 
-	@python3 models_regression.py |& tee -a ../run_log.log
+	@python3 models_regression.py |& tee -a ../run_log.log	
+
+.ONESHELL:
+models-BJT-beta:Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/bjt_beta  $(Testing_DIR)/$(run_folder)/bjt_beta
 	@cd $(Testing_DIR)/$(run_folder)/bjt_beta
 	@echo "========== Runing models_ngspice-BJT-beta regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-# .ONESHELL:
-# clean-models-BJT:
-# 	@echo "==== Cleaning models-BJT old runs ===="
-# 	@cd $(Testing_DIR)/$(run_folder)/bjt_cj && rm -rf vnpn_* vpnp_*
 
+.ONESHELL:
+models-BJT-iv:Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/bjt_iv  $(Testing_DIR)/$(run_folder)/bjt_iv
+	@cd $(Testing_DIR)/$(run_folder)/bjt_iv
+	@echo "========== Runing models_ngspice-BJT-iv regression ==========" |& tee -a ../run_log.log 
+	@python3 models_regression.py |& tee -a ../run_log.log
 #================================
 # --------- models-diode --------
 #================================
 
 .ONESHELL:
 models-diode: Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/diode  $(Testing_DIR)/$(run_folder)/diode
 	@cd $(Testing_DIR)/$(run_folder)/diode
 	@echo "========== Runing models_ngspice-didoe regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-
-
-# .ONESHELL:
-# clean-models-diode:
-# 	@echo "==== Cleaning models-diode old runs ===="
-# 	@cd $(Testing_DIR)/$(run_folder)/diode && rm -rf np_* pn_* nwp* dnw* sc_*
-
 #================================
 # -------- models-MOSCAP --------
 #================================
 
 .ONESHELL:
 models-MOSCAP: Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/moscap_c  $(Testing_DIR)/$(run_folder)/moscap_c
 	@cd $(Testing_DIR)/$(run_folder)/moscap_c
 	@echo "========== Runing models_ngspice-MOSCAP regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-
-
-# .ONESHELL:
-# clean-models-MOSCAP:
-# 	@echo "==== Cleaning models-MOSCAP old runs ===="
-# 	@cd $(Testing_DIR)/$(run_folder)/moscap_c && rm -rf nmoscap_* pmoscap_*	
-
 #================================
 # -------- models-MIMCAP --------
 #================================
 
 .ONESHELL:
 models-MIMCAP: Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/mimcap_c  $(Testing_DIR)/$(run_folder)/mimcap_c
 	@cd $(Testing_DIR)/$(run_folder)/mimcap_c
 	@echo "========== Runing models_ngspice-MIMCAP regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-
-
-# .ONESHELL:
-# clean-models-MIMCAP:
-# 	@echo "==== Cleaning models-MIMCAP old runs ===="
-# 	@cd $(Testing_DIR)/$(run_folder)/mimcap_c && rm -rf mim*		
-
-
 #================================
 # --------- models-RES ----------
 #================================
 
 .ONESHELL:
 models-RES: Add_run-dir
+	@cd $(Testing_DIR)
+	@cp -rf $(Testing_DIR)/regression/resistor_r  $(Testing_DIR)/$(run_folder)/resistor_r
 	@cd $(Testing_DIR)/$(run_folder)/resistor_r
 	@echo "========== Runing models_ngspice-RES regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
+#===============================
+# --------- Clean ALL ----------
+#===============================
 
-
-# .ONESHELL:
-# clean-models-RES:
-# 	@echo "==== Cleaning models-RES old runs ===="
-# 	@cd $(Testing_DIR)/$(run_folder)/resistor_r && rm -rf nplus* pplus* npoly* ppoly* rm* tm* nwell
-
-
-
-# #===============================
-# # --------- Clean ALL ----------
-# #===============================
-
-# .ONESHELL:
-# clean: clean-models-MOS clean-models-BJT clean-models-diode clean-models-MOSCAP clean-models-MIMCAP clean-models-RES
-# 	@echo "==== Cleaning all runs is done ===="
+.ONESHELL:
+clean: 
+	@cd $(Testing_DIR)
+	@rm -rf $(Testing_DIR)/run_*
+	@echo "==== Cleaning all runs is done ===="
 
 
 #==========================
@@ -175,18 +172,12 @@ help:
 	@echo "... all                  (the default if no target is provided)"
 	@echo "... smoke-test           (To run smoke test for    an inverter)"
 	@echo "... test-models_ngspice  (To run regression for all    devices)"
-	@echo "... models-MOS           (To run regression for MOS    devices)"
-	@echo "... models-BJT           (To run regression for BJT    devices)"
 	@echo "... models-diode         (To run regression for diode  devices)"
 	@echo "... models-MOSCAP        (To run regression for MOSCAP devices)"
 	@echo "... models-MIMCAP        (To run regression for MIMCAP devices)"
 	@echo "... models-RES           (To run regression for RES    devices)"
-# @echo "... clean-models-MOS     (To clean old runs for MOS    devices)"
-# @echo "... clean-models-BJT     (To clean old runs for BJT    devices)"
-# @echo "... clean-models-diode   (To clean old runs for diode  devices)"
-# @echo "... clean-models-MOSCAP  (To clean old runs for MOSCAP devices)"
-# @echo "... clean-models-MIMCAP  (To clean old runs for MIMCAP devices)"
-# @echo "... clean-models-RES     (To run regression for RES    devices)"
-# @echo "... clean                (To clean all old runs)               "
+	@echo "... models-MOS-[vgs,vbs,cv] or models-MOS for all           (To run regression for MOS    devices)"
+	@echo "... models-BJT-[cj,beta,iv] or models-BJT for all          (To run regression for BJT    devices)"
+	@echo "... clean                (To clean all old runs)               "
    
 .PHONY : help
