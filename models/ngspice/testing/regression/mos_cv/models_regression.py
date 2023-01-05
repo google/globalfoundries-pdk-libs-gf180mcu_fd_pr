@@ -510,8 +510,8 @@ def error_cal(
             meas_df=meas_df3
 
         for i in range(len(sim_df)):
-            length = sim_df["length"].iloc[int(i)]
-            w = sim_df["width"].iloc[int(i)]
+            length = df["L (um)"].iloc[int(i)]
+            w = df["W (um)"].iloc[int(i)]
             s = f"simulated_W{w}_L{length}.csv"
             sim_path = f"mos_cv_regr/{device}/simulated_Cg{cap}/{s}"
 

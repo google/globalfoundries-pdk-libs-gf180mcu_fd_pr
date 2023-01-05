@@ -34,7 +34,7 @@ vbs S_tn 0 dc=0
 * pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
 
 * circuit
-mn D_tn G_tn S_tn S_tn nfet_03v3 W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
+mn 0 G_tn 0 S_tn nfet_03v3 W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
 
 .control
 set filetype=ascii
