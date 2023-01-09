@@ -69,13 +69,13 @@ def ext_measured(dev_data_path, device):
     all_dfs2 = []
     all_dfs3 = []
 
-    if device == "pfet_03v3":
+    if device == "pfet_03v3" or device == "pfet_03v3_dss":
         mos = PMOS3P3_VPS
         mos1 = PMOS3P3_VPS1
-    elif device == "pfet_06v0":
+    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
         mos = PMOS6P0_VPS
         mos1 = PMOS6P0_VPS1
-    elif device == "nfet_06v0":
+    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
         mos = NMOS6P0_VPS
         mos1 = NMOS6P0_VPS1
     elif device == "nfet_06v0_nvt":
@@ -87,7 +87,7 @@ def ext_measured(dev_data_path, device):
 
     vgs = "Vgs (V)"
     vds = "Vds (V)"
-    if device in ["pfet_03v3", "pfet_06v0"]:
+    if device in ["pfet_03v3", "pfet_06v0","pfet_03v3_dss", "pfet_06v0_dss"]:
         vgs = "-Vgs (V)"
         vds = "-Vds (V)"
     for i in range(loops):
@@ -96,7 +96,7 @@ def ext_measured(dev_data_path, device):
 
         if i == 0:
 
-            if device in ["nfet_03v3", "pfet_03v3"]:
+            if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                 idf1 = df[
                     [
                         vgs,
@@ -182,7 +182,7 @@ def ext_measured(dev_data_path, device):
             )
         else:
 
-            if device in ["nfet_03v3", "pfet_03v3"]:
+            if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                 idf1 = df[
                     [
                         vgs,
@@ -397,7 +397,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 header=None,
                 delimiter=r"\s+",
             )
-            if cap == "c" and device in ["nfet_03v3", "pfet_03v3"]:
+            if cap == "c" and device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                 div_by = len(MOS)
             else:
                 div_by = len(MOS1)
@@ -465,13 +465,13 @@ def error_cal(
     """
 
     # adding error columns to the merged dataframe
-    if device == "pfet_03v3":
+    if device == "pfet_03v3" or device == "pfet_03v3_dss":
         mos = PMOS3P3_VPS
         mos1 = PMOS3P3_VPS1
-    elif device == "pfet_06v0":
+    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
         mos = PMOS6P0_VPS
         mos1 = PMOS6P0_VPS1
-    elif device == "nfet_06v0":
+    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
         mos = NMOS6P0_VPS
         mos1 = NMOS6P0_VPS1
     elif device == "nfet_06v0_nvt":
@@ -500,7 +500,7 @@ def error_cal(
             simulated_data = pd.read_csv(sim_path)
 
             if cap == "c":
-                if device in ["nfet_03v3", "pfet_03v3"]:
+                if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                     measured_data = meas_df[
                         [
                             f"measured_vbs{i}={mos[0]}",
@@ -587,7 +587,7 @@ def error_cal(
                     * 100.0
                     / (result_data["measured_v4"])
                 )
-                if device in ["nfet_03v3", "pfet_03v3"]:
+                if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                     result_data["step5_error"] = (
                         np.abs(result_data["measured_v5"] - result_data["vb5"])
                         * 100.0
@@ -669,8 +669,12 @@ def main():
 
     main_regr_dir = "mos_cv_regr"
 
-    devices = ["nfet_03v3", "pfet_03v3", "nfet_06v0", "pfet_06v0", "nfet_06v0_nvt"]
-    measured_data = ["3p3_cv", "6p0_cv", "6p0_nat_cv"]
+    devices = ["nfet_03v3", "pfet_03v3", "nfet_06v0", "pfet_06v0",
+        "nfet_03v3_dss",
+        "pfet_03v3_dss",
+        "nfet_06v0_dss",
+        "pfet_06v0_dss", "nfet_06v0_nvt"]
+    measured_data = ["3p3_cv", "6p0_cv","3p3_sab_cv", "6p0_sab_cv", "6p0_nat_cv"]
     if os.path.exists(main_regr_dir) and os.path.isdir(main_regr_dir):
         shutil.rmtree(main_regr_dir)
 

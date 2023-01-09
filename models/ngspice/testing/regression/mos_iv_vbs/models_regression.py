@@ -64,11 +64,11 @@ def ext_measured(dev_data_path, device):
     loops = df["L (um)"].count()
     all_dfs = []
 
-    if device == "pfet_03v3_iv":
+    if device == "pfet_03v3_iv" or device == "pfet_03v3_dss_iv":
         mos = PMOS3P3_VPS
-    elif device == "pfet_06v0_iv":
+    elif device == "pfet_06v0_iv" or device == "pfet_06v0_dss_iv":
         mos = PMOS6P0_VPS
-    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv":
+    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv" or device == "nfet_06v0_dss_iv":
         mos = NMOS6P0_VPS
     else:
         mos = MOS
@@ -76,7 +76,7 @@ def ext_measured(dev_data_path, device):
     width = df["W (um)"].iloc[0]
     length = df["L (um)"].iloc[0]
     # for pmos
-    if device in ["pfet_03v3_iv", "pfet_06v0_iv"]:
+    if device in ["pfet_03v3_iv", "pfet_06v0_iv","pfet_03v3_dss_iv", "pfet_06v0_dss_iv"]:
         idf = df[
             [
                 "-Id (A)",
@@ -143,7 +143,7 @@ def ext_measured(dev_data_path, device):
         else:
             temp = 125
 
-        if device in ["pfet_03v3_iv", "pfet_06v0_iv"]:
+        if device in ["pfet_03v3_iv", "pfet_06v0_iv","pfet_03v3_dss_iv", "pfet_06v0_dss_iv"]:
             if i == 0:
                 idf = df[
                     [
@@ -412,11 +412,11 @@ def error_cal(
     df["temp"] = 25
     df["temp"][temp_range : 2 * temp_range] = -40
     df["temp"][2 * temp_range : 3 * temp_range] = 125
-    if device == "pfet_03v3_iv":
+    if device == "pfet_03v3_iv" or device == "pfet_03v3_dss_iv":
         mos = PMOS3P3_VPS
-    elif device == "pfet_06v0_iv":
+    elif device == "pfet_06v0_iv" or device == "pfet_06v0_dss_iv":
         mos = PMOS6P0_VPS
-    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv":
+    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv" or device == "nfet_06v0_dss_iv":
         mos = NMOS6P0_VPS
     else:
         mos = MOS
@@ -516,6 +516,10 @@ def main():
         "nfet_06v0_iv",
         "pfet_06v0_iv",
         "nfet_06v0_nvt_iv",
+        "nfet_03v3_dss_iv",
+        "pfet_03v3_dss_iv",
+        "nfet_06v0_dss_iv",
+        "pfet_06v0_dss_iv",
     ]
 
     for i, dev in enumerate(devices):

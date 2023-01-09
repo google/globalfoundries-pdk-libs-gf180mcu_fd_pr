@@ -651,9 +651,7 @@ def main():
                     f"# Device {dev} has failed regression. Needs more analysis."
                     )
                 
-            logging.info("\n\n")
 
-        logging.info("\n\n")
 
 
 # # ================================================================

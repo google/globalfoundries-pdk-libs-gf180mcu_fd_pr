@@ -436,7 +436,6 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        logging.info("\n")
 
         # for c in char :
 
