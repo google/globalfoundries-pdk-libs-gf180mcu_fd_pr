@@ -1,0 +1,68 @@
+***************************
+** nfet_03v3_t_id
+***************************
+* Copyright 2022 Efabless Corporation
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+** library calling
+
+.include "../../../design.ngspice"
+.lib "../../../sm141064.ngspice" typical
+
+
+** Circuit Description **
+* power supply
+vds D_tn 0 dc=3.3
+vgs G_tn 0 dc=3.3
+
+.temp -40
+.options tnom=-40
+
+* circuit
+mn D_tn G_tn 0 0 nfet_03v3 W = 0.5u L = 1.0u
+
+.control
+set filetype=ascii
+
+let vds_min  = 0
+let vds_step = 0.05
+let vds_max  = 3.3
+
+compose  vgs_vector   start=0.8          stop=3.3          step=0.5
+
+set appendwrite
+
+foreach t -40
+
+    let vgs_counter = 0
+    while vgs_counter < length(vgs_vector)
+        option TEMP=$t
+        alter vgs = vgs_vector[vgs_counter]
+
+        save  @mn[vds] @mn[vgs] @mn[vth] @mn[id] @mn[gm] @mn[gmbs] @mn[gds] @mn[cgg] @mn[cgs] @mn[cgd] @mn[cdd] @mn[cdb] @mn[cgb] @mn[csb]
+        *******************
+        ** simulation part
+        *******************
+        DC vds $&vds_min $&vds_max $&vds_step
+    
+        * ** parameters calculation
+        let Rds = 1/@mn[gds]
+        print Rds
+        wrdata mos_iv_regr/nfet_03v3_iv/simulated_Rds/T-40_simulated_W0.5_L1.0.csv Rds 
+        reset
+        let vgs_counter = vgs_counter + 1
+    end
+end
+.endc
+.end

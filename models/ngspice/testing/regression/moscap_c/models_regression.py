@@ -29,6 +29,7 @@ from jinja2 import Template
 import concurrent.futures
 import shutil
 import multiprocessing as mp
+import logging
 
 import subprocess
 import glob
@@ -45,7 +46,7 @@ def find_moscap(filename):
     """
     Find moscap in log
     """
-    cmd = 'grep "cv" {} | head -n 1'.format(filename)
+    cmd = 'grep "cv" {dev} | head -n 1'.format(filename)
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     return float(process.communicate()[0][:-1].decode("utf-8").split("=")[1])
 
@@ -189,7 +190,7 @@ def run_sim(dirpath, device, length, width, corner, temp=25):
     except Exception as e:
         moscap = 0.0
 
-    # print(moscap)
+    # logging.info(moscap)
 
     info["moscap_sim_unscaled"] = moscap
 
@@ -219,7 +220,7 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
                 data = future.result()
                 results.append(data)
             except Exception as exc:
-                print("Test case generated an exception: %s" % (exc))
+                logging.info(f"Test case generated an exception: {exc}")
 
     df = pd.DataFrame(results)
     df = df[["device", "corner", "length", "width", "temp", "moscap_sim_unscaled"]]
@@ -229,7 +230,11 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
 
 
 def main():
-
+    # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+    if ngspice_v_ == "":
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -262,8 +267,8 @@ def main():
 
         os.makedirs(f"{dev_path}", exist_ok=False)
 
-        print("######" * 10)
-        print(f"# Checking Device {dev}")
+        logging.info("######" * 10)
+        logging.info(f"# Checking Device {dev}")
 
         if "3v3" in dev:
             dev_ind = "3p3"
@@ -274,14 +279,14 @@ def main():
             f"../../180MCU_SPICE_DATA/Cap/moscap_cv_{dev_ind}.nl_out.xlsx"
         )
         if len(moscap3p3_data_files) < 1:
-            print("# Can't find moscap_3p3 file for device: {}".format(dev))
+            logging.error(f"# Can't find moscap_3p3 file for device: {dev}")
             moscap3p3_file = ""
         else:
             moscap3p3_file = moscap3p3_data_files[0]
-        print("# moscap_3p3 data points file : ", moscap3p3_file)
+        logging.info(f"# moscap_3p3 data points file : {moscap3p3_file}")
 
         if moscap3p3_file == "":
-            print(f"# No datapoints available for validation for device {dev}")
+            logging.error(f"# No datapoints available for validation for device {dev}")
             continue
 
         if moscap3p3_file != "":
@@ -289,10 +294,10 @@ def main():
         else:
             meas_df = []
 
-        print("# Device {} number of measured_datapoints : ".format(dev), len(meas_df))
+        logging.info(f"# Device {dev} number of measured_datapoints : {len(meas_df)}")
 
         sim_df = run_sims(meas_df, dev_path, 3)
-        print("# Device {} number of simulated datapoints : ".format(dev), len(sim_df))
+        logging.info(f"# Device {dev} number of simulated datapoints : {len(sim_df)}")
 
         merged_df = meas_df.merge(
             sim_df, on=["device", "corner", "length", "width", "temp"], how="left"
@@ -306,21 +311,20 @@ def main():
 
         merged_df.to_csv(f"{dev_path}/error_analysis.csv", index=False)
 
-        print(
-            "# Device {} min error: {:.2f} , max error: {:.2f}, mean error {:.2f}".format(
-                dev,
-                merged_df["error"].min(),
-                merged_df["error"].max(),
-                merged_df["error"].mean(),
-            )
+        m1=merged_df["error"].min()
+        m2=merged_df["error"].max()
+        m3=merged_df["error"].mean()
+    
+        logging.info(
+            f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"               
         )
 
-        if merged_df["error"].max() < PASS_THRESH:
-            print("# Device {} has passed regression.".format(dev))
-        else:
-            print("# Device {} has failed regression. Needs more analysis.".format(dev))
 
-        print("\n\n")
+        if merged_df["error"].max() < PASS_THRESH:
+            logging.info(f"# Device {dev} has passed regression.")
+        else:
+            logging.error(f"# Device {dev} has failed regression. Needs more analysis.")
+
 
 
 # # ================================================================
@@ -336,6 +340,14 @@ if __name__ == "__main__":
         if arguments["--num_cores"] == None
         else int(arguments["--num_cores"])
     )
-
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
+    
     # Calling main function
     main()
