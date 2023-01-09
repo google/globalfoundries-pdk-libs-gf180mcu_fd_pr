@@ -1,5 +1,5 @@
 ***************************
-** pfet_03v3_t_id
+** nfet_03v3_cv
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -14,7 +14,6 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-
 ** library calling
 
 .include "../../../design.ngspice"
@@ -23,45 +22,52 @@
 
 ** Circuit Description **
 * power supply
-vds D_tn 0 dc=-3.3
-vgs G_tn 0 dc=-3.3
+vds D_tn 0 dc=0
+vgs G_tn 0 dc=3.3
+vbs S_tn 0 dc=0
 
-.temp {{temp}}
-.options tnom={{temp}}
+.temp 25
+.options tnom=25
+
+*l_diff_min = 0.24
+* ad = int((nf+1)/2) * width/nf * 0.24       = 24u                         
+* pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
 
 * circuit
-mn D_tn G_tn 0 0 pfet_03v3 W = {{width}}u L = {{length}}u
+mn 0 G_tn 0 S_tn nfet_03v3 W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
 
 .control
 set filetype=ascii
 
-let vds_min  =  0
-let vds_step = -0.05
-let vds_max  = -3.3
+let vgs_min  = -3.3
+let vgs_step = 0.1
+let vgs_max  = 3.3
 
-compose  vgs_vector   start=-0.8          stop=-3.3          step=-0.5
+compose  vbs_vector   start=0          stop=-3.3          step=-0.825
 
 set appendwrite
 
-foreach t {{temp}}
+foreach t 25
 
-    let vgs_counter = 0
-    while vgs_counter < length(vgs_vector)
-        option TEMP=$t
-        alter vgs = vgs_vector[vgs_counter]
+    let vbs_counter = 0
+    while vbs_counter < length(vbs_vector)
+        option TEMP=25
+        alter vbs = vbs_vector[vbs_counter]
 
-        save  @mn[vds] @mn[vgs] @mn[vth] @mn[id] @mn[gm] @mn[gmbs] @mn[gds] @mn[cgg] @mn[cgs] @mn[cgd] @mn[cdd] @mn[cdb] @mn[cgb] @mn[csb]
+        save  @mn[vs] @mn[vgs] @mn[id] @mn[cgb]
         *******************
         ** simulation part
         *******************
-        DC vds $&vds_min $&vds_max $&vds_step
+        DC vgs $&vgs_min $&vgs_max $&vgs_step
     
         * ** parameters calculation
-        let Rds = 1/@mn[gds]
-        print Rds
-        wrdata mos_iv_regr/pfet_03v3_iv/simulated_Rds/T{{temp}}_simulated_W{{width}}_L{{length}}.csv Rds 
+	
+	print @mn[cgb]
+        
+        wrdata mos_cv_regr/nfet_03v3/simulated_Cgc/simulated_W{{width}}_L{{length}}.csv {@mn[cgb]*1e15} 
+        
         reset
-        let vgs_counter = vgs_counter + 1
+        let vbs_counter = vbs_counter + 1
     end
 end
 .endc

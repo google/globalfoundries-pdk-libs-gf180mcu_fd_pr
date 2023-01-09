@@ -22,9 +22,9 @@
 
 ** Circuit Description **
 * power supply
-vds D_tn 0 dc=3.3
-vgs G_tn 0 dc=3.3
-vs S_tn 0 dc=0.1
+vds D_tn 0 dc=6
+vgs G_tn 0 dc=6
+vs S_tn 0 dc=0
 
 .temp 25
 .options tnom=25
@@ -34,16 +34,16 @@ vs S_tn 0 dc=0.1
 * pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
 
 * circuit
-mn D_tn G_tn S_tn S_tn nfet_03v3 W = 200u L = 0.28u nf=20 ad= 24u pd=200.48u as=24u ps=200.48u
+mn D_tn G_tn S_tn S_tn nfet_06v0_nvt W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
 
 .control
 set filetype=ascii
 
 let vds_min  = 0
 let vds_step = 0.1
-let vds_max  = 3.3
+let vds_max  = 6
 
-compose  vgs_vector   start=0          stop=3.3          step=1
+compose  vgs_vector   start=0          stop=6          step=2
 
 set appendwrite
 
@@ -54,7 +54,7 @@ foreach t 25
         option TEMP=25
         alter vgs = vgs_vector[vgs_counter]
 
-        save  @mn[vds] @mn[vgs] @mn[id] @mn[cgs]
+        save  @mn[vds] @mn[vgs] @mn[id] @mn[cgd]
         *******************
         ** simulation part
         *******************
@@ -62,9 +62,9 @@ foreach t 25
     
         * ** parameters calculation
 	
-	print @mn[cgs]
+	print @mn[cgd]
         
-        wrdata nfet_03v3_cv/simulated_Cgs/{{i}}_simulated_W{{width}}_L{{length}}.csv {@mn[cgs]*1e15} 
+        wrdata mos_cv_regr/nfet_06v0_nvt/simulated_Cgd/simulated_W{{width}}_L{{length}}.csv {@mn[cgd]*1e15} 
         
         reset
         let vgs_counter = vgs_counter + 1
