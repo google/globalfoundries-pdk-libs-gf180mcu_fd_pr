@@ -46,7 +46,7 @@ def find_moscap(filename):
     """
     Find moscap in log
     """
-    cmd = 'grep "cv" {dev} | head -n 1'.format(filename)
+    cmd = 'grep "cv" {} | head -n 1'.format(filename)
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     return float(process.communicate()[0][:-1].decode("utf-8").split("=")[1])
 

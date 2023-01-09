@@ -46,7 +46,7 @@ def find_res(filename):
     """
     Find res in log
     """
-    cmd = 'grep "res = " {dev} | head -n 1'.format(filename)
+    cmd = 'grep "res = " {} | head -n 1'.format(filename)
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     return float(process.communicate()[0][:-1].decode("utf-8").split(" ")[2])
 
