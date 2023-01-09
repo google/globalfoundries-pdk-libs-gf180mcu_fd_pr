@@ -75,43 +75,43 @@ test-LVS-main: print_klayout_version test-LVS_MOS  test-LVS_BJT  test-LVS_DIODE 
 .ONESHELL:
 test-LVS_MOS: Add_run-dir
 	@cd $(Testing_DIR)
-	@mkdir $(run_folder)/main/LVS_MOS
+	@mkdir -p $(run_folder)/main/LVS_MOS
 	@ python3 run_regression.py  --run_dir=$(run_folder)/main  --device=MOS |& tee $(run_folder)/main/LVS_MOS/results.log
 
 .ONESHELL:
 test-LVS_BJT: Add_run-dir
 	@cd $(Testing_DIR)
-	@mkdir $(run_folder)/main/LVS_BJT
+	@mkdir -p $(run_folder)/main/LVS_BJT
 	@ python3 run_regression.py  --run_dir=$(run_folder)/main --device=BJT  |& tee $(run_folder)/main/LVS_BJT/results.log
 
 .ONESHELL:
 test-LVS_DIODE: Add_run-dir
 	@cd $(Testing_DIR)
-	@mkdir $(run_folder)/main/LVS_DIODE
+	@mkdir -p $(run_folder)/main/LVS_DIODE
 	@ python3 run_regression.py  --run_dir=$(run_folder)/main --device=DIODE |& tee $(run_folder)/main/LVS_DIODE/results.log
 
 .ONESHELL:
 test-LVS_RES: Add_run-dir
 	@cd $(Testing_DIR)
-	@mkdir $(run_folder)/main/LVS_RES
+	@mkdir -p $(run_folder)/main/LVS_RES
 	@ python3 run_regression.py  --run_dir=$(run_folder)/main --device=RES |& tee $(run_folder)/main/LVS_RES/results.log
 
 .ONESHELL:
 test-LVS_MIMCAP: Add_run-dir
 	@cd $(Testing_DIR)
-	@mkdir $(run_folder)/main/LVS_MIMCAP
+	@mkdir -p $(run_folder)/main/LVS_MIMCAP
 	@ python3 run_regression.py  --run_dir=$(run_folder)/main --device=MIMCAP |& tee $(run_folder)/main/LVS_MIMCAP/results.log
 
 .ONESHELL:
 test-LVS_MOSCAP: Add_run-dir
 	@cd $(Testing_DIR)
-	@mkdir $(run_folder)/main/LVS_MOSCAP
+	@mkdir -p $(run_folder)/main/LVS_MOSCAP
 	@ python3 run_regression.py  --run_dir=$(run_folder)/main --device=MOSCAP |& tee $(run_folder)/main/LVS_MOSCAP/results.log
 
 .ONESHELL:
 test-LVS_MOS-SAB: Add_run-dir
 	@cd $(Testing_DIR)
-	@mkdir $(run_folder)/main/LVS_MOS-SAB
+	@mkdir -p $(run_folder)/main/LVS_MOS-SAB
 	@ python3 run_regression.py  --run_dir=$(run_folder)/main --device=MOS-SAB |& tee $(run_folder)/main/LVS_MOS-SAB/results.log
 
 #=================================
