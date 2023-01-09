@@ -29,6 +29,8 @@ import concurrent.futures
 import shutil
 import multiprocessing as mp
 import glob
+import logging
+from datetime import datetime
 
 pd.options.mode.chained_assignment = None  # default='warn'
 # constants
@@ -383,7 +385,7 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
                 data = future.result()
                 results.append(data)
             except Exception as exc:
-                print("Test case generated an exception: %s" % (exc))
+                logging.info("Test case generated an exception: %s" % (exc))
 
     sf = glob.glob(f"{dirpath}/simulated_{id_rds}/*.csv")
 
@@ -556,6 +558,11 @@ def error_cal(
 
 def main():
     """Main function applies all regression steps"""
+    # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+    if ngspice_v_ == "":
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -584,16 +591,17 @@ def main():
 
         os.makedirs(f"{dev_path}", exist_ok=False)
 
-        print("######" * 10)
-        print(f"# Checking Device {dev}")
+        logging.info("######" * 10)
+        logging.info(f"# Checking Device {dev}")
 
         data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{dev}.nl_out.xlsx")
         if len(data_files) < 1:
-            print("# Can't find file for device: {}".format(dev))
+            logging.info(f"# Can't find file for device: {dev}")
             file = ""
         else:
-            file = data_files[0]
-        print("#  data points file : ", file)
+            file = os.path.abspath(data_files[0])
+            
+        logging.info(f"#  data points file : {file}")
 
         if file != "":
             meas_df = ext_measured(file, dev)
@@ -606,24 +614,16 @@ def main():
 
         sim_df_id = run_sims(df, dev_path, dev, "Id")
         sim_df_rds = run_sims(df, dev_path, dev, "Rds")
-        print(
-            "# Device {} number of measured_datapoints for Id : ".format(dev),
-            len(sim_df_id) * len(meas_df),
-        )
-        print(
-            "# Device {} number of simulated datapoints for Id : ".format(dev),
-            len(sim_df_id) * len(meas_df),
-        )
+        logging.info(
+            f"# Device {dev} number of measured_datapoints for Id : {len(sim_df_id) * len(meas_df)}")
+        
+        logging.info(
+            f"# Device {dev} number of simulated datapoints for Id : {len(sim_df_id) * len(meas_df)} " )
 
-        print(
-            "# Device {} number of measured_datapoints for Rds : ".format(dev),
-            len(sim_df_rds) * len(meas_df),
-        )
-        print(
-            "# Device {} number of simulated datapoints for Rds : ".format(dev),
-            len(sim_df_rds) * len(meas_df),
-        )
-        print("\n\n")
+        logging.info(
+            f"# Device {dev} number of measured_datapoints for Rds : {len(sim_df_rds) * len(meas_df)}" )
+        logging.info(
+            f"# Device {dev} number of simulated datapoints for Rds : {len(sim_df_rds) * len(meas_df)}" )
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
@@ -663,21 +663,15 @@ def main():
             if mean_error_total > 100:
                 mean_error_total = 100
 
-            # printing min, max, mean errors to the consol
-            print(
-                "# Device {} min error: {:.2f}".format(dev, min_error_total),
-                ", max error: {:.2f}, mean error {:.2f}".format(
-                    max_error_total, mean_error_total
-                ),
-            )
+            # logging.infoing min, max, mean errors to the consol
+            logging.info(
+                f"# Device {dev} {s} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}")
 
             if max_error_total < PASS_THRESH:
-                print("# Device {} has passed regression.".format(dev))
+                logging.info(f"# Device {dev} {s} has passed regression.")
             else:
-                print("# Device {} has failed regression.".format(dev))
-            print("\n\n")
+                logging.error(f"# Device {dev} {s} has failed regression.")
 
-    print("\n\n")
 
 
 # # ================================================================
@@ -694,5 +688,15 @@ if __name__ == "__main__":
         else int(arguments["--num_cores"])
     )
 
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
+    
     # Calling main function
     main()

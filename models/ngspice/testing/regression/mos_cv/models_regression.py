@@ -29,6 +29,7 @@ import concurrent.futures
 import shutil
 import multiprocessing as mp
 import glob
+import logging
 
 pd.options.mode.chained_assignment = None  # default='warn'
 # constants
@@ -68,13 +69,13 @@ def ext_measured(dev_data_path, device):
     all_dfs2 = []
     all_dfs3 = []
 
-    if device == "pfet_03v3":
+    if device == "pfet_03v3" or device == "pfet_03v3_dss":
         mos = PMOS3P3_VPS
         mos1 = PMOS3P3_VPS1
-    elif device == "pfet_06v0":
+    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
         mos = PMOS6P0_VPS
         mos1 = PMOS6P0_VPS1
-    elif device == "nfet_06v0":
+    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
         mos = NMOS6P0_VPS
         mos1 = NMOS6P0_VPS1
     elif device == "nfet_06v0_nvt":
@@ -86,7 +87,7 @@ def ext_measured(dev_data_path, device):
 
     vgs = "Vgs (V)"
     vds = "Vds (V)"
-    if device in ["pfet_03v3", "pfet_06v0"]:
+    if device in ["pfet_03v3", "pfet_06v0","pfet_03v3_dss", "pfet_06v0_dss"]:
         vgs = "-Vgs (V)"
         vds = "-Vds (V)"
     for i in range(loops):
@@ -95,7 +96,7 @@ def ext_measured(dev_data_path, device):
 
         if i == 0:
 
-            if device in ["nfet_03v3", "pfet_03v3"]:
+            if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                 idf1 = df[
                     [
                         vgs,
@@ -181,7 +182,7 @@ def ext_measured(dev_data_path, device):
             )
         else:
 
-            if device in ["nfet_03v3", "pfet_03v3"]:
+            if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                 idf1 = df[
                     [
                         vgs,
@@ -383,7 +384,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 data = future.result()
                 results.append(data)
             except Exception as exc:
-                print("Test case generated an exception: %s" % (exc))
+                logging.info(f"Test case generated an exception: {exc}")
 
     caps = ["c", "d", "s"]
     for cap in caps:
@@ -396,7 +397,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 header=None,
                 delimiter=r"\s+",
             )
-            if cap == "c" and device in ["nfet_03v3", "pfet_03v3"]:
+            if cap == "c" and device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                 div_by = len(MOS)
             else:
                 div_by = len(MOS1)
@@ -464,13 +465,13 @@ def error_cal(
     """
 
     # adding error columns to the merged dataframe
-    if device == "pfet_03v3":
+    if device == "pfet_03v3" or device == "pfet_03v3_dss":
         mos = PMOS3P3_VPS
         mos1 = PMOS3P3_VPS1
-    elif device == "pfet_06v0":
+    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
         mos = PMOS6P0_VPS
         mos1 = PMOS6P0_VPS1
-    elif device == "nfet_06v0":
+    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
         mos = NMOS6P0_VPS
         mos1 = NMOS6P0_VPS1
     elif device == "nfet_06v0_nvt":
@@ -499,7 +500,7 @@ def error_cal(
             simulated_data = pd.read_csv(sim_path)
 
             if cap == "c":
-                if device in ["nfet_03v3", "pfet_03v3"]:
+                if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                     measured_data = meas_df[
                         [
                             f"measured_vbs{i}={mos[0]}",
@@ -586,7 +587,7 @@ def error_cal(
                     * 100.0
                     / (result_data["measured_v4"])
                 )
-                if device in ["nfet_03v3", "pfet_03v3"]:
+                if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
                     result_data["step5_error"] = (
                         np.abs(result_data["measured_v5"] - result_data["vb5"])
                         * 100.0
@@ -654,6 +655,12 @@ def error_cal(
 
 def main():
     """Main function applies all regression steps"""
+    # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+    if ngspice_v_ == "":
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)    
+    
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -662,8 +669,12 @@ def main():
 
     main_regr_dir = "mos_cv_regr"
 
-    devices = ["nfet_03v3", "pfet_03v3", "nfet_06v0", "pfet_06v0", "nfet_06v0_nvt"]
-    measured_data = ["3p3_cv", "6p0_cv", "6p0_nat_cv"]
+    devices = ["nfet_03v3", "pfet_03v3", "nfet_06v0", "pfet_06v0",
+        "nfet_03v3_dss",
+        "pfet_03v3_dss",
+        "nfet_06v0_dss",
+        "pfet_06v0_dss", "nfet_06v0_nvt"]
+    measured_data = ["3p3_cv", "6p0_cv","3p3_sab_cv", "6p0_sab_cv", "6p0_nat_cv"]
     if os.path.exists(main_regr_dir) and os.path.isdir(main_regr_dir):
         shutil.rmtree(main_regr_dir)
 
@@ -672,16 +683,16 @@ def main():
 
         os.makedirs(f"{dev_path}", exist_ok=False)
 
-        print("######" * 10)
-        print(f"# Checking Device {dev}")
+        logging.info("######" * 10)
+        logging.info(f"# Checking Device {dev}")
 
         data_files = glob.glob(f"measured_data/{measured_data[int(i*0.5)]}.nl_out.xlsx")
         if len(data_files) < 1:
-            print("# Can't find file for device: {}".format(dev))
+            logging.erorr(f"# Can't find file for device: {dev}")
             file = ""
         else:
             file = data_files[0]
-        print("#  data points file : ", file)
+        logging.info(f"#  data points file : {file}")
 
         if file != "":
             meas_df1, meas_df2, meas_df3 = ext_measured(file, dev)
@@ -700,15 +711,12 @@ def main():
         df = df2[["L (um)", "W (um)"]].iloc[0:loops]
         sim_df_id = run_sims(df, dev_path, dev)
 
-        print(
-            "# Device {} number of measured_datapoints for cv : ".format(dev),
-            len(sim_df_id) * (len(meas_df1) + len(meas_df2) + len(meas_df3)),
+        logging.info(
+            f"# Device {dev} number of measured_datapoints for cv : {len(sim_df_id) * (len(meas_df1) + len(meas_df2) + len(meas_df3))}",
         )
-        print(
-            "# Device {} number of simulated datapoints for cv : ".format(dev),
-            len(sim_df_id) * (len(meas_df1) + len(meas_df2) + len(meas_df3)),
+        logging.info(
+            f"# Device {dev} number of simulated datapoints for cv : { len(sim_df_id) * (len(meas_df1) + len(meas_df2) + len(meas_df3))}",
         )
-        print("\n\n")
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
@@ -749,20 +757,15 @@ def main():
             if mean_error_total > 100:
                 mean_error_total = 100
 
-            # printing min, max, mean errors to the consol
-            print(
-                "# Device {} min error: {:.2f}".format(dev, min_error_total),
-                ", max error: {:.2f}, mean error {:.2f}".format(
-                    max_error_total, mean_error_total
-                ),
+            # logging.infoing min, max, mean errors to the consol
+            logging.info(
+                f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
             if max_error_total < PASS_THRESH:
-                print("# Device {} has passed regression.".format(dev))
+                logging.info(f"# Device {dev} has passed regression.")
             else:
-                print("# Device {} has failed regression.".format(dev))
-            print("\n\n")
-    print("\n\n")
+                logging.error(f"# Device {dev} has failed regression.")
 
 
 # # ================================================================
@@ -778,6 +781,14 @@ if __name__ == "__main__":
         if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
-
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
+    
     # Calling main function
     main()

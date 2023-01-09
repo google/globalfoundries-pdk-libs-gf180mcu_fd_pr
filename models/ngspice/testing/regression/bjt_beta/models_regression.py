@@ -28,7 +28,7 @@ from jinja2 import Template
 import concurrent.futures
 import shutil
 import multiprocessing as mp
-
+import logging
 import glob
 
 import warnings
@@ -340,7 +340,7 @@ def run_sims(char, df, dirpath, num_workers=mp.cpu_count()):
                 data = future.result()
                 results.append(data)
             except Exception as exc:
-                print("Test case generated an exception: %s" % (exc))
+                logging.info(f"Test case generated an exception: {exc}")
 
     for c in char:
         sf = glob.glob(
@@ -389,7 +389,12 @@ def run_sims(char, df, dirpath, num_workers=mp.cpu_count()):
 
 
 def main():
-
+    """Main function applies all regression steps"""
+        # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+    if ngspice_v_ == "":
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -428,10 +433,9 @@ def main():
 
         os.makedirs(f"{dev_path}", exist_ok=False)
 
-        print("######" * 10)
-        print(f"# Checking Device {dev}")
+        logging.info("######" * 10)
+        logging.info(f"# Checking Device {dev}")
 
-        print("\n")
 
         # for c in char :
 
@@ -439,14 +443,14 @@ def main():
             f"../../180MCU_SPICE_DATA/BJT/bjt_{dev}_beta_f.nl_out.xlsx"
         )
         if len(beta_data_files) < 1:
-            print("# Can't find diode file for device: {}".format(dev))
+            logging.info(f"# Can't find diode file for device: {dev}")
             beta_file = ""
         else:
             beta_file = beta_data_files[0]
-        print("# bjt_beta data points file : ", beta_file)
+        logging.info(f"# bjt_beta data points file : {beta_file}" )
 
         if beta_file == "":
-            print(f"# No datapoints available for validation for device {dev}")
+            logging.info(f"# No datapoints available for validation for device {dev}")
             continue
 
         if dev == "npn":
@@ -465,9 +469,9 @@ def main():
             pd.read_csv(glob.glob(f"{dev_path}/ic_measured/*.csv")[1])
             )
 
-        print(
-            f"# Device {dev} number of measured_datapoints : ",
-            len(meas_df) * meas_len
+        logging.info(
+            f"# Device {dev} number of measured_datapoints : {len(meas_df) * meas_len}"
+            
         )
 
         sim_df = run_sims(char, meas_df, dev_path, 3)
@@ -476,9 +480,9 @@ def main():
             pd.read_csv(glob.glob(f"{dev_path}/{char[1]}_simulated/*.csv")[1])
         )
 
-        print(
-            f"# Device {dev} number of simulated datapoints : ",
-            len(sim_df) * sim_len
+        logging.info(
+            f"# Device {dev} number of simulated datapoints : {len(sim_df) * sim_len}"
+            
         )
 
         # compare section
@@ -593,27 +597,14 @@ def main():
             mean_error = 100
         else:
             mean_error = merged_all["error"].mean()
-
-        print(
-            "# Device {} min error: {:.2f}"
-            .format(
-                dev, min_error
-            ),
-            ", max error: {:.2f}, mean error {:.2f}"
-            .format(
-                max_error, mean_error
-                )
-        )
-
+        
+        logging.info(f"# Device {dev} min error: {min_error:.2f}, max error: {max_error:.2f}, mean error {mean_error:.2f}")
         if merged_out["error"].max() < PASS_THRESH:
-            print("# Device {} has passed regression.".format(dev))
+            logging.info(f"# Device {dev} has passed regression.")
         else:
-            print(
-                "# Device {} has failed regression. Needs more analysis."
-                .format(dev)
-                )
+            logging.error(
+                f"# Device {dev} has failed regression. Needs more analysis.")
 
-        print("\n\n")
 
 
 # # ================================================================
@@ -629,6 +620,14 @@ if __name__ == "__main__":
         if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
-
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
+    
     # Calling main function
     main()

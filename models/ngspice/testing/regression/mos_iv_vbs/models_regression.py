@@ -29,6 +29,7 @@ from jinja2 import Template
 import concurrent.futures
 import shutil
 import multiprocessing as mp
+import logging
 
 import subprocess
 import glob
@@ -63,11 +64,11 @@ def ext_measured(dev_data_path, device):
     loops = df["L (um)"].count()
     all_dfs = []
 
-    if device == "pfet_03v3_iv":
+    if device == "pfet_03v3_iv" or device == "pfet_03v3_dss_iv":
         mos = PMOS3P3_VPS
-    elif device == "pfet_06v0_iv":
+    elif device == "pfet_06v0_iv" or device == "pfet_06v0_dss_iv":
         mos = PMOS6P0_VPS
-    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv":
+    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv" or device == "nfet_06v0_dss_iv":
         mos = NMOS6P0_VPS
     else:
         mos = MOS
@@ -75,7 +76,7 @@ def ext_measured(dev_data_path, device):
     width = df["W (um)"].iloc[0]
     length = df["L (um)"].iloc[0]
     # for pmos
-    if device in ["pfet_03v3_iv", "pfet_06v0_iv"]:
+    if device in ["pfet_03v3_iv", "pfet_06v0_iv","pfet_03v3_dss_iv", "pfet_06v0_dss_iv"]:
         idf = df[
             [
                 "-Id (A)",
@@ -142,7 +143,7 @@ def ext_measured(dev_data_path, device):
         else:
             temp = 125
 
-        if device in ["pfet_03v3_iv", "pfet_06v0_iv"]:
+        if device in ["pfet_03v3_iv", "pfet_06v0_iv","pfet_03v3_dss_iv", "pfet_06v0_dss_iv"]:
             if i == 0:
                 idf = df[
                     [
@@ -354,7 +355,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 data = future.result()
                 results.append(data)
             except Exception as exc:
-                print("Test case generated an exception: %s" % (exc))
+                logging.info(f"Test case generated an exception: {exc}")
 
     sf = glob.glob(f"{dirpath}/simulated_Id/*.csv")
 
@@ -411,11 +412,11 @@ def error_cal(
     df["temp"] = 25
     df["temp"][temp_range : 2 * temp_range] = -40
     df["temp"][2 * temp_range : 3 * temp_range] = 125
-    if device == "pfet_03v3_iv":
+    if device == "pfet_03v3_iv" or device == "pfet_03v3_dss_iv":
         mos = PMOS3P3_VPS
-    elif device == "pfet_06v0_iv":
+    elif device == "pfet_06v0_iv" or device == "pfet_06v0_dss_iv":
         mos = PMOS6P0_VPS
-    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv":
+    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv" or device == "nfet_06v0_dss_iv":
         mos = NMOS6P0_VPS
     else:
         mos = MOS
@@ -496,6 +497,11 @@ def error_cal(
 
 def main():
     """Main function applies all regression steps"""
+    # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+    if ngspice_v_ == "":
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -510,6 +516,10 @@ def main():
         "nfet_06v0_iv",
         "pfet_06v0_iv",
         "nfet_06v0_nvt_iv",
+        "nfet_03v3_dss_iv",
+        "pfet_03v3_dss_iv",
+        "nfet_06v0_dss_iv",
+        "pfet_06v0_dss_iv",
     ]
 
     for i, dev in enumerate(devices):
@@ -520,16 +530,16 @@ def main():
 
         os.makedirs(f"{dev_path}", exist_ok=False)
 
-        print("######" * 10)
-        print(f"# Checking Device {dev}")
+        logging.info("######" * 10)
+        logging.info(f"# Checking Device {dev}")
 
         data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{dev}.nl_out.xlsx")
         if len(data_files) < 1:
-            print("# Can't find file for device: {}".format(dev))
+            logging.info(f"# Can't find file for device: {dev}")
             file = ""
         else:
             file = data_files[0]
-        print("#  data points file : ", file)
+        logging.info(f"#  data points file : {file}")
 
         if file != "":
             meas_df = ext_measured(file, dev)
@@ -541,13 +551,12 @@ def main():
         df.dropna(inplace=True)
 
         sim_df = run_sims(df, dev_path, dev, 3)
-        print(
-            "# Device {} number of measured_datapoints : ".format(dev),
-            len(sim_df) * len(meas_df),
+        logging.info(
+            f"# Device {dev} number of measured_datapoints : {len(sim_df) * len(meas_df)}"
+            
         )
-        print(
-            "# Device {} number of simulated datapoints : ".format(dev),
-            len(sim_df) * len(meas_df),
+        logging.info(
+            f"# Device {dev} number of simulated datapoints : {len(sim_df) * len(meas_df)}"
         )
 
         # passing dataframe to the error_calculation function
@@ -587,21 +596,16 @@ def main():
         if mean_error_total > 100:
             mean_error_total = 100
 
-        # printing min, max, mean errors to the consol
-        print(
-            "# Device {} min error: {:.2f}".format(dev, min_error_total),
-            ", max error: {:.2f}, mean error {:.2f}".format(
-                max_error_total, mean_error_total
-            ),
+        # logging.infoing min, max, mean errors to the consol
+        logging.info(
+            f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
         )
 
         if max_error_total < PASS_THRESH:
-            print("# Device {} has passed regression.".format(dev))
+            logging.info(f"# Device {dev} has passed regression.")
         else:
-            print("# Device {} has failed regression. Needs more analysis.".format(dev))
-        print("\n\n")
+            logging.error(f"# Device {dev} has failed regression. Needs more analysis.")
 
-    print("\n\n")
 
 
 # # ================================================================
@@ -617,6 +621,14 @@ if __name__ == "__main__":
         if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
-
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
+    
     # Calling main function
     main()

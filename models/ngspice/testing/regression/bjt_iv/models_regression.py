@@ -28,6 +28,7 @@ from jinja2 import Template
 import concurrent.futures
 import shutil
 import multiprocessing as mp
+import logging
 
 import glob
 import warnings
@@ -376,7 +377,7 @@ def run_sims(
                 data = future.result()
                 results.append(data)
             except Exception as exc:
-                print("Test case generated an exception: %s" % (exc))
+                logging.info(f"Test case generated an exception: {exc}")
 
     sf = glob.glob(f"{dirpath}/ib_simulated/*.csv")
 
@@ -517,7 +518,11 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
 
 def main():
     """Main function applies all regression steps"""
-
+        # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+    if ngspice_v_ == "":
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -551,21 +556,21 @@ def main():
 
         os.makedirs(f"{dev_path}", exist_ok=False)
 
-        print("######" * 10)
-        print(f"# Checking Device {dev}")
+        logging.info("######" * 10)
+        logging.info(f"# Checking Device {dev}")
 
         icvc_data_files = glob.glob(
             f"../../180MCU_SPICE_DATA/BJT/bjt_{dev}_icvc_f.nl_out.xlsx"
         )
         if len(icvc_data_files) < 1:
-            print("# Can't find data file for device: {}".format(dev))
+            logging.info(f"# Can't find data file for device: {dev}")
             icvc_file = ""
         else:
             icvc_file = icvc_data_files[0]
-        print("# bjt_iv data points file : ", icvc_file)
+        logging.info(f"# bjt_iv data points file : {icvc_file}")
 
         if icvc_file == "":
-            print(f"# No datapoints available for validation for device {dev}")
+            logging.info(f"# No datapoints available for validation for device {dev}")
             continue
 
         if dev == "npn":
@@ -584,9 +589,9 @@ def main():
             pd.read_csv(glob.glob(f"{dev_path}/ib_measured/*.csv")[1])
         )
 
-        print(
-            f"# Device {dev} number of measured_datapoints : ",
-            len(meas_df) * meas_len,
+        logging.info(
+            f"# Device {dev} number of measured_datapoints : {len(meas_df) * meas_len}"
+            
         )
 
         # assuming number of used cores is 3
@@ -635,25 +640,18 @@ def main():
             if mean_error_total > 100:
                 mean_error_total = 100
 
-            # printing min, max, mean errors to the consol
-            print(
-                "# Device {} min error: {:.2f}".format(dev, min_error_total),
-                ", max error: {:.2f}, mean error {:.2f}".format(
-                    max_error_total, mean_error_total
-                ),
-            )
+            # logging.infoing min, max, mean errors to the consol
+            logging.info(f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}")
+
 
             if max_error_total < PASS_THRESH:
-                print("# Device {} has passed regression.".format(dev))
+                logging.info(f"# Device {dev} has passed regression.")
             else:
-                print(
-                    "# Device {} has failed regression. Needs more analysis.".format(
-                        dev
+                logging.info(
+                    f"# Device {dev} has failed regression. Needs more analysis."
                     )
-                )
-            print("\n\n")
+                
 
-        print("\n\n")
 
 
 # # ================================================================
@@ -669,6 +667,14 @@ if __name__ == "__main__":
         if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
-
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
+    
     # Calling main function
     main()
