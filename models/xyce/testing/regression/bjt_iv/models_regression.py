@@ -18,10 +18,19 @@ import shutil
 import warnings
 import multiprocessing as mp
 import glob
+
 PASS_THRESH = 2.0
 warnings.simplefilter(action="ignore", category=FutureWarning)
 pd.options.mode.chained_assignment = None  # default='warn'
-MOS=["ibp=1.000E-06", "ibp=3.000E-06", "ibp=5.000E-06", "ibp=7.000E-06", "ibp=9.000E-06"]
+MOS = [
+    "ibp=1.000E-06",
+    "ibp=3.000E-06",
+    "ibp=5.000E-06",
+    "ibp=7.000E-06",
+    "ibp=9.000E-06",
+]
+
+
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
     Args:
@@ -30,7 +39,7 @@ def call_simulator(file_name):
     os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log 2>/dev/null")
 
 
-def ext_measured(dirpath,device, vc, step, list_devices, ib):
+def ext_measured(dirpath, device, vc, step, list_devices, ib):
 
     # Get dimensions used for each device
     dimensions = pd.read_csv(f"{dirpath}/{device}.csv", usecols=["corners"])
@@ -90,7 +99,7 @@ def ext_measured(dirpath,device, vc, step, list_devices, ib):
             ]
         all_dfs.append(df_measured)
     dfs = pd.concat(all_dfs, axis=1)
-    dfs.drop_duplicates(inplace=True)   
+    dfs.drop_duplicates(inplace=True)
     return dfs
 
 
@@ -115,8 +124,6 @@ def run_sim(dirpath, device, list_devices, temp=25):
     info["temp"] = temp
     info["dev"] = list_devices
 
-
- 
     temp_str = temp
     list_devices_str = list_devices
 
@@ -130,13 +137,7 @@ def run_sim(dirpath, device, list_devices, temp=25):
         tmpl = Template(f.read())
         os.makedirs(f"{dirpath}/{device}_netlists", exist_ok=True)
         with open(netlist_path, "w") as netlist:
-            netlist.write(
-                tmpl.render(
-                    device=list_devices_str,
-                    temp=temp_str
-
-                )
-            )
+            netlist.write(tmpl.render(device=list_devices_str, temp=temp_str))
 
     # Running ngspice for each netlist
     try:
@@ -155,7 +156,7 @@ def run_sim(dirpath, device, list_devices, temp=25):
     return info
 
 
-def run_sims( dirpath, list_devices,device, num_workers=mp.cpu_count()):
+def run_sims(dirpath, list_devices, device, num_workers=mp.cpu_count()):
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
@@ -171,22 +172,19 @@ def run_sims( dirpath, list_devices,device, num_workers=mp.cpu_count()):
     df1 = pd.read_csv(f"{dirpath}/{device}.csv", usecols=["corners"])
     loops = (df1["corners"]).count()
     temp_range = int(loops / 4)
-    df=pd.DataFrame()
-    df["dev"]=df1["corners"].dropna()
-    df["dev"][0:temp_range]=list_devices
-    df["dev"][temp_range:2*temp_range]=list_devices
-    df["dev"][2*temp_range:3*temp_range]=list_devices
-    df["dev"][3*temp_range:4*temp_range]=list_devices
-    df["temp"]=25
-    df["temp"][temp_range :2 * temp_range]=-40
-    df["temp"][2*temp_range :3 * temp_range]=125
-    df["temp"][3*temp_range :]=-175
-
+    df = pd.DataFrame()
+    df["dev"] = df1["corners"].dropna()
+    df["dev"][0:temp_range] = list_devices
+    df["dev"][temp_range : 2 * temp_range] = list_devices
+    df["dev"][2 * temp_range : 3 * temp_range] = list_devices
+    df["dev"][3 * temp_range : 4 * temp_range] = list_devices
+    df["temp"] = 25
+    df["temp"][temp_range : 2 * temp_range] = -40
+    df["temp"][2 * temp_range : 3 * temp_range] = 125
+    df["temp"][3 * temp_range :] = -175
 
     results = []
-    with concurrent.futures.ThreadPoolExecutor(
-        max_workers=num_workers
-    ) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures_list = []
         for j, row in df.iterrows():
             futures_list.append(
@@ -206,7 +204,7 @@ def run_sims( dirpath, list_devices,device, num_workers=mp.cpu_count()):
             except Exception as exc:
                 print("Test case generated an exception: %s" % (exc))
     sf = glob.glob(f"{dirpath}/simulated/*.csv")
- 
+
     # sweeping on all generated cvs files
     for i in range(len(sf)):
         sdf = pd.read_csv(
@@ -217,22 +215,16 @@ def run_sims( dirpath, list_devices,device, num_workers=mp.cpu_count()):
         sweep = int(sdf[0].count() / len(MOS))
         new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
 
-        new_array[:, 0] = sdf.iloc[1:sweep+1, 0]
+        new_array[:, 0] = sdf.iloc[1 : sweep + 1, 0]
         times = int(sdf.shape[0] / sweep)
 
         for j in range(times):
-            new_array[:, (j + 1)] = sdf.iloc[(j * sweep)+1: ((j + 1) * sweep)+1 , 0]
+            new_array[:, (j + 1)] = sdf.iloc[(j * sweep) + 1 : ((j + 1) * sweep) + 1, 0]
 
         # Writing final simulated data 1
         sdf = pd.DataFrame(new_array)
         sdf.rename(
-            columns={
-                1: "ibp1",
-                2: "ibp2",
-                3: "ibp3",
-                4: "ibp4",
-                5: "ibp5"
-            },
+            columns={1: "ibp1", 2: "ibp2", 3: "ibp3", 4: "ibp4", 5: "ibp5"},
             inplace=True,
         )
         sdf.to_csv(sf[i], index=False)
@@ -242,14 +234,8 @@ def run_sims( dirpath, list_devices,device, num_workers=mp.cpu_count()):
     return df
 
 
-
 def error_cal(
-    sim_df: pd.DataFrame,
-    meas_df: pd.DataFrame,
-    device: str,
-    step,
-    ib,
-    vc
+    sim_df: pd.DataFrame, meas_df: pd.DataFrame, device: str, step, ib, vc
 ) -> None:
     """error function calculates the error between measured, simulated data
 
@@ -262,15 +248,17 @@ def error_cal(
 
     """
     merged_dfs = list()
-    meas_df.to_csv(f"mos_iv_reg/{device}/{device}_measured.csv", index=False, header=True)
-    meas_df=pd.read_csv(f"mos_iv_reg/{device}/{device}_measured.csv")
-    for i in range (len(sim_df)):
-        t=sim_df["temp"].iloc[i]
-        dev=sim_df["dev"].iloc[i]
-        sim_path= f"mos_iv_reg/{device}/simulated/t{t}_simulated_{dev}.csv"
+    meas_df.to_csv(
+        f"mos_iv_reg/{device}/{device}_measured.csv", index=False, header=True
+    )
+    meas_df = pd.read_csv(f"mos_iv_reg/{device}/{device}_measured.csv")
+    for i in range(len(sim_df)):
+        t = sim_df["temp"].iloc[i]
+        dev = sim_df["dev"].iloc[i]
+        sim_path = f"mos_iv_reg/{device}/simulated/t{t}_simulated_{dev}.csv"
 
         simulated_data = pd.read_csv(sim_path)
-        if i==0:
+        if i == 0:
             measured_data = meas_df[
                 [
                     f"{ib}{step[0]}",
@@ -278,19 +266,19 @@ def error_cal(
                     f"{ib}{step[2]}",
                     f"{ib}{step[3]}",
                     f"{ib}{step[4]}",
-
                 ]
             ].copy()
 
             measured_data.rename(
-                    columns={
-                    f"{ib}{step[0]}":"m_ibp1",
-                    f"{ib}{step[1]}":"m_ibp2",
-                    f"{ib}{step[2]}":"m_ibp3",
-                    f"{ib}{step[3]}":"m_ibp4",
-                    f"{ib}{step[4]}":"m_ibp5"},
-                    inplace=True
-                )
+                columns={
+                    f"{ib}{step[0]}": "m_ibp1",
+                    f"{ib}{step[1]}": "m_ibp2",
+                    f"{ib}{step[2]}": "m_ibp3",
+                    f"{ib}{step[3]}": "m_ibp4",
+                    f"{ib}{step[4]}": "m_ibp5",
+                },
+                inplace=True,
+            )
         else:
             measured_data = meas_df[
                 [
@@ -299,27 +287,27 @@ def error_cal(
                     f"{ib}{step[2]}.{i}",
                     f"{ib}{step[3]}.{i}",
                     f"{ib}{step[4]}.{i}",
-
                 ]
             ].copy()
 
             measured_data.rename(
-                    columns={
-                    f"{ib}{step[0]}.{i}":"m_ibp1",
-                    f"{ib}{step[1]}.{i}":"m_ibp2",
-                    f"{ib}{step[2]}.{i}":"m_ibp3",
-                    f"{ib}{step[3]}.{i}":"m_ibp4",
-                    f"{ib}{step[4]}.{i}":"m_ibp5"}
-                    ,inplace=True
-                )   
-        measured_data["vcp"]=meas_df[f"{vc}"]        
-        simulated_data["vcp"]=meas_df[f"{vc}"]        
-        simulated_data["device"]=sim_df["dev"].iloc[i]
-        measured_data["device"]=sim_df["dev"].iloc[i]        
-        simulated_data["temp"]=sim_df["temp"].iloc[i]
-        measured_data["temp"]=sim_df["temp"].iloc[i]
+                columns={
+                    f"{ib}{step[0]}.{i}": "m_ibp1",
+                    f"{ib}{step[1]}.{i}": "m_ibp2",
+                    f"{ib}{step[2]}.{i}": "m_ibp3",
+                    f"{ib}{step[3]}.{i}": "m_ibp4",
+                    f"{ib}{step[4]}.{i}": "m_ibp5",
+                },
+                inplace=True,
+            )
+        measured_data["vcp"] = meas_df[f"{vc}"]
+        simulated_data["vcp"] = meas_df[f"{vc}"]
+        simulated_data["device"] = sim_df["dev"].iloc[i]
+        measured_data["device"] = sim_df["dev"].iloc[i]
+        simulated_data["temp"] = sim_df["temp"].iloc[i]
+        measured_data["temp"] = sim_df["temp"].iloc[i]
         result_data = simulated_data.merge(measured_data, how="left")
-       
+
         result_data["step1_error"] = (
             np.abs(result_data["ibp1"] - result_data["m_ibp1"])
             * 100.0
@@ -359,9 +347,7 @@ def error_cal(
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
         merged_out.fillna(0, inplace=True)
-        merged_out.to_csv(
-            f"mos_iv_reg/{device}/error_analysis.csv", index=False
-        )
+        merged_out.to_csv(f"mos_iv_reg/{device}/error_analysis.csv", index=False)
     return merged_out
 
 
@@ -405,13 +391,12 @@ def main():
         # Folder structure of simulated values
         os.makedirs(f"{dirpath}/simulated", exist_ok=False)
 
-
         # =========== Simulate ==============
-        df=ext_measured(dirpath,device, vc[i], step, list_devices[i], ib[i])
-        
-        sims=run_sims( dirpath,list_devices[i], device, num_workers=mp.cpu_count())
+        df = ext_measured(dirpath, device, vc[i], step, list_devices[i], ib[i])
+
+        sims = run_sims(dirpath, list_devices[i], device, num_workers=mp.cpu_count())
         # ============ Results =============
-        merged_all=error_cal(sims,df,device,step,ib[i],vc[i])
+        merged_all = error_cal(sims, df, device, step, ib[i], vc[i])
 
         for dev in list_devices[i]:
             min_error_total = float()
@@ -462,6 +447,7 @@ def main():
             print("\n\n")
 
         print("\n\n")
+
 
 # ================================================================
 # -------------------------- MAIN --------------------------------
