@@ -1,0 +1,74 @@
+***************************
+** nfet_06v0
+***************************
+* Copyright 2022 Efabless Corporation
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+** library calling
+
+.include "../../../design.ngspice"
+.lib "../../../sm141064.ngspice" typical
+
+
+** Circuit Description **
+* power supply
+vds D_tn 0 dc=0
+vgs G_tn 0 dc=6
+vbs S_tn 0 dc=0
+
+.temp 25
+.options tnom=25
+
+*l_diff_min = 0.24
+* ad = int((nf+1)/2) * width/nf * 0.24       = 24u                         
+* pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
+
+* circuit
+mn 0 G_tn 0 S_tn nfet_06v0 W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
+
+.control
+set filetype=ascii
+
+let vgs_min  = -6
+let vgs_step = 0.1
+let vgs_max  = 6
+
+compose  vbs_vector   start=0          stop=-3          step=-1
+
+set appendwrite
+
+foreach t 25
+
+    let vbs_counter = 0
+    while vbs_counter < length(vbs_vector)
+        option TEMP=25
+        alter vbs = vbs_vector[vbs_counter]
+
+        save  @mn[vs] @mn[vgs] @mn[id] @mn[cgb]
+        *******************
+        ** simulation part
+        *******************
+        DC vgs $&vgs_min $&vgs_max $&vgs_step
+    
+        * ** parameters calculation
+	
+	print @mn[cgb]
+        
+        wrdata mos_cv_regr/nfet_06v0/simulated_Cgc/simulated_W{{width}}_L{{length}}.csv {@mn[cgb]*1e15} 
+        
+        reset
+        let vbs_counter = vbs_counter + 1
+    end
+end
+.endc
+.end

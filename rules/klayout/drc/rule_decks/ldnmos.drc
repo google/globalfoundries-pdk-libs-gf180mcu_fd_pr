@@ -28,6 +28,9 @@ if FEOL
     ldnmos = poly_mdn.not(mvsd)
     ldnmos_edges = ldnmos.edges
     ldnmos_gate_ends = ldnmos_edges.outside_part(ncomp)
+    ncomp_mdn  = ncomp.and(ldmos_xtor).and(dualgate)
+    pcomp_mdn  = pcomp.and(ldmos_xtor).and(dualgate)
+    ldnmos_source = (ncomp.interacting(poly2.and(dualgate).and(ldmos_xtor).and(mvsd))).not(poly2)
 
     # Rule MDN.1: Min MVSD width (for litho purpose). is 1µm
     logger.info("Executing rule MDN.1")
@@ -93,48 +96,41 @@ if FEOL
     mdn4b_l1.forget
     mdn4b_pass.forget
 
-    pcomp_mdn5a = pcomp.not_interacting(ncomp).inside(ldmos_xtor).inside(dualgate)
-    # Rule MDN.5ai: Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap non-butted). PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed.
+    # Rule MDN.5ai: Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap non-butted) is 1um. PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed.
     logger.info("Executing rule MDN.5ai")
-    mdn5ai_l1 = mvsd.and(pcomp_mdn5a).or(pcomp_mdn5a.separation(mvsd, 1.um, euclidian).polygons(0.001))
-    mdn5ai_l1.output("MDN.5ai", "MDN.5ai : Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap non-butted). PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed.")
+    pcomp_mdn5ai = ncomp_mdn.not_interacting(ncomp)
+    mdn5ai_l1 = mvsd.and(pcomp_mdn5ai).or(pcomp_mdn5ai.separation(mvsd, 1.um, euclidian).polygons(0.001))
+    mdn5ai_l1.output("MDN.5ai", "MDN.5ai : Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap non-butted): 1um. PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed.")
     mdn5ai_l1.forget
+    pcomp_mdn5ai.forget
 
-    pcomp_mdn5a.forget
-
-    # Rule MDN.5aii: Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap butted). PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed. is 0.92µm
+    # Rule MDN.5aii: Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap butted) is 0.92um. PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed. is 0.92µm
     logger.info("Executing rule MDN.5aii")
-    mdn5aii_l1  = pcomp.interacting(ncomp).inside(ldmos_xtor).inside(dualgate).not(nplus).separation(mvsd, 0.92.um, euclidian).polygons(0.001)
-    mdn5aii_l1.output("MDN.5aii", "MDN.5aii : Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap butted). PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed. : 0.92µm")
+    pcomp_mdn5aii = ncomp_mdn.interacting(ncomp).not_overlapping(ncomp)
+    mdn5aii_l1  = mvsd.and(pcomp_mdn5aii).or(pcomp_mdn5aii.separation(mvsd, 0.92.um, euclidian).polygons(0.001))
+    mdn5aii_l1.output("MDN.5aii", "MDN.5aii : Min PCOMP (Pplus AND COMP) space to LDNMOS Drain MVSD (source and body tap butted): 0.92um. PCOMP (Pplus AND COMP) intercept with LDNMOS Drain MVSD is not allowed. : 0.92µm")
     mdn5aii_l1.forget
-
-    ncomp_mdn5b = ncomp.inside(ldmos_xtor).inside(dualgate)
-    pcomp_mdn5b = pcomp.inside(ldmos_xtor).inside(dualgate)
-    # Rule MDN.5b: Min PCOMP (Pplus AND COMP) space to LDNMOS Source (Nplus AND COMP). Use butted source and p-substrate tab otherwise and that is good for Latch-up immunity as well.
+    pcomp_mdn5aii.forget
+  
+    # Rule MDN.5b: Min PCOMP (Pplus AND COMP) space to LDNMOS Source (Nplus AND COMP) is 0.4um. Use butted source and p-substrate tab otherwise and that is good for Latch-up immunity as well.
     logger.info("Executing rule MDN.5b")
-    mdn5b_l1 = ncomp_mdn5b.not(poly2).not(mvsd).separation(pcomp_mdn5b, 0.4.um, euclidian).polygons.or(ncomp_mdn5b.not(poly2).not(mvsd).and(pcomp_mdn5b))
-    mdn5b_l1.output("MDN.5b", "MDN.5b : Min PCOMP (Pplus AND COMP) space to LDNMOS Source (Nplus AND COMP). Use butted source and p-substrate tab otherwise and that is good for Latch-up immunity as well.")
+    mdn5b_l1 = ldnmos_source.and(pcomp_mdn).or(ldnmos_source.separation(pcomp_mdn, 0.4.um, euclidian).polygons)
+    mdn5b_l1.output("MDN.5b", "MDN.5b : Min PCOMP (Pplus AND COMP) space to LDNMOS Source (Nplus AND COMP): 0.4um. Use butted source and p-substrate tab otherwise and that is good for Latch-up immunity as well.")
     mdn5b_l1.forget
 
-    ncomp_mdn5b.forget
-
-    pcomp_mdn5b.forget
-
-    mdn_5c_ncompsd = ncomp.inside(ldmos_xtor).inside(dualgate).interacting(mvsd).sized(0.36.um).sized(-0.36.um).extents
-    mdn_5c_error = mdn_5c_ncompsd.edges.centers(0, 0.99).not_interacting(mdn_5c_ncompsd.drc(separation(pcomp, euclidian) <= 15.um).polygons(0.001))
-    # Rule MDN.5c: Maximum distance of the nearest edge of the substrate tab from NCOMP edge. is 15µm
+    # Rule MDN.5c: Maximum distance of the nearest edge of the substrate tab from NCOMP edge is 15µm.
     logger.info("Executing rule MDN.5c")
+    mdn_5c_ncompsd = ncomp_mdn.interacting(mvsd).sized(0.36.um).sized(-0.36.um).extents
+    mdn_5c_error = mdn_5c_ncompsd.edges.centers(0, 0.99).not_interacting(mdn_5c_ncompsd.drc(separation(pcomp, euclidian) <= 15.um).polygons(0.001))
     mdn5c_l1 = mdn_5c_error.and(ncomp).and(pcomp.holes).extended(0, 0, 0.001, 0.001)
-    mdn5c_l1.output("MDN.5c", "MDN.5c : Maximum distance of the nearest edge of the substrate tab from NCOMP edge. : 15µm")
+    mdn5c_l1.output("MDN.5c", "MDN.5c : Maximum distance of the nearest edge of the substrate tab from NCOMP edge: 15µm")
     mdn5c_l1.forget
-
     mdn_5c_ncompsd.forget
-
     mdn_5c_error.forget
 
     # Rule MDN.6: ALL LDNMOS shall be covered by Dualgate layer.
     logger.info("Executing rule MDN.6")
-    mdn6_l1 = ncomp.not(poly2).not(mvsd).or(ngate.not(mvsd)).or(ncomp.and(mvsd)).inside(ldmos_xtor).not_inside(dualgate)
+    mdn6_l1 = ncomp.or(poly2).or(mvsd).and(ldmos_xtor).not_inside(dualgate)
     mdn6_l1.output("MDN.6", "MDN.6 : ALL LDNMOS shall be covered by Dualgate layer.")
     mdn6_l1.forget
 
