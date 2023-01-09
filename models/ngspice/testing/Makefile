@@ -23,9 +23,9 @@ run_folder  := $(shell date +'run_%Y_%m_%d_%H:%M:%S')
 
 .DEFAULT_GOAL := all
 
-all : test-models_ngspice
+all : models-ngspice smoke-test
 
-test-models_ngspice: models-MOS  models-BJT models-diode models-MOSCAP models-MIMCAP models-RES 
+models-ngspice: models-MOS  models-BJT models-diode models-MOSCAP models-MIMCAP models-RES 
 
 #================================
 #---------- Create Run ----------
@@ -53,7 +53,6 @@ smoke-test:
 .ONESHELL:
 models-MOS:Add_run-dir models-MOS-vgs models-MOS-vbs models-MOS-cv
 
-
 .ONESHELL:
 models-MOS-vgs:Add_run-dir
 	@cd $(Testing_DIR)
@@ -77,6 +76,7 @@ models-MOS-cv:Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/mos_cv
 	@echo "========== Runing models_ngspice-MOS-CV regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log 	
+
 #================================
 # ---------- models-BJT----------
 #================================
@@ -107,6 +107,7 @@ models-BJT-iv:Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/bjt_iv
 	@echo "========== Runing models_ngspice-BJT-iv regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
+
 #================================
 # --------- models-diode --------
 #================================
@@ -118,6 +119,7 @@ models-diode: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/diode
 	@echo "========== Runing models_ngspice-didoe regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
+
 #================================
 # -------- models-MOSCAP --------
 #================================
@@ -129,6 +131,7 @@ models-MOSCAP: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/moscap_c
 	@echo "========== Runing models_ngspice-MOSCAP regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
+
 #================================
 # -------- models-MIMCAP --------
 #================================
@@ -140,6 +143,7 @@ models-MIMCAP: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/mimcap_c
 	@echo "========== Runing models_ngspice-MIMCAP regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
+
 #================================
 # --------- models-RES ----------
 #================================
@@ -151,6 +155,7 @@ models-RES: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/resistor_r
 	@echo "========== Runing models_ngspice-RES regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
+
 #===============================
 # --------- Clean ALL ----------
 #===============================
@@ -161,7 +166,6 @@ clean:
 	@rm -rf $(Testing_DIR)/run_*
 	@echo "==== Cleaning all runs is done ===="
 
-
 #==========================
 # --------- HELP ----------
 #==========================
@@ -169,15 +173,21 @@ clean:
 # Help Target
 help:
 	@echo "\n ==== The following are some of the valid targets for this Makefile ====\n"
-	@echo "... all                  (the default if no target is provided)"
-	@echo "... smoke-test           (To run smoke test for    an inverter)"
-	@echo "... test-models_ngspice  (To run regression for all    devices)"
-	@echo "... models-diode         (To run regression for diode  devices)"
-	@echo "... models-MOSCAP        (To run regression for MOSCAP devices)"
-	@echo "... models-MIMCAP        (To run regression for MIMCAP devices)"
-	@echo "... models-RES           (To run regression for RES    devices)"
-	@echo "... models-MOS-[vgs,vbs,cv] or models-MOS for all           (To run regression for MOS    devices)"
-	@echo "... models-BJT-[cj,beta,iv] or models-BJT for all          (To run regression for BJT    devices)"
-	@echo "... clean                (To clean all old runs)               "
+	@echo "... all                  (the default if no target is provided  )"
+	@echo "... smoke-test           (To run smoke test for an inverter     )"
+	@echo "... models-ngspice       (To run regression for all      devices)"
+	@echo "... models-diode         (To run regression for diode    devices)"
+	@echo "... models-MOSCAP        (To run regression for MOSCAP   devices)"
+	@echo "... models-MIMCAP        (To run regression for MIMCAP   devices)"
+	@echo "... models-RES           (To run regression for RES      devices)"
+	@echo "... models-MOS-vgs       (To run regression for MOS-vgs  devices)"
+	@echo "... models-MOS-vbs       (To run regression for MOS-vbs  devices)"
+	@echo "... models-MOS-cv        (To run regression for MOS-cv   devices)"
+	@echo "... models-MOS           (To run regression for MOS      devices)"
+	@echo "... models-BJT-cj        (To run regression for BJT-cj   devices)"
+	@echo "... models-BJT-beta      (To run regression for BJT-beta devices)"
+	@echo "... models-BJT-iv        (To run regression for BJT-iv   devices)"
+	@echo "... models-BJT           (To run regression for BJT      devices)"
+	@echo "... clean                (To clean all old runs                 )"
    
 .PHONY : help

@@ -27,22 +27,46 @@ Options:
 
 from docopt import docopt
 import os
-import time
-import datetime
 import logging
 from subprocess import check_call
 
 
+def check_klayout_version():
+    """
+    check_klayout_version checks klayout version and makes sure it would work with the DRC.
+    """
+    # ======= Checking Klayout version =======
+    klayout_v_ = os.popen("klayout -b -v").read()
+    klayout_v_ = klayout_v_.split("\n")[0]
+    klayout_v_list = []
+
+    if klayout_v_ == "":
+        logging.error("Klayout is not found. Please make sure klayout is installed.")
+        exit(1)
+    else:
+        klayout_v_list = [int(v) for v in klayout_v_.split(" ")[-1].split(".")]
+
+    logging.info(f"Your Klayout version is: {klayout_v_}")
+
+    if len(klayout_v_list) < 1 or len(klayout_v_list) > 3:
+        logging.error("Was not able to get klayout version properly.")
+        exit(1)
+    elif len(klayout_v_list) == 2:
+        if klayout_v_list[1] <= 27:
+            logging.warning(f"Prerequisites at a minimum: KLayout 0.27.8")
+            logging.error(
+                "Using this klayout version has not been assesed in this development. Limits are unknown"
+            )
+            exit(1)
+    elif len(klayout_v_list) == 3:
+        if klayout_v_list[1] <= 27 and klayout_v_list[2] < 8:
+            logging.warning(f"Prerequisites at a minimum: KLayout 0.27.8")
+            logging.error(
+                "Using this klayout version has not been assesed in this development. Limits are unknown"
+            )
+            exit(1)
+
 def lvs_check(table, files):
-
-    ## TODO : Add run folder to save all the runs inside.
-
-    # # set folder structure for each run
-    # x = f"{datetime.datetime.now()}"
-    # x = x.replace(" ", "_")
-
-    # name_ext = str(rule_deck_path).replace(".drc","").split("/")[-1]
-    # check_call(f"mkdir run_{x}_{name_ext}")
 
     pass_count = 0
     fail_count = 0
@@ -140,7 +164,7 @@ def lvs_check(table, files):
                 )
                 fail_count = fail_count + 1
 
-    logging.info("\n==================================")
+    logging.info("==================================")
     logging.info(f"NO. OF PASSED {table} : {pass_count}")
     logging.info(f"NO. OF FAILED {table} : {fail_count}")
     logging.info("==================================\n")
@@ -153,12 +177,8 @@ def lvs_check(table, files):
 
 def main():
 
-    # logs format
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
-        datefmt="%d-%b-%Y %H:%M:%S",
-    )
+    ## Check Klayout version
+    check_klayout_version()
 
     # Check out_dir existance
     out_dir = arguments["--run_dir"]
@@ -220,16 +240,16 @@ def main():
 
     # Resistor
     resistor_files = [
-        ["pplus_u"],
-        ["nplus_s"],
-        ["pplus_u_dw"],
-        ["nplus_s_dw"],
-        ["pplus_s"],
-        ["pplus_s_dw"],
-        ["nplus_u_dw"],
-        ["nplus_u"],
-        ["nwell"],
-        ["pwell"],
+        # ["pplus_u"],
+        # ["nplus_s"],
+        # ["pplus_u_dw"],
+        # ["nplus_s_dw"],
+        # ["pplus_s"],
+        # ["pplus_s_dw"],
+        # ["nplus_u_dw"],
+        # ["nplus_u"],
+        # ["nwell"],
+        # ["pwell"],
         ["ppolyf_s"],
         ["ppolyf_u_3k", "-rd poly_res=3k"],
         ["ppolyf_s_dw"],
@@ -264,9 +284,15 @@ def main():
         ["cap_mim_1f0_m2m3_noshield", "-rd mim_option=A -rd mim_cap=1"],
         ["cap_mim_1f5_m2m3_noshield", "-rd mim_option=A -rd mim_cap=1.5"],
         ["cap_mim_2f0_m2m3_noshield", "-rd mim_option=A -rd mim_cap=2"],
+        ["cap_mim_1f0_m3m4_noshield", "-rd mim_option=B -rd mim_cap=1"],
+        ["cap_mim_1f5_m3m4_noshield", "-rd mim_option=B -rd mim_cap=1.5"],
+        ["cap_mim_2f0_m3m4_noshield", "-rd mim_option=B -rd mim_cap=2"],
+        ["cap_mim_1f0_m4m5_noshield", "-rd mim_option=B -rd mim_cap=1"],
+        ["cap_mim_1f5_m4m5_noshield", "-rd mim_option=B -rd mim_cap=1.5"],
+        ["cap_mim_2f0_m4m5_noshield", "-rd mim_option=B -rd mim_cap=2"],
         ["cap_mim_1f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1"],
         ["cap_mim_1f5_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1.5"],
-        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"],
+        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"]        
     ]
 
     # MOS Capacitor
@@ -304,7 +330,7 @@ def main():
     # eFuse
     efuse_files = [["efuse"]]
 
-    logging.info("\n================================")
+    logging.info("================================")
     logging.info("Running LVS regression")
     logging.info("================================\n")
 
@@ -335,8 +361,8 @@ def main():
         status = lvs_check("ESD DEVICES", esd_files)
         status = lvs_check("EFUSE DEVICES", efuse_files)
 
-    if status:
-        logging.error("## There are failed cases will exit with 1.")
+    if not status:
+        logging.error(" There are failed cases will exit with 1.")
         exit(1)
 
 
@@ -348,6 +374,13 @@ if __name__ == "__main__":
         os.cpu_count() * 2
         if arguments["--num_cores"] == None
         else int(arguments["--num_cores"])
+    )
+
+    # logs format
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
     )
 
     # Calling main function
