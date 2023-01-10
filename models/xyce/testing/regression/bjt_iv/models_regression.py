@@ -40,8 +40,20 @@ def call_simulator(file_name):
     os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log 2>/dev/null")
 
 
-def ext_measured(dirpath, device, vc, step, list_devices, ib):
+def ext_measured(dirpath: str, device: str, vc: str, step: list[str], list_devices: list[str], ib: str) -> pd.DataFrame:
+    """ext_measured function calculates get measured data
 
+    Args:
+        dirpath(str): measured data path
+        device(str): npn or pnp
+        vc(str): header of first column in the table
+        step(str): voltage step
+        list_devices(list[str]): name of the devices
+        ib(str): select ib for npn or pnp
+    Returns:
+        df(DataFrame): output df
+
+    """
     # Get dimensions used for each device
     dimensions = pd.read_csv(f"{dirpath}/{device}.csv", usecols=["corners"])
     loops = dimensions["corners"].count()
@@ -104,15 +116,13 @@ def ext_measured(dirpath, device, vc, step, list_devices, ib):
     return dfs
 
 
-def run_sim(dirpath, device, list_devices, temp=25):
+def run_sim(dirpath: str, device: str, list_devices: list[str], temp: float)-> dict:
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
         device(str): the device instance will be simulated
-        id_rds(str): select id or rds
+        list_devices(list[str]): name of the devices
         temp(float): a specific temp for simulation
-        width(float): a specific width for simulation
-        length(float): a specific length for simulation
 
     Returns:
         info(dict): results are stored in,
@@ -157,16 +167,15 @@ def run_sim(dirpath, device, list_devices, temp=25):
     return info
 
 
-def run_sims(dirpath, list_devices, device, num_workers=mp.cpu_count()):
+def run_sims(dirpath: str, list_devices: list[str], device: str, num_workers=mp.cpu_count()):
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
     Args:
-        df(pd.DataFrame): dataframe passed from the ext_measured function
         dirpath(str): the path to the file where we write data
-        id_rds(str): select id or rds
-        num_workers=mp.cpu_count() (int): num of cpu used
+        list_devices(list[str]): name of the devices
         device(str): name of the device
+        num_workers=mp.cpu_count() (int): num of cpu used
     Returns:
         df(pd.DataFrame): dataframe contains simulated results
     """
@@ -236,16 +245,20 @@ def run_sims(dirpath, list_devices, device, num_workers=mp.cpu_count()):
 
 
 def error_cal(
-    sim_df: pd.DataFrame, meas_df: pd.DataFrame, device: str, step, ib, vc
-) -> None:
+    sim_df: pd.DataFrame, meas_df: pd.DataFrame, device: str, step: list[str], ib: str, vc: str
+) -> pd.DataFrame:
     """error function calculates the error between measured, simulated data
 
     Args:
 
         sim_df(pd.DataFrame): Dataframe contains devices and csv files simulated
         meas_df(pd.DataFrame): Dataframe contains devices and csv files measured
-        device(str): The path in which we write data
-
+        device(str): name of the device
+        step(list[str]): voltage steps
+        ib(str): select ib for npn or pnp
+        vc(str): select vc for npn or pnp
+    Returns:
+        df(pd.DataFrame): dataframe contains error results        
     """
     merged_dfs = list()
     meas_df.to_csv(

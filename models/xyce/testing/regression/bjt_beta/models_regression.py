@@ -52,7 +52,8 @@ def ext_measured(
         step(str): voltage step
         list_devices(list[str]): name of the devices
         vc(str): column header of the measured sheet
-
+    Returns:
+        df(DataFrame): output df
     """
     # Get dimensions used for each device
     dimensions = pd.read_csv(f"{dirpath}/{device}.csv", usecols=["corners"])
@@ -297,7 +298,8 @@ def error_cal(
         sim_df(pd.DataFrame): Dataframe contains devices and csv files simulated
         meas_df(pd.DataFrame): Dataframe contains devices and csv files measured
         device(str): The path in which we write data
-
+    Returns:
+        df(pd.DataFrame): dataframe contains error results
     """
     merged_dfs = list()
     meas_df.to_csv(
