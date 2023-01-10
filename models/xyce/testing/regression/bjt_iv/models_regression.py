@@ -61,11 +61,6 @@ def ext_measured(dirpath: str, device: str, vc: str, step: list[str], list_devic
 
     # Extracting measured values for each Device
     for i in range(loops):
-        k = i
-        if i >= len(list_devices):
-            while k >= len(list_devices):
-                k = k - len(list_devices)
-
         # Special case for 1st measured values
         if i == 0:
             if device == "pnp":
