@@ -17,33 +17,33 @@ def draw(measured, simulated):
     Args:
         measured (list[str]): measured files paths
         simulated (list[str]): simulated files paths
-    """    
+    """
     print("measured is blue")
     print("simulated is red")
     measured.sort()
     simulated.sort()
     for i in range(len(measured)):
         space = measured[i].rfind("/")
-        read_dev_name = measured[i][space + 1:]
+        read_dev_name = measured[i][space + 1 :]
         df = pd.read_csv(measured[i])
-        ax = df.plot(x=df.columns[1], y=df.columns[2:], color="b", figsize=(15,12))
-        volt_formatter = EngFormatter(unit='V')
-        amp_formatter = EngFormatter(unit='A')
+        ax = df.plot(x=df.columns[1], y=df.columns[2:], color="b", figsize=(15, 12))
+        volt_formatter = EngFormatter(unit="V")
+        amp_formatter = EngFormatter(unit="A")
         ax.xaxis.set_major_formatter(volt_formatter)
         ax.yaxis.set_major_formatter(amp_formatter)
         df = pd.read_csv(simulated[i])
         df.plot(ax=ax, x=df.columns[1], y=df.columns[2:], color="r")
         plt.title(read_dev_name)
         plt.grid()
-        plt.xlabel('Collector Voltage')
-        plt.ylabel('Collector Current')
+        plt.xlabel("Collector Voltage")
+        plt.ylabel("Collector Current")
     plt.show()
 
 
-device = ["npn","pnp"]
+device = ["npn", "pnp"]
 # 1 for "pnp"
 #  for "npn"
-dev=0
+dev = 0
 
 measured_ib = glob.glob(f"bjt_beta_regr/{device[dev]}/ib_measured/*.csv")
 simulated_ib = glob.glob(f"bjt_beta_regr/{device[dev]}/ib_simulated/*.csv")
@@ -58,11 +58,4 @@ draw(measured_ic, simulated_ic)
 # In[ ]:
 
 
-
-
-
 # In[ ]:
-
-
-
-
