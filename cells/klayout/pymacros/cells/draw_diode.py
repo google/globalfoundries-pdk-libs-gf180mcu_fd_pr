@@ -35,7 +35,7 @@ def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
     return num_cont, free_spc
 
 
-def draw_diode_np(layout, l, w, volt, deepnwell, pcmpgr):
+def draw_diode_nd2ps(layout, l, w, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw N+/LVPWELL diode (Outside DNWELL) by specifying parameters
@@ -301,7 +301,7 @@ def draw_diode_np(layout, l, w, volt, deepnwell, pcmpgr):
     return diode_np_cell
 
 
-def draw_diode_pn(layout, l, w, volt, deepnwell, pcmpgr):
+def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3.3V P+/Nwell diode (Outside DNWELL) by specifying parameters
