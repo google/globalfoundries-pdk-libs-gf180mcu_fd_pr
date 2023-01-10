@@ -38,7 +38,7 @@ sc_l = 1
 sc_w = 0.62
 
 
-class diode_np(pya.PCellDeclarationHelper):
+class diode_nd2ps(pya.PCellDeclarationHelper):
     """
     N+/LVPWELL diode (Outside DNWELL) Generator for GF180MCU
     """
@@ -46,7 +46,7 @@ class diode_np(pya.PCellDeclarationHelper):
     def __init__(self):
 
         # Initializing super class.
-        super(diode_np, self).__init__()
+        super(diode_nd2ps, self).__init__()
 
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
@@ -62,7 +62,7 @@ class diode_np(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "diode_np(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "diode_nd2ps(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
@@ -92,7 +92,7 @@ class diode_np(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_diode_np(
+        np_instance = draw_diode_nd2ps(
             self.layout, self.l, self.w, self.volt, self.deepnwell, self.pcmpgr
         )
         write_cells = pya.CellInstArray(
@@ -108,7 +108,7 @@ class diode_np(pya.PCellDeclarationHelper):
         self.cell.flatten(1)
 
 
-class diode_pn(pya.PCellDeclarationHelper):
+class diode_pd2nw(pya.PCellDeclarationHelper):
     """
     P+/Nwell diode (Outside DNWELL) Generator for GF180MCU
     """
@@ -116,7 +116,7 @@ class diode_pn(pya.PCellDeclarationHelper):
     def __init__(self):
 
         # Initializing super class.
-        super(diode_pn, self).__init__()
+        super(diode_pd2nw, self).__init__()
 
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
@@ -132,7 +132,7 @@ class diode_pn(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "diode_pn(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "diode_pd2nw(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
@@ -162,7 +162,7 @@ class diode_pn(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_diode_pn(
+        np_instance = draw_diode_pd2nw(
             self.layout, self.l, self.w, self.volt, self.deepnwell, self.pcmpgr
         )
         write_cells = pya.CellInstArray(
