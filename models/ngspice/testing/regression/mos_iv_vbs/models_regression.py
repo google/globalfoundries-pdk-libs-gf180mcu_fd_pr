@@ -538,7 +538,7 @@ def main():
             logging.info(f"# Can't find file for device: {dev}")
             file = ""
         else:
-            file = data_files[0]
+            file = os.path.abspath(data_files[0])
         logging.info(f"#  data points file : {file}")
 
         if file != "":

@@ -282,7 +282,7 @@ def main():
             logging.error(f"# Can't find moscap_3p3 file for device: {dev}")
             moscap3p3_file = ""
         else:
-            moscap3p3_file = moscap3p3_data_files[0]
+            moscap3p3_file = os.path.abspath(moscap3p3_data_files[0])
         logging.info(f"# moscap_3p3 data points file : {moscap3p3_file}")
 
         if moscap3p3_file == "":

@@ -446,7 +446,7 @@ def main():
             logging.info(f"# Can't find diode file for device: {dev}")
             beta_file = ""
         else:
-            beta_file = beta_data_files[0]
+            beta_file = os.path.abspath(beta_data_files[0])
         logging.info(f"# bjt_beta data points file : {beta_file}" )
 
         if beta_file == "":
