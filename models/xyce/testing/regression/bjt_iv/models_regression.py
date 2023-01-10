@@ -241,11 +241,10 @@ def error_cal(
     """error function calculates the error between measured, simulated data
 
     Args:
-        df(pd.DataFrame): Dataframe contains devices and csv files
-          which represent measured, simulated data
+
         sim_df(pd.DataFrame): Dataframe contains devices and csv files simulated
         meas_df(pd.DataFrame): Dataframe contains devices and csv files measured
-        dev_path(str): The path in which we write data
+        device(str): The path in which we write data
 
     """
     merged_dfs = list()
@@ -353,9 +352,9 @@ def error_cal(
 
 
 def main():
-    # ======= Checking ngspice  =======
-    ngspice_v_ = os.popen("Xyce  -v 2> /dev/null").read()
-    if ngspice_v_ == "":
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
         logging.error("Xyce is not found. Please make sure Xyce is installed.")
         exit(1)
     # pandas setup
