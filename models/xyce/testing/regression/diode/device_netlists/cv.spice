@@ -20,8 +20,8 @@ dn1 out 0 diode_nd2ps_03v3 AREA={10u*10u}
 .ac dec 10 1 10G
 .step volt -12.13 1.13 0.13
 
-.include "../../design.xyce"
-.lib "../../sm141064.xyce" diode_typical
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" diode_typical
 
 .end
 
