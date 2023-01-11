@@ -1231,7 +1231,7 @@ def draw_cap_nmos_b(layout, l, w, volt):
 
     # Inserting left cmp contacts
     num_left_con_1, left_con_free_spc_1 = number_spc_contacts(
-        met_con_min, comp_cont_enc, cont_min_spc, cont_size
+        met_con_min, met_cont_enc, cont_min_spc, cont_size
     )
     num_left_con_2, left_con_free_spc_2 = number_spc_contacts(
         cmp_l, comp_cont_enc, cont_min_spc, cont_size
@@ -1252,7 +1252,7 @@ def draw_cap_nmos_b(layout, l, w, volt):
 
     # Inserting right cmp contacts
     num_right_con_1, right_con_free_spc_1 = number_spc_contacts(
-        met_con_min, comp_cont_enc, cont_min_spc, cont_size
+        met_con_min, met_cont_enc, cont_min_spc, cont_size
     )
     num_right_con_2, right_con_free_spc_2 = number_spc_contacts(
         cmp_l, comp_cont_enc, cont_min_spc, cont_size
@@ -1461,7 +1461,7 @@ def draw_cap_pmos_b(layout, l, w, volt):
 
     # Inserting left cmp contacts
     num_left_con_1, left_con_free_spc_1 = number_spc_contacts(
-        met_con_min, comp_cont_enc, cont_min_spc, cont_size
+        met_con_min, met_cont_enc, cont_min_spc, cont_size
     )
     num_left_con_2, left_con_free_spc_2 = number_spc_contacts(
         cmp_l, comp_cont_enc, cont_min_spc, cont_size
@@ -1482,7 +1482,7 @@ def draw_cap_pmos_b(layout, l, w, volt):
 
     # Inserting right cmp contacts
     num_right_con_1, right_con_free_spc_1 = number_spc_contacts(
-        met_con_min, comp_cont_enc, cont_min_spc, cont_size
+        met_con_min, met_cont_enc, cont_min_spc, cont_size
     )
     num_right_con_2, right_con_free_spc_2 = number_spc_contacts(
         cmp_l, comp_cont_enc, cont_min_spc, cont_size

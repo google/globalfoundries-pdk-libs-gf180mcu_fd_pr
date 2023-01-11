@@ -29,7 +29,7 @@ class npn_bjt(pya.PCellDeclarationHelper):
 
         # Important: initialize the super class
         super(npn_bjt, self).__init__()
-        self.Type_handle = self.param("Type", self.TypeList, "Type")
+        self.Type_handle = self.param("Type", self.TypeList, "Type", default= "npn_10p00x10p00")
         self.Type_handle.add_choice("npn_10p00x10p00", "npn_10p00x10p00")
         self.Type_handle.add_choice("npn_05p00x05p00", "npn_05p00x05p00")
         self.Type_handle.add_choice("npn_00p54x16p00", "npn_00p54x16p00")
@@ -50,28 +50,23 @@ class npn_bjt(pya.PCellDeclarationHelper):
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
-        # numeric parameter has changed (by comparing against the effective
-        # radius ru) and set ru to the effective radius. We also update the
-        # numerical value or the shape, depending on which on has not changed.
+        # numeric parameter has changed. We also update the numerical value
+        # or the shape, depending on which on has not changed.
         pass
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
         # has a finite bounding box
-        # return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
         pass
 
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        # self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        # self.l = self.layout.get_info(self.layer)
         pass
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
         # bounding box to determine the transformation
-        # return pya.Trans(self.shape.bbox().center())
         pass
 
     def produce_impl(self):
@@ -79,7 +74,7 @@ class npn_bjt(pya.PCellDeclarationHelper):
         # This is the main part of the implementation: create the layout
 
         self.percision = 1 / self.layout.dbu
-        npn_instance = draw_npn(layout=self.layout, device_name=self.Type)
+        npn_instance = draw_bjt(layout=self.layout, device_name=self.Type)
         write_cells = pya.CellInstArray(
             npn_instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
@@ -103,7 +98,7 @@ class pnp_bjt(pya.PCellDeclarationHelper):
 
         # Important: initialize the super class
         super(pnp_bjt, self).__init__()
-        self.Type_handle = self.param("Type", self.TypeList, "Type")
+        self.Type_handle = self.param("Type", self.TypeList, "Type", default= "pnp_10p00x10p00")
         self.Type_handle.add_choice("pnp_10p00x10p00", "pnp_10p00x10p00")
         self.Type_handle.add_choice("pnp_05p00x05p00", "pnp_05p00x05p00")
         self.Type_handle.add_choice("pnp_10p00x00p42", "pnp_10p00x00p42")
@@ -122,28 +117,23 @@ class pnp_bjt(pya.PCellDeclarationHelper):
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
-        # numeric parameter has changed (by comparing against the effective
-        # radius ru) and set ru to the effective radius. We also update the
-        # numerical value or the shape, depending on which on has not changed.
+        # numeric parameter has changed. We also update the numerical value
+        # or the shape, depending on which on has not changed.
         pass
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
         # has a finite bounding box
-        # return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
         pass
 
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        # self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        # self.l = self.layout.get_info(self.layer)
         pass
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
         # bounding box to determine the transformation
-        # return pya.Trans(self.shape.bbox().center())
         pass
 
     def produce_impl(self):
@@ -151,7 +141,7 @@ class pnp_bjt(pya.PCellDeclarationHelper):
         # This is the main part of the implementation: create the layout
 
         self.percision = 1 / self.layout.dbu
-        pnp_instance = draw_pnp(layout=self.layout, device_name=self.Type)
+        pnp_instance = draw_bjt(layout=self.layout, device_name=self.Type)
         write_cells = pya.CellInstArray(
             pnp_instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),

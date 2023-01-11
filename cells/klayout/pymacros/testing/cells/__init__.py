@@ -18,7 +18,7 @@
 
 import pya
 
-from .mos import *
+from .fet import *
 from .diode import *
 from .bjt import *
 from .cap_mos import *
@@ -59,10 +59,10 @@ class gf180mcu(pya.Library):
 
         # DIODE DEVICES
         self.layout().register_pcell(
-            "diode_np", diode_np()
+            "diode_nd2ps", diode_nd2ps()
         )  # diode_nd2ps_03v3    , diode_nd2ps_06v0
         self.layout().register_pcell(
-            "diode_pn", diode_pn()
+            "diode_pd2nw", diode_pd2nw()
         )  # diode_pd2nw_03v3    , diode_pd2nw_06v0
         self.layout().register_pcell(
             "diode_nw2ps", diode_nw2ps()
