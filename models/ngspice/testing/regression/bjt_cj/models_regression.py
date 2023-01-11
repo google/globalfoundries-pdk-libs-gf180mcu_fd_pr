@@ -446,7 +446,7 @@ def main():
             logging.info(f"# Can't find data file for device: {dev}")
             cj_file = ""
         else:
-            cj_file = cj_data_files[0]
+            cj_file = os.path.abspath(cj_data_files[0])
         logging.info(f"# bjt_cj data points file : {cj_file}")
 
         if cj_file == "":

@@ -278,7 +278,7 @@ def main():
             logging.error(f"# Can't find temperature file for device: {dev}")
             temp_file = ""
         else:
-            temp_file = temp_data_files[0]
+            temp_file = os.path.abspath(temp_data_files[0])
         logging.info(f"# Temperature data points file : {temp_file}")
 
         if wl_file == "" and temp_file == "":
