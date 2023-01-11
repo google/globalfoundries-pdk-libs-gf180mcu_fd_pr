@@ -389,7 +389,7 @@ def main():
             # cv section
 
             diode_data_files = glob.glob(
-                f"./0_measured_data/{dev}_{c}.nl_out.xlsx"
+                f"../../180MCU_SPICE_DATA/Diode/{dev}_{c}.nl_out.xlsx"
                 )
             if len(diode_data_files) < 1:
                 logging.error(f"# Can't find diode file for device: {dev}")
