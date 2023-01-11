@@ -4,59 +4,32 @@
 
 ** library calling
 
-.include "../../180MCU_SPICE_hspice/design.xyce"
-.lib "../../180MCU_SPICE_hspice/sm141064.xyce" typical
 
 
 ** Circuit Description **
 * power supply
-vds D_tn 0 dc=0
-vgs G_tn 0 dc=3.3
-vbs S_tn 0 dc=0
+vds D_tn 0 dc 0
+vgs G_tn 0 dc 3.3
+vbs S_tn 0 dc 0
 
-.temp 25
-.options tnom=25
+
 
 *l_diff_min = 0.24
 * ad = int((nf+1)/2) * width/nf * 0.24       = 24u                         
 * pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
 
 * circuit
-mn D_tn G_tn S_tn S_tn nfet_03v3 W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
+xmn1 D_tn G_tn S_tn S_tn nfet_03v3 W=0.22u L=0.28u  ad=0.12u pd=1.48u as=0.12u ps=1.48u
 
-.control
-set filetype=ascii
 
-let vgs_min  = -3.3
-let vgs_step = 0.1
-let vgs_max  = 3.3
+*****************
+** Analysis
+*****************
+.DC Vgs -3.3 3.3 0.1 Vbs 0 -3.3 -0.825
+.STEP TEMP 25 -60 200
+.print DC FORMAT=CSV file=nfet_03v3_cv/simulated_Cgc/{{i}}_simulated_W{{width}}_L{{length}}.csv {1/N(xmn1:m0:cgs)} 
 
-compose  vbs_vector   start=0          stop=-3.3          step=-0.825
-
-set appendwrite
-
-foreach t 25
-
-    let vbs_counter = 0
-    while vbs_counter < length(vbs_vector)
-        option TEMP=25
-        alter vbs = vbs_vector[vbs_counter]
-
-        save  @mn[vs] @mn[vgs] @mn[id] @mn[cgb]
-        *******************
-        ** simulation part
-        *******************
-        DC vgs $&vgs_min $&vgs_max $&vgs_step
-    
-        * ** parameters calculation
-	
-	print @mn[cgb]
-        
-        wrdata nfet_03v3_cv/simulated_Cgc/{{i}}_simulated_W{{width}}_L{{length}}.csv @mn[cgb] 
-        
-        reset
-        let vbs_counter = vbs_counter + 1
-    end
-end
-.endc
+.include "../../../../../design.xyce"
+.lib "../../../../../sm141064.xyce" typical
 .end
+
