@@ -18,6 +18,7 @@ import shutil
 import warnings
 import multiprocessing as mp
 import glob
+import logging
 
 PASS_THRESH = 2.0
 warnings.simplefilter(action="ignore", category=FutureWarning)
@@ -39,8 +40,20 @@ def call_simulator(file_name):
     os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log 2>/dev/null")
 
 
-def ext_measured(dirpath, device, vc, step, list_devices, ib):
+def ext_measured(dirpath: str, device: str, vc: str, step: list[str], list_devices: list[str], ib: str) -> pd.DataFrame:
+    """ext_measured function calculates get measured data
 
+    Args:
+        dirpath(str): measured data path
+        device(str): npn or pnp
+        vc(str): header of first column in the table
+        step(str): voltage step
+        list_devices(list[str]): name of the devices
+        ib(str): select ib for npn or pnp
+    Returns:
+        df(DataFrame): output df
+
+    """
     # Get dimensions used for each device
     dimensions = pd.read_csv(f"{dirpath}/{device}.csv", usecols=["corners"])
     loops = dimensions["corners"].count()
@@ -48,11 +61,6 @@ def ext_measured(dirpath, device, vc, step, list_devices, ib):
 
     # Extracting measured values for each Device
     for i in range(loops):
-        k = i
-        if i >= len(list_devices):
-            while k >= len(list_devices):
-                k = k - len(list_devices)
-
         # Special case for 1st measured values
         if i == 0:
             if device == "pnp":
@@ -103,15 +111,13 @@ def ext_measured(dirpath, device, vc, step, list_devices, ib):
     return dfs
 
 
-def run_sim(dirpath, device, list_devices, temp=25):
+def run_sim(dirpath: str, device: str, list_devices: list[str], temp: float)-> dict:
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
         device(str): the device instance will be simulated
-        id_rds(str): select id or rds
+        list_devices(list[str]): name of the devices
         temp(float): a specific temp for simulation
-        width(float): a specific width for simulation
-        length(float): a specific length for simulation
 
     Returns:
         info(dict): results are stored in,
@@ -156,16 +162,15 @@ def run_sim(dirpath, device, list_devices, temp=25):
     return info
 
 
-def run_sims(dirpath, list_devices, device, num_workers=mp.cpu_count()):
+def run_sims(dirpath: str, list_devices: list[str], device: str, num_workers=mp.cpu_count()):
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
     Args:
-        df(pd.DataFrame): dataframe passed from the ext_measured function
         dirpath(str): the path to the file where we write data
-        id_rds(str): select id or rds
-        num_workers=mp.cpu_count() (int): num of cpu used
+        list_devices(list[str]): name of the devices
         device(str): name of the device
+        num_workers=mp.cpu_count() (int): num of cpu used
     Returns:
         df(pd.DataFrame): dataframe contains simulated results
     """
@@ -202,7 +207,7 @@ def run_sims(dirpath, list_devices, device, num_workers=mp.cpu_count()):
                 data = future.result()
                 results.append(data)
             except Exception as exc:
-                print("Test case generated an exception: %s" % (exc))
+                logging.info(f"Test case generated an exception: {exc}")
     sf = glob.glob(f"{dirpath}/simulated/*.csv")
 
     # sweeping on all generated cvs files
@@ -235,17 +240,20 @@ def run_sims(dirpath, list_devices, device, num_workers=mp.cpu_count()):
 
 
 def error_cal(
-    sim_df: pd.DataFrame, meas_df: pd.DataFrame, device: str, step, ib, vc
-) -> None:
+    sim_df: pd.DataFrame, meas_df: pd.DataFrame, device: str, step: list[str], ib: str, vc: str
+) -> pd.DataFrame:
     """error function calculates the error between measured, simulated data
 
     Args:
-        df(pd.DataFrame): Dataframe contains devices and csv files
-          which represent measured, simulated data
+
         sim_df(pd.DataFrame): Dataframe contains devices and csv files simulated
         meas_df(pd.DataFrame): Dataframe contains devices and csv files measured
-        dev_path(str): The path in which we write data
-
+        device(str): name of the device
+        step(list[str]): voltage steps
+        ib(str): select ib for npn or pnp
+        vc(str): select vc for npn or pnp
+    Returns:
+        df(pd.DataFrame): dataframe contains error results        
     """
     merged_dfs = list()
     meas_df.to_csv(
@@ -352,7 +360,11 @@ def error_cal(
 
 
 def main():
-
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -373,7 +385,6 @@ def main():
     ]
     vc = ["vcp ", "-vc (A)"]
     ib = ["ibp =", "ib =-"]
-    Id_sim = "IcVc"
     step = ["1.000E-06", "3.000E-06", "5.000E-06", "7.000E-06", "9.000E-06"]
     for i, device in enumerate(devices):
         # Folder structure of measured values
@@ -382,6 +393,17 @@ def main():
             shutil.rmtree(dirpath)
         os.makedirs(f"{dirpath}", exist_ok=False)
 
+        read_file = glob.glob(f"../../180MCU_SPICE_DATA/BJT/bjt_{device}_icvc_f.nl_out.xlsx")
+        if len(read_file) < 1:
+            logging.info(f"# Can't find data file for device: {device}")
+            read_fil = ""
+        else:
+            read_fil = os.path.abspath(read_file[0])
+        logging.info(f"# bjt_iv data points file : {read_fil}")
+
+        if read_fil == "":
+            logging.info(f"# No datapoints available for validation for device {device}")
+            continue
         # From xlsx to csv
         read_file = pd.read_excel(
             f"../../180MCU_SPICE_DATA/BJT/bjt_{device}_icvc_f.nl_out.xlsx"
@@ -428,25 +450,17 @@ def main():
             if mean_error_total > 100:
                 mean_error_total = 100
 
-            # printing min, max, mean errors to the consol
-            print(
-                "# Device {} min error: {:.2f}".format(dev, min_error_total),
-                ", max error: {:.2f}, mean error {:.2f}".format(
-                    max_error_total, mean_error_total
-                ),
+            # logging.infoing min, max, mean errors to the consol
+            logging.info(
+                f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
             if max_error_total < PASS_THRESH:
-                print("# Device {} has passed regression.".format(dev))
+                logging.info(f"# Device {dev} has passed regression.")
             else:
-                print(
-                    "# Device {} has failed regression. Needs more analysis.".format(
-                        dev
-                    )
+                logging.error(
+                    f"# Device {dev} has failed regression. Needs more analysis."
                 )
-            print("\n\n")
-
-        print("\n\n")
 
 
 # ================================================================
@@ -461,6 +475,14 @@ if __name__ == "__main__":
         os.cpu_count() * 2
         if arguments["--num_cores"] == None
         else int(arguments["--num_cores"])
+    )
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
     )
 
     # Calling main function

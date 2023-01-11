@@ -17,8 +17,14 @@ from jinja2 import Template
 import concurrent.futures
 import shutil
 import warnings
+import logging
+import glob
+import multiprocessing as mp
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
+pd.options.mode.chained_assignment = None  # default='warn'
+
+PASS_THRESH = 2.0
 
 
 def call_simulator(file_name):
@@ -26,14 +32,34 @@ def call_simulator(file_name):
     Args:
         file_name (str): Netlist file name.
     """
-    os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log")
+    os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log 2>/dev/null")
 
 
-def ext_measured(device, vb, step, Id_sim, list_devices, vc):
+def ext_measured(
+    dirpath: str,
+    device: str,
+    vb: str,
+    step: list[str],
+    list_devices: list[str],
+    vc: str,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """ext_measured function calculates get measured data
 
+    Args:
+        dirpath(str): measured data path
+        device(str): npn or pnp
+        vb(str): header of first column in the table
+        step(str): voltage step
+        list_devices(list[str]): name of the devices
+        vc(str): column header of the measured sheet
+    Returns:
+        df(DataFrame): output df
+    """
     # Get dimensions used for each device
-    dimensions = pd.read_csv(f"{device}/{device}.csv", usecols=["corners"])
+    dimensions = pd.read_csv(f"{dirpath}/{device}.csv", usecols=["corners"])
     loops = dimensions["corners"].count()
+    all_dfs = []
+    all_dfs1 = []
 
     # Extracting measured values for each Device
     for i in range(loops):
@@ -49,17 +75,13 @@ def ext_measured(device, vb, step, Id_sim, list_devices, vc):
                 vb = "-vb "
             # measured Id_sim 0
             col_list = [f"{vb}", f"{vc}{step[0]}", f"{vc}{step[1]}", f"{vc}{step[2]}"]
-            df_measured = pd.read_csv(f"{device}/{device}.csv", usecols=col_list)
+            df_measured = pd.read_csv(f"{dirpath}/{device}.csv", usecols=col_list)
             df_measured.columns = [
                 f"{vb}",
                 f"{vc}{step[0]}",
                 f"{vc}{step[1]}",
                 f"{vc}{step[2]}",
             ]
-            df_measured.to_csv(
-                f"{device}/measured_{Id_sim[0]}/{i}_measured_{list_devices[k]}.csv",
-                index=False,
-            )
 
             if device == "pnp":
                 vb = temp_vb
@@ -71,17 +93,14 @@ def ext_measured(device, vb, step, Id_sim, list_devices, vc):
                 f"{vc}{step[1]}.{2*i+1}",
                 f"{vc}{step[2]}.{2*i+1}",
             ]
-            df_measured = pd.read_csv(f"{device}/{device}.csv", usecols=col_list)
-            df_measured.columns = [
+            df_measured1 = pd.read_csv(f"{dirpath}/{device}.csv", usecols=col_list)
+            df_measured1.columns = [
                 f"{vb}",
                 f"{vc}{step[0]}",
                 f"{vc}{step[1]}",
                 f"{vc}{step[2]}",
             ]
-            df_measured.to_csv(
-                f"{device}/measured_{Id_sim[1]}/{i}_measured_{list_devices[k]}.csv",
-                index=False,
-            )
+
         else:
             # measured Id_sim 0
             col_list = [
@@ -90,17 +109,13 @@ def ext_measured(device, vb, step, Id_sim, list_devices, vc):
                 f"{vc}{step[1]}.{2*i}",
                 f"{vc}{step[2]}.{2*i}",
             ]
-            df_measured = pd.read_csv(f"{device}/{device}.csv", usecols=col_list)
+            df_measured = pd.read_csv(f"{dirpath}/{device}.csv", usecols=col_list)
             df_measured.columns = [
                 f"{vb}",
                 f"{vc}{step[0]}",
                 f"{vc}{step[1]}",
                 f"{vc}{step[2]}",
             ]
-            df_measured.to_csv(
-                f"{device}/measured_{Id_sim[0]}/{i}_measured_{list_devices[k]}.csv",
-                index=False,
-            )
 
             # measured Id_sim 1
             col_list = [
@@ -109,231 +124,264 @@ def ext_measured(device, vb, step, Id_sim, list_devices, vc):
                 f"{vc}{step[1]}.{2*i+1}",
                 f"{vc}{step[2]}.{2*i+1}",
             ]
-            df_measured = pd.read_csv(f"{device}/{device}.csv", usecols=col_list)
-            df_measured.columns = [
+            df_measured1 = pd.read_csv(f"{dirpath}/{device}.csv", usecols=col_list)
+            df_measured1.columns = [
                 f"{vb}",
                 f"{vc}{step[0]}",
                 f"{vc}{step[1]}",
                 f"{vc}{step[2]}",
             ]
-            df_measured.to_csv(
-                f"{device}/measured_{Id_sim[1]}/{i}_measured_{list_devices[k]}.csv",
-                index=False,
+
+        all_dfs.append(df_measured)
+        all_dfs1.append(df_measured1)
+    dfs = pd.concat(all_dfs, axis=1)
+    dfs1 = pd.concat(all_dfs1, axis=1)
+    dfs.drop_duplicates(inplace=True)
+    dfs1.drop_duplicates(inplace=True)
+    return dfs, dfs1
+
+
+def run_sim(
+    dirpath: str, device: str, Id_sim: str, list_devices: list[str], temp: float
+) -> dict:
+    """Run simulation at specific information and corner
+    Args:
+        dirpath(str): path to the file where we write data
+        device(str): the device instance will be simulated
+        Id_sim(str): name of the current
+        list_devices(list[str]): name of the devices
+        temp(float): a specific temp for simulation
+
+
+    Returns:
+        info(dict): results are stored in,
+        and passed to the run_sims function to extract data
+    """
+    netlist_tmp = f"device_netlists/{device}_{Id_sim}.spice"
+
+    info = {}
+    info["device"] = device
+    info["temp"] = temp
+    info["dev"] = list_devices
+
+    temp_str = temp
+    list_devices_str = list_devices
+
+    s = f"{list_devices_str}netlist_t{temp_str}.spice"
+    netlist_path = f"{dirpath}/{device}_netlists_{Id_sim}/{s}"
+    s = f"t{temp}_simulated_{list_devices_str}.csv"
+    result_path = f"{dirpath}/simulated_{Id_sim}/{s}"
+    os.makedirs(f"{dirpath}/simulated_{Id_sim}", exist_ok=True)
+
+    with open(netlist_tmp) as f:
+        tmpl = Template(f.read())
+        os.makedirs(f"{dirpath}/{device}_netlists_{Id_sim}", exist_ok=True)
+        with open(netlist_path, "w") as netlist:
+            netlist.write(tmpl.render(device=list_devices_str, temp=temp_str))
+
+    # Running ngspice for each netlist
+    try:
+        call_simulator(netlist_path)
+
+        if os.path.exists(result_path):
+            bjt_iv = result_path
+        else:
+            bjt_iv = "None"
+
+    except Exception:
+        bjt_iv = "None"
+
+    info["bjt_beta_simulated"] = bjt_iv
+
+    return info
+
+
+def run_sims(
+    dirpath: str,
+    list_devices: list[str],
+    device: str,
+    Id_sim: str,
+    steps: int,
+    num_workers=mp.cpu_count(),
+) -> pd.DataFrame:
+    """passing netlists to run_sim function
+        and storing the results csv files into dataframes
+
+    Args:
+        dirpath(str): the path to the file where we write data
+        list_devices(list[str]): name of the devices
+        device(str): name of the device
+        id_rds(str): select id or rds
+        steps(int): num of columns in the table
+        num_workers=mp.cpu_count() (int): num of cpu used
+    Returns:
+        df(pd.DataFrame): dataframe contains simulated results
+    """
+    df1 = pd.read_csv(f"{dirpath}/{device}.csv", usecols=["corners"])
+    loops = (df1["corners"]).count()
+    temp_range = int(loops / 4)
+    df = pd.DataFrame()
+    df["dev"] = df1["corners"].dropna()
+    df["dev"][0:temp_range] = list_devices
+    df["dev"][temp_range : 2 * temp_range] = list_devices
+    df["dev"][2 * temp_range : 3 * temp_range] = list_devices
+    df["dev"][3 * temp_range : 4 * temp_range] = list_devices
+    df["temp"] = 25
+    df["temp"][temp_range : 2 * temp_range] = -40
+    df["temp"][2 * temp_range : 3 * temp_range] = 125
+    df["temp"][3 * temp_range :] = -175
+
+    results = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures_list = []
+        for j, row in df.iterrows():
+            futures_list.append(
+                executor.submit(
+                    run_sim,
+                    dirpath,
+                    device,
+                    Id_sim,
+                    row["dev"],
+                    row["temp"],
+                )
             )
 
-
-def ext_simulated(device, vc, step, sweep, Id_sim, list_devices, ib):
-
-    # Get dimensions used for each device
-    dimensions = pd.read_csv(f"{device}/{device}.csv", usecols=["corners"])
-    loops = dimensions["corners"].count()
-    temp_range = int(loops / 4)
-    netlist_tmp = f"./device_netlists/{device}.spice"
-    for i in range(loops):
-        if i in range(0, temp_range):
-            temp = 25
-        elif i in range(temp_range, 2 * temp_range):
-            temp = -40
-        elif i in range(2 * temp_range, 3 * temp_range):
-            temp = 125
-        else:
-            temp = 175
-
-        k = i
-        if i >= len(list_devices):
-            while k >= len(list_devices):
-                k = k - len(list_devices)
-
-        with open(netlist_tmp) as f:
-            tmpl = Template(f.read())
-            os.makedirs(f"{device}/{device}_netlists_sim", exist_ok=True)
-            with open(
-                f"{device}/{device}_netlists_sim/{i}_{device}_netlist_{list_devices[k]}.spice",
-                "w",
-            ) as netlist:
-                netlist.write(tmpl.render(device=list_devices[k], i=i, temp=temp))
-            netlist_path = f"{device}/{device}_netlists_sim/{i}_{device}_netlist_{list_devices[k]}.spice"
-
-            # Running ngspice for each netlist
-            with concurrent.futures.ProcessPoolExecutor(
-                max_workers=workers_count
-            ) as executor:
-                executor.submit(call_simulator, netlist_path)
-
-        # Writing simulated data 0
-        df_simulated = pd.read_csv(
-            f"{device}/simulated_{Id_sim[0]}/{i}_simulated_{list_devices[k]}.csv",
-            header=0,
+        for future in concurrent.futures.as_completed(futures_list):
+            try:
+                data = future.result()
+                results.append(data)
+            except Exception as exc:
+                logging.info(f"Test case generated an exception: {exc}")
+    sf = glob.glob(f"{dirpath}/simulated_{Id_sim}/*.csv")
+    # sweeping on all generated cvs files
+    for i in range(len(sf)):
+        sdf = pd.read_csv(
+            sf[i],
+            header=None,
+            delimiter=r"\s+",
         )
+        sweep = int(sdf[0].count() / steps)
+        new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
 
-        # empty array to append in it shaped (sweep, number of trials + 1)
-        new_array = np.empty((sweep, 1 + int(df_simulated.shape[0] / sweep)))
-        new_array[:, 0] = df_simulated.iloc[:sweep, 0]
-        times = int(df_simulated.shape[0] / sweep)
+        new_array[:, 0] = sdf.iloc[1 : sweep + 1, 0]
+        times = int(sdf.shape[0] / sweep)
 
         for j in range(times):
-            new_array[:, (j + 1)] = df_simulated.iloc[j * sweep : (j + 1) * sweep, 1]
-
-        # Writing final simulated data 0
-        df_simulated = pd.DataFrame(new_array)
-        df_simulated.to_csv(
-            f"{device}/simulated_{Id_sim[0]}/{i}_simulated_{list_devices[k]}.csv",
-            index=False,
-        )
-        df_simulated.columns = [
-            f"{vc}",
-            f"{ib}{step[0]}",
-            f"{ib}{step[1]}",
-            f"{ib}{step[2]}",
-        ]
-        df_simulated.to_csv(
-            f"{device}/simulated_{Id_sim[0]}/{i}_simulated_{list_devices[k]}.csv",
-            index=False,
-        )
-
-        # Writing simulated data 1
-        df_simulated = pd.read_csv(
-            f"{device}/simulated_{Id_sim[1]}/{i}_simulated_{list_devices[k]}.csv",
-            header=0,
-        )
-
-        # empty array to append in it shaped (sweep, number of trials + 1)
-        new_array = np.empty((sweep, 1 + int(df_simulated.shape[0] / sweep)))
-        new_array[:, 0] = df_simulated.iloc[:sweep, 0]
-        times = int(df_simulated.shape[0] / sweep)
-
-        for j in range(times):
-            new_array[:, (j + 1)] = df_simulated.iloc[j * sweep : (j + 1) * sweep, 1]
+            new_array[:, (j + 1)] = sdf.iloc[(j * sweep) + 1 : ((j + 1) * sweep) + 1, 0]
 
         # Writing final simulated data 1
-        df_simulated = pd.DataFrame(new_array)
-        df_simulated.to_csv(
-            f"{device}/simulated_{Id_sim[1]}/{i}_simulated_{list_devices[k]}.csv",
-            index=False,
+        sdf = pd.DataFrame(new_array)
+        sdf.rename(
+            columns={1: "vcp1", 2: "vcp2", 3: "vcp3"},
+            inplace=True,
         )
-        df_simulated.columns = [
-            f"{vc}",
-            f"{ib}{step[0]}",
-            f"{ib}{step[1]}",
-            f"{ib}{step[2]}",
-        ]
-        df_simulated.to_csv(
-            f"{device}/simulated_{Id_sim[1]}/{i}_simulated_{list_devices[k]}.csv",
-            index=False,
-        )
+        sdf.to_csv(sf[i], index=False)
+
+    df1 = pd.DataFrame(results)
+
+    return df
 
 
-def error_cal(device, vb, step, Id_sim, list_devices, vc):
+def error_cal(
+    sim_df: pd.DataFrame,
+    meas_df: pd.DataFrame,
+    device: str,
+    step: list[str],
+    vc: str,
+    Id_sim: str,
+    vb: str,
+) -> pd.DataFrame:
+    """error function calculates the error between measured, simulated data
 
-    df_final = pd.DataFrame()
-    # Get dimensions used for each device
-    dimensions = pd.read_csv(f"{device}/{device}.csv", usecols=["corners"])
-    loops = dimensions["corners"].count()
-    temp_range = int(loops / 4)
-    for i in range(loops):
-        if i in range(0, temp_range):
-            temp = 25
-        elif i in range(temp_range, 2 * temp_range):
-            temp = -40
-        elif i in range(2 * temp_range, 3 * temp_range):
-            temp = 125
-        else:
-            temp = 175
+    Args:
 
-        k = i
-        if i >= len(list_devices):
-            while k >= len(list_devices):
-                k = k - len(list_devices)
-
-        measured = pd.read_csv(
-            f"{device}/measured_{Id_sim}/{i}_measured_{list_devices[k]}.csv"
-        )
-        simulated = pd.read_csv(
-            f"{device}/simulated_{Id_sim}/{i}_simulated_{list_devices[k]}.csv"
-        )
-
-        error_1 = round(
-            100
-            * abs(
-                (abs(measured.iloc[0:, 1]) - abs(simulated.iloc[0:, 1]))
-                / abs(measured.iloc[:, 1])
-            ),
-            6,
-        )
-        error_2 = round(
-            100
-            * abs(
-                (abs(measured.iloc[0:, 2]) - abs(simulated.iloc[0:, 2]))
-                / abs(measured.iloc[:, 2])
-            ),
-            6,
-        )
-        error_3 = round(
-            100
-            * abs(
-                (abs(measured.iloc[0:, 3]) - abs(simulated.iloc[0:, 3]))
-                / abs(measured.iloc[:, 3])
-            ),
-            6,
-        )
-
-        df_error = pd.DataFrame(
-            data=[measured.iloc[:, 0], error_1, error_2, error_3]
-        ).transpose()
-        df_error.replace(
-            [np.inf, -np.inf], df_error.max().nlargest(2).iloc[1], inplace=True
-        )
-        df_error.to_csv(
-            f"{device}/error_{Id_sim}/{i}_{device}_error_{list_devices[k]}.csv",
-            index=False,
-        )
-
-        # Mean error
-        mean_error = (
-            df_error[f"{vc}{step[0]}"].mean()
-            + df_error[f"{vc}{step[1]}"].mean()
-            + df_error[f"{vc}{step[2]}"].mean()
-        ) / 6
-        # Max error
-        max_error = (
-            df_error[[f"{vc}{step[0]}", f"{vc}{step[1]}", f"{vc}{step[2]}"]].max().max()
-        )
-        # Max error location
-        max_index = max((df_error == max_error).idxmax())
-        max_location_vc = (df_error == max_error).idxmax(axis=1)[max_index]
-        if Id_sim == "Ic":
-            if i == 0:
-                if device == "pnp":
-                    temp_vb = vb
-                    vb = "-vb "
-            else:
-                if device == "pnp":
-                    vb = temp_vb
-        max_location_vb = df_error[f"{vb}"][max_index]
-
-        df_final_ = {
-            "Run no.": f"{i}",
-            "Temp": f"{temp}",
-            "Device name": f"{device}",
-            "device": f"{list_devices[k]}",
-            "Simulated_Val": f"{Id_sim}",
-            "Mean error%": f'{"{:.2f}".format(mean_error)}',
-            "Max error%": f'{"{:.2f}".format(max_error)} @ {max_location_vc} & Vc (V) = {max_location_vb}',
-        }
-        df_final = df_final.append(df_final_, ignore_index=True)
-
-    # Max mean error
-    print(df_final)
-    df_final.to_csv(f"{device}/Final_report_{Id_sim}.csv", index=False)
-    out_report = pd.read_csv(f"{device}/Final_report_{Id_sim}.csv")
-    print("\n", f"Max. mean error = {out_report['Mean error%'].max()}%")
-    print(
-        "====================================================================================================================================================="
+        sim_df(pd.DataFrame): Dataframe contains devices and csv files simulated
+        meas_df(pd.DataFrame): Dataframe contains devices and csv files measured
+        device(str): The path in which we write data
+    Returns:
+        df(pd.DataFrame): dataframe contains error results
+    """
+    merged_dfs = list()
+    meas_df.to_csv(
+        f"mos_beta_reg/{device}/{device}_measured.csv", index=False, header=True
     )
+    meas_df = pd.read_csv(f"mos_beta_reg/{device}/{device}_measured.csv")
+    for i in range(len(sim_df)):
+        t = sim_df["temp"].iloc[i]
+        dev = sim_df["dev"].iloc[i]
+        sim_path = f"mos_beta_reg/{device}/simulated_{Id_sim}/t{t}_simulated_{dev}.csv"
+        simulated_data = pd.read_csv(sim_path)
+        if i == 0:
+            measured_data = meas_df[
+                [f"{vc}{step[0]}", f"{vc}{step[1]}", f"{vc}{step[2]}"]
+            ].copy()
+
+            measured_data.rename(
+                columns={
+                    f"{vc}{step[0]}": "m_vcp1",
+                    f"{vc}{step[1]}": "m_vcp2",
+                    f"{vc}{step[2]}": "m_vcp3",
+                },
+                inplace=True,
+            )
+        else:
+            measured_data = meas_df[
+                [f"{vc}{step[0]}.{i}", f"{vc}{step[1]}.{i}", f"{vc}{step[2]}.{i}"]
+            ].copy()
+
+            measured_data.rename(
+                columns={
+                    f"{vc}{step[0]}.{i}": "m_vcp1",
+                    f"{vc}{step[1]}.{i}": "m_vcp2",
+                    f"{vc}{step[2]}.{i}": "m_vcp3",
+                },
+                inplace=True,
+            )
+        measured_data[f"{vb}"] = meas_df[f"{vb}"]
+        simulated_data[f"{vb}"] = meas_df[f"{vb}"]
+        simulated_data["device"] = sim_df["dev"].iloc[i]
+        measured_data["device"] = sim_df["dev"].iloc[i]
+        simulated_data["temp"] = sim_df["temp"].iloc[i]
+        measured_data["temp"] = sim_df["temp"].iloc[i]
+        result_data = simulated_data.merge(measured_data, how="left")
+        result_data["step1_error"] = (
+            np.abs(result_data["vcp1"] - result_data["m_vcp1"])
+            * 100.0
+            / (result_data["m_vcp1"])
+        )
+        result_data["step2_error"] = (
+            np.abs(result_data["vcp2"] - result_data["m_vcp2"])
+            * 100.0
+            / (result_data["m_vcp2"])
+        )
+        result_data["step3_error"] = (
+            np.abs(result_data["vcp3"] - result_data["m_vcp3"])
+            * 100.0
+            / (result_data["m_vcp3"])
+        )
+        result_data["error"] = (
+            np.abs(
+                result_data["step1_error"]
+                + result_data["step2_error"]
+                + result_data["step3_error"]
+            )
+            / 3
+        )
+
+        merged_dfs.append(result_data)
+        merged_out = pd.concat(merged_dfs)
+        merged_out.fillna(0, inplace=True)
+        merged_out.to_csv(f"mos_beta_reg/{device}/error_analysis.csv", index=False)
+    return merged_out
 
 
 def main():
-
+    """Main function applies all regression steps"""
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -355,37 +403,109 @@ def main():
     vb = ["vbp ", "-vb (V)"]
     vc = ["vcp =", "vc =-"]
     Id_sim = ["Ic", "Ib"]
-    sweep = 101
     step = [1, 2, 3]
+    steps = len(step)
 
     for i, device in enumerate(devices):
         # Folder structure of measured values
-        dirpath = f"{device}"
+        dirpath = f"mos_beta_reg/{device}"
         if os.path.exists(dirpath) and os.path.isdir(dirpath):
             shutil.rmtree(dirpath)
-        os.makedirs(f"{device}/measured_{Id_sim[0]}", exist_ok=False)
-        os.makedirs(f"{device}/measured_{Id_sim[1]}", exist_ok=False)
+        os.makedirs(f"{dirpath}", exist_ok=False)
 
+        read_file = glob.glob(
+            f"../../180MCU_SPICE_DATA/BJT/bjt_{device}_beta_f.nl_out.xlsx"
+        )
+        if len(read_file) < 1:
+            logging.info(f"# Can't find data file for device: {device}")
+            read_fil = ""
+        else:
+            read_fil = os.path.abspath(read_file[0])
+        logging.info(f"# bjt_beta data points file : {read_fil}")
+
+        if read_fil == "":
+            logging.info(
+                f"# No datapoints available for validation for device {device}"
+            )
+            continue
         # From xlsx to csv
         read_file = pd.read_excel(
             f"../../180MCU_SPICE_DATA/BJT/bjt_{device}_beta_f.nl_out.xlsx"
         )
-        read_file.to_csv(f"{device}/{device}.csv", index=False, header=True)
+        read_file.to_csv(f"{dirpath}/{device}.csv", index=False, header=True)
 
         # Folder structure of simulated values
-        os.makedirs(f"{device}/simulated_{Id_sim[0]}", exist_ok=False)
-        os.makedirs(f"{device}/error_{Id_sim[0]}", exist_ok=False)
-        os.makedirs(f"{device}/simulated_{Id_sim[1]}", exist_ok=False)
-        os.makedirs(f"{device}/error_{Id_sim[1]}", exist_ok=False)
+        os.makedirs(f"{dirpath}/simulated_{Id_sim[0]}", exist_ok=False)
+        os.makedirs(f"{dirpath}/simulated_{Id_sim[1]}", exist_ok=False)
 
         # =========== Simulate ==============
-        ext_measured(device, vb[i], step, Id_sim, list_devices[i], vc[i])
-
-        ext_simulated(device, vb[i], step, sweep, Id_sim, list_devices[i], vc[i])
+        df_ic, df_ib = ext_measured(
+            dirpath, device, vb[i], step, list_devices[i], vc[i]
+        )
+        sims_ic = run_sims(
+            dirpath,
+            list_devices[i],
+            device,
+            Id_sim[0],
+            steps,
+            num_workers=mp.cpu_count(),
+        )
+        sims_ib = run_sims(
+            dirpath,
+            list_devices[i],
+            device,
+            Id_sim[1],
+            steps,
+            num_workers=mp.cpu_count(),
+        )
+        merged_all = error_cal(sims_ic, df_ic, device, step, vc[i], Id_sim[0], vb[i])
+        merged_all_ib = error_cal(sims_ib, df_ib, device, step, vc[i], Id_sim[1], vb[i])
 
         # ============ Results =============
-        error_cal(device, vb[i], step, Id_sim[0], list_devices[i], vc[i])
-        error_cal(device, vb[i], step, Id_sim[1], list_devices[i], vc[i])
+        for s in Id_sim:
+            if s == Id_sim[1]:
+                merged_all = merged_all_ib
+            for dev in list_devices[i]:
+                min_error_total = float()
+                max_error_total = float()
+                error_total = float()
+                number_of_existance = int()
+
+                # number of rows in the final excel sheet
+                num_rows = merged_all["device"].count()
+
+                for n in range(num_rows):
+                    if dev == merged_all["device"].iloc[n]:
+                        number_of_existance += 1
+                        error_total += merged_all["error"].iloc[n]
+                        if merged_all["error"].iloc[n] > max_error_total:
+                            max_error_total = merged_all["error"].iloc[n]
+                        elif merged_all["error"].iloc[n] < min_error_total:
+                            min_error_total = merged_all["error"].iloc[n]
+
+                mean_error_total = error_total / number_of_existance
+
+                # Making sure that min, max, mean errors are not > 100%
+                if min_error_total > 100:
+                    min_error_total = 100
+
+                if max_error_total > 100:
+                    max_error_total = 100
+
+                if mean_error_total > 100:
+                    mean_error_total = 100
+
+                # logging.infoing min, max, mean errors to the consol
+                logging.info(
+                    f"# Device {dev} {s} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
+                )
+
+                if max_error_total < PASS_THRESH:
+                    logging.info(f"# Device {dev} {s} has passed regression.")
+                else:
+                    logging.error(
+                        f"# Device {dev} {s} has failed regression. Needs more analysis."
+                    )
 
 
 # ================================================================
@@ -401,6 +521,13 @@ if __name__ == "__main__":
         if arguments["--num_cores"] == None
         else int(arguments["--num_cores"])
     )
-
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
     # Calling main function
     main()
