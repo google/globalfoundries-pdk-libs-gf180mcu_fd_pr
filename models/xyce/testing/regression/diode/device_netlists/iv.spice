@@ -15,7 +15,7 @@ dn1 n 0 {{device}} AREA={{area}}p
 *****************
 ** Analysis
 *****************
-.DC Vn -12.13 1.13 0.13
+.DC Vn -40.41 1.41 0.41
 .STEP TEMP {{temp}} -60 200
 .print DC FORMAT=CSV file=diode_regr/{{device}}/simulated_iv/simulated_A{{area}}_P{{pj}}_t{{temp}}_{{corner}}.csv {abs(I(dn1))}
 
