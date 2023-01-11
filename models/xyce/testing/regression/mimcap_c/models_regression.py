@@ -16,8 +16,11 @@ from jinja2 import Template
 import concurrent.futures
 import shutil
 import warnings
+import glob
+import logging
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
+PASS_THRESH = 2.0
 
 
 def call_simulator(file_name):
@@ -25,13 +28,21 @@ def call_simulator(file_name):
     Args:
         file_name (str): Netlist file name.
     """
-    os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log")
+    os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log 2> /dev/null")
 
 
-def ext_measured(device, vn, d_in, cv_sim, corner, start):
+def ext_measured(device: str, cv_sim: str, corner: str, start: int) -> None:
+    """ext_measured function calculates get measured data
+
+    Args:
+        device (str): device name
+        cv_sim (str): cv simulation
+        corner (str): corner name
+        start (int): start point
+    """
 
     # Get dimensions used for each device
-    dirpath = f"{device}_{cv_sim}_{corner}"
+    dirpath = f"mimcap_c/{device}_{cv_sim}_{corner}"
 
     # Extracting measured values for each W & L
     for i in range(start, 4 + start):
@@ -50,7 +61,7 @@ def ext_measured(device, vn, d_in, cv_sim, corner, start):
 
         if i == 0:
             # measured cv
-            col_list = [f"Vj", f"mimcap_{corner}"]
+            col_list = ["Vj", f"mimcap_{corner}"]
             df_measured = pd.read_csv(f"{dirpath}/{device}.csv", usecols=col_list)
             df_measured.to_csv(
                 f"{dirpath}/measured_{cv_sim}/{i-start}_measured_w{width}_l{length}.csv",
@@ -58,20 +69,29 @@ def ext_measured(device, vn, d_in, cv_sim, corner, start):
             )
         else:
             # measured cv
-            col_list = [f"Vj", f"mimcap_{corner}.{i}"]
+            col_list = ["Vj", f"mimcap_{corner}.{i}"]
             df_measured = pd.read_csv(f"{dirpath}/{device}.csv", usecols=col_list)
-            df_measured.columns = [f"Vj", f"mimcap_{corner}"]
+            df_measured.columns = ["Vj", f"mimcap_{corner}"]
             df_measured.to_csv(
                 f"{dirpath}/measured_{cv_sim}/{i-start}_measured_w{width}_l{length}.csv",
                 index=False,
             )
 
 
-def ext_simulated(device, vn, d_in, cv_sim, corner, start, voltage):
-
+def ext_simulated(
+    device: str, cv_sim: str, corner: str, start: int, voltage: str
+) -> None:
+    """ext_simulated function calculates get simulated data
+    Args:
+        device (str): device name
+        cv_sim (str): cv simulation
+        corner (str): corner name
+        start (int): start point
+        voltage (str): voltage sweep
+    """
     # Get dimensions used for each device
-    dirpath = f"{device}_{cv_sim}_{corner}"
-    netlist_tmp = f"./device_netlists/mimcap.spice"
+    dirpath = f"mimcap_c/{device}_{cv_sim}_{corner}"
+    netlist_tmp = "./device_netlists/mimcap.spice"
 
     # Extracting measured values for each W & L
     for i in range(start, 4 + start):
@@ -136,17 +156,23 @@ def ext_simulated(device, vn, d_in, cv_sim, corner, start, voltage):
 
         # Writing final simulated data
         df_simulated = pd.DataFrame(new_array)
-        df_simulated.columns = [f"Vj", f"mimcap_{corner}"]
+        df_simulated.columns = ["Vj", f"mimcap_{corner}"]
         df_simulated.to_csv(
             f"{dirpath}/simulated_{cv_sim}/{i-start}_simulated_w{width}_l{length}.csv",
             index=False,
         )
 
 
-def error_cal(device, vn, d_in, Id_sim, corner, start):
-
+def error_cal(device: str, Id_sim: str, corner: str, start: int) -> None:
+    """error function calculates the error between measured, simulated data
+    Args:
+        device (str): device name
+        Id_sim (str): cv simulation
+        corner (str): corner name
+        start (int): start point
+    """
     # Get dimensions used for each device
-    dirpath = f"{device}_{Id_sim}_{corner}"
+    dirpath = f"mimcap_c/{device}_{Id_sim}_{corner}"
     df_final = pd.DataFrame()
     for i in range(start, 4 + start):
         if i == 0 + start:
@@ -201,17 +227,37 @@ def error_cal(device, vn, d_in, Id_sim, corner, start):
         df_final = df_final.append(df_final_, ignore_index=True)
 
     # Max mean error
-    print(df_final)
     df_final.to_csv(f"{dirpath}/Final_report_{Id_sim}.csv", index=False)
+    # logging.infoing min, max, mean errors to the consol
+
     out_report = pd.read_csv(f"{dirpath}/Final_report_{Id_sim}.csv")
-    print("\n", f"Max. mean error = {out_report['Mean error%'].max()}%")
-    print(
-        "====================================================================================================================================================="
+
+    # Making sure that min, max, mean errors are not > 100%
+    mean_error_total = out_report["Mean error%"].mean()
+    max_error_total = out_report["Max error%"].max()
+    if max_error_total > 100:
+        max_error_total = 100
+
+    if mean_error_total > 100:
+        mean_error_total = 100
+
+    logging.info(
+        f"# Device {device}_{corner} mean error: {mean_error_total:.2f}, max error {max_error_total:.2f}"
     )
+
+    if max_error_total < PASS_THRESH:
+        logging.info(f"# Device {device} {corner} has passed regression.")
+    else:
+        logging.error(f"# Device {device} {corner} has failed regression.")
 
 
 def main():
-
+    """Main function applies all regression steps"""
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -230,15 +276,18 @@ def main():
     for corner in corners:
         for device in devices:
             # Folder structure of measured values
-            cv_sim, cap_vn, cap_in = measure[0], measure[1], measure[2]
-            dirpath = f"{device}_{cv_sim}_{corner}"
+            cv_sim = measure[0]
+            dirpath = f"mimcap_c/{device}_{cv_sim}_{corner}"
             if os.path.exists(dirpath) and os.path.isdir(dirpath):
                 shutil.rmtree(dirpath)
             os.makedirs(f"{dirpath}/measured_{cv_sim}", exist_ok=False)
 
+            logging.info("######" * 10)
+            logging.info(f"# Checking Device {device}_{corner}")
+
             # From xlsx to csv
             read_file = pd.read_excel(
-                f"../../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx"
+                "../../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx"
             )
             read_file.to_csv(f"{dirpath}/{device}.csv", index=False, header=True)
 
@@ -246,17 +295,9 @@ def main():
             os.makedirs(f"{dirpath}/simulated_{cv_sim}", exist_ok=False)
             os.makedirs(f"{dirpath}/error_{cv_sim}", exist_ok=False)
 
-            ext_measured(device, cap_vn, cap_in, cv_sim, corner, start)
-            ext_simulated(device, cap_vn, cap_in, cv_sim, corner, start, voltage[0])
-            error_cal(device, cap_vn, cap_in, cv_sim, corner, start)
-            start = start + 4
-        start = 0
-
-    for corner in corners:
-        for device in devices:
-            # Folder structure of measured values
-            cv_sim, cap_vn, cap_in = measure[0], measure[1], measure[2]
-            error_cal(device, cap_vn, cap_in, cv_sim, corner, start)
+            ext_measured(device, cv_sim, corner, start)
+            ext_simulated(device, cv_sim, corner, start, voltage[0])
+            error_cal(device, cv_sim, corner, start)
             start = start + 4
         start = 0
 
@@ -271,9 +312,16 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="comparator: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
-
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[
+            logging.StreamHandler(),
+        ],
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
+        datefmt="%d-%b-%Y %H:%M:%S",
+    )
     # Calling main function
     main()

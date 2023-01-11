@@ -22,8 +22,8 @@ xcn out 0 {{device}} c_length={{length}}u c_width={{width}}u l={{length}}u w={{w
 .ac dec 10 1 10G
 .step volt {{voltage}}
 
-.include "../../../../../design.xyce"
-.lib "../../../../../sm141064.xyce" mimcap_{{corner}}
+.include "../../../../../../design.xyce"
+.lib "../../../../../../sm141064.xyce" mimcap_{{corner}}
 
 .end
 
