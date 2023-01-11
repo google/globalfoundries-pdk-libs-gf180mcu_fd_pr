@@ -374,15 +374,15 @@ def check_klayout_version():
         logging.error("Was not able to get klayout version properly.")
         exit(1)
     elif len(klayout_v_list) == 2:
-        if klayout_v_list[1] <= 27:
-            logging.warning(f"Prerequisites at a minimum: KLayout 0.27.8")
+        if klayout_v_list[1] < 28:
+            logging.warning(f"Prerequisites at a minimum: KLayout 0.28.0")
             logging.error(
                 "Using this klayout version has not been assesed in this development. Limits are unknown"
             )
             exit(1)
     elif len(klayout_v_list) == 3:
-        if klayout_v_list[1] <= 27 and klayout_v_list[2] < 8:
-            logging.warning(f"Prerequisites at a minimum: KLayout 0.27.8")
+        if klayout_v_list[1] < 28 :
+            logging.warning(f"Prerequisites at a minimum: KLayout 0.28.0")
             logging.error(
                 "Using this klayout version has not been assesed in this development. Limits are unknown"
             )
