@@ -16,49 +16,18 @@
 ## BJT Pcells Generators for Klayout of GF180MCU
 ########################################################################################################################
 
-import pya
 import os
 
 gds_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bjt")
 
 
-def draw_npn(layout, device_name):
+def draw_bjt(layout, device_name):
 
-    if device_name == "npn_10p00x10p00":
-        layout.read(f"{gds_path}/npn_10p00x10p00.gds")
-        cell_name = "npn_10p00x10p00"
-    elif device_name == "npn_05p00x05p00":
-        layout.read(f"{gds_path}/npn_05p00x05p00.gds")
-        cell_name = "npn_05p00x05p00"
-    elif device_name == "npn_00p54x16p00":
-        layout.read(f"{gds_path}/npn_00p54x16p00.gds")
-        cell_name = "npn_00p54x16p00"
-    elif device_name == "npn_00p54x08p00":
-        layout.read(f"{gds_path}/npn_00p54x08p00.gds")
-        cell_name = "npn_00p54x08p00"
-    elif device_name == "npn_00p54x04p00":
-        layout.read(f"{gds_path}/npn_00p54x04p00.gds")
-        cell_name = "npn_00p54x04p00"
-    elif device_name == "npn_00p54x02p00":
-        layout.read(f"{gds_path}/npn_00p54x02p00.gds")
-        cell_name = "npn_00p54x02p00"
+    gds_file = f"{gds_path}/{device_name}.gds"
 
-    return layout.cell(cell_name)
+    if os.path.exists(gds_file) and os.path.isfile(gds_file):
+        layout.read(gds_file)
+    else:
+        print (f"{gds_file} is not exist, please recheck")
 
-
-def draw_pnp(layout, device_name):
-
-    if device_name == "pnp_10p00x10p00":
-        layout.read(f"{gds_path}/pnp_10p00x10p00.gds")
-        cell_name = "pnp_10p00x10p00"
-    elif device_name == "pnp_05p00x05p00":
-        layout.read(f"{gds_path}/pnp_05p00x05p00.gds")
-        cell_name = "pnp_05p00x05p00"
-    elif device_name == "pnp_10p00x00p42":
-        layout.read(f"{gds_path}/pnp_10p00x00p42.gds")
-        cell_name = "pnp_10p00x00p42"
-    elif device_name == "pnp_05p00x00p42":
-        layout.read(f"{gds_path}/pnp_05p00x00p42.gds")
-        cell_name = "pnp_05p00x00p42"
-
-    return layout.cell(cell_name)
+    return layout.cell(device_name)

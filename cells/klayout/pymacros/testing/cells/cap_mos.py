@@ -19,17 +19,17 @@
 import pya
 from .draw_cap_mos import *
 
-cap_nmos_l = 0.36
-cap_nmos_w = 0.22
+cap_nmos_w = 1.88
+cap_nmos_l = 1
 
-cap_pmos_l = 0.36
-cap_pmos_w = 0.22
+cap_pmos_w = 1.88
+cap_pmos_l = 1
 
-cap_nmos_b_l = 0.36
-cap_nmos_b_w = 0.22
+cap_nmos_b_w = 1.88
+cap_nmos_b_l = 1
 
-cap_pmos_b_l = 0.36
-cap_pmos_b_w = 0.22
+cap_pmos_b_w = 1.88
+cap_pmos_b_l = 1
 
 
 class cap_nmos(pya.PCellDeclarationHelper):

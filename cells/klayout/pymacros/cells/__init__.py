@@ -18,7 +18,7 @@
 
 import pya
 
-from .mos import *
+from .fet import *
 from .diode import *
 from .bjt import *
 from .cap_mos import *

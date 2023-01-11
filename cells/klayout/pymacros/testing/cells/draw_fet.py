@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ########################################################################################################################
-## MOSFET Pcells Generators for Klayout of GF180MCU
+## FET Pcells Generators for Klayout of GF180MCU
 ########################################################################################################################
 
 import pya
@@ -24,7 +24,7 @@ tol = 1.05
 def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     """
     Usage:-
-     used to draw NMOS transistor by specifying parameters
+     used to draw NFET transistor by specifying parameters
     Arguments:-
      layout     : Object of layout
      l          : Float of gate length
@@ -33,7 +33,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
      nf         : Integer of number of fingers
      grw        : Float of guard ring width [If enabled]
      bulk       : String of bulk connection type [None, Bulk Tie, Guard Ring]
-     volt       : String of operating voltage of the MOSFET [3.3V, 5V, 6V]
+     volt       : String of operating voltage of the FET [3.3V, 5V, 6V]
      deepnwell  : Boolean of using Deep NWELL device
      pcmpgr     : Boolean of using P+ Guard Ring for Deep NWELL devices only
     """
@@ -98,7 +98,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
             else:
                 ld_violat = 0.02 * dbu_PERCISION
 
-    # Inserting NMOS cell
+    # Inserting NFET cell
     cell_index = layout.add_cell("nfet")
     cell = layout.cell(cell_index)
 
@@ -1369,7 +1369,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
 def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     """
     Usage:-
-     used to draw PMOS transistor by specifying parameters
+     used to draw PFET transistor by specifying parameters
     Arguments:-
      layout     : Object of layout
      l          : Float of gate length
@@ -1378,7 +1378,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
      nf         : Integer of number of fingers
      grw        : Float of guard ring width [If enabled]
      bulk       : String of bulk connection type [None, Bulk Tie, Guard Ring]
-     volt       : String of operating voltage of the MOSFET [3.3V, 5V, 6V]
+     volt       : String of operating voltage of the FET [3.3V, 5V, 6V]
      deepnwell  : Boolean of using Deep NWELL device
      pcmpgr     : Boolean of using P+ Guard Ring for Deep NWELL devices only
     """
@@ -1446,8 +1446,8 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
             else:
                 ld_violat = 0.02 * dbu_PERCISION
 
-    # Inserting PMOS cell
-    cell_index = layout.add_cell("pmos")
+    # Inserting PFET cell
+    cell_index = layout.add_cell("pfet")
     cell = layout.cell(cell_index)
 
     w_changed = False
@@ -2562,7 +2562,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
 def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
     """
     Usage:-
-     used to draw Native NMOS 6V transistor by specifying parameters
+     used to draw Native NFET 6V transistor by specifying parameters
     Arguments:-
      layout : Object of layout
      l      : Float of gate length
@@ -2601,7 +2601,7 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
     cmp2cmp = 0.36 * dbu_PERCISION
     nat_enc_cmp = 2 * dbu_PERCISION
 
-    # Inserting NMOS cell
+    # Inserting NFET cell
     cell_index = layout.add_cell("nfet_06v0_nvt")
     cell = layout.cell(cell_index)
 
@@ -3070,7 +3070,7 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
 def draw_nfet_10v0_asym(layout, l, w):
     """
     Usage:-
-     used to draw LDNMOS 10V transistor by specifying parameters
+     used to draw LDNFET 10V transistor by specifying parameters
     Arguments:-
      layout : Object of layout
      l      : Float of gate length
@@ -3111,11 +3111,11 @@ def draw_nfet_10v0_asym(layout, l, w):
     drain2ply = 0.16 * dbu_PERCISION
     dg_enc_cmp = 0.5 * dbu_PERCISION
 
-    # Inserting NMOS cell
+    # Inserting NFET cell
     cell_index = layout.add_cell("nfet_10v0_asym")
     cell = layout.cell(cell_index)
 
-    # Inserting layers for LDMOS
+    # Inserting layers for LDFET
     cell.shapes(dualgate).insert(
         pya.Box(
             -(
@@ -3989,7 +3989,7 @@ def draw_nfet_10v0_asym(layout, l, w):
 def draw_pfet_10v0_asym(layout, l, w, dgr_en):
     """
     Usage:-
-     used to draw LDPMOS 10V transistor by specifying parameters
+     used to draw LDPFET 10V transistor by specifying parameters
     Arguments:-
      layout : Object of layout
      l      : Float of gate length
@@ -4034,11 +4034,11 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
     dg_enc_pcmp = 0.5 * dbu_PERCISION
     pcmp_gr2dnw = 2.5 * dbu_PERCISION
 
-    # Inserting PMOS cell
+    # Inserting PFET cell
     cell_index = layout.add_cell("pfet_10v0_asym")
     cell = layout.cell(cell_index)
 
-    # Inserting layers for LDMOS
+    # Inserting layers for LDFET
     cell.shapes(dnwell).insert(
         pya.Box(
             -(
