@@ -230,7 +230,7 @@ def main():
             logging.info(f"# Can't find mimcap file for device: {dev}")
             mim_file = ""
         else:
-            mim_file = mim_data_files[0]
+            mim_file = os.path.abspath(mim_data_files[0])
         logging.info(f"# mimcap data points file : {mim_file}" )
 
         if mim_file == "" :

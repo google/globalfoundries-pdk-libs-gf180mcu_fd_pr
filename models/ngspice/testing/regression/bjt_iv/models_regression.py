@@ -566,7 +566,7 @@ def main():
             logging.info(f"# Can't find data file for device: {dev}")
             icvc_file = ""
         else:
-            icvc_file = icvc_data_files[0]
+            icvc_file = os.path.abspath(icvc_data_files[0])
         logging.info(f"# bjt_iv data points file : {icvc_file}")
 
         if icvc_file == "":
