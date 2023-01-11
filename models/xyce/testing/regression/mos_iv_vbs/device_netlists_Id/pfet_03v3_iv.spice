@@ -1,0 +1,25 @@
+*Xyce Common Source Circuit
+** library calling
+
+
+*****************
+** main netlist
+*****************
+Vds D_tn 0 dc -0.05
+Vgs G_tn 0 dc -3.3
+Vbs S_tn 0 dc 0
+
+xmn1 D_tn G_tn 0 S_tn pfet_03v3 W={{width}}u L={{length}}u ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+
+
+*****************
+** Analysis
+*****************
+.dc Vgs 0 -3.3 -0.05 Vbs 0 3.3 0.825
+.STEP TEMP {{temp}} -60 200
+.print DC FORMAT=CSV file=mos_iv_reg/pfet_03v3_iv/simulated_Id/t{{temp}}_simulated_W{{width}}_L{{length}}.csv {-I(Vds)}
+
+.include "../../../../../../design.xyce"
+.lib "../../../../../../sm141064.xyce" typical
+
+.end
