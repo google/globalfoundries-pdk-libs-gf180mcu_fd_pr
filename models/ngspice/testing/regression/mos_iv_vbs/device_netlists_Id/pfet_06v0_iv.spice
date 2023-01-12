@@ -17,23 +17,24 @@
 * power supply
 Vds D_tn 0 dc=-0.05
 Vgs G_tn 0 dc=-6
-Vbs S_tn 0 dc=0
+Vbs B_tn 0 dc=0
 
 
 .temp {{temp}}
 .options tnom={{temp}}
 
-xmn1 D_tn G_tn 0 S_tn pfet_06v0 W = {{width}}u L = {{length}}u
+xmn1 D_tn G_tn 0 B_tn pfet_06v0 W = {{width}}u L = {{length}}u
 
 **** begin architecture code
 
 
 .control
 set filetype=ascii
-
+set wr_singlescale
+set wr_vecnames
 dc Vgs 0 -6 -0.05 Vbs 0 3 0.75
 print -i(Vds)
-wrdata mos_iv_regr/pfet_06v0_iv/pfet_06v0_iv_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv -i(Vds)
+wrdata mos_iv_regr/pfet_06v0_iv/pfet_06v0_iv_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv -i(Vds) v(B_tn) v(G_tn) 
 .endc
 
 

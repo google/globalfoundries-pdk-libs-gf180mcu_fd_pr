@@ -29,10 +29,11 @@ xmn1 D_tn G_tn 0 B_tn nfet_03v3_dss W = {{width}}u L = {{length}}u
 
 .control
 set filetype=ascii
-
+set wr_singlescale
+set wr_vecnames
 dc Vgs 0 3.3 0.05 Vbs 0 -3.3 -0.825
 print -i(Vds)
-wrdata mos_iv_regr/nfet_03v3_dss_iv/nfet_03v3_dss_iv_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv -i(Vds)
+wrdata mos_iv_regr/nfet_03v3_dss_iv/nfet_03v3_dss_iv_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv -i(Vds) v(B_tn) v(G_tn) 
 .endc
 
 

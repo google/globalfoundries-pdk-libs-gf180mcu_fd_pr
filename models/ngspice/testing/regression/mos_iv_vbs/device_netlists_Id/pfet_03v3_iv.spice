@@ -17,7 +17,7 @@
 * power supply
 Vds D_tn 0 dc=-0.05
 Vgs G_tn 0 dc=-3.3
-Vbs S_tn 0 dc=0
+Vbs B_tn 0 dc=0
 
 .temp {{temp}}
 .options tnom={{temp}}
@@ -29,10 +29,11 @@ xmn1 D_tn G_tn 0 S_tn pfet_03v3 W = {{width}}u L = {{length}}u
 
 .control
 set filetype=ascii
-
+set wr_singlescale
+set wr_vecnames
 dc Vgs 0 -3.3 -0.05 Vbs 0 3.3 0.825
 print -i(Vds)
-wrdata mos_iv_regr/pfet_03v3_iv/pfet_03v3_iv_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv -i(Vds)
+wrdata mos_iv_regr/pfet_03v3_iv/pfet_03v3_iv_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv -i(Vds) v(B_tn) v(G_tn) 
 .endc
 
 

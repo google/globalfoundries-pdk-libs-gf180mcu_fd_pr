@@ -38,7 +38,9 @@ pd.options.mode.chained_assignment = None  # default='warn'
 # constants
 PASS_THRESH = 2.0
 MOS = [0, -0.825, -1.65, -2.48, -3.3]
+MOS1 = [0, -0.825, -1.65, -2.475, -3.3]
 PMOS3P3_VPS = [0, 0.825, 1.65, 2.48, 3.3]
+PMOS3P3_VPS1 = [0, 0.825, 1.65, 2.475, 3.3]
 NMOS6P0_VPS = [0, -0.75, -1.5, -2.25, -3]
 PMOS6P0_VPS = [0, 0.75, 1.5, 2.25, 3]
 # nmos6p0_nat_vbs = [0, -0.75, -1.5, -2.25, -3]
@@ -357,37 +359,33 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 logging.info(f"Test case generated an exception: {exc}")
 
     sf = glob.glob(f"{dirpath}/{device}_netlists/*.csv")
-
+    if device == "pfet_03v3_iv" or device == "pfet_03v3_dss_iv":
+        mos = PMOS3P3_VPS1
+    elif device == "pfet_06v0_iv" or device == "pfet_06v0_dss_iv":
+        mos = PMOS6P0_VPS
+    elif device == "nfet_06v0_iv" or device == "nfet_06v0_nvt_iv" or device == "nfet_06v0_dss_iv":
+        mos = NMOS6P0_VPS
+    else:
+        mos = MOS1
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        sdf = pd.read_csv(
+        df = pd.read_csv(
             sf[i],
-            header=None,
-            delimiter=r"\s+",
+            delimiter=r"\s+"
         )
-        sweep = int(sdf[0].count() / len(MOS))
-        new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
-
-        new_array[:, 0] = sdf.iloc[:sweep, 0]
-        times = int(sdf.shape[0] / sweep)
-
-        for j in range(times):
-            new_array[:, (j + 1)] = sdf.iloc[j * sweep : (j + 1) * sweep, 1]
-
+        sdf = df.pivot(index="v-sweep", columns=("v(B_tn)"), values="-i(Vds)")
         # Writing final simulated data 1
-        sdf = pd.DataFrame(new_array)
         sdf.rename(
             columns={
-                0: "vgs",
-                1: "vb1",
-                2: "vb2",
-                3: "vb3",
-                4: "vb4",
-                5: "vb5",
+                mos[0]: "vb1",
+                mos[1]: "vb2",
+                mos[2]: "vb3",
+                mos[3]: "vb4",
+                mos[4]: "vb5",
             },
             inplace=True,
         )
-        sdf.to_csv(sf[i], index=False)
+        sdf.to_csv(sf[i])
 
     df = pd.DataFrame(results)
     return df
@@ -448,7 +446,7 @@ def error_cal(
             },
             inplace=True,
         )
-        measured_data["vgs"] = simulated_data["vgs"]
+        measured_data["v-sweep"] = simulated_data["v-sweep"]
 
         result_data = simulated_data.merge(measured_data, how="left")
 
