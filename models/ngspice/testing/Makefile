@@ -44,7 +44,6 @@ Add_run-dir:
 smoke-test:
 	@echo "========== Runing models_xyce SMOKE TEST regression =========="
 	@cd $(Testing_DIR)/smoke_test
-	@python3 ng_smoke_test.py
 
 #================================
 # ---------- models-MOS----------
@@ -60,7 +59,6 @@ models-MOS-vgs:Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/mos_iv_vgs
 	@echo "========== Runing models_ngspice-MOS-VGS regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log	 
-	@python3 plotting.py
 
 .ONESHELL:
 models-MOS-vbs:Add_run-dir
@@ -69,7 +67,6 @@ models-MOS-vbs:Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/mos_iv_vbs
 	@echo "========== Runing models_ngspice-MOS-VBS regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log 	 	
-	@python3 plotting.py
 
 .ONESHELL:
 models-MOS-cv:Add_run-dir
@@ -78,7 +75,6 @@ models-MOS-cv:Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/mos_cv
 	@echo "========== Runing models_ngspice-MOS-CV regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log 	
-	@python3 plotting.py
 
 #================================
 # ---------- models-BJT----------
@@ -94,7 +90,6 @@ models-BJT-cj:Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/bjt_cj
 	@echo "========== Runing models_ngspice-BJT-cj regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log	
-	@python3 plotting.py
 
 .ONESHELL:
 models-BJT-beta:Add_run-dir
@@ -103,7 +98,6 @@ models-BJT-beta:Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/bjt_beta
 	@echo "========== Runing models_ngspice-BJT-beta regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-	@python3 plotting.py
 
 .ONESHELL:
 models-BJT-iv:Add_run-dir
@@ -112,7 +106,6 @@ models-BJT-iv:Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/bjt_iv
 	@echo "========== Runing models_ngspice-BJT-iv regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-	@python3 plotting.py
 
 #================================
 # --------- models-diode --------
@@ -125,7 +118,6 @@ models-diode: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/diode
 	@echo "========== Runing models_ngspice-didoe regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-	@python3 plotting.py
 
 #================================
 # -------- models-MOSCAP --------
@@ -138,7 +130,6 @@ models-MOSCAP: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/moscap_c
 	@echo "========== Runing models_ngspice-MOSCAP regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-	@python3 plotting.py
 
 #================================
 # -------- models-MIMCAP --------
@@ -151,7 +142,6 @@ models-MIMCAP: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/mimcap_c
 	@echo "========== Runing models_ngspice-MIMCAP regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-	@python3 plotting.py
 
 #================================
 # --------- models-RES ----------
@@ -164,7 +154,6 @@ models-RES: Add_run-dir
 	@cd $(Testing_DIR)/$(run_folder)/resistor_r
 	@echo "========== Runing models_ngspice-RES regression ==========" |& tee -a ../run_log.log 
 	@python3 models_regression.py |& tee -a ../run_log.log
-	@python3 plotting.py
 
 #===============================
 # --------- Clean ALL ----------
