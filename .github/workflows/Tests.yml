@@ -56,13 +56,6 @@ jobs:
       - name: Installing Klayout
         run: |
           sudo apt update -qq -y
-          sudo apt install -qq -y \
-            qt5-default \
-            qttools5-dev \
-            libqt5xmlpatterns5-dev \
-            qtmultimedia5-dev \
-            libqt5multimediawidgets5 \
-            libqt5svg5-dev
           wget https://www.klayout.org/downloads/Ubuntu-22/klayout_0.28.2-1_amd64.deb
           sudo dpkg -i ./klayout_0.28.2-1_amd64.deb
           sudo apt install -f -y
