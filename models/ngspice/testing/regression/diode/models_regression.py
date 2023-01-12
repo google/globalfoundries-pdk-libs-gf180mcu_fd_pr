@@ -53,9 +53,7 @@ def call_simulator(file_name):
     Args:
         file_name (str): Netlist file name.
     """
-    return os.system(
-        f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log"
-        )
+    return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
 def ext_cv_measured(dev_data_path, device, corners, dev_path):
@@ -64,7 +62,8 @@ def ext_cv_measured(dev_data_path, device, corners, dev_path):
 
     dim_df = df[["L (um)", "W (um)"]].copy()
     dim_df.rename(
-        columns={"L (um)": "length", "W (um)": "width"}, inplace=True,
+        columns={"L (um)": "length", "W (um)": "width"},
+        inplace=True,
     )
 
     all_dfs = []
@@ -127,17 +126,13 @@ def ext_cv_measured(dev_data_path, device, corners, dev_path):
             meas_csv = f"measured_A{width}_P{length}_t{temp}_{corner}.csv"
 
             os.makedirs(f"{dev_path}/measured_cv", exist_ok=True)
-            meas_data.to_csv(
-                f"{dev_path}/measured_cv/{meas_csv}"
-                )
+            meas_data.to_csv(f"{dev_path}/measured_cv/{meas_csv}", index=False)
 
             leng.append(length)
             wid.append(width)
             tempr.append(temp)
             cor.append(corner)
-            meas.append(
-                f"{dev_path}/measured_cv/{meas_csv}"
-            )
+            meas.append(f"{dev_path}/measured_cv/{meas_csv}")
 
             sdf = {
                 "length": leng,
@@ -163,7 +158,8 @@ def ext_iv_measured(dev_data_path, device, corners, dev_path):
 
     dim_df = df[["L (um)", "W (um)"]].copy()
     dim_df.rename(
-        columns={"L (um)": "length", "W (um)": "width"}, inplace=True,
+        columns={"L (um)": "length", "W (um)": "width"},
+        inplace=True,
     )
 
     all_dfs = []
@@ -213,17 +209,13 @@ def ext_iv_measured(dev_data_path, device, corners, dev_path):
             meas_csv = f"measured_A{width}_P{length}_t{temp}_{corner}.csv"
 
             os.makedirs(f"{dev_path}/measured_iv", exist_ok=True)
-            idf.to_csv(
-                f"{dev_path}/measured_iv/{meas_csv}"
-            )
+            idf.to_csv(f"{dev_path}/measured_iv/{meas_csv}", index=False)
 
             leng.append(length)
             wid.append(width)
             tempr.append(temp)
             cor.append(corner)
-            meas.append(
-                f"{dev_path}/measured_iv/{meas_csv}"
-            )
+            meas.append(f"{dev_path}/measured_iv/{meas_csv}")
 
             sdf = {
                 "length": leng,
@@ -244,7 +236,7 @@ def ext_iv_measured(dev_data_path, device, corners, dev_path):
 
 
 def run_sim(char, dirpath, device, length, width, corner, temp):
-    """ Run simulation at specific information and corner """
+    """Run simulation at specific information and corner"""
     netlist_tmp = f"./device_netlists/{char}.spice"
 
     info = {}
@@ -297,8 +289,7 @@ def run_sim(char, dirpath, device, length, width, corner, temp):
 def run_sims(char, df, dirpath, num_workers=mp.cpu_count()):
 
     results = []
-    with concurrent.futures.ThreadPoolExecutor(
-            max_workers=num_workers) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures_list = []
         for j, row in df.iterrows():
             futures_list.append(
@@ -321,27 +312,29 @@ def run_sims(char, df, dirpath, num_workers=mp.cpu_count()):
             except Exception as exc:
                 logging.info("Test case generated an exception: %s" % (exc))
 
-    sf = glob.glob(
-        f"{dirpath}/*_netlists_{char}/*.csv")  # stored simulated data files
+    sf = glob.glob(f"{dirpath}/*_netlists_{char}/*.csv")  # stored simulated data files
     for i in range(len(sf)):
-        sdf = pd.read_csv(sf[i], header=None, delimiter=r"\s+",)
-        sdf.rename(
-            columns={1: "diode_simulated", 0: "simulated_volt"}, inplace=True,
+        sdf = pd.read_csv(
+            sf[i],
+            header=None,
+            delimiter=r"\s+",
         )
-        sdf.to_csv(sf[i])
+        sdf.rename(
+            columns={1: "diode_simulated", 0: "simulated_volt"},
+            inplace=True,
+        )
+        sdf.to_csv(sf[i], index=False)
 
     df = pd.DataFrame(results)
 
-    df = df[
-        ["device", "length", "width", "temp", "corner", "diode_sim_unscaled"]
-        ]
+    df = df[["device", "length", "width", "temp", "corner", "diode_sim_unscaled"]]
     df["diode_sim"] = df["diode_sim_unscaled"]
 
     return df
 
 
 def main():
-        # ======= Checking ngspice  =======
+    # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
@@ -382,14 +375,13 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-
         for c in char:
 
             # cv section
 
             diode_data_files = glob.glob(
                 f"../../180MCU_SPICE_DATA/Diode/{dev}_{c}.nl_out.xlsx"
-                )
+            )
             if len(diode_data_files) < 1:
                 logging.error(f"# Can't find diode file for device: {dev}")
                 diode_file = ""
@@ -400,9 +392,7 @@ def main():
 
             avail_mess = f"# No {c}_datapoints available for"
             if diode_file == "":
-                logging.info(
-                    f"{avail_mess} validation for device {dev}"
-                    )
+                logging.info(f"{avail_mess} validation for device {dev}")
                 continue
 
             if "c" in c:
@@ -415,40 +405,41 @@ def main():
             else:
                 meas_df = []
 
-            meas_len = len(
-                pd.read_csv(glob.glob(f"{dev_path}/measured_{c}/*.csv")[1])
-                )
+            meas_len = len(pd.read_csv(glob.glob(f"{dev_path}/measured_{c}/*.csv")[1]))
 
             logging.info(
-                f"# Device {dev} number of {c}_measured_datapoints : {len(meas_df) * meas_len}")
+                f"# Device {dev} number of {c}_measured_datapoints : {len(meas_df) * meas_len}"
+            )
 
             sim_df = run_sims(c, meas_df, dev_path, 3)
-            sim_len = len(
-                pd.read_csv(glob.glob(f"{dev_path}/*_netlists_{c}/*.csv")[1])
-                )
+            sim_len = len(pd.read_csv(glob.glob(f"{dev_path}/*_netlists_{c}/*.csv")[1]))
             logging.info(
-                f"# Device {dev} number of {c}_simulated datapoints : {len(sim_df) * sim_len}" )
+                f"# Device {dev} number of {c}_simulated datapoints : {len(sim_df) * sim_len}"
+            )
 
             # compare section
 
             merged_df = meas_df.merge(
-                sim_df, on=["device", "corner", "length", "width", "temp"],
-                how="left"
+                sim_df, on=["device", "corner", "length", "width", "temp"], how="left"
             )
 
             merged_dfs = []
             for i in range(len(merged_df)):
                 measured_data = pd.read_csv(merged_df["diode_measured"][i])
                 simulated_data = pd.read_csv(merged_df["diode_sim"][i])
-                result_data = simulated_data.merge(measured_data, how="left")
+                measured_data["tmp"] = 1
+                simulated_data["tmp"] = 1
+                result_data = simulated_data.merge(
+                    measured_data, on=["tmp"], how="left"
+                )
+                result_data = result_data.drop("tmp", axis=1)
                 result_data["corner"] = (
                     merged_df["diode_measured"][i]
                     .split("/")[-1]
                     .split("_")[-1]
                     .split(".")[0]
                 )
-                result_data["device"] = \
-                    merged_df["diode_measured"][i].split("/")[1]
+                result_data["device"] = merged_df["diode_measured"][i].split("/")[1]
                 result_data["length"] = (
                     merged_df["diode_measured"][i]
                     .split("/")[-1]
@@ -470,8 +461,7 @@ def main():
 
                 result_data["error"] = (
                     np.abs(
-                        result_data["diode_simulated"]
-                        - result_data["diode_measured"]
+                        result_data["diode_simulated"] - result_data["diode_measured"]
                     )
                     * 100.0
                     / result_data["diode_measured"]
@@ -495,9 +485,7 @@ def main():
 
             merged_out = pd.concat(merged_dfs)
 
-            merged_out.to_csv(
-                f"{dev_path}/error_analysis_{c}.csv", index=False
-                )
+            merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
 
             if merged_out["error"].min() > 100:
                 min_error = 100
@@ -515,14 +503,15 @@ def main():
                 mean_error = merged_out["error"].mean()
 
             logging.info(
-                f"# Device {dev} min error: {min_error:.2f}, max error: {max_error:.2f}, mean error {mean_error:.2f}")
+                f"# Device {dev} min error: {min_error:.2f}, max error: {max_error:.2f}, mean error {mean_error:.2f}"
+            )
 
             if merged_out["error"].max() < PASS_THRESH:
                 logging.info(f"# Device {dev} has passed regression.")
             else:
                 logging.error(
-                    f"# Device {dev} has failed regression. Needs more analysis.")
-
+                    f"# Device {dev} has failed regression. Needs more analysis."
+                )
 
 
 # # ================================================================
@@ -546,6 +535,6 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-    
+
     # Calling main function
     main()
