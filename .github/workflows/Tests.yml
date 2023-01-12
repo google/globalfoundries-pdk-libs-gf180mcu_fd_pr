@@ -63,8 +63,8 @@ jobs:
             qtmultimedia5-dev \
             libqt5multimediawidgets5 \
             libqt5svg5-dev
-          wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.10-1_amd64.deb
-          sudo dpkg -i ./klayout_0.27.10-1_amd64.deb
+          wget https://www.klayout.org/downloads/Ubuntu-22/klayout_0.28.2-1_amd64.deb
+          sudo dpkg -i ./klayout_0.28.2-1_amd64.deb
           sudo apt install -f -y
 
       - uses: actions/checkout@v3
