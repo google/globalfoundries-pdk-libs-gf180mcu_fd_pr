@@ -261,12 +261,11 @@ def run_sim(char, dirpath, device, length, width, corner, temp):
     net_sp = f"netlist_A{width_str}_P{length_str}_t{temp_str}_{corner}.spice"
     res_csv = f"simulated_A{width_str}_P{length_str}_t{temp_str}_{corner}.csv"
     netlist_path = f"{dirpath}/{device}_netlists_{char}/{net_sp}"
-    result_path = f"{dirpath}/simulated_{char}/{res_csv}"
+    result_path = f"{dirpath}/{device}_netlists_{char}/{res_csv}"
 
     with open(netlist_tmp) as f:
         tmpl = Template(f.read())
         os.makedirs(f"{dirpath}/{device}_netlists_{char}", exist_ok=True)
-        os.makedirs(f"{dirpath}/simulated_{char}", exist_ok=True)
 
         with open(netlist_path, "w") as netlist:
             netlist.write(
@@ -323,7 +322,7 @@ def run_sims(char, df, dirpath, num_workers=mp.cpu_count()):
                 logging.info("Test case generated an exception: %s" % (exc))
 
     sf = glob.glob(
-        f"{dirpath}/simulated_{char}/*.csv")  # stored simulated data files
+        f"{dirpath}/*_netlists_{char}/*.csv")  # stored simulated data files
     for i in range(len(sf)):
         sdf = pd.read_csv(sf[i], header=None, delimiter=r"\s+",)
         sdf.rename(
@@ -425,7 +424,7 @@ def main():
 
             sim_df = run_sims(c, meas_df, dev_path, 3)
             sim_len = len(
-                pd.read_csv(glob.glob(f"{dev_path}/simulated_{c}/*.csv")[1])
+                pd.read_csv(glob.glob(f"{dev_path}/*_netlists_{c}/*.csv")[1])
                 )
             logging.info(
                 f"# Device {dev} number of {c}_simulated datapoints : {len(sim_df) * sim_len}" )
