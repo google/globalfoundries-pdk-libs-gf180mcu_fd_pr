@@ -53,6 +53,20 @@ jobs:
 
     steps:
 
+      - name: Installing Klayout
+        run: |
+          sudo apt update -qq -y
+          sudo apt install -qq -y \
+            qt5-default \
+            qttools5-dev \
+            libqt5xmlpatterns5-dev \
+            qtmultimedia5-dev \
+            libqt5multimediawidgets5 \
+            libqt5svg5-dev
+          wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.10-1_amd64.deb
+          sudo dpkg -i ./klayout_0.27.10-1_amd64.deb
+          sudo apt install -f -y
+
       - uses: actions/checkout@v3
 
       - uses: actions/setup-python@v3
@@ -62,20 +76,6 @@ jobs:
           cache-dependency-path: '**/requirements.test.txt'
 
       - run: pip install -r ./rules/klayout/requirements.test.txt
-
-      - name: Installing Klayout
-        run: |
-          sudo apt update -qq -y
-          wget https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.10-1_amd64.deb
-          sudo apt install -qq -y \
-            qt5-default \
-            qttools5-dev \
-            libqt5xmlpatterns5-dev \
-            qtmultimedia5-dev \
-            libqt5multimediawidgets5 \
-            libqt5svg5-dev
-          sudo dpkg -i ./klayout_0.27.10-1_amd64.deb
-          sudo apt install -f -y
 
       - name: Testing ${{ matrix.type }} for ${{ matrix.test }}
         run: |
