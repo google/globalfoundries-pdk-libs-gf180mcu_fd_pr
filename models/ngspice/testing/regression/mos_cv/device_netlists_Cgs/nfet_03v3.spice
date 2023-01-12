@@ -64,7 +64,7 @@ foreach t 25
 	
 	print @mn[cgs]
         
-        wrdata mos_cv_regr/nfet_03v3/simulated_Cgs/simulated_W{{width}}_L{{length}}.csv -{@mn[cgs]*1e15} 
+        wrdata mos_cv_regr/nfet_03v3/nfet_03v3_netlists_Cgs/simulated_W{{width}}_L{{length}}.csv -{@mn[cgs]*1e15} 
         
         reset
         let vgs_counter = vgs_counter + 1

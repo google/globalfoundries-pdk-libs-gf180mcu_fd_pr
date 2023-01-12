@@ -64,7 +64,7 @@ foreach t 25
 	
 	print @mn[cgb]
         
-        wrdata mos_cv_regr/pfet_03v3/simulated_Cgc/simulated_W{{width}}_L{{length}}.csv -{@mn[cgb]*1e15} 
+        wrdata mos_cv_regr/pfet_03v3/pfet_03v3_netlists_Cgc/simulated_W{{width}}_L{{length}}.csv -{@mn[cgb]*1e15} 
         
         reset
         let vbs_counter = vbs_counter + 1

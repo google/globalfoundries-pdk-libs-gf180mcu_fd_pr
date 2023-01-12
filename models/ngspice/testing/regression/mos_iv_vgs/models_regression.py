@@ -308,8 +308,7 @@ def run_sim(dirpath, device, id_rds, width, length, temp=25):
     s = f"netlist_w{width_str}_l{length_str}_t{temp_str}.spice"
     netlist_path = f"{dirpath}/{device}_netlists_{id_rds}/{s}"
     s = f"T{temp}_simulated_W{width_str}_L{length_str}.csv"
-    result_path = f"{dirpath}/simulated_{id_rds}/{s}"
-    os.makedirs(f"{dirpath}/simulated_{id_rds}", exist_ok=True)
+    result_path = f"{dirpath}/{device}_netlists_{id_rds}/{s}"
 
     with open(netlist_tmp) as f:
         tmpl = Template(f.read())
@@ -387,7 +386,7 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
             except Exception as exc:
                 logging.info("Test case generated an exception: %s" % (exc))
 
-    sf = glob.glob(f"{dirpath}/simulated_{id_rds}/*.csv")
+    sf = glob.glob(f"{dirpath}/{device}_netlists_{id_rds}/*.csv")
 
     # sweeping on all generated cvs files
     for i in range(len(sf)):
@@ -470,7 +469,7 @@ def error_cal(
         w = df["W (um)"].iloc[int(i)]
         t = df["temp"].iloc[int(i)]
         s = f"T{t}_simulated_W{w}_L{length}.csv"
-        sim_path = f"mos_iv_regr/{device}/simulated_{id_rds}/{s}"
+        sim_path = f"mos_iv_regr/{device}/{device}_netlists_{id_rds}/{s}"
 
         simulated_data = pd.read_csv(sim_path)
 

@@ -30,7 +30,7 @@ set filetype=ascii
 
 dc Vds 0 3.3 0.05 Vgs 0.8 3.3 0.5
 print -i(Vds)
-wrdata mos_iv_regr/nfet_03v3_dss_iv/simulated_Id/T{{temp}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
+wrdata mos_iv_regr/nfet_03v3_dss_iv/nfet_03v3_dss_iv_netlists_Id/T{{temp}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
 .endc
 
 

@@ -326,8 +326,7 @@ def run_sim(dirpath, device, width, length, nf):
         s = f"netlist_w{width_str}_l{length_str}.spice"
         netlist_path = f"{dirpath}/{device}_netlists_Cg{cap}/{s}"
         s = f"simulated_W{width_str}_L{length_str}.csv"
-        result_path = f"{dirpath}/simulated_Cg{cap}/{s}"
-        os.makedirs(f"{dirpath}/simulated_Cg{cap}", exist_ok=True)
+        result_path = f"{dirpath}/{device}_netlists_Cg{cap}/{s}"
         with open(netlist_tmp) as f:
             tmpl = Template(f.read())
             os.makedirs(f"{dirpath}/{device}_netlists_Cg{cap}", exist_ok=True)
@@ -388,7 +387,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
 
     caps = ["c", "d", "s"]
     for cap in caps:
-        sf = glob.glob(f"{dirpath}/simulated_Cg{cap}/*.csv")
+        sf = glob.glob(f"{dirpath}/{device}_netlists_Cg{cap}/*.csv")
 
         # sweeping on all generated cvs files
         for i in range(len(sf)):
@@ -495,7 +494,7 @@ def error_cal(
             length = df["L (um)"].iloc[int(i)]
             w = df["W (um)"].iloc[int(i)]
             s = f"simulated_W{w}_L{length}.csv"
-            sim_path = f"mos_cv_regr/{device}/simulated_Cg{cap}/{s}"
+            sim_path = f"mos_cv_regr/{device}/{device}_netlists_Cg{cap}/{s}"
 
             simulated_data = pd.read_csv(sim_path)
 
@@ -686,7 +685,7 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        data_files = glob.glob(f"measured_data/{measured_data[int(i*0.5)]}.nl_out.xlsx")
+        data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{measured_data[int(i*0.5)]}.nl_out.xlsx")
         if len(data_files) < 1:
             logging.erorr(f"# Can't find file for device: {dev}")
             file = ""
@@ -757,13 +756,13 @@ def main():
 
             # logging.infoing min, max, mean errors to the consol
             logging.info(
-                f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
+                f"# Device {dev} Cg{cap} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
             if max_error_total < PASS_THRESH:
-                logging.info(f"# Device {dev} has passed regression.")
+                logging.info(f"# Device {dev} Cg{cap} has passed regression.")
             else:
-                logging.error(f"# Device {dev} has failed regression.")
+                logging.error(f"# Device {dev} Cg{cap} has failed regression.")
 
 
 # # ================================================================
