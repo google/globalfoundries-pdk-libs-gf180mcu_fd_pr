@@ -336,9 +336,10 @@ def analyze_regression_run(tc_cv_df, all_tc_df, output_path):
 
     return cov_df
 
-def convert_results_db_to_gds()
+def convert_results_db_to_gds():
+    pass
 
-def run_regression(drc_dir, testing_dir, run_name, target_table, target_rule, cpu_count):
+def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
     """
     Running Regression Procedure.
 
@@ -348,10 +349,8 @@ def run_regression(drc_dir, testing_dir, run_name, target_table, target_rule, cp
     ----------
     drc_dir : string
         Path string to the DRC directory where all the DRC files are located.
-    testing_dir : string
-        Path string to the location of the testing code and output.
-    run_name : string
-        Name of the run folder used to store all run output.
+    output_path : str
+        Path string to the location of the output results of the run.
     target_table : string or None
         Name of table that we want to run regression for. If None, run all found.
     target_rule : string or None
@@ -364,13 +363,16 @@ def run_regression(drc_dir, testing_dir, run_name, target_table, target_rule, cp
         If all regression passed, it returns true. If any of the rules failed it returns false.
     """
     
-    output_path = os.path.join(testing_dir, run_name)
-
     ## Parse Existing Rules
     rules_df = parse_existing_rules(drc_dir, output_path)
     logging.info("## Total number of rules found: {}".format(len(rules_df)))
     print(rules_df)
 
+    test_cases_path = os.path.join(drc_dir, "testing")
+
+    ## TODO: Completing DRC regression 
+    
+    exit ()
     ## Get tc_df with the correct rule deck per rule.
     tc_df = tc_df.merge(rules_df, how="left", on="rule_name")
     tc_df["run_id"] = list(range(len(tc_df)))
@@ -383,7 +385,7 @@ def run_regression(drc_dir, testing_dir, run_name, target_table, target_rule, cp
     print(cov_df)
 
     ## Run all test cases
-    all_tc_df = run_all_test_cases(tc_df, output_path, thrCount)
+    all_tc_df = run_all_test_cases(tc_df, output_path, cpu_count)
     print(all_tc_df)
     all_tc_df.to_csv(
         os.path.join(output_path, "all_test_cases_results.csv"), index=False
@@ -407,37 +409,40 @@ def run_regression(drc_dir, testing_dir, run_name, target_table, target_rule, cp
         logging.info("## All testcases passed.")
         return True
 
-def main(args: dict, drc_dir: str, run_name: str):
+def main(drc_dir: str, rules_dir: str, output_path: str, target_table: str, target_rule: str):
     """
-    main run main functionality
+    Main Procedure.
 
     This function is the main execution procedure
 
     Parameters
     ----------
-    args : dict
-        Dictionary of arguments passed to the command line.
-    testing_dir : str
-        String that holds the full path of the location of the testing dir.
     drc_dir : str
-        String that holds the full path of the rule deck files.
-    run_name : str
-        Name of the run that we want to use for this run.
-        
+        Path string to the DRC directory where all the DRC files are located.
+    rules_dir : str
+        Path string to the location of all rule deck files for that variant.
+    output_path : str
+        Path string to the location of the output results of the run.
+    target_table : str or None
+        Name of table that we want to run regression for. If None, run all found.
+    target_rule : str or None
+        Name of rule that we want to run regression for. If None, run all found.
+    Returns
+    -------
+    bool
+        If all regression passed, it returns true. If any of the rules failed it returns false.
     """
 
+    # No. of threads
+    cpu_count = os.cpu_count() if args["--mp"] == None else int(args["--mp"])
+    
     # Pandas printing setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
     pd.set_option("max_colwidth", None)
     pd.set_option("display.width", 1000)
 
-    # No. of threads
-    cpu_count = os.cpu_count() if args["--mp"] == None else int(args["--mp"])
-
-    target_table = args["--table_name"]
-    target_rule = args["--rule_name"]
-    
+    # info logs for args
     logging.info("## Run folder is: {}".format(run_name))
     logging.info("## Target Table is: {}".format(target_table))
     logging.info("## Target rule is: {}".format(target_rule))
@@ -445,9 +450,9 @@ def main(args: dict, drc_dir: str, run_name: str):
     # Start of execution time
     t0 = time.time()
 
-    # Calling main function
+    # Calling regression function
     run_status = run_regression(
-        drc_dir, testing_dir, run_name, target_table, target_rule, cpu_count
+        drc_dir, output_path, target_table, target_rule, cpu_count
     )
 
     #  End of execution time
@@ -466,19 +471,25 @@ def main(args: dict, drc_dir: str, run_name: str):
 
 if __name__ == "__main__":
 
-    # arguments
+    # docopt reader
     args = docopt(__doc__, version="DRC Regression: 0.2")
     
+    # arguments
     run_name = args["--run_name"]
+    target_table = args["--table_name"]
+    target_rule = args["--rule_name"]
 
     if run_name is None:
         # logs format
         run_name = datetime.utcnow().strftime("unit_tests_%Y_%m_%d_%H_%M_%S")
 
+    # Paths of regression dirs
     testing_dir = os.path.dirname(os.path.abspath(__file__))
     drc_dir = os.path.dirname(testing_dir)
+    rules_dir = os.path.join(drc_dir, "rule_decks")
     output_path = os.path.join(testing_dir, run_name)
 
+    # Creating output dir
     os.makedirs(output_path, exist_ok=True)
 
     # logs format
@@ -491,5 +502,8 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-
-    main(args, drc_dir, run_name)
+    
+    # Calling main function
+    run_status = main(
+        drc_dir, rules_dir, output_path, target_table, target_rule
+    )
