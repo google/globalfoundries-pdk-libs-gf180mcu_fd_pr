@@ -268,7 +268,7 @@ def main():
             logging.info(f"# Can't find wl file for device: {dev}")
             wl_file = ""
         else:
-            wl_file = wl_data_files[0]
+            wl_file = os.path.abspath(wl_data_files[0])
         logging.info(f"# W/L data points file : {wl_file}")
 
         temp_data_files = glob.glob(
