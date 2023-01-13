@@ -14,24 +14,25 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-Vds D_tn 0 dc 3.3
-Vgs G_tn 0 3.3
+Vds D_tn 0 dc -3.3
+Vgs G_tn 0 -3.3
 
 .temp {{temp}}
 .options tnom={{temp}}
  
 
-xmn1 D_tn G_tn 0 0 nfet_03v3 W = {{width}}u L = {{length}}u ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+xmn1 D_tn G_tn 0 0 {{device}} W = {{width}}u L = {{length}}u ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
 
 **** begin architecture code
 
 
 .control
 set filetype=ascii
+set wr_singlescale
+set wr_vecnames
+dc Vds {{vds}} Vgs {{vgs}}
 
-dc Vds 0 3.3 0.05 Vgs 0.8 3.3 0.5
-print -i(Vds)
-wrdata mos_iv_regr/nfet_03v3_iv/nfet_03v3_iv_netlists_Id/T{{temp}}_simulated_W{{width}}_L{{length}}.csv -i(Vds)
+wrdata mos_iv_regr/{{device}}/{{device}}_netlists_Id/T{{temp}}_simulated_W{{width}}_L{{length}}.csv i(Vds) v(G_tn) v(D_tn) 
 .endc
 
 
