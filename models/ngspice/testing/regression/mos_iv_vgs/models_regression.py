@@ -33,6 +33,7 @@ import logging
 from datetime import datetime
 
 pd.options.mode.chained_assignment = None  # default='warn'
+
 # constants
 PASS_THRESH = 2.0
 MOS = [0.8, 1.3, 1.8, 2.3, 2.8, 3.3]
@@ -523,6 +524,12 @@ def error_cal(
     else:
         mos = MOS
 
+    # create a new dataframe for rms error
+    rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
+    # fill first row with zeros
+    rms_df.loc[0] = [0, 0, 0, 0]
+         
+    
     for i in range(len(sim_df)):
         length = df["L (um)"].iloc[int(i)]
         w = df["W (um)"].iloc[int(i)]
@@ -564,57 +571,73 @@ def error_cal(
         ]:
             result_data.loc[0] = 1
 
-        result_data["step1_error"] = (
+        result_data["vds_step1_error"] = (
             np.abs(result_data["measured_vgs1"] - result_data["vb1"])
             * 100.0
             / (result_data["measured_vgs1"])
         )
-        result_data["step2_error"] = (
+        result_data["vds_step2_error"] = (
             np.abs(result_data["measured_vgs2"] - result_data["vb2"])
             * 100.0
             / (result_data["measured_vgs2"])
         )
-        result_data["step3_error"] = (
+        result_data["vds_step3_error"] = (
             np.abs(result_data["measured_vgs3"] - result_data["vb3"])
             * 100.0
             / (result_data["measured_vgs3"])
         )
-        result_data["step4_error"] = (
+        result_data["vds_step4_error"] = (
             np.abs(result_data["measured_vgs4"] - result_data["vb4"])
             * 100.0
             / (result_data["measured_vgs4"])
         )
-        result_data["step5_error"] = (
+        result_data["vds_step5_error"] = (
             np.abs(result_data["measured_vgs5"] - result_data["vb5"])
             * 100.0
             / (result_data["measured_vgs5"])
         )
-        result_data["step6_error"] = (
+        result_data["vds_step6_error"] = (
             np.abs(result_data["measured_vgs6"] - result_data["vb6"])
             * 100.0
             / (result_data["measured_vgs6"])
         )
+        result_data["length"] = length
+        result_data["width"] = w
+        result_data["temp"] = t
+        
         result_data["error"] = (
             np.abs(
-                result_data["step1_error"]
-                + result_data["step2_error"]
-                + result_data["step3_error"]
-                + result_data["step4_error"]
-                + result_data["step5_error"]
-                + result_data["step6_error"]
+                result_data["vds_step1_error"]
+                + result_data["vds_step2_error"]
+                + result_data["vds_step3_error"]
+                + result_data["vds_step4_error"]
+                + result_data["vds_step5_error"]
+                + result_data["vds_step6_error"]
             )
             / 6
         )
+                # get rms error
+        result_data["rms_error"] = np.sqrt(
+            np.mean(result_data["error"] ** 2)
+        )
+        # fill rms dataframe
+        rms_df.loc[i] = [t, w, length, result_data["rms_error"].iloc[0]]
+    
+        
+
 
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
+
         merged_out.fillna(0, inplace=True)
         merged_out.to_csv(f"{dev_path}/error_analysis_{id_rds}.csv", index=False)
-    return None
+        # drop duplicates
+        rms_df.to_csv(f"{dev_path}/finalerror_analysis_{id_rds}.csv", index=False)
+    return rms_df
 
 
 def main():
-    """Main function applies all regression steps"""
+    """Main function applies all regression vds_steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
     if ngspice_v_ == "":
@@ -693,25 +716,16 @@ def main():
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
         for s in ["Id" , "Rds"]:  
-            merged_all = pd.read_csv(f"{dev_path}/error_analysis_{s}.csv")
+            merged_all = pd.read_csv(f"{dev_path}/finalerror_analysis_{s}.csv")
 
             # calculating the error of each device and reporting it
             min_error_total = float()
             max_error_total = float()
             error_total = float()
 
-            # number of rows in the final excel sheet
-            num_rows = merged_all["error"].count()
-
-            for n in range(num_rows):
-                error_total += merged_all["error"][n]
-                if merged_all["error"][n] > max_error_total:
-                    max_error_total = merged_all["error"][n]
-                elif merged_all["error"][n] < min_error_total:
-                    min_error_total = merged_all["error"][n]
-
-            mean_error_total = error_total / num_rows
-
+            min_error_total = merged_all["rms_error"].min()
+            max_error_total = merged_all["rms_error"].max()
+            mean_error_total = merged_all["rms_error"].mean()
             # Making sure that min, max, mean errors are not > 100%
             if min_error_total > 100:
                 min_error_total = 100
