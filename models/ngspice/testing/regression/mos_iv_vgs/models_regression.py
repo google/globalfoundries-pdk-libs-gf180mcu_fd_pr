@@ -526,8 +526,6 @@ def error_cal(
 
     # create a new dataframe for rms error
     rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
-    # fill first row with zeros
-    rms_df.loc[0] = [0, 0, 0, 0]
          
     
     for i in range(len(sim_df)):
@@ -562,14 +560,24 @@ def error_cal(
         )
         measured_data["v-sweep"] = simulated_data["v-sweep"]
         result_data = simulated_data.merge(measured_data, how="left")
-        # only for dss
-        if device in [
-            "nfet_03v3_dss",
-            "pfet_03v3_dss",
-            "nfet_06v0_dss",
-            "pfet_06v0_dss",
-        ]:
-            result_data.loc[0] = 1
+        if id_rds == "Id":
+            # clipping all the  values to lowest_curr
+            lowest_curr = 5e-12
+            result_data["measured_vgs1"] = result_data["measured_vgs1"].clip(lower=lowest_curr)
+            result_data["measured_vgs2"] = result_data["measured_vgs2"].clip(lower=lowest_curr)
+            result_data["measured_vgs3"] = result_data["measured_vgs3"].clip(lower=lowest_curr)
+            result_data["measured_vgs4"] = result_data["measured_vgs4"].clip(lower=lowest_curr)
+            result_data["measured_vgs5"] = result_data["measured_vgs5"].clip(lower=lowest_curr)
+            result_data["measured_vgs6"] = result_data["measured_vgs6"].clip(lower=lowest_curr)
+            result_data["vb1"] = result_data["vb1"].clip(lower=lowest_curr)
+            result_data["vb2"] = result_data["vb2"].clip(lower=lowest_curr)
+            result_data["vb3"] = result_data["vb3"].clip(lower=lowest_curr)
+            result_data["vb4"] = result_data["vb4"].clip(lower=lowest_curr)
+            result_data["vb5"] = result_data["vb5"].clip(lower=lowest_curr)
+            result_data["vb6"] = result_data["vb6"].clip(lower=lowest_curr)
+
+
+
 
         result_data["vds_step1_error"] = (
             np.abs(result_data["measured_vgs1"] - result_data["vb1"])
@@ -604,7 +612,8 @@ def error_cal(
         result_data["length"] = length
         result_data["width"] = w
         result_data["temp"] = t
-        
+        # fill nan values with 0
+        result_data.fillna(0, inplace=True)
         result_data["error"] = (
             np.abs(
                 result_data["vds_step1_error"]
@@ -633,7 +642,7 @@ def error_cal(
         merged_out.to_csv(f"{dev_path}/error_analysis_{id_rds}.csv", index=False)
         # drop duplicates
         rms_df.to_csv(f"{dev_path}/finalerror_analysis_{id_rds}.csv", index=False)
-    return rms_df
+    return None
 
 
 def main():
@@ -721,8 +730,7 @@ def main():
             # calculating the error of each device and reporting it
             min_error_total = float()
             max_error_total = float()
-            error_total = float()
-
+            mean_error_total = float()
             min_error_total = merged_all["rms_error"].min()
             max_error_total = merged_all["rms_error"].max()
             mean_error_total = merged_all["rms_error"].mean()

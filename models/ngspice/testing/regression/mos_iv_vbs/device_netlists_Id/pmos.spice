@@ -1,5 +1,5 @@
 ***************************
-** nfet_06v0_nvt_t_id
+** nfet_03v3_t_id
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -14,15 +14,15 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-* power supply
-Vds D_tn 0 dc=0.05
-Vgs G_tn 0 dc=6
+Vds D_tn 0 dc=-0.05
+Vgs G_tn 0 dc=-6
 Vbs B_tn 0 dc=0
 
 .temp {{temp}}
 .options tnom={{temp}}
+ 
 
-xmn1 D_tn G_tn 0 B_tn nfet_06v0_nvt W = {{width}}u L = {{length}}u
+xmn1 D_tn G_tn 0 B_tn {{device}} W = {{width}}u L = {{length}}u 
 
 **** begin architecture code
 
@@ -31,9 +31,9 @@ xmn1 D_tn G_tn 0 B_tn nfet_06v0_nvt W = {{width}}u L = {{length}}u
 set filetype=ascii
 set wr_singlescale
 set wr_vecnames
-dc Vgs -0.5 6 0.05 Vbs 0 -3 -0.75
-print -i(Vds)
-wrdata mos_iv_regr/nfet_06v0_nvt_iv/nfet_06v0_nvt_iv_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv -i(Vds) v(B_tn) v(G_tn) 
+dc Vgs {{vgs}} Vbs {{vbs}} 
+
+wrdata mos_iv_regr/{{device}}/{{device}}_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv i(Vds) v(B_tn) v(G_tn) 
 .endc
 
 
@@ -42,6 +42,7 @@ wrdata mos_iv_regr/nfet_06v0_nvt_iv/nfet_06v0_nvt_iv_netlists/T{{temp}}_simulate
 
 .include "../../../design.ngspice"
 .lib "../../../sm141064.ngspice" typical
+
 
 **** end architecture code
 
