@@ -1,5 +1,5 @@
 ***************************
-** nfet_03v3_cv
+** nfet_03v3_t_id
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -14,10 +14,12 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
+
 ** library calling
 
 .include "../../../design.ngspice"
 .lib "../../../sm141064.ngspice" typical
+
 
 
 ** Circuit Description **
@@ -29,21 +31,16 @@ vbs S_tn 0 dc=0
 .temp 25
 .options tnom=25
 
-*l_diff_min = 0.24
-* ad = int((nf+1)/2) * width/nf * 0.24       = 24u                         
-* pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
 
 * circuit
-xmn 0 G_tn 0 S_tn pfet_03v3_dss W = {{width}}u L = {{length}}u nf={{nf}} ad= 24u pd=200.48u as=24u ps=200.48u
+xmn 0 G_tn 0 S_tn {{device}} W = {{width}}u L = {{length}}u nf={{nf}} ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
 
 .control
 set filetype=ascii
+set wr_singlescale
+set wr_vecnames
 
-let vgs_min  = -3.3
-let vgs_step = 0.1
-let vgs_max  = 3.3
-
-compose  vbs_vector   start=0          stop=-3.3          step=-0.825
+compose  vbs_vector   start={{vbs1}}          stop={{vbs2}}          step={{vbs3}}
 
 set appendwrite
 
@@ -58,13 +55,14 @@ foreach t 25
         *******************
         ** simulation part
         *******************
-        DC vgs $&vgs_min $&vgs_max $&vgs_step
+        DC vgs {{vgs}}
     
         * ** parameters calculation
 	
-	print @m.xmn.m0[cgb]
+	let Cap = -{@m.xmn.m0[cgb]*1e15}
+        let Vg = -1*@m.xmn.m0[vbs]
         
-        wrdata mos_cv_regr/pfet_03v3_dss/pfet_03v3_dss_netlists_Cgc/simulated_W{{width}}_L{{length}}.csv -{@m.xmn.m0[cgb]*1e15} 
+        wrdata mos_cv_regr/{{device}}/{{device}}_netlists_Cgc/simulated_W{{width}}_L{{length}}.csv Cap Vg
         
         reset
         let vbs_counter = vbs_counter + 1

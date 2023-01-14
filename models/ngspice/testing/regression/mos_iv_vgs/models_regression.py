@@ -640,7 +640,6 @@ def error_cal(
 
         merged_out.fillna(0, inplace=True)
         merged_out.to_csv(f"{dev_path}/error_analysis_{id_rds}.csv", index=False)
-        # drop duplicates
         rms_df.to_csv(f"{dev_path}/finalerror_analysis_{id_rds}.csv", index=False)
     return None
 
