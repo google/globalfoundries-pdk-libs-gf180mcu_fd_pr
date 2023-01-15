@@ -312,17 +312,18 @@ def run_sims(
         mos = NMOS3P3_VGS
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        df2 = pd.read_csv(
-            sf[i]
-        )
-        i_v="{-I(VDS)}" if device[0] == "n" else "{I(VDS)}"
+        df2 = pd.read_csv(sf[i])
+        i_v = "{-I(VDS)}" if device[0] == "n" else "{I(VDS)}"
         if id_rds == "Rds":
             i_v = "{1/N(XMN1:M0:GDS)}"
-        if device in ["nfet_06v0", "pfet_06v0","nfet_06v0_dss", "pfet_06v0_dss"] and id_rds == "Rds":
+        if (
+            device in ["nfet_06v0", "pfet_06v0", "nfet_06v0_dss", "pfet_06v0_dss"]
+            and id_rds == "Rds"
+        ):
             # reciprocal the column values
-            df2[i_v] = df2[i_v].apply(np.reciprocal)            
+            df2[i_v] = df2[i_v].apply(np.reciprocal)
         sdf = df2.pivot(index="V(D_TN)", columns="V(G_TN)", values=i_v)
-   
+
         sdf.rename(
             columns={
                 mos[0]: "vb1",
@@ -335,7 +336,7 @@ def run_sims(
             inplace=True,
         )
         if device[0] == "p":
-             # reverse the rows
+            # reverse the rows
             sdf = sdf.iloc[::-1]
 
         sdf.to_csv(sf[i], index=True, header=True, sep=",")
@@ -413,12 +414,24 @@ def error_cal(
         if id_rds == "Id":
             # clipping all the  values to lowest_curr
             lowest_curr = 5e-12
-            result_data["measured_vgs1"] = result_data["measured_vgs1"].clip(lower=lowest_curr)
-            result_data["measured_vgs2"] = result_data["measured_vgs2"].clip(lower=lowest_curr)
-            result_data["measured_vgs3"] = result_data["measured_vgs3"].clip(lower=lowest_curr)
-            result_data["measured_vgs4"] = result_data["measured_vgs4"].clip(lower=lowest_curr)
-            result_data["measured_vgs5"] = result_data["measured_vgs5"].clip(lower=lowest_curr)
-            result_data["measured_vgs6"] = result_data["measured_vgs6"].clip(lower=lowest_curr)
+            result_data["measured_vgs1"] = result_data["measured_vgs1"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs2"] = result_data["measured_vgs2"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs3"] = result_data["measured_vgs3"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs4"] = result_data["measured_vgs4"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs5"] = result_data["measured_vgs5"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs6"] = result_data["measured_vgs6"].clip(
+                lower=lowest_curr
+            )
             result_data["vb1"] = result_data["vb1"].clip(lower=lowest_curr)
             result_data["vb2"] = result_data["vb2"].clip(lower=lowest_curr)
             result_data["vb3"] = result_data["vb3"].clip(lower=lowest_curr)
@@ -471,10 +484,8 @@ def error_cal(
             )
             / 6
         )
-               # get rms error
-        result_data["rms_error"] = np.sqrt(
-            np.mean(result_data["error"] ** 2)
-        )
+        # get rms error
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
         rms_df = rms_df.append(
             {
                 "device": device,
@@ -533,8 +544,6 @@ def main():
 
         logging.info("######" * 10)
         logging.info(f"# Checking Device {device}")
-
-
 
         vds = nmos_vds
         if device[0] == "p":

@@ -255,27 +255,25 @@ def run_sims(
     sf = glob.glob(f"{dirpath}/simulated_{Id_sim}/*.csv")
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        df2 = pd.read_csv(
-            sf[i]
-        )
+        df2 = pd.read_csv(sf[i])
         if device == "npn":
-            i_v="{-I(VCP)}"
+            i_v = "{-I(VCP)}"
             if Id_sim == "Ib":
                 i_v = "{-I(VBP)}"
             sdf = df2.pivot(index="V(B)", columns="V(C)", values=i_v)
             sdf.rename(
-            columns={1: "vcp1", 2: "vcp2", 3: "vcp3"},
-            inplace=True,
-            )    
+                columns={1: "vcp1", 2: "vcp2", 3: "vcp3"},
+                inplace=True,
+            )
         else:
             i_v = "{I(VCP)}"
             if Id_sim == "Ib":
                 i_v = "{I(VBP)}"
             sdf = df2.pivot(index="V(B)", columns="V(C)", values=i_v)
             sdf.rename(
-            columns={-1: "vcp1", -2: "vcp2", -3: "vcp3"},
-            inplace=True,
-            )   
+                columns={-1: "vcp1", -2: "vcp2", -3: "vcp3"},
+                inplace=True,
+            )
             # reverse the rows
             sdf = sdf.iloc[::-1]
         sdf.to_csv(sf[i], index=True, header=True, sep=",")
@@ -306,7 +304,7 @@ def error_cal(
     merged_dfs = list()
     # create a new dataframe for rms error
     rms_df = pd.DataFrame(columns=["device", "temp", "rms_error"])
-                
+
     meas_df.to_csv(
         f"bjt_beta_reg/{device}/{device}_measured.csv", index=False, header=True
     )
@@ -351,13 +349,12 @@ def error_cal(
         result_data = simulated_data.merge(measured_data, how="left")
         # clipping all the  values to lowest_curr
         lowest_curr = 5e-12
-        result_data[f"vcp1"] = result_data[f"vcp1"].clip(lower=lowest_curr)
-        result_data[f"vcp2"] = result_data[f"vcp2"].clip(lower=lowest_curr)
-        result_data[f"vcp3"] = result_data[f"vcp3"].clip(lower=lowest_curr)
-        result_data[f"m_vcp1"] = result_data[f"m_vcp1"].clip(lower=lowest_curr)
-        result_data[f"m_vcp2"] = result_data[f"m_vcp2"].clip(lower=lowest_curr)
-        result_data[f"m_vcp3"] = result_data[f"m_vcp3"].clip(lower=lowest_curr)
-
+        result_data["vcp1"] = result_data["vcp1"].clip(lower=lowest_curr)
+        result_data["vcp2"] = result_data["vcp2"].clip(lower=lowest_curr)
+        result_data["vcp3"] = result_data["vcp3"].clip(lower=lowest_curr)
+        result_data["m_vcp1"] = result_data["m_vcp1"].clip(lower=lowest_curr)
+        result_data["m_vcp2"] = result_data["m_vcp2"].clip(lower=lowest_curr)
+        result_data["m_vcp3"] = result_data["m_vcp3"].clip(lower=lowest_curr)
 
         result_data["step1_error"] = (
             np.abs(result_data["vcp1"] - result_data["m_vcp1"])
@@ -384,21 +381,21 @@ def error_cal(
             )
             / 3
         )
-         # get rms error
-        result_data["rms_error"] = np.sqrt(
-            np.mean(result_data["error"] ** 2)
-        )
+        # get rms error
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
         # fill rms dataframe
         rms_df.loc[i] = [
             dev,
-            t,  
+            t,
             result_data["rms_error"].iloc[0],
         ]
         merged_dfs.append(result_data)
     merged_out = pd.concat(merged_dfs)
     merged_out.fillna(0, inplace=True)
     merged_out.to_csv(f"bjt_beta_reg/{device}/{Id_sim}_error_analysis.csv", index=False)
-    rms_df.to_csv(f"bjt_beta_reg/{device}/{Id_sim}_final_error_analysis.csv", index=False)
+    rms_df.to_csv(
+        f"bjt_beta_reg/{device}/{Id_sim}_final_error_analysis.csv", index=False
+    )
     return rms_df
 
 
