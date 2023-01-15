@@ -30,8 +30,8 @@ MOS = [
     "ibp=7.000E-06",
     "ibp=9.000E-06",
 ]
-
-
+NPN=[-0.000009	,-0.000007	,-0.000005	,-0.000003	,-0.000001]
+PNP=[0.000009    ,0.000007	,0.000005	,0.000003	,0.000001]
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
     Args:
@@ -212,27 +212,27 @@ def run_sims(dirpath: str, list_devices: list[str], device: str, num_workers=mp.
 
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        sdf = pd.read_csv(
-            sf[i],
-            header=None,
-            delimiter=r"\s+",
+        df2 = pd.read_csv(
+            sf[i]
         )
-        sweep = int(sdf[0].count() / len(MOS))
-        new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
-
-        new_array[:, 0] = sdf.iloc[1 : sweep + 1, 0]
-        times = int(sdf.shape[0] / sweep)
-
-        for j in range(times):
-            new_array[:, (j + 1)] = sdf.iloc[(j * sweep) + 1 : ((j + 1) * sweep) + 1, 0]
-
-        # Writing final simulated data 1
-        sdf = pd.DataFrame(new_array)
-        sdf.rename(
-            columns={1: "ibp1", 2: "ibp2", 3: "ibp3", 4: "ibp4", 5: "ibp5"},
+        if device == "npn":
+            i_v="{-I(VCP)}"
+            sdf = df2.pivot(index="V(C)", columns="I(VBP)", values=i_v)
+            sdf.rename(
+            columns={NPN[0]: "ibp1", NPN[1]: "ibp2", NPN[2]: "ibp3", NPN[3]: "ibp4", NPN[4]: "ibp5"},
             inplace=True,
-        )
-        sdf.to_csv(sf[i], index=False)
+            )    
+        else:
+            i_v = "{I(VCP)}"
+            sdf = df2.pivot(index="V(C)", columns="I(VBP)", values=i_v)
+            sdf.rename(
+            columns={PNP[0]: "ibp1", PNP[1]: "ibp2", PNP[2]: "ibp3", PNP[3]: "ibp4", PNP[4]: "ibp5"},
+            inplace=True,
+            )   
+            # reverse the rows
+            sdf = sdf.iloc[::-1]
+        sdf.to_csv(sf[i], index=True, header=True, sep=",")
+    
 
     df1 = pd.DataFrame(results)
 
@@ -257,13 +257,13 @@ def error_cal(
     """
     merged_dfs = list()
     meas_df.to_csv(
-        f"mos_iv_reg/{device}/{device}_measured.csv", index=False, header=True
+        f"bjt_iv_reg/{device}/{device}_measured.csv", index=False, header=True
     )
-    meas_df = pd.read_csv(f"mos_iv_reg/{device}/{device}_measured.csv")
+    meas_df = pd.read_csv(f"bjt_iv_reg/{device}/{device}_measured.csv")
     for i in range(len(sim_df)):
         t = sim_df["temp"].iloc[i]
         dev = sim_df["dev"].iloc[i]
-        sim_path = f"mos_iv_reg/{device}/simulated/t{t}_simulated_{dev}.csv"
+        sim_path = f"bjt_iv_reg/{device}/simulated/t{t}_simulated_{dev}.csv"
 
         simulated_data = pd.read_csv(sim_path)
         if i == 0:
@@ -355,7 +355,7 @@ def error_cal(
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
         merged_out.fillna(0, inplace=True)
-        merged_out.to_csv(f"mos_iv_reg/{device}/error_analysis.csv", index=False)
+        merged_out.to_csv(f"bjt_iv_reg/{device}/error_analysis.csv", index=False)
     return merged_out
 
 
@@ -388,7 +388,7 @@ def main():
     step = ["1.000E-06", "3.000E-06", "5.000E-06", "7.000E-06", "9.000E-06"]
     for i, device in enumerate(devices):
         # Folder structure of measured values
-        dirpath = f"mos_iv_reg/{device}"
+        dirpath = f"bjt_iv_reg/{device}"
         if os.path.exists(dirpath) and os.path.isdir(dirpath):
             shutil.rmtree(dirpath)
         os.makedirs(f"{dirpath}", exist_ok=False)
