@@ -35,7 +35,8 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 PASS_THRESH = 2.0
-
+NPN =[0.000001,  0.000003 , 0.000005 , 0.000007 , 0.000009]
+PNP =[-0.000001, -0.000003, -0.000005, -0.000007, -0.000009]
 
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
@@ -107,11 +108,11 @@ def ext_npn_measured(
             idf_ib.rename(
                 columns={
                     "vcp ": "measured_collector_volt",
-                    "ibp =1.000E-06": "measured_ibp_step1",
-                    "ibp =3.000E-06": "measured_ibp_step2",
-                    "ibp =5.000E-06": "measured_ibp_step3",
-                    "ibp =7.000E-06": "measured_ibp_step4",
-                    "ibp =9.000E-06": "measured_ibp_step5",
+                    "ibp =1.000E-06": "measured_ibp_v_collector_step1",
+                    "ibp =3.000E-06": "measured_ibp_v_collector_step2",
+                    "ibp =5.000E-06": "measured_ibp_v_collector_step3",
+                    "ibp =7.000E-06": "measured_ibp_v_collector_step4",
+                    "ibp =9.000E-06": "measured_ibp_v_collector_step5",
                 },
                 inplace=True,
             )
@@ -132,18 +133,18 @@ def ext_npn_measured(
             idf_ib.rename(
                 columns={
                     "vcp ": "measured_collector_volt",
-                    f"ibp =1.000E-06.{i}": "measured_ibp_step1",
-                    f"ibp =3.000E-06.{i}": "measured_ibp_step2",
-                    f"ibp =5.000E-06.{i}": "measured_ibp_step3",
-                    f"ibp =7.000E-06.{i}": "measured_ibp_step4",
-                    f"ibp =9.000E-06.{i}": "measured_ibp_step5",
+                    f"ibp =1.000E-06.{i}": "measured_ibp_v_collector_step1",
+                    f"ibp =3.000E-06.{i}": "measured_ibp_v_collector_step2",
+                    f"ibp =5.000E-06.{i}": "measured_ibp_v_collector_step3",
+                    f"ibp =7.000E-06.{i}": "measured_ibp_v_collector_step4",
+                    f"ibp =9.000E-06.{i}": "measured_ibp_v_collector_step5",
                 },
                 inplace=True,
             )
 
         os.makedirs(f"{dev_path}/ib_measured", exist_ok=True)
         idf_ib.to_csv(
-            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv"
+            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv",index=False
         )
 
         dev.append(devices[k])
@@ -227,11 +228,11 @@ def ext_pnp_measured(
             idf_ib.rename(
                 columns={
                     "-vc ": "measured_collector_volt",
-                    "ib =-1.000E-06": "measured_ibp_step1",
-                    "ib =-3.000E-06": "measured_ibp_step2",
-                    "ib =-5.000E-06": "measured_ibp_step3",
-                    "ib =-7.000E-06": "measured_ibp_step4",
-                    "ib =-9.000E-06": "measured_ibp_step5",
+                    "ib =-1.000E-06": "measured_ibp_v_collector_step1",
+                    "ib =-3.000E-06": "measured_ibp_v_collector_step2",
+                    "ib =-5.000E-06": "measured_ibp_v_collector_step3",
+                    "ib =-7.000E-06": "measured_ibp_v_collector_step4",
+                    "ib =-9.000E-06": "measured_ibp_v_collector_step5",
                 },
                 inplace=True,
             )
@@ -252,18 +253,18 @@ def ext_pnp_measured(
             idf_ib.rename(
                 columns={
                     "-vc ": "measured_collector_volt",
-                    f"ib =-1.000E-06.{i}": "measured_ibp_step1",
-                    f"ib =-3.000E-06.{i}": "measured_ibp_step2",
-                    f"ib =-5.000E-06.{i}": "measured_ibp_step3",
-                    f"ib =-7.000E-06.{i}": "measured_ibp_step4",
-                    f"ib =-9.000E-06.{i}": "measured_ibp_step5",
+                    f"ib =-1.000E-06.{i}": "measured_ibp_v_collector_step1",
+                    f"ib =-3.000E-06.{i}": "measured_ibp_v_collector_step2",
+                    f"ib =-5.000E-06.{i}": "measured_ibp_v_collector_step3",
+                    f"ib =-7.000E-06.{i}": "measured_ibp_v_collector_step4",
+                    f"ib =-9.000E-06.{i}": "measured_ibp_v_collector_step5",
                 },
                 inplace=True,
             )
 
         os.makedirs(f"{dev_path}/ib_measured", exist_ok=True)
         idf_ib.to_csv(
-            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv"
+            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv",index=False
         )
 
         dev.append(devices[k])
@@ -383,40 +384,31 @@ def run_sims(
 
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        sdf = pd.read_csv(
+        df1 = pd.read_csv(
             sf[i],
-            header=None,
             delimiter=r"\s+",
         )
-        sweep = len(pd.read_csv(glob.glob(f"{dirpath}/ib_measured/*.csv")[1]))
-        new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
-        new_array[:, 0] = sdf.iloc[:sweep, 0]
-        times = int(sdf.shape[0] / sweep)
-
-        for j in range(times):
-            new_array[:, (j + 1)] = sdf.iloc[j * sweep : (j + 1) * sweep, 1]
-
-        # Writing final simulated data 1
-        sdf = pd.DataFrame(new_array)
-        sdf.to_csv(
-            sf[i],
-            index=False,
-        )
+        mos=PNP
+        i_vbb = "i(Vcp)"
+        if dirpath == "bjt_iv_regr/npn":
+            i_vbb = "-i(Vcp)"
+            mos=NPN
+        sdf = df1.pivot(index="v-sweep", columns="i(Vbb)", values=i_vbb)
         sdf.rename(
             columns={
-                0: "simulated_collector_volt",
-                1: "simulated_ibp_step1",
-                2: "simulated_ibp_step2",
-                3: "simulated_ibp_step3",
-                4: "simulated_ibp_step4",
-                5: "simulated_ibp_step5",
+                mos[0]: "simulated_ibp_v_collector_step1",
+                mos[1]: "simulated_ibp_v_collector_step2",
+                mos[2]: "simulated_ibp_v_collector_step3",
+                mos[3]: "simulated_ibp_v_collector_step4",
+                mos[4]: "simulated_ibp_v_collector_step5",
             },
             inplace=True,
         )
-        sdf.to_csv(sf[i])
-
+        if  dirpath == "bjt_iv_regr/pnp":
+            # reverse the rows
+            sdf = sdf.iloc[::-1]
+        sdf.to_csv(sf[i], index=True, header=True, sep=",")
     df = pd.DataFrame(results)
-
     return df
 
 
@@ -432,11 +424,22 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
     # adding error columns to the merged dataframe
     merged_dfs = list()
 
+    # create a new dataframe for rms error
+    rms_df = pd.DataFrame(columns=["device", "temp","corner" ,"rms_error"])
+         
     for i in range(len(merged_df)):
 
         measured_data = pd.read_csv(merged_df["ib_measured"][i])
         simulated_data = pd.read_csv(merged_df["ib_simulated"][i])
-
+        # renaming v-sweep column
+        simulated_data.rename(
+            columns={"v-sweep": "measured_collector_volt"}, inplace=True
+        )
+        if  dev_path == "bjt_iv_regr/pnp":
+            # multiply the simulated data by -1
+            simulated_data["measured_collector_volt"] = (
+                simulated_data["measured_collector_volt"] * -1
+            )
         result_data = simulated_data.merge(measured_data, how="left")
 
         result_data["corner"] = "typical"
@@ -454,70 +457,84 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
             .split(".")[0]
         )
 
-        result_data["step1_error"] = (
+        result_data["v_collector_step1_error"] = (
             np.abs(
-                result_data["simulated_ibp_step1"]
-                - result_data["measured_ibp_step1"]
+                result_data["simulated_ibp_v_collector_step1"]
+                - result_data["measured_ibp_v_collector_step1"]
             )
             * 100.0
-            / result_data["measured_ibp_step1"]
+            / result_data["measured_ibp_v_collector_step1"]
         )
 
-        result_data["step2_error"] = (
+        result_data["v_collector_step2_error"] = (
             np.abs(
-                result_data["simulated_ibp_step2"]
-                - result_data["measured_ibp_step2"]
+                result_data["simulated_ibp_v_collector_step2"]
+                - result_data["measured_ibp_v_collector_step2"]
             )
             * 100.0
-            / result_data["measured_ibp_step2"]
+            / result_data["measured_ibp_v_collector_step2"]
         )
 
-        result_data["step3_error"] = (
+        result_data["v_collector_step3_error"] = (
             np.abs(
-                result_data["simulated_ibp_step3"]
-                - result_data["measured_ibp_step3"]
+                result_data["simulated_ibp_v_collector_step3"]
+                - result_data["measured_ibp_v_collector_step3"]
             )
             * 100.0
-            / result_data["measured_ibp_step3"]
+            / result_data["measured_ibp_v_collector_step3"]
         )
 
-        result_data["step4_error"] = (
+        result_data["v_collector_step4_error"] = (
             np.abs(
-                result_data["simulated_ibp_step4"]
-                - result_data["measured_ibp_step4"]
+                result_data["simulated_ibp_v_collector_step4"]
+                - result_data["measured_ibp_v_collector_step4"]
             )
             * 100.0
-            / result_data["measured_ibp_step4"]
+            / result_data["measured_ibp_v_collector_step4"]
         )
 
-        result_data["step5_error"] = (
+        result_data["v_collector_step5_error"] = (
             np.abs(
-                result_data["simulated_ibp_step5"]
-                - result_data["measured_ibp_step5"]
+                result_data["simulated_ibp_v_collector_step5"]
+                - result_data["measured_ibp_v_collector_step5"]
             )
             * 100.0
-            / result_data["measured_ibp_step5"]
+            / result_data["measured_ibp_v_collector_step5"]
         )
-
+        result_data.fillna(0, inplace=True)
         result_data["error"] = (
             np.abs(
-                result_data["step1_error"]
-                + result_data["step2_error"]
-                + result_data["step3_error"]
-                + result_data["step4_error"]
-                + result_data["step5_error"]
+                result_data["v_collector_step1_error"]
+                + result_data["v_collector_step2_error"]
+                + result_data["v_collector_step3_error"]
+                + result_data["v_collector_step4_error"]
+                + result_data["v_collector_step5_error"]
             )
             / 5
         )
+                # get rms error
+        result_data["rms_error"] = np.sqrt(
+            np.mean(result_data["error"] ** 2)
+        )
+        # fill rms dataframe
+        rms_df.loc[i] = [
+            result_data["device"][0],
+            result_data["temp"][0],
+            result_data["corner"][0],
+            result_data["rms_error"][0],
 
+        ]
+    
+        
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
         merged_out.to_csv(f"{dev_path}/error_analysis.csv", index=False)
+        rms_df.to_csv(f"{dev_path}/final_error_analysis.csv", index=False)
     return None
 
 
 def main():
-    """Main function applies all regression steps"""
+    """Main function applies all regression v_collector_steps"""
         # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
     if ngspice_v_ == "":
@@ -607,29 +624,16 @@ def main():
 
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
-        merged_all = pd.read_csv(f"{dev_path}/error_analysis.csv")
+        merged_all = pd.read_csv(f"{dev_path}/final_error_analysis.csv")
 
         # calculating the error of each device and reporting it
         for dev in list_dev:
             min_error_total = float()
             max_error_total = float()
-            error_total = float()
-            number_of_existance = int()
-
-            # number of rows in the final excel sheet
-            num_rows = merged_all["device"].count()
-
-            for n in range(num_rows):
-                if dev == merged_all["device"][n]:
-                    number_of_existance += 1
-                    error_total += merged_all["error"][n]
-                    if merged_all["error"][n] > max_error_total:
-                        max_error_total = merged_all["error"][n]
-                    elif merged_all["error"][n] < min_error_total:
-                        min_error_total = merged_all["error"][n]
-
-            mean_error_total = error_total / number_of_existance
-
+            mean_error_total = float()
+            min_error_total = merged_all["rms_error"].min()
+            max_error_total = merged_all["rms_error"].max()
+            mean_error_total = merged_all["rms_error"].mean()
             # Making sure that min, max, mean errors are not > 100%
             if min_error_total > 100:
                 min_error_total = 100

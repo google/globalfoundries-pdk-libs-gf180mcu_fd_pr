@@ -3,8 +3,8 @@
 *****************
 
 Vcp c 0 dc -3
-Ib 0 b -9u
-
+Ib f b -9u
+Vbb 0 f dc=0
 .temp {{temp}}
 .options tnom={{temp}}
 
@@ -17,10 +17,11 @@ xq1 c b 0 {{device}}
 
 .control
 set filetype=ascii
-
+set wr_singlescale
+set wr_vecnames
 dc Vcp 0 -3 -0.1 Ib -1u -9u -2u
-print -i(Vcp)
-wrdata bjt_iv_regr/pnp/ib_simulated/simulated_{{device}}_t{{temp}}.csv i(Vcp)
+
+wrdata bjt_iv_regr/pnp/ib_simulated/simulated_{{device}}_t{{temp}}.csv i(Vcp) i(Vbb)
 .endc
 
 .include "../../../design.ngspice"
