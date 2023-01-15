@@ -308,13 +308,13 @@ def error_cal(
     rms_df = pd.DataFrame(columns=["device", "temp", "rms_error"])
                 
     meas_df.to_csv(
-        f"mos_beta_reg/{device}/{device}_measured.csv", index=False, header=True
+        f"bjt_beta_reg/{device}/{device}_measured.csv", index=False, header=True
     )
-    meas_df = pd.read_csv(f"mos_beta_reg/{device}/{device}_measured.csv")
+    meas_df = pd.read_csv(f"bjt_beta_reg/{device}/{device}_measured.csv")
     for i in range(len(sim_df)):
         t = sim_df["temp"].iloc[i]
         dev = sim_df["dev"].iloc[i]
-        sim_path = f"mos_beta_reg/{device}/simulated_{Id_sim}/t{t}_simulated_{dev}.csv"
+        sim_path = f"bjt_beta_reg/{device}/simulated_{Id_sim}/t{t}_simulated_{dev}.csv"
         simulated_data = pd.read_csv(sim_path)
         if i == 0:
             measured_data = meas_df[
@@ -397,8 +397,8 @@ def error_cal(
         merged_dfs.append(result_data)
     merged_out = pd.concat(merged_dfs)
     merged_out.fillna(0, inplace=True)
-    merged_out.to_csv(f"mos_beta_reg/{device}/{Id_sim}_error_analysis.csv", index=False)
-    rms_df.to_csv(f"mos_beta_reg/{device}/{Id_sim}_final_error_analysis.csv", index=False)
+    merged_out.to_csv(f"bjt_beta_reg/{device}/{Id_sim}_error_analysis.csv", index=False)
+    rms_df.to_csv(f"bjt_beta_reg/{device}/{Id_sim}_final_error_analysis.csv", index=False)
     return rms_df
 
 
@@ -435,7 +435,7 @@ def main():
 
     for i, device in enumerate(devices):
         # Folder structure of measured values
-        dirpath = f"mos_beta_reg/{device}"
+        dirpath = f"bjt_beta_reg/{device}"
         if os.path.exists(dirpath) and os.path.isdir(dirpath):
             shutil.rmtree(dirpath)
         os.makedirs(f"{dirpath}", exist_ok=False)
