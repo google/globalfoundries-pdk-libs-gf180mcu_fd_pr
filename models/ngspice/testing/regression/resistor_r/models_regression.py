@@ -119,7 +119,7 @@ def ext_temp_corners(dev_data_path, device, corners):
 
 
 def run_sim(dirpath, device, length, width, corner, voltage, temp=25):
-    """ Run simulation at specific information and corner """
+    """Run simulation at specific information and corner"""
     netlist_tmp = "./device_netlists/res_op_analysis.spice"
 
     if "rm" in device or "tm" in device:
@@ -211,7 +211,7 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
 
 def main(num_cores):
 
-        # ======= Checking ngspice  =======
+    # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
@@ -319,19 +319,18 @@ def main(num_cores):
         )
 
         merged_df.to_csv(f"{dev_path}/error_analysis.csv", index=False)
-        m1=merged_df["error"].min()
-        m2=merged_df["error"].max()
-        m3=merged_df["error"].mean()
-    
+        m1 = merged_df["error"].min()
+        m2 = merged_df["error"].max()
+        m3 = merged_df["error"].mean()
+
         logging.info(
-            f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"               
+            f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"
         )
 
         if merged_df["error"].max() < PASS_THRESH:
             logging.info(f"# Device {dev} has passed regression.")
         else:
             logging.error(f"# Device {dev} has failed regression. Needs more analysis.")
-
 
 
 # # ================================================================
@@ -355,6 +354,6 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-    
+
     # Calling main function
     main(workers_count)

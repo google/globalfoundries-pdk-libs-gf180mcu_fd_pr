@@ -82,7 +82,9 @@ def ext_measured(dev_data_path, device):
         mos = PMOS3P3_VPS
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
         mos = PMOS6P0_VPS
-    elif device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss":
+    elif (
+        device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss"
+    ):
         mos = NMOS6P0_VPS
     else:
         mos = MOS
@@ -90,7 +92,7 @@ def ext_measured(dev_data_path, device):
     width = df["W (um)"].iloc[0]
     length = df["L (um)"].iloc[0]
     # for pmos
-    if device in ["pfet_03v3", "pfet_06v0","pfet_03v3_dss", "pfet_06v0_dss"]:
+    if device in ["pfet_03v3", "pfet_06v0", "pfet_03v3_dss", "pfet_06v0_dss"]:
         idf = df[
             [
                 "-Id (A)",
@@ -157,7 +159,7 @@ def ext_measured(dev_data_path, device):
         else:
             temp = 125
 
-        if device in ["pfet_03v3", "pfet_06v0","pfet_03v3_dss", "pfet_06v0_dss"]:
+        if device in ["pfet_03v3", "pfet_06v0", "pfet_03v3_dss", "pfet_06v0_dss"]:
             if i == 0:
                 idf = df[
                     [
@@ -289,7 +291,6 @@ def run_sim(dirpath, device, width, length, temp=25):
     else:
         device1 = "pmos"
 
-
     vbs = VBS_N03V3
     vgs = VGS_N03V3
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
@@ -333,8 +334,7 @@ def run_sim(dirpath, device, width, length, temp=25):
                     length=length_str,
                     temp=temp_str,
                     vgs=vgs,
-                    vbs=vbs
-
+                    vbs=vbs,
                 )
             )
 
@@ -395,16 +395,15 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
         mos = PMOS3P3_VPS1
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
         mos = PMOS6P0_VPS
-    elif device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss":
+    elif (
+        device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss"
+    ):
         mos = NMOS6P0_VPS
     else:
         mos = MOS1
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        df = pd.read_csv(
-            sf[i],
-            delimiter=r"\s+"
-        )
+        df = pd.read_csv(sf[i], delimiter=r"\s+")
         i_vds = "-i(Vds)"
         if device[0] == "p":
             i_vds = "i(Vds)"
@@ -451,20 +450,23 @@ def error_cal(
         mos = PMOS3P3_VPS
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
         mos = PMOS6P0_VPS
-    elif device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss":
+    elif (
+        device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss"
+    ):
         mos = NMOS6P0_VPS
     else:
         mos = MOS
-  # create a new dataframe for rms error
+    # create a new dataframe for rms error
     rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
-         
-    
+
     for i in range(len(sim_df)):
         length = df["L (um)"].iloc[int(i)]
         w = df["W (um)"].iloc[int(i)]
         t = df["temp"].iloc[int(i)]
 
-        sim_path = f"mos_iv_regr/{device}/{device}_netlists/T{t}_simulated_L{length}_W{w}.csv"
+        sim_path = (
+            f"mos_iv_regr/{device}/{device}_netlists/T{t}_simulated_L{length}_W{w}.csv"
+        )
 
         simulated_data = pd.read_csv(sim_path)
 
@@ -492,17 +494,26 @@ def error_cal(
         result_data = simulated_data.merge(measured_data, how="left")
         # clipping all the  values to lowest_curr
         lowest_curr = 5e-12
-        result_data["measured_vbs1"] = result_data["measured_vbs1"].clip(lower=lowest_curr)
-        result_data["measured_vbs2"] = result_data["measured_vbs2"].clip(lower=lowest_curr)
-        result_data["measured_vbs3"] = result_data["measured_vbs3"].clip(lower=lowest_curr)
-        result_data["measured_vbs4"] = result_data["measured_vbs4"].clip(lower=lowest_curr)
-        result_data["measured_vbs5"] = result_data["measured_vbs5"].clip(lower=lowest_curr)
+        result_data["measured_vbs1"] = result_data["measured_vbs1"].clip(
+            lower=lowest_curr
+        )
+        result_data["measured_vbs2"] = result_data["measured_vbs2"].clip(
+            lower=lowest_curr
+        )
+        result_data["measured_vbs3"] = result_data["measured_vbs3"].clip(
+            lower=lowest_curr
+        )
+        result_data["measured_vbs4"] = result_data["measured_vbs4"].clip(
+            lower=lowest_curr
+        )
+        result_data["measured_vbs5"] = result_data["measured_vbs5"].clip(
+            lower=lowest_curr
+        )
         result_data["vb1"] = result_data["vb1"].clip(lower=lowest_curr)
         result_data["vb2"] = result_data["vb2"].clip(lower=lowest_curr)
         result_data["vb3"] = result_data["vb3"].clip(lower=lowest_curr)
         result_data["vb4"] = result_data["vb4"].clip(lower=lowest_curr)
         result_data["vb5"] = result_data["vb5"].clip(lower=lowest_curr)
-
 
         result_data["vgs_step1_error"] = (
             np.abs(result_data["measured_vbs1"] - result_data["vb1"])
@@ -539,14 +550,11 @@ def error_cal(
             )
             / 5
         )
-                # get rms error
-        result_data["rms_error"] = np.sqrt(
-            np.mean(result_data["error"] ** 2)
-        )
+        # get rms error
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
         # fill rms dataframe
         rms_df.loc[i] = [t, w, length, result_data["rms_error"].iloc[0]]
-    
-        
+
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
         merged_out.to_csv(f"{dev_path}/error_analysis.csv", index=False)
@@ -613,7 +621,6 @@ def main():
         sim_df = run_sims(df, dev_path, dev, 3)
         logging.info(
             f"# Device {dev} number of measured_datapoints : {len(sim_df) * len(meas_df)}"
-            
         )
         logging.info(
             f"# Device {dev} number of simulated datapoints : {len(sim_df) * len(meas_df)}"
@@ -659,7 +666,6 @@ def main():
             logging.error(f"# Device {dev} has failed regression. Needs more analysis.")
 
 
-
 # # ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
@@ -681,6 +687,6 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-    
+
     # Calling main function
     main()

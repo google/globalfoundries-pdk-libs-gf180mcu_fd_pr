@@ -327,7 +327,6 @@ def run_sim(dirpath, device, id_rds, width, length, temp=25):
     # string to list
     vgs1 = vgs.split(" ")
 
-
     netlist_tmp = f"device_netlists_{id_rds}/{device1}.spice"
 
     info = {}
@@ -448,20 +447,20 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
             if device[0] == "p":
                 i_vds = "i(Vds)"
             sdf = df.pivot(index="v-sweep", columns=(v_gs), values=i_vds)
-       
+
         else:
             # drop strange rows
-            df.drop(df.loc[df['v-sweep'] == "v-sweep"].index, inplace=True)
+            df.drop(df.loc[df["v-sweep"] == "v-sweep"].index, inplace=True)
             df = df.reset_index(drop=True)
             df = df.astype(float)
             # use the first column as index
             df = df.set_index("v-sweep")
-            if device in ["nfet_06v0", "pfet_06v0","nfet_06v0_dss", "pfet_06v0_dss"]:
+            if device in ["nfet_06v0", "pfet_06v0", "nfet_06v0_dss", "pfet_06v0_dss"]:
                 # reciprocal the column values
                 df["Rds"] = df["Rds"].apply(np.reciprocal)
             v_gs = "Vg"
             i_vds = "Rds"
-            sdf = df.pivot( columns=(v_gs), values=i_vds)
+            sdf = df.pivot(columns=(v_gs), values=i_vds)
 
         # Writing final simulated data 1
         sdf.rename(
@@ -526,8 +525,7 @@ def error_cal(
 
     # create a new dataframe for rms error
     rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
-         
-    
+
     for i in range(len(sim_df)):
         length = df["L (um)"].iloc[int(i)]
         w = df["W (um)"].iloc[int(i)]
@@ -563,21 +561,30 @@ def error_cal(
         if id_rds == "Id":
             # clipping all the  values to lowest_curr
             lowest_curr = 5e-12
-            result_data["measured_vgs1"] = result_data["measured_vgs1"].clip(lower=lowest_curr)
-            result_data["measured_vgs2"] = result_data["measured_vgs2"].clip(lower=lowest_curr)
-            result_data["measured_vgs3"] = result_data["measured_vgs3"].clip(lower=lowest_curr)
-            result_data["measured_vgs4"] = result_data["measured_vgs4"].clip(lower=lowest_curr)
-            result_data["measured_vgs5"] = result_data["measured_vgs5"].clip(lower=lowest_curr)
-            result_data["measured_vgs6"] = result_data["measured_vgs6"].clip(lower=lowest_curr)
+            result_data["measured_vgs1"] = result_data["measured_vgs1"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs2"] = result_data["measured_vgs2"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs3"] = result_data["measured_vgs3"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs4"] = result_data["measured_vgs4"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs5"] = result_data["measured_vgs5"].clip(
+                lower=lowest_curr
+            )
+            result_data["measured_vgs6"] = result_data["measured_vgs6"].clip(
+                lower=lowest_curr
+            )
             result_data["vb1"] = result_data["vb1"].clip(lower=lowest_curr)
             result_data["vb2"] = result_data["vb2"].clip(lower=lowest_curr)
             result_data["vb3"] = result_data["vb3"].clip(lower=lowest_curr)
             result_data["vb4"] = result_data["vb4"].clip(lower=lowest_curr)
             result_data["vb5"] = result_data["vb5"].clip(lower=lowest_curr)
             result_data["vb6"] = result_data["vb6"].clip(lower=lowest_curr)
-
-
-
 
         result_data["vds_step1_error"] = (
             np.abs(result_data["measured_vgs1"] - result_data["vb1"])
@@ -625,15 +632,10 @@ def error_cal(
             )
             / 6
         )
-                # get rms error
-        result_data["rms_error"] = np.sqrt(
-            np.mean(result_data["error"] ** 2)
-        )
+        # get rms error
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
         # fill rms dataframe
         rms_df.loc[i] = [t, w, length, result_data["rms_error"].iloc[0]]
-    
-        
-
 
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
@@ -711,9 +713,11 @@ def main():
         )
 
         logging.info(
-            f"# Device {dev} number of measured_datapoints for Rds : {len(sim_df_rds) * len(meas_df)}" )
+            f"# Device {dev} number of measured_datapoints for Rds : {len(sim_df_rds) * len(meas_df)}"
+        )
         logging.info(
-            f"# Device {dev} number of simulated datapoints for Rds : {len(sim_df_rds) * len(meas_df)}" )
+            f"# Device {dev} number of simulated datapoints for Rds : {len(sim_df_rds) * len(meas_df)}"
+        )
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
@@ -723,7 +727,7 @@ def main():
 
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
-        for s in ["Id" , "Rds"]:  
+        for s in ["Id", "Rds"]:
             merged_all = pd.read_csv(f"{dev_path}/finalerror_analysis_{s}.csv")
 
             # calculating the error of each device and reporting it

@@ -339,10 +339,9 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
 
     # adding error columns to the merged dataframe
     merged_dfs = list()
-  # create a new dataframe for rms error
+    # create a new dataframe for rms error
     rms_df = pd.DataFrame(columns=["device", "temp", "cap", "rms_error"])
-         
-    
+
     merged_df.drop_duplicates()
     for i in range(len(merged_df)):
 
@@ -394,9 +393,7 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
             / 3
         )
         # get rms error
-        result_data["rms_error"] = np.sqrt(
-            np.mean(result_data["error"] ** 2)
-        )
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
         # fill rms dataframe
         rms_df.loc[i] = [
             result_data["device"][0],
@@ -413,7 +410,7 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
 
 def main():
     """Main function applies all regression steps"""
-        # ======= Checking ngspice  =======
+    # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
@@ -479,12 +476,9 @@ def main():
         else:
             meas_df = list()
 
-        meas_len = len(
-            pd.read_csv(glob.glob(f"{dev_path}/cj_measured/*.csv")[1])
-        )
+        meas_len = len(pd.read_csv(glob.glob(f"{dev_path}/cj_measured/*.csv")[1]))
         logging.info(
             f"# Device {dev} number of measured_datapoints : {len(meas_df) * meas_len}"
-            
         )
 
         # assuming number of used cores is 3
@@ -516,11 +510,21 @@ def main():
         for dev in list_dev:
             min_error_total = float()
             max_error_total = float()
-            mean_error_total = float()
-            min_error_total = merged_all["rms_error"].min()
-            max_error_total = merged_all["rms_error"].max()
-            mean_error_total = merged_all["rms_error"].mean()
-         
+            error_total = float()
+            number_of_existance = int()
+
+            # number of rows in the final excel sheet
+            num_rows = merged_all["device"].count()
+
+            for n in range(num_rows):
+                if dev == merged_all["device"].iloc[n]:
+                    number_of_existance += 1
+                    error_total += merged_all["rms_error"].iloc[n]
+                    if merged_all["rms_error"].iloc[n] > max_error_total:
+                        max_error_total = merged_all["rms_error"].iloc[n]
+                    elif merged_all["rms_error"].iloc[n] < min_error_total:
+                        min_error_total = merged_all["rms_error"].iloc[n]
+            mean_error_total = error_total / number_of_existance
             # Making sure that min, max, mean errors are not > 100%
             if min_error_total > 100:
                 min_error_total = 100
@@ -544,7 +548,6 @@ def main():
                 )
 
 
-
 # # ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
@@ -566,6 +569,6 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-    
+
     # Calling main function
     main()

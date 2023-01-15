@@ -35,22 +35,19 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 PASS_THRESH = 2.0
-NPN =[0.000001,  0.000003 , 0.000005 , 0.000007 , 0.000009]
-PNP =[-0.000001, -0.000003, -0.000005, -0.000007, -0.000009]
+NPN = [0.000001, 0.000003, 0.000005, 0.000007, 0.000009]
+PNP = [-0.000001, -0.000003, -0.000005, -0.000007, -0.000009]
+
 
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
     Args:
         file_name(str): Netlist file name.
     """
-    return os.system(
-        f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log"
-    )
+    return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def ext_npn_measured(
-    icvc_file: str, devices: list, dev_path: str
-) -> pd.DataFrame:
+def ext_npn_measured(icvc_file: str, devices: list, dev_path: str) -> pd.DataFrame:
     """Extracting the measured data of npn devices from excel sheet
 
     Args:
@@ -144,14 +141,12 @@ def ext_npn_measured(
 
         os.makedirs(f"{dev_path}/ib_measured", exist_ok=True)
         idf_ib.to_csv(
-            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv",index=False
+            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv", index=False
         )
 
         dev.append(devices[k])
         tempr.append(temp)
-        ib_meas.append(
-            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv"
-        )
+        ib_meas.append(f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv")
 
         sdf = {
             "device": dev,
@@ -168,9 +163,7 @@ def ext_npn_measured(
     return df
 
 
-def ext_pnp_measured(
-    icvc_file: str, devices: list, dev_path: str
-) -> pd.DataFrame:
+def ext_pnp_measured(icvc_file: str, devices: list, dev_path: str) -> pd.DataFrame:
     """Extracting the measured data of pnp devices from excel sheet
 
     Args:
@@ -264,14 +257,12 @@ def ext_pnp_measured(
 
         os.makedirs(f"{dev_path}/ib_measured", exist_ok=True)
         idf_ib.to_csv(
-            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv",index=False
+            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv", index=False
         )
 
         dev.append(devices[k])
         tempr.append(temp)
-        ib_meas.append(
-            f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv"
-        )
+        ib_meas.append(f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv")
 
         sdf = {
             "device": dev,
@@ -309,9 +300,7 @@ def run_sim(dirpath: str, device: str, temp: float) -> dict:
 
     temp_str = "{:.1f}".format(temp)
 
-    netlist_path = (
-        f"{dirpath}/{dev}_netlists/netlist_{device}_t{temp_str}.spice"
-    )
+    netlist_path = f"{dirpath}/{dev}_netlists/netlist_{device}_t{temp_str}.spice"
 
     result_path = f"{dirpath}/ib_simulated/simulated_{device}_t{temp_str}.csv"
 
@@ -364,9 +353,7 @@ def run_sims(
     """
 
     results = list()
-    with concurrent.futures.ThreadPoolExecutor(
-        max_workers=num_workers
-    ) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures_list = list()
         for j, row in df.iterrows():
             futures_list.append(
@@ -388,11 +375,11 @@ def run_sims(
             sf[i],
             delimiter=r"\s+",
         )
-        mos=PNP
+        mos = PNP
         i_vbb = "i(Vcp)"
         if dirpath == "bjt_iv_regr/npn":
             i_vbb = "-i(Vcp)"
-            mos=NPN
+            mos = NPN
         sdf = df1.pivot(index="v-sweep", columns="i(Vbb)", values=i_vbb)
         sdf.rename(
             columns={
@@ -404,7 +391,7 @@ def run_sims(
             },
             inplace=True,
         )
-        if  dirpath == "bjt_iv_regr/pnp":
+        if dirpath == "bjt_iv_regr/pnp":
             # reverse the rows
             sdf = sdf.iloc[::-1]
         sdf.to_csv(sf[i], index=True, header=True, sep=",")
@@ -425,8 +412,8 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
     merged_dfs = list()
 
     # create a new dataframe for rms error
-    rms_df = pd.DataFrame(columns=["device", "temp","corner" ,"rms_error"])
-         
+    rms_df = pd.DataFrame(columns=["device", "temp", "corner", "rms_error"])
+
     for i in range(len(merged_df)):
 
         measured_data = pd.read_csv(merged_df["ib_measured"][i])
@@ -435,7 +422,7 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
         simulated_data.rename(
             columns={"v-sweep": "measured_collector_volt"}, inplace=True
         )
-        if  dev_path == "bjt_iv_regr/pnp":
+        if dev_path == "bjt_iv_regr/pnp":
             # multiply the simulated data by -1
             simulated_data["measured_collector_volt"] = (
                 simulated_data["measured_collector_volt"] * -1
@@ -444,10 +431,7 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
 
         result_data["corner"] = "typical"
         result_data["device"] = (
-            merged_df["ib_measured"][i]
-            .split("/")[-1]
-            .split("d_")[1]
-            .split("_t")[0]
+            merged_df["ib_measured"][i].split("/")[-1].split("d_")[1].split("_t")[0]
         )
         result_data["temp"] = (
             merged_df["ib_measured"][i]
@@ -512,20 +496,16 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
             )
             / 5
         )
-                # get rms error
-        result_data["rms_error"] = np.sqrt(
-            np.mean(result_data["error"] ** 2)
-        )
+        # get rms error
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
         # fill rms dataframe
         rms_df.loc[i] = [
             result_data["device"][0],
             result_data["temp"][0],
             result_data["corner"][0],
             result_data["rms_error"][0],
-
         ]
-    
-        
+
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
         merged_out.to_csv(f"{dev_path}/error_analysis.csv", index=False)
@@ -535,7 +515,7 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
 
 def main():
     """Main function applies all regression v_collector_steps"""
-        # ======= Checking ngspice  =======
+    # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
@@ -547,7 +527,7 @@ def main():
     pd.set_option("display.width", 1000)
 
     main_regr_dir = "bjt_iv_regr"
-    devices = ["npn","pnp"]
+    devices = ["npn", "pnp"]
 
     npn_devices = [
         "npn_10p00x10p00",
@@ -602,19 +582,16 @@ def main():
         else:
             meas_df = list()
 
-        meas_len = len(
-            pd.read_csv(glob.glob(f"{dev_path}/ib_measured/*.csv")[1])
-        )
+        meas_len = len(pd.read_csv(glob.glob(f"{dev_path}/ib_measured/*.csv")[1]))
 
         logging.info(
             f"# Device {dev} number of measured_datapoints : {len(meas_df) * meas_len}"
-            
         )
 
         # assuming number of used cores is 3
         # calling run_sims function for simulating devices
         sim_df = run_sims(meas_df, dev_path, 3)
-        
+
         # Merging measured dataframe with the simulated one
         merged_df = meas_df.merge(sim_df, on=["device", "temp"], how="left")
 
@@ -630,10 +607,21 @@ def main():
         for dev in list_dev:
             min_error_total = float()
             max_error_total = float()
-            mean_error_total = float()
-            min_error_total = merged_all["rms_error"].min()
-            max_error_total = merged_all["rms_error"].max()
-            mean_error_total = merged_all["rms_error"].mean()
+            error_total = float()
+            number_of_existance = int()
+
+            # number of rows in the final excel sheet
+            num_rows = merged_all["device"].count()
+
+            for n in range(num_rows):
+                if dev == merged_all["device"].iloc[n]:
+                    number_of_existance += 1
+                    error_total += merged_all["rms_error"].iloc[n]
+                    if merged_all["rms_error"].iloc[n] > max_error_total:
+                        max_error_total = merged_all["rms_error"].iloc[n]
+                    elif merged_all["rms_error"].iloc[n] < min_error_total:
+                        min_error_total = merged_all["rms_error"].iloc[n]
+            mean_error_total = error_total / number_of_existance
             # Making sure that min, max, mean errors are not > 100%
             if min_error_total > 100:
                 min_error_total = 100
@@ -645,17 +633,16 @@ def main():
                 mean_error_total = 100
 
             # logging.infoing min, max, mean errors to the consol
-            logging.info(f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}")
-
+            logging.info(
+                f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
+            )
 
             if max_error_total < PASS_THRESH:
                 logging.info(f"# Device {dev} has passed regression.")
             else:
                 logging.info(
                     f"# Device {dev} has failed regression. Needs more analysis."
-                    )
-                
-
+                )
 
 
 # # ================================================================
@@ -679,6 +666,6 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-    
+
     # Calling main function
     main()

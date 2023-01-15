@@ -425,8 +425,10 @@ def main():
 
             merged_dfs = []
             # create a new dataframe for rms error
-            rms_df = pd.DataFrame(columns=["device", "length", "width", "temp", "corner", "rms_error"])
-         
+            rms_df = pd.DataFrame(
+                columns=["device", "length", "width", "temp", "corner", "rms_error"]
+            )
+
             for i in range(len(merged_df)):
                 measured_data = pd.read_csv(merged_df["diode_measured"][i])
                 simulated_data = pd.read_csv(merged_df["diode_sim"][i])
@@ -472,9 +474,7 @@ def main():
                 # fill nan values with 0
                 result_data["error"] = result_data["error"].fillna(0)
                 # get rms error
-                result_data["rms_error"] = np.sqrt(
-                    np.mean(result_data["error"] ** 2)
-                )
+                result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
                 # fill rms dataframe
                 rms_df.loc[i] = [
                     result_data["device"][0],
@@ -484,7 +484,7 @@ def main():
                     result_data["corner"][0],
                     result_data["rms_error"][0],
                 ]
-            
+
                 result_data = result_data[
                     [
                         "device",

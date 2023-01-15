@@ -146,7 +146,7 @@ def ext_measured(dev_data_path, device, corners):
 
 
 def run_sim(dirpath, device, length, width, corner, temp=25):
-    """ Run simulation at specific information and corner """
+    """Run simulation at specific information and corner"""
     netlist_tmp = "./device_netlists/moscap.spice"
 
     info = {}
@@ -311,20 +311,18 @@ def main():
 
         merged_df.to_csv(f"{dev_path}/error_analysis.csv", index=False)
 
-        m1=merged_df["error"].min()
-        m2=merged_df["error"].max()
-        m3=merged_df["error"].mean()
-    
-        logging.info(
-            f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"               
-        )
+        m1 = merged_df["error"].min()
+        m2 = merged_df["error"].max()
+        m3 = merged_df["error"].mean()
 
+        logging.info(
+            f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"
+        )
 
         if merged_df["error"].max() < PASS_THRESH:
             logging.info(f"# Device {dev} has passed regression.")
         else:
             logging.error(f"# Device {dev} has failed regression. Needs more analysis.")
-
 
 
 # # ================================================================
@@ -348,6 +346,6 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-    
+
     # Calling main function
     main()

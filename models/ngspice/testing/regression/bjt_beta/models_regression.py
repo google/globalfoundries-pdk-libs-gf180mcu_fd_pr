@@ -269,10 +269,13 @@ def run_sim(char, dirpath, device, temp):
 
     netlist_path = f"{dirpath}/{dev}_netlists" + f"/netlist_{device}_t{temp_str}.spice"
 
-    result_path_ib = f"{dirpath}/{dev}_netlists/" + f"ib_simulated_{device}_t{temp_str}.csv"
-    result_path_ic = f"{dirpath}/{dev}_netlists/" + f"ic_simulated_{device}_t{temp_str}.csv"
+    result_path_ib = (
+        f"{dirpath}/{dev}_netlists/" + f"ib_simulated_{device}_t{temp_str}.csv"
+    )
+    result_path_ic = (
+        f"{dirpath}/{dev}_netlists/" + f"ic_simulated_{device}_t{temp_str}.csv"
+    )
 
- 
     with open(netlist_tmp) as f:
         tmpl = Template(f.read())
         os.makedirs(f"{dirpath}/{dev}_netlists", exist_ok=True)
@@ -358,7 +361,7 @@ def run_sims(char, df, dirpath, num_workers=mp.cpu_count()):
                     },
                     inplace=True,
                 )
-                 # reverse the rows
+                # reverse the rows
                 sdf = sdf.iloc[::-1]
             sdf.to_csv(sf[i], index=True, header=True, sep=",")
     df = pd.DataFrame(results)
@@ -469,8 +472,8 @@ def main():
         merged_all = []
         for c in char:
             # create a new dataframe for rms error
-            rms_df = pd.DataFrame(columns=["device", "temp","corner", "rms_error"])
-                
+            rms_df = pd.DataFrame(columns=["device", "temp", "corner", "rms_error"])
+
             merged_dfs = []
 
             for i in range(len(merged_df)):
@@ -481,12 +484,24 @@ def main():
                 result_data = simulated_data.merge(measured_data, how="left")
                 # clipping all the  values to lowest_curr
                 lowest_curr = 5e-12
-                result_data[f"simulated_{c}_vcp_step1"] = result_data[f"simulated_{c}_vcp_step1"].clip(lower=lowest_curr)
-                result_data[f"simulated_{c}_vcp_step2"] = result_data[f"simulated_{c}_vcp_step2"].clip(lower=lowest_curr)
-                result_data[f"simulated_{c}_vcp_step3"] = result_data[f"simulated_{c}_vcp_step3"].clip(lower=lowest_curr)
-                result_data[f"measured_{c}_vcp_step1"] = result_data[f"measured_{c}_vcp_step1"].clip(lower=lowest_curr)
-                result_data[f"measured_{c}_vcp_step2"] = result_data[f"measured_{c}_vcp_step2"].clip(lower=lowest_curr)
-                result_data[f"measured_{c}_vcp_step3"] = result_data[f"measured_{c}_vcp_step3"].clip(lower=lowest_curr)
+                result_data[f"simulated_{c}_vcp_step1"] = result_data[
+                    f"simulated_{c}_vcp_step1"
+                ].clip(lower=lowest_curr)
+                result_data[f"simulated_{c}_vcp_step2"] = result_data[
+                    f"simulated_{c}_vcp_step2"
+                ].clip(lower=lowest_curr)
+                result_data[f"simulated_{c}_vcp_step3"] = result_data[
+                    f"simulated_{c}_vcp_step3"
+                ].clip(lower=lowest_curr)
+                result_data[f"measured_{c}_vcp_step1"] = result_data[
+                    f"measured_{c}_vcp_step1"
+                ].clip(lower=lowest_curr)
+                result_data[f"measured_{c}_vcp_step2"] = result_data[
+                    f"measured_{c}_vcp_step2"
+                ].clip(lower=lowest_curr)
+                result_data[f"measured_{c}_vcp_step3"] = result_data[
+                    f"measured_{c}_vcp_step3"
+                ].clip(lower=lowest_curr)
 
                 result_data["corner"] = "typical"
                 result_data["device"] = (
@@ -538,10 +553,8 @@ def main():
                     )
                     / 3
                 )
-                        # get rms error
-                result_data["rms_error"] = np.sqrt(
-                    np.mean(result_data["error"] ** 2)
-                )
+                # get rms error
+                result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
                 # fill rms dataframe
                 rms_df.loc[i] = [
                     result_data["device"][0],
@@ -549,7 +562,7 @@ def main():
                     result_data["corner"][0],
                     result_data["rms_error"][0],
                 ]
-            
+
                 result_data = result_data[
                     [
                         "device",
@@ -575,17 +588,27 @@ def main():
 
             merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
             rms_df.to_csv(f"{dev_path}/finalerror_analysis_{c}.csv", index=False)
-
+            merged_all = rms_df
             # calculating the error of each device and reporting it
             for dev in list_dev:
                 min_error_total = float()
                 max_error_total = float()
-                mean_error_total = float()
+                error_total = float()
+                number_of_existance = int()
+
                 # number of rows in the final excel sheet
-                rms_df=pd.read_csv(f"{dev_path}/finalerror_analysis_{c}.csv")
-                min_error_total = rms_df["rms_error"].min()
-                max_error_total = rms_df["rms_error"].max()
-                mean_error_total = rms_df["rms_error"].mean()
+                num_rows = merged_all["device"].count()
+
+                for n in range(num_rows):
+                    if dev == merged_all["device"].iloc[n]:
+                        number_of_existance += 1
+                        error_total += merged_all["rms_error"].iloc[n]
+                        if merged_all["rms_error"].iloc[n] > max_error_total:
+                            max_error_total = merged_all["rms_error"].iloc[n]
+                        elif merged_all["rms_error"].iloc[n] < min_error_total:
+                            min_error_total = merged_all["rms_error"].iloc[n]
+                mean_error_total = error_total / number_of_existance
+
                 # Making sure that min, max, mean errors are not > 100%
                 if min_error_total > 100:
                     min_error_total = 100
@@ -627,7 +650,7 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
         ],
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
