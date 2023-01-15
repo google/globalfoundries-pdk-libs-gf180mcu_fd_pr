@@ -339,7 +339,10 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
 
     # adding error columns to the merged dataframe
     merged_dfs = list()
-
+  # create a new dataframe for rms error
+    rms_df = pd.DataFrame(columns=["device", "temp", "cap", "rms_error"])
+         
+    
     merged_df.drop_duplicates()
     for i in range(len(merged_df)):
 
@@ -381,7 +384,7 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
             * 100.0
             / result_data["measured_bjt_ss"]
         )
-
+        result_data.fillna(0, inplace=True)
         result_data["error"] = (
             np.abs(
                 result_data["error_bjt_ss"]
@@ -390,10 +393,21 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
             )
             / 3
         )
-
+        # get rms error
+        result_data["rms_error"] = np.sqrt(
+            np.mean(result_data["error"] ** 2)
+        )
+        # fill rms dataframe
+        rms_df.loc[i] = [
+            result_data["device"][0],
+            result_data["temp"][0],
+            result_data["cap"][0],
+            result_data["rms_error"][0],
+        ]
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
         merged_out.to_csv(f"{dev_path}/error_analysis.csv", index=False)
+        rms_df.to_csv(f"{dev_path}/final_error_analysis.csv", index=False)
     return None
 
 
@@ -484,7 +498,7 @@ def main():
         # calling error function for creating statistical csv file
         error_cal(merged_df, dev_path)
 
-        merged_all = pd.read_csv(f"{dev_path}/error_analysis.csv")
+        merged_all = pd.read_csv(f"{dev_path}/final_error_analysis.csv")
         # number of rows in the final excel sheet
         num_rows = merged_all["device"].count()
 
@@ -502,23 +516,11 @@ def main():
         for dev in list_dev:
             min_error_total = float()
             max_error_total = float()
-            error_total = float()
-            number_of_existance = int()
-
-            # number of rows in the final excel sheet
-            num_rows = merged_all["device"].count()
-
-            for n in range(num_rows):
-                if dev == merged_all["device"][n]:
-                    number_of_existance += 1
-                    error_total += merged_all["error"][n]
-                    if merged_all["error"][n] > max_error_total:
-                        max_error_total = merged_all["error"][n]
-                    elif merged_all["error"][n] < min_error_total:
-                        min_error_total = merged_all["error"][n]
-
-            mean_error_total = error_total / number_of_existance
-
+            mean_error_total = float()
+            min_error_total = merged_all["rms_error"].min()
+            max_error_total = merged_all["rms_error"].max()
+            mean_error_total = merged_all["rms_error"].mean()
+         
             # Making sure that min, max, mean errors are not > 100%
             if min_error_total > 100:
                 min_error_total = 100
