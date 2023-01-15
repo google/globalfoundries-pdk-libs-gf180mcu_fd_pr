@@ -30,8 +30,8 @@ MOS = [
     "ibp=7.000E-06",
     "ibp=9.000E-06",
 ]
-NPN=[-0.000009	,-0.000007	,-0.000005	,-0.000003	,-0.000001]
-PNP=[0.000009    ,0.000007	,0.000005	,0.000003	,0.000001]
+NPN=[-0.000001,-0.000003,-0.000005,-0.000007,-0.000009]
+PNP=[0.000001,0.000003,0.000005,0.000007,0.000009]
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
     Args:
@@ -256,6 +256,9 @@ def error_cal(
         df(pd.DataFrame): dataframe contains error results        
     """
     merged_dfs = list()
+    # create a new dataframe for rms error
+    rms_df = pd.DataFrame(columns=["device", "temp", "rms_error"])
+                
     meas_df.to_csv(
         f"bjt_iv_reg/{device}/{device}_measured.csv", index=False, header=True
     )
@@ -316,47 +319,57 @@ def error_cal(
         measured_data["temp"] = sim_df["temp"].iloc[i]
         result_data = simulated_data.merge(measured_data, how="left")
 
-        result_data["step1_error"] = (
+        result_data["ib_step1_error"] = (
             np.abs(result_data["ibp1"] - result_data["m_ibp1"])
             * 100.0
             / (result_data["m_ibp1"])
         )
-        result_data["step2_error"] = (
+        result_data["ib_step2_error"] = (
             np.abs(result_data["ibp2"] - result_data["m_ibp2"])
             * 100.0
             / (result_data["m_ibp2"])
         )
-        result_data["step3_error"] = (
+        result_data["ib_step3_error"] = (
             np.abs(result_data["ibp3"] - result_data["m_ibp3"])
             * 100.0
             / (result_data["m_ibp3"])
         )
-        result_data["step4_error"] = (
+        result_data["ib_step4_error"] = (
             np.abs(result_data["ibp4"] - result_data["m_ibp4"])
             * 100.0
             / (result_data["m_ibp4"])
         )
-        result_data["step5_error"] = (
+        result_data["ib_step5_error"] = (
             np.abs(result_data["ibp5"] - result_data["m_ibp5"])
             * 100.0
             / (result_data["m_ibp5"])
         )
         result_data["error"] = (
             np.abs(
-                result_data["step1_error"]
-                + result_data["step2_error"]
-                + result_data["step3_error"]
-                + result_data["step4_error"]
-                + result_data["step5_error"]
+                result_data["ib_step1_error"]
+                + result_data["ib_step2_error"]
+                + result_data["ib_step3_error"]
+                + result_data["ib_step4_error"]
+                + result_data["ib_step5_error"]
             )
             / 5
         )
-
+         # get rms error
+        result_data["rms_error"] = np.sqrt(
+            np.mean(result_data["error"] ** 2)
+        )
+        # fill rms dataframe
+        rms_df.loc[i] = [
+            result_data["device"].iloc[0],
+            result_data["temp"].iloc[0],
+            result_data["rms_error"].iloc[0],
+        ]
         merged_dfs.append(result_data)
-        merged_out = pd.concat(merged_dfs)
-        merged_out.fillna(0, inplace=True)
-        merged_out.to_csv(f"bjt_iv_reg/{device}/error_analysis.csv", index=False)
-    return merged_out
+    merged_out = pd.concat(merged_dfs)
+    merged_out.fillna(0, inplace=True)
+    merged_out.to_csv(f"bjt_iv_reg/{device}/error_analysis.csv", index=False)
+    rms_df.to_csv(f"bjt_iv_reg/{device}/final_error_analysis.csv", index=False)
+    return rms_df
 
 
 def main():
@@ -432,11 +445,11 @@ def main():
             for n in range(num_rows):
                 if dev == merged_all["device"].iloc[n]:
                     number_of_existance += 1
-                    error_total += merged_all["error"].iloc[n]
-                    if merged_all["error"].iloc[n] > max_error_total:
-                        max_error_total = merged_all["error"].iloc[n]
-                    elif merged_all["error"].iloc[n] < min_error_total:
-                        min_error_total = merged_all["error"].iloc[n]
+                    error_total += merged_all["rms_error"].iloc[n]
+                    if merged_all["rms_error"].iloc[n] > max_error_total:
+                        max_error_total = merged_all["rms_error"].iloc[n]
+                    elif merged_all["rms_error"].iloc[n] < min_error_total:
+                        min_error_total = merged_all["rms_error"].iloc[n]
 
             mean_error_total = error_total / number_of_existance
 
