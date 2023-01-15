@@ -424,6 +424,9 @@ def main():
             )
 
             merged_dfs = []
+            # create a new dataframe for rms error
+            rms_df = pd.DataFrame(columns=["device", "length", "width", "temp", "corner", "rms_error"])
+         
             for i in range(len(merged_df)):
                 measured_data = pd.read_csv(merged_df["diode_measured"][i])
                 simulated_data = pd.read_csv(merged_df["diode_sim"][i])
@@ -466,7 +469,22 @@ def main():
                     * 100.0
                     / result_data["diode_measured"]
                 )
-
+                # fill nan values with 0
+                result_data["error"] = result_data["error"].fillna(0)
+                # get rms error
+                result_data["rms_error"] = np.sqrt(
+                    np.mean(result_data["error"] ** 2)
+                )
+                # fill rms dataframe
+                rms_df.loc[i] = [
+                    result_data["device"][0],
+                    result_data["length"][0],
+                    result_data["width"][0],
+                    result_data["temp"][0],
+                    result_data["corner"][0],
+                    result_data["rms_error"][0],
+                ]
+            
                 result_data = result_data[
                     [
                         "device",
@@ -486,31 +504,34 @@ def main():
             merged_out = pd.concat(merged_dfs)
 
             merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
+            rms_df.to_csv(f"{dev_path}/final_error_analysis_{c}.csv", index=False)
 
-            if merged_out["error"].min() > 100:
-                min_error = 100
-            else:
-                min_error = merged_out["error"].min()
+            # calculating the error of each device and reporting it
+            min_error_total = float()
+            max_error_total = float()
+            mean_error_total = float()
+            min_error_total = rms_df["rms_error"].min()
+            max_error_total = rms_df["rms_error"].max()
+            mean_error_total = rms_df["rms_error"].mean()
+            # Making sure that min, max, mean errors are not > 100%
+            if min_error_total > 100:
+                min_error_total = 100
 
-            if merged_out["error"].max() > 100:
-                max_error = 100
-            else:
-                max_error = merged_out["error"].max()
+            if max_error_total > 100:
+                max_error_total = 100
 
-            if merged_out["error"].mean() > 100:
-                mean_error = 100
-            else:
-                mean_error = merged_out["error"].mean()
+            if mean_error_total > 100:
+                mean_error_total = 100
 
+            # logging.infoing min, max, mean errors to the consol
             logging.info(
-                f"# Device {dev} min error: {min_error:.2f}, max error: {max_error:.2f}, mean error {mean_error:.2f}"
+                f"# Device {dev} {c} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
-
             if merged_out["error"].max() < PASS_THRESH:
-                logging.info(f"# Device {dev} has passed regression.")
+                logging.info(f"# Device {dev} {c} has passed regression.")
             else:
                 logging.error(
-                    f"# Device {dev} has failed regression. Needs more analysis."
+                    f"# Device {dev} {c} has failed regression. Needs more analysis."
                 )
 
 
