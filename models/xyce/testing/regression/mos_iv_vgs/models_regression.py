@@ -28,6 +28,18 @@ NMOS6P0_VGS = [1, 2, 3, 4, 5, 6]
 PMOS6P0_VGS = [-1, -2, -3, -4, -5, -6]
 NMOS6P0_NAT_VGS = [0.25, 1.4, 2.55, 3.7, 4.85, 6]
 PASS_THRESH = 2.0
+# #################
+VDS_N03V3 = "0 3.3 0.05"
+VDS_P03V3 = "-0 -3.3 -0.05"
+VDS_N06V0 = "0 6.6 0.05"
+VDS_P06V0 = "-0 -6.6 -0.05"
+VDS_N06V0_N = "0 6.6 0.05"
+
+VGS_N03V3 = "0.8 3.3 0.5"
+VGS_P03V3 = "-0.8 -3.3 -0.5"
+VGS_N06V0 = "1 6 1"
+VGS_P06V0 = "-1 -6 -1"
+VGS_N06V0_N = "0.25 6 1.15"
 
 
 def call_simulator(file_name):
@@ -170,7 +182,27 @@ def run_sim(
         info(dict): results are stored in,
         and passed to the run_sims function to extract data
     """
-    netlist_tmp = f"device_netlists_{id_rds}/{device}.spice"
+    if device[0] == "n":
+        device1 = "nmos"
+    else:
+        device1 = "pmos"
+
+    vds = VDS_N03V3
+    vgs = VGS_N03V3
+    if device == "pfet_03v3" or device == "pfet_03v3_dss":
+        vgs = VGS_P03V3
+        vds = VDS_P03V3
+    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+        vgs = VGS_P06V0
+        vds = VDS_P06V0
+    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
+        vgs = VGS_N06V0
+        vds = VDS_N06V0
+    elif device == "nfet_06v0_nvt":
+        vgs = VGS_N06V0_N
+        vds = VDS_N06V0_N
+
+    netlist_tmp = f"device_netlists_{id_rds}/{device1}.spice"
 
     info = {}
     info["device"] = device
@@ -185,8 +217,7 @@ def run_sim(
     s = f"netlist_w{width_str}_l{length_str}_t{temp_str}.spice"
     netlist_path = f"{dirpath}/{device}_netlists_{id_rds}/{s}"
     s = f"t{temp}_simulated_W{width_str}_L{length_str}.csv"
-    result_path = f"{dirpath}/simulated_{id_rds}/{s}"
-    os.makedirs(f"{dirpath}/simulated_{id_rds}", exist_ok=True)
+    result_path = f"{dirpath}/{device}_netlists_{id_rds}/{s}"
 
     with open(netlist_tmp) as f:
         tmpl = Template(f.read())
@@ -198,6 +229,8 @@ def run_sim(
                     width=width_str,
                     length=length_str,
                     temp=temp_str,
+                    vds=vds,
+                    vgs=vgs,
                     AD=float(width_str) * 0.24,
                     PD=2 * (float(width_str) + 0.24),
                     AS=float(width_str) * 0.24,
@@ -266,40 +299,46 @@ def run_sims(
             except Exception as exc:
                 logging.info("Test case generated an exception: %s" % (exc))
 
-    sf = glob.glob(f"{dirpath}/simulated_{id_rds}/*.csv")
-
+    sf = glob.glob(f"{dirpath}/{device}_netlists_{id_rds}/*.csv")
+    if device == "pfet_03v3" or device == "pfet_03v3_dss":
+        mos = PMOS3P3_VGS
+    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+        mos = PMOS6P0_VGS
+    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
+        mos = NMOS6P0_VGS
+    elif device == "nfet_06v0_nvt":
+        mos = NMOS6P0_NAT_VGS
+    else:
+        mos = NMOS3P3_VGS
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        sdf = pd.read_csv(
-            sf[i],
-            header=None,
-            delimiter=r"\s+",
+        df2 = pd.read_csv(
+            sf[i]
         )
-        sweep = int(sdf[0].count() / len(NMOS3P3_VGS))
-        new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
-
-        new_array[:, 0] = sdf.iloc[1 : sweep + 1, 0]
-        times = int(sdf.shape[0] / sweep)
-
-        for j in range(times):
-            new_array[:, (j + 1)] = sdf.iloc[j * sweep + 1 : (j + 1) * sweep + 1, 0]
-
-        # Writing final simulated data 1
-        sdf = pd.DataFrame(new_array)
+        i_v="{-I(VDS)}" if device[0] == "n" else "{I(VDS)}"
+        if id_rds == "Rds":
+            i_v = "{1/N(XMN1:M0:GDS)}"
+        if device in ["nfet_06v0", "pfet_06v0","nfet_06v0_dss", "pfet_06v0_dss"] and id_rds == "Rds":
+            # reciprocal the column values
+            df2[i_v] = df2[i_v].apply(np.reciprocal)            
+        sdf = df2.pivot(index="V(D_TN)", columns="V(G_TN)", values=i_v)
+   
         sdf.rename(
             columns={
-                0: "vds",
-                1: "vb1",
-                2: "vb2",
-                3: "vb3",
-                4: "vb4",
-                5: "vb5",
-                6: "vb6",
+                mos[0]: "vb1",
+                mos[1]: "vb2",
+                mos[2]: "vb3",
+                mos[3]: "vb4",
+                mos[4]: "vb5",
+                mos[5]: "vb6",
             },
             inplace=True,
         )
-        sdf.to_csv(sf[i], index=False)
+        if device[0] == "p":
+             # reverse the rows
+            sdf = sdf.iloc[::-1]
 
+        sdf.to_csv(sf[i], index=True, header=True, sep=",")
     df = pd.DataFrame(results)
     return df
 
@@ -327,6 +366,8 @@ def error_cal(
     """
     # adding error columns to the merged dataframe
     merged_dfs = list()
+    # create a new dataframe for rms error
+    rms_df = pd.DataFrame(columns=["device", "length", "width", "temp", "rms_error"])
     loops = df["L (um)"].count()
     temp_range = int(loops / 3)
     df["temp"] = 25
@@ -338,7 +379,7 @@ def error_cal(
         w = df["W (um)"].iloc[int(i)]
         t = df["temp"].iloc[int(i)]
         s = f"t{t}_simulated_W{w}_L{length}.csv"
-        sim_path = f"mos_iv_reg/{device}/simulated_{id_rds}/{s}"
+        sim_path = f"mos_iv_reg/{device}/{device}_netlists_{id_rds}/{s}"
 
         simulated_data = pd.read_csv(sim_path)
 
@@ -369,54 +410,88 @@ def error_cal(
         simulated_data["vds"] = measured_data["vds"]
 
         result_data = simulated_data.merge(measured_data, how="left")
-        result_data.loc[0] = 1
+        if id_rds == "Id":
+            # clipping all the  values to lowest_curr
+            lowest_curr = 5e-12
+            result_data["measured_vgs1"] = result_data["measured_vgs1"].clip(lower=lowest_curr)
+            result_data["measured_vgs2"] = result_data["measured_vgs2"].clip(lower=lowest_curr)
+            result_data["measured_vgs3"] = result_data["measured_vgs3"].clip(lower=lowest_curr)
+            result_data["measured_vgs4"] = result_data["measured_vgs4"].clip(lower=lowest_curr)
+            result_data["measured_vgs5"] = result_data["measured_vgs5"].clip(lower=lowest_curr)
+            result_data["measured_vgs6"] = result_data["measured_vgs6"].clip(lower=lowest_curr)
+            result_data["vb1"] = result_data["vb1"].clip(lower=lowest_curr)
+            result_data["vb2"] = result_data["vb2"].clip(lower=lowest_curr)
+            result_data["vb3"] = result_data["vb3"].clip(lower=lowest_curr)
+            result_data["vb4"] = result_data["vb4"].clip(lower=lowest_curr)
+            result_data["vb5"] = result_data["vb5"].clip(lower=lowest_curr)
+            result_data["vb6"] = result_data["vb6"].clip(lower=lowest_curr)
+        result_data["device"] = device
+        result_data["length"] = length
+        result_data["width"] = w
+        result_data["temp"] = t
 
-        result_data["step1_error"] = (
+        result_data["vds_step1_error"] = (
             np.abs(result_data["measured_vgs1"] - result_data["vb1"])
             * 100.0
             / (result_data["measured_vgs1"])
         )
-        result_data["step2_error"] = (
+        result_data["vds_step2_error"] = (
             np.abs(result_data["measured_vgs2"] - result_data["vb2"])
             * 100.0
             / (result_data["measured_vgs2"])
         )
-        result_data["step3_error"] = (
+        result_data["vds_step3_error"] = (
             np.abs(result_data["measured_vgs3"] - result_data["vb3"])
             * 100.0
             / (result_data["measured_vgs3"])
         )
-        result_data["step4_error"] = (
+        result_data["vds_step4_error"] = (
             np.abs(result_data["measured_vgs4"] - result_data["vb4"])
             * 100.0
             / (result_data["measured_vgs4"])
         )
-        result_data["step5_error"] = (
+        result_data["vds_step5_error"] = (
             np.abs(result_data["measured_vgs5"] - result_data["vb5"])
             * 100.0
             / (result_data["measured_vgs5"])
         )
-        result_data["step6_error"] = (
+        result_data["vds_step6_error"] = (
             np.abs(result_data["measured_vgs6"] - result_data["vb6"])
             * 100.0
             / (result_data["measured_vgs6"])
         )
         result_data["error"] = (
             np.abs(
-                result_data["step1_error"]
-                + result_data["step2_error"]
-                + result_data["step3_error"]
-                + result_data["step4_error"]
-                + result_data["step5_error"]
-                + result_data["step6_error"]
+                result_data["vds_step1_error"]
+                + result_data["vds_step2_error"]
+                + result_data["vds_step3_error"]
+                + result_data["vds_step4_error"]
+                + result_data["vds_step5_error"]
+                + result_data["vds_step6_error"]
             )
             / 6
         )
+               # get rms error
+        result_data["rms_error"] = np.sqrt(
+            np.mean(result_data["error"] ** 2)
+        )
+        rms_df = rms_df.append(
+            {
+                "device": device,
+                "length": length,
+                "width": w,
+                "temp": t,
+                "rms_error": result_data["rms_error"].iloc[0],
+            },
+            ignore_index=True,
+        )
 
         merged_dfs.append(result_data)
-        merged_out = pd.concat(merged_dfs)
-        merged_out.fillna(0, inplace=True)
-        merged_out.to_csv(f"{dev_path}/error_analysis_{id_rds}.csv", index=False)
+    merged_out = pd.concat(merged_dfs)
+    merged_out.fillna(0, inplace=True)
+    merged_out.to_csv(f"{dev_path}/error_analysis_{id_rds}.csv", index=False)
+    rms_df.to_csv(f"{dev_path}/final_error_analysis_{id_rds}.csv", index=False)
+
     return None
 
 
@@ -434,15 +509,15 @@ def main():
     pd.set_option("display.width", 1000)
 
     devices = [
-        "nfet_03v3_iv",
-        "pfet_03v3_iv",
-        "nfet_06v0_iv",
-        "pfet_06v0_iv",
-        "nfet_06v0_nvt_iv",
-        "nfet_03v3_dss_iv",
-        "pfet_03v3_dss_iv",
-        "nfet_06v0_dss_iv",
-        "pfet_06v0_dss_iv",
+        "nfet_03v3",
+        "pfet_03v3",
+        "nfet_06v0",
+        "pfet_06v0",
+        "nfet_06v0_nvt",
+        "nfet_03v3_dss",
+        "pfet_03v3_dss",
+        "nfet_06v0_dss",
+        "pfet_06v0_dss",
     ]
     nmos_vds = "vds (V)"
     pmos_vds = "-vds (V)"
@@ -459,24 +534,22 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {device}")
 
-        # Folder structure of simulated values
-        os.makedirs(f"{dirpath}/simulated_{Id_sim}", exist_ok=False)
-        os.makedirs(f"{dirpath}/simulated_{Rds_sim}", exist_ok=False)
+
 
         vds = nmos_vds
         if device[0] == "p":
             vds = pmos_vds
 
         vgs = NMOS3P3_VGS
-        if device == "pfet_03v3_iv" or device == "pfet_03v3_dss_iv":
+        if device == "pfet_03v3" or device == "pfet_03v3_dss":
             vgs = PMOS3P3_VGS
-        elif device == "pfet_06v0_iv" or device == "pfet_06v0_dss_iv":
+        elif device == "pfet_06v0" or device == "pfet_06v0_dss":
             vgs = PMOS6P0_VGS
-        elif device == "nfet_06v0_iv" or device == "nfet_06v0_dss_iv":
+        elif device == "nfet_06v0" or device == "nfet_06v0_dss":
             vgs = NMOS6P0_VGS
-        elif device == "nfet_06v0_nvt_iv":
+        elif device == "nfet_06v0_nvt":
             vgs = NMOS6P0_NAT_VGS
-        data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{device}.nl_out.xlsx")
+        data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{device}_iv.nl_out.xlsx")
         if len(data_files) < 1:
             logging.info(f"# Can't find file for device: {device}")
             file = ""
@@ -488,7 +561,7 @@ def main():
         if file != "":
             # From xlsx to csv
             read_file = pd.read_excel(
-                f"../../180MCU_SPICE_DATA/MOS/{device}.nl_out.xlsx"
+                f"../../180MCU_SPICE_DATA/MOS/{device}_iv.nl_out.xlsx"
             )
             read_file.to_csv(f"{dirpath}/{device}.csv", index=False, header=True)
             meas_df, meas_df1 = ext_measured(dirpath, device, vds, vgs)
@@ -525,24 +598,15 @@ def main():
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
         for s in ["Id", "Rds"]:
-            merged_all = pd.read_csv(f"{dirpath}/error_analysis_{s}.csv")
+            merged_all = pd.read_csv(f"{dirpath}/final_error_analysis_{s}.csv")
 
             # calculating the error of each device and reporting it
             min_error_total = float()
             max_error_total = float()
-            error_total = float()
-
-            # number of rows in the final excel sheet
-            num_rows = merged_all["error"].count()
-
-            for n in range(num_rows):
-                error_total += merged_all["error"][n]
-                if merged_all["error"][n] > max_error_total:
-                    max_error_total = merged_all["error"][n]
-                elif merged_all["error"][n] < min_error_total:
-                    min_error_total = merged_all["error"][n]
-
-            mean_error_total = error_total / num_rows
+            mean_error_total = float()
+            min_error_total = merged_all["rms_error"].min()
+            max_error_total = merged_all["rms_error"].max()
+            mean_error_total = merged_all["rms_error"].mean()
 
             # Making sure that min, max, mean errors are not > 100%
             if min_error_total > 100:
