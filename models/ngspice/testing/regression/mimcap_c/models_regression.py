@@ -94,6 +94,7 @@ def ext_measured(dev_data_path, device, corners):
     df["device"] = device
     df.dropna(axis=0, inplace=True)
     df = df[["device", "corner", "length", "width", "temp", "mimcap_measured"]]
+    df.drop_duplicates(inplace=True)
     return df
 
 def run_sim(dirpath, device, length, width, corner, temp=25):
@@ -250,7 +251,7 @@ def main():
         merged_df = meas_df.merge(
             sim_df, on=["device", "corner", "length", "width", "temp"], how="left"
         )
-
+        merged_df.drop_duplicates(inplace=True)
         merged_df["error"] = (
             np.abs(merged_df["mim_sim"] - merged_df["mimcap_measured"])
             * 100.0

@@ -1,0 +1,71 @@
+***************************
+** nfet_03v3_t_id
+***************************
+* Copyright 2022 Efabless Corporation
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+** library calling
+
+.include "../../../design.ngspice"
+.lib "../../../sm141064.ngspice" typical
+
+
+
+** Circuit Description **
+* power supply
+vds D_tn 0 dc=-3.3
+vgs G_tn 0 dc=-3.3
+vs S_tn 0 dc=0
+.temp 25
+.options tnom=25
+
+
+* circuit
+xmn D_tn G_tn S_tn S_tn {{device}} W = {{width}}u L = {{length}}u nf={{nf}} ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+
+.control
+set filetype=ascii
+set wr_singlescale
+set wr_vecnames
+
+compose  vgs_vector   start={{vgs1}}          stop={{vgs2}}          step={{vgs3}}
+
+set appendwrite
+
+foreach t 25
+
+    let vgs_counter = 0
+    while vgs_counter < length(vgs_vector)
+        option TEMP=25
+        alter vgs = vgs_vector[vgs_counter]
+
+        save  @m.xmn.m0[vds] @m.xmn.m0[vgs] @m.xmn.m0[id] @m.xmn.m0[cgs]
+        *******************
+        ** simulation part
+        *******************
+        DC vds {{vds}}
+    
+        * ** parameters calculation
+	let Cap = -{@m.xmn.m0[cgs]*1e15}
+        let Vg = vgs_vector[vgs_counter]
+
+        
+        wrdata mos_cv_regr/{{device}}/{{device}}_netlists_Cgs/simulated_W{{width}}_L{{length}}.csv  Cap Vg
+        
+        reset
+        let vgs_counter = vgs_counter + 1
+    end
+end
+.endc
+.end

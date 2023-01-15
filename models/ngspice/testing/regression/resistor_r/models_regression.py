@@ -83,6 +83,7 @@ def ext_const_temp_corners(dev_data_path, device, corners):
     df["voltage"] = DEFAULT_VOLTAGE
     df.dropna(axis=0, inplace=True)
     df = df[["device", "corner", "length", "width", "voltage", "temp", "res_measured"]]
+    df.drop_duplicates(inplace=True)
     return df
 
 
@@ -113,6 +114,7 @@ def ext_temp_corners(dev_data_path, device, corners):
     df["voltage"] = DEFAULT_VOLTAGE
     df.dropna(axis=0, inplace=True)
     df = df[["device", "corner", "length", "width", "voltage", "temp", "res_measured"]]
+    df.drop_duplicates(inplace=True)
     return df
 
 
@@ -207,7 +209,7 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
     return df
 
 
-def main():
+def main(num_cores):
 
         # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
@@ -268,7 +270,7 @@ def main():
             logging.info(f"# Can't find wl file for device: {dev}")
             wl_file = ""
         else:
-            wl_file = wl_data_files[0]
+            wl_file = os.path.abspath(wl_data_files[0])
         logging.info(f"# W/L data points file : {wl_file}")
 
         temp_data_files = glob.glob(
@@ -304,7 +306,7 @@ def main():
 
         logging.info(f"# Device {dev} number of measured_datapoints : {len(meas_df)}")
 
-        sim_df = run_sims(meas_df, dev_path, 3)
+        sim_df = run_sims(meas_df, dev_path, num_cores)
         logging.info(f"# Device {dev} number of simulated datapoints : {len(sim_df)}")
 
         merged_df = meas_df.merge(
@@ -355,4 +357,4 @@ if __name__ == "__main__":
     )
     
     # Calling main function
-    main()
+    main(workers_count)

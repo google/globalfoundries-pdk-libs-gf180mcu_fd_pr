@@ -269,12 +269,10 @@ def run_sim(char, dirpath, device, temp):
 
     netlist_path = f"{dirpath}/{dev}_netlists" + f"/netlist_{device}_t{temp_str}.spice"
 
-    result_path_ib = f"{dirpath}/ib_simulated/" + f"simulated_{device}_t{temp_str}.csv"
-    result_path_ic = f"{dirpath}/ic_simulated/" + f"simulated_{device}_t{temp_str}.csv"
+    result_path_ib = f"{dirpath}/{dev}_netlists/" + f"ib_simulated_{device}_t{temp_str}.csv"
+    result_path_ic = f"{dirpath}/{dev}_netlists/" + f"ic_simulated_{device}_t{temp_str}.csv"
 
-    for c in char:
-        os.makedirs(f"{dirpath}/{c}_simulated", exist_ok=True)
-
+ 
     with open(netlist_tmp) as f:
         tmpl = Template(f.read())
         os.makedirs(f"{dirpath}/{dev}_netlists", exist_ok=True)
@@ -325,43 +323,44 @@ def run_sims(char, df, dirpath, num_workers=mp.cpu_count()):
                 logging.info(f"Test case generated an exception: {exc}")
 
     for c in char:
-        sf = glob.glob(f"{dirpath}/{c}_simulated/*.csv")  # stored simulated data files
+        sf = glob.glob(f"{dirpath}/*_netlists/{c}*.csv")  # stored simulated data files
 
         for i in range(len(sf)):
-            sdf = pd.read_csv(
+            df = pd.read_csv(
                 sf[i],
-                header=None,
                 delimiter=r"\s+",
             )
 
-            sweep = len(pd.read_csv(glob.glob(f"{dirpath}/{c}_measured/*.csv")[1]))
-
-            new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
-            new_array[:, 0] = sdf.iloc[:sweep, 0]
-            times = int(sdf.shape[0] / sweep)
-
-            for j in range(times):
-                new_array[:, (j + 1)] = sdf.iloc[j * sweep : (j + 1) * sweep, 1]
-
-            # Writing final simulated data 1
-            sdf = pd.DataFrame(new_array)
-            sdf.to_csv(
-                sf[i],
-                index=False,
-            )
-
-            sdf.rename(
-                columns={
-                    0: "simulated_base_volt",
-                    1: f"simulated_{c}_vcp_step1",
-                    2: f"simulated_{c}_vcp_step2",
-                    3: f"simulated_{c}_vcp_step3",
-                },
-                inplace=True,
-            )
-
-            sdf.to_csv(sf[i])
-
+            if c == "ib" and dirpath == "bjt_beta_regr/npn":
+                i_vds = "-i(Vbp)"
+            elif c == "ic" and dirpath == "bjt_beta_regr/npn":
+                i_vds = "-i(Vcp)"
+            elif c == "ib" and dirpath == "bjt_beta_regr/pnp":
+                i_vds = "i(Vbp)"
+            else:
+                i_vds = "i(Vcp)"
+            sdf = df.pivot(index="v-sweep", columns="v(c)", values=i_vds)
+            if dirpath == "bjt_beta_regr/npn":
+                sdf.rename(
+                    columns={
+                        1.0: f"simulated_{c}_vcp_step1",
+                        2.0: f"simulated_{c}_vcp_step2",
+                        3.0: f"simulated_{c}_vcp_step3",
+                    },
+                    inplace=True,
+                )
+            else:
+                sdf.rename(
+                    columns={
+                        -1.0: f"simulated_{c}_vcp_step1",
+                        -2.0: f"simulated_{c}_vcp_step2",
+                        -3.0: f"simulated_{c}_vcp_step3",
+                    },
+                    inplace=True,
+                )
+                 # reverse the rows
+                sdf = sdf.iloc[::-1]
+            sdf.to_csv(sf[i], index=True, header=True, sep=",")
     df = pd.DataFrame(results)
 
     df = df[["device", "temp", "beta_sim_ib_unscaled", "beta_sim_ic_unscaled"]]
@@ -456,7 +455,7 @@ def main():
         sim_df = run_sims(char, meas_df, dev_path, 3)
 
         sim_len = len(
-            pd.read_csv(glob.glob(f"{dev_path}/{char[1]}_simulated/*.csv")[1])
+            pd.read_csv(glob.glob(f"{dev_path}/{dev}_netlists/{char[1]}*.csv")[1])
         )
 
         logging.info(
@@ -469,15 +468,25 @@ def main():
 
         merged_all = []
         for c in char:
-
+            # create a new dataframe for rms error
+            rms_df = pd.DataFrame(columns=["device", "temp","corner", "rms_error"])
+                
             merged_dfs = []
 
             for i in range(len(merged_df)):
 
                 measured_data = pd.read_csv(merged_df[f"{c}_measured"][i])
                 simulated_data = pd.read_csv(merged_df[f"beta_{c}_sim"][i])
-
+                measured_data["v-sweep"] = simulated_data["v-sweep"]
                 result_data = simulated_data.merge(measured_data, how="left")
+                # clipping all the  values to lowest_curr
+                lowest_curr = 5e-12
+                result_data[f"simulated_{c}_vcp_step1"] = result_data[f"simulated_{c}_vcp_step1"].clip(lower=lowest_curr)
+                result_data[f"simulated_{c}_vcp_step2"] = result_data[f"simulated_{c}_vcp_step2"].clip(lower=lowest_curr)
+                result_data[f"simulated_{c}_vcp_step3"] = result_data[f"simulated_{c}_vcp_step3"].clip(lower=lowest_curr)
+                result_data[f"measured_{c}_vcp_step1"] = result_data[f"measured_{c}_vcp_step1"].clip(lower=lowest_curr)
+                result_data[f"measured_{c}_vcp_step2"] = result_data[f"measured_{c}_vcp_step2"].clip(lower=lowest_curr)
+                result_data[f"measured_{c}_vcp_step3"] = result_data[f"measured_{c}_vcp_step3"].clip(lower=lowest_curr)
 
                 result_data["corner"] = "typical"
                 result_data["device"] = (
@@ -529,7 +538,18 @@ def main():
                     )
                     / 3
                 )
-
+                        # get rms error
+                result_data["rms_error"] = np.sqrt(
+                    np.mean(result_data["error"] ** 2)
+                )
+                # fill rms dataframe
+                rms_df.loc[i] = [
+                    result_data["device"][0],
+                    result_data["temp"][0],
+                    result_data["corner"][0],
+                    result_data["rms_error"][0],
+                ]
+            
                 result_data = result_data[
                     [
                         "device",
@@ -554,55 +574,39 @@ def main():
             merged_out = pd.concat(merged_dfs)
 
             merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
+            rms_df.to_csv(f"{dev_path}/finalerror_analysis_{c}.csv", index=False)
 
-            merged_all.append(merged_out)
+            # calculating the error of each device and reporting it
+            for dev in list_dev:
+                min_error_total = float()
+                max_error_total = float()
+                mean_error_total = float()
+                # number of rows in the final excel sheet
+                rms_df=pd.read_csv(f"{dev_path}/finalerror_analysis_{c}.csv")
+                min_error_total = rms_df["rms_error"].min()
+                max_error_total = rms_df["rms_error"].max()
+                mean_error_total = rms_df["rms_error"].mean()
+                # Making sure that min, max, mean errors are not > 100%
+                if min_error_total > 100:
+                    min_error_total = 100
 
-        merged_all = pd.concat(merged_all)
-        list_dev = npn_devices
-        if dev == "pnp":
-            list_dev = pnp_devices
-        # calculating the error of each device and reporting it
-        for dev in list_dev:
-            min_error_total = float()
-            max_error_total = float()
-            error_total = float()
-            number_of_existance = int()
+                if max_error_total > 100:
+                    max_error_total = 100
 
-            # number of rows in the final excel sheet
-            num_rows = merged_all["device"].count()
+                if mean_error_total > 100:
+                    mean_error_total = 100
 
-            for n in range(num_rows):
-                if dev == merged_all["device"].iloc[n]:
-                    number_of_existance += 1
-                    error_total += merged_all["error"].iloc[n]
-                    if merged_all["error"].iloc[n] > max_error_total:
-                        max_error_total = merged_all["error"].iloc[n]
-                    elif merged_all["error"].iloc[n] < min_error_total:
-                        min_error_total = merged_all["error"].iloc[n]
-
-            mean_error_total = error_total / number_of_existance
-
-            # Making sure that min, max, mean errors are not > 100%
-            if min_error_total > 100:
-                min_error_total = 100
-
-            if max_error_total > 100:
-                max_error_total = 100
-
-            if mean_error_total > 100:
-                mean_error_total = 100
-
-            # logging.infoing min, max, mean errors to the consol
-            logging.info(
-                f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
-            )
-
-            if max_error_total < PASS_THRESH:
-                logging.info(f"# Device {dev} has passed regression.")
-            else:
+                # logging.infoing min, max, mean errors to the consol
                 logging.info(
-                    f"# Device {dev} has failed regression. Needs more analysis."
+                    f"# Device {dev} {c}  min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
                 )
+
+                if max_error_total < PASS_THRESH:
+                    logging.info(f"# Device {dev} {c} has passed regression.")
+                else:
+                    logging.error(
+                        f"# Device {dev} {c} has failed regression. Needs more analysis."
+                    )
 
 
 # # ================================================================

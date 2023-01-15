@@ -45,6 +45,29 @@ PMOS3P3_VPS1 = ["-0", -1.1, -2.2, -3.3]
 NMOS6P0_VPS1 = [0, 2, 4, 6]
 PMOS6P0_VPS1 = ["-0", -2, -4, -6]
 # #######################
+VBS_N03V3C = [0, -3.3, -0.825]
+VBS_P03V3C = [0, 3.3, 0.825]
+VBS_N06V0C = [0, -3, -1]
+VBS_P06V0C = [0, 3, 1]
+VBS_N06V0_NC = [0, -3, -1]
+
+VGS_N03V3C = "-3.3 3.3 0.1"
+VGS_P03V3C = "-3.3 3.3 0.1"
+VGS_N06V0C = "-6 6 0.1"
+VGS_P06V0C = "-6 6 0.1"
+VGS_N06V0_NC = "-6 6 0.1"
+
+VGS_N03V3D = [0, 3.4, 1.1]
+VGS_P03V3D = [0, -3.4, -1.1]
+VGS_N06V0D = [0, 6, 2]
+VGS_P06V0D = [0, -6, -2]
+VGS_N06V0_ND = [0, 6, 2]
+
+VDS_N03V3D = "0 3.3 0.1"
+VDS_P03V3D = "0 -3.3 -0.1"
+VDS_N06V0D = "0 6 0.1"
+VDS_P06V0D = "0 -6 -0.1"
+VDS_N06V0_ND = "0 6 0.1"
 
 
 def ext_measured(dev_data_path, device):
@@ -311,9 +334,42 @@ def run_sim(dirpath, device, width, length, nf):
         info(dict): results are stored in,
         and passed to the run_sims function to extract data
     """
+    if device[0] == "n":
+        device1 = "nmos"
+        if device[-1] == "s":
+            device1 = "nmos_dss"
+    else:
+        device1 = "pmos"
+        if device[-1] == "s":
+            device1 = "pmos_dss"    
+
+    vbsc = VBS_N03V3C
+    vdsd = VDS_N03V3D
+    vgsc = VGS_N03V3C
+    vgsd = VGS_N03V3D
+    if device == "pfet_03v3" or device == "pfet_03v3_dss":
+        vbsc = VBS_P03V3C
+        vdsd = VDS_P03V3D
+        vgsc = VGS_P03V3C
+        vgsd = VGS_P03V3D
+    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+        vbsc = VBS_P06V0C
+        vdsd = VDS_P06V0D
+        vgsc = VGS_P06V0C
+        vgsd = VGS_P06V0D
+    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
+        vbsc = VBS_N06V0C
+        vdsd = VDS_N06V0D
+        vgsc = VGS_N06V0C
+        vgsd = VGS_N06V0D
+    elif device == "nfet_06v0_nvt":
+        vbsc = VBS_N06V0C
+        vdsd = VDS_N06V0D
+        vgsc = VGS_N06V0C
+        vgsd = VGS_N06V0D
     caps = ["c", "d", "s"]
     for cap in caps:
-        netlist_tmp = f"device_netlists_Cg{cap}/{device}.spice"
+        netlist_tmp = f"device_netlists_Cg{cap}/{device1}.spice"
 
         info = {}
         info["device"] = device
@@ -322,18 +378,41 @@ def run_sim(dirpath, device, width, length, nf):
         width_str = width
         length_str = length
         nf_str = nf
-
+        if cap == "c":
+            vgs=vgsc
+            vds=vdsd
+            vbs=vbsc
+        else:
+            vgs=vgsd
+            vds=vdsd
+            vbs=vbsc
         s = f"netlist_w{width_str}_l{length_str}.spice"
         netlist_path = f"{dirpath}/{device}_netlists_Cg{cap}/{s}"
         s = f"simulated_W{width_str}_L{length_str}.csv"
-        result_path = f"{dirpath}/simulated_Cg{cap}/{s}"
-        os.makedirs(f"{dirpath}/simulated_Cg{cap}", exist_ok=True)
+        result_path = f"{dirpath}/{device}_netlists_Cg{cap}/{s}"
         with open(netlist_tmp) as f:
             tmpl = Template(f.read())
             os.makedirs(f"{dirpath}/{device}_netlists_Cg{cap}", exist_ok=True)
             with open(netlist_path, "w") as netlist:
                 netlist.write(
-                    tmpl.render(width=width_str, length=length_str, nf=nf_str)
+                    tmpl.render(
+                    width=width_str, 
+                    length=length_str, 
+                    nf=nf_str,
+                    vgs=vgs,
+                    vgs1=vgs[0],
+                    vgs2=vgs[1],
+                    vgs3=vgs[2],
+                    vds=vds,
+                    vbs=vbs,
+                    vbs1=vbs[0],
+                    vbs2=vbs[1],
+                    vbs3=vbs[2],
+                    device=device,
+                    AD=float(width_str) * 0.24,
+                    PD=2 * (float(width_str) + 0.24),
+                    AS=float(width_str) * 0.24,
+                    PS=2 * (float(width_str) + 0.24),)
                 )
 
         # Running ngspice for each netlist
@@ -388,56 +467,76 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
 
     caps = ["c", "d", "s"]
     for cap in caps:
-        sf = glob.glob(f"{dirpath}/simulated_Cg{cap}/*.csv")
+        sf = glob.glob(f"{dirpath}/{device}_netlists_Cg{cap}/*.csv")
+        if cap == "c":
+            if device == "pfet_03v3" or device == "pfet_03v3_dss":
+                mos = PMOS3P3_VPS
+            elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+                mos = PMOS6P0_VPS
+            elif device == "nfet_06v0" or device == "nfet_06v0_dss" or  device == "nfet_06v0_nvt":
+                mos = NMOS6P0_VPS
+            else:
+                mos = MOS
+        else:
+            if device == "pfet_03v3" or device == "pfet_03v3_dss":
+                mos = PMOS3P3_VPS1
+            elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+                mos = PMOS6P0_VPS1
+            elif device == "nfet_06v0" or device == "nfet_06v0_dss" or  device == "nfet_06v0_nvt":
+                mos = NMOS6P0_VPS1
+            else:
+                mos = MOS1
+ 
 
         # sweeping on all generated cvs files
         for i in range(len(sf)):
-            sdf = pd.read_csv(
+            df = pd.read_csv(
                 sf[i],
-                header=None,
                 delimiter=r"\s+",
             )
-            if cap == "c" and device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
-                div_by = len(MOS)
-            else:
-                div_by = len(MOS1)
-
-            sweep = int(sdf[0].count() / div_by)
-            new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
-
-            new_array[:, 0] = sdf.iloc[:sweep, 0]
-            times = int(sdf.shape[0] / sweep)
-
-            for j in range(times):
-                new_array[:, (j + 1)] = sdf.iloc[j * sweep : (j + 1) * sweep, 1]
-
-            # Writing final simulated data 1
-            sdf = pd.DataFrame(new_array)
+           # drop strange rows
+            df.drop(df.loc[df['v-sweep'] == "v-sweep"].index, inplace=True)
+            df = df.reset_index(drop=True)
+            df = df.astype(float)
+            # use the first column as index
+            df = df.set_index("v-sweep")
+            v_gs = "Vg"
+            i_vds = "Cap"
+            sdf = df.pivot( columns=(v_gs), values=i_vds)
             if cap == "c":
+                    # Writing final simulated data 1
                 sdf.rename(
                     columns={
-                        0: "vgs",
-                        1: "vb1",
-                        2: "vb2",
-                        3: "vb3",
-                        4: "vb4",
-                        5: "vb5",
+                        0: "vb1",
+                        mos[1]: "vb2",
+                        mos[2]: "vb3",
+                        mos[3]: "vb4",
+                          
                     },
                     inplace=True,
                 )
-
+                if len(mos) == 5:
+                    sdf.rename(
+                        columns={
+                            mos[4]: "vb5",
+                        },
+                        inplace=True,
+                    )
             else:
+             # Writing final simulated data 1
                 sdf.rename(
                     columns={
-                        0: "vds",
-                        1: "vgs1",
-                        2: "vgs2",
-                        3: "vgs3",
-                        4: "vgs4",
+                        0: "vgs1",
+                        mos[1]: "vgs2",
+                        mos[2]: "vgs3",
+                        mos[3]: "vgs4"
                     },
                     inplace=True,
                 )
-            sdf.to_csv(sf[i], index=False)
+            if device[0] == "p":
+                # reverse the rows
+                sdf = sdf.iloc[::-1]    
+            sdf.to_csv(sf[i], index=True, header=True, sep=",")
 
         df = pd.DataFrame(results)
     return df
@@ -482,6 +581,8 @@ def error_cal(
         mos1 = MOS1
     caps = ["c", "s", "d"]
 
+    # create a new dataframe for rms error
+    rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
     for cap in caps:
         merged_dfs = list()
         if cap == "c":
@@ -495,7 +596,7 @@ def error_cal(
             length = df["L (um)"].iloc[int(i)]
             w = df["W (um)"].iloc[int(i)]
             s = f"simulated_W{w}_L{length}.csv"
-            sim_path = f"mos_cv_regr/{device}/simulated_Cg{cap}/{s}"
+            sim_path = f"mos_cv_regr/{device}/{device}_netlists_Cg{cap}/{s}"
 
             simulated_data = pd.read_csv(sim_path)
 
@@ -539,7 +640,7 @@ def error_cal(
                         },
                         inplace=True,
                     )
-                measured_data["vgs"] = simulated_data["vgs"]
+                measured_data["v-sweep"] = simulated_data["v-sweep"]
                 result_data = simulated_data.merge(measured_data, how="left")
 
             else:
@@ -561,7 +662,7 @@ def error_cal(
                     inplace=True,
                 )
 
-                measured_data["vds"] = simulated_data["vds"]
+                measured_data["v-sweep"] = simulated_data["v-sweep"]
 
                 result_data = simulated_data.merge(measured_data, how="left")
 
@@ -645,11 +746,23 @@ def error_cal(
                     )
                     / 4
                 )
-
+            result_data["length"] = length
+            result_data["width"] = w
+            result_data["temp"] = 25.0
+            # fill nan values with 0
+            result_data.fillna(0, inplace=True)    
+            result_data["rms_error"] = np.sqrt(
+            np.mean(result_data["error"] ** 2)
+            )
+            # fill rms dataframe
+            rms_df.loc[i] = [25.0, w, length, result_data["rms_error"].iloc[0]]
+    
             merged_dfs.append(result_data)
             merged_out = pd.concat(merged_dfs)
             merged_out.fillna(0, inplace=True)
             merged_out.to_csv(f"{dev_path}/error_analysis_Cg{cap}.csv", index=False)
+            rms_df.to_csv(f"{dev_path}/finalerror_analysis_Cg{cap}.csv", index=False)
+
     return None
 
 
@@ -686,7 +799,7 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        data_files = glob.glob(f"measured_data/{measured_data[int(i*0.5)]}.nl_out.xlsx")
+        data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{measured_data[int(i*0.5)]}.nl_out.xlsx")
         if len(data_files) < 1:
             logging.erorr(f"# Can't find file for device: {dev}")
             file = ""
@@ -701,9 +814,7 @@ def main():
             meas_df2 = []
             meas_df3 = []
 
-        # meas_df1.to_csv("dd.csv")
-        # meas_df2.to_csv("dd2.csv")
-        # meas_df3.to_csv("dd3.csv")
+
         df1 = pd.read_csv(f"mos_cv_regr/{dev}/{dev}.csv")
         df2 = df1[["L (um)", "W (um)"]].copy()
         df2.dropna(inplace=True)
@@ -728,25 +839,16 @@ def main():
         for cap in caps:
             # reading from the csv file contains all error data
             # merged_all contains all simulated, measured, error data
-            merged_all = pd.read_csv(f"{dev_path}/error_analysis_Cg{cap}.csv")
+            merged_all = pd.read_csv(f"{dev_path}/finalerror_analysis_Cg{cap}.csv")
 
             # calculating the error of each device and reporting it
             min_error_total = float()
             max_error_total = float()
-            error_total = float()
-
-            # number of rows in the final excel sheet
-            num_rows = merged_all["error"].count()
-
-            for n in range(num_rows):
-                error_total += merged_all["error"][n]
-                if merged_all["error"][n] > max_error_total:
-                    max_error_total = merged_all["error"][n]
-                elif merged_all["error"][n] < min_error_total:
-                    min_error_total = merged_all["error"][n]
-
-            mean_error_total = error_total / num_rows
-
+            mean_error_total = float()
+            min_error_total = merged_all["rms_error"].min()
+            max_error_total = merged_all["rms_error"].max()
+            mean_error_total = merged_all["rms_error"].mean()
+            
             # Making sure that min, max, mean errors are not > 100%
             if min_error_total > 100:
                 min_error_total = 100
@@ -759,13 +861,13 @@ def main():
 
             # logging.infoing min, max, mean errors to the consol
             logging.info(
-                f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
+                f"# Device {dev} Cg{cap} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
             if max_error_total < PASS_THRESH:
-                logging.info(f"# Device {dev} has passed regression.")
+                logging.info(f"# Device {dev} Cg{cap} has passed regression.")
             else:
-                logging.error(f"# Device {dev} has failed regression.")
+                logging.error(f"# Device {dev} Cg{cap} has failed regression.")
 
 
 # # ================================================================
