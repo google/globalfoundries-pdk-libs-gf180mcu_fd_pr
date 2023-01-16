@@ -333,7 +333,9 @@ def main():
 
             # cv section
 
-            diode_data_files = glob.glob(f"../../180MCU_SPICE_DATA/Diode/{dev}_{c}.nl_out.xlsx")
+            diode_data_files = glob.glob(
+                f"../../180MCU_SPICE_DATA/Diode/{dev}_{c}.nl_out.xlsx"
+            )
             if len(diode_data_files) < 1:
                 logging.error(f"# Can't find diode file for device: {dev}")
                 diode_file = ""
@@ -371,7 +373,9 @@ def main():
             )
             merged_dfs = []
             # create a new dataframe for rms error
-            rms_df = pd.DataFrame(columns=["device", "corner", "length", "width", "temp" ,"rms_error"])
+            rms_df = pd.DataFrame(
+                columns=["device", "corner", "length", "width", "temp", "rms_error"]
+            )
 
             for i in range(len(merged_df)):
                 measured_data = pd.read_csv(merged_df["diode_measured"][i])
@@ -420,7 +424,7 @@ def main():
                     result_data["length"][0],
                     result_data["width"][0],
                     result_data["temp"][0],
-                    result_data["rms_error"][0]
+                    result_data["rms_error"][0],
                 ]
                 result_data = result_data[
                     [
