@@ -1,0 +1,35 @@
+***************************
+** nfet_03v3_cv
+***************************
+
+** library calling
+
+
+
+** Circuit Description **
+* power supply
+vds D_tn 0 dc 0
+vgs G_tn 0 dc 3.3
+vbs S_tn 0 dc 0
+
+
+
+*l_diff_min = 0.24
+* ad = int((nf+1)/2) * width/nf * 0.24       = 24u                         
+* pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
+
+* circuit
+xmn1 D_tn G_tn S_tn S_tn nfet_03v3 W=0.22u L=0.28u  ad=0.12u pd=1.48u as=0.12u ps=1.48u
+
+
+*****************
+** Analysis
+*****************
+.DC Vgs -3.3 3.3 0.1 Vbs 0 -3.3 -0.825
+.STEP TEMP 25 -60 200
+.print DC FORMAT=CSV file=nfet_03v3_cv/simulated_Cgc/{{i}}_simulated_W{{width}}_L{{length}}.csv {1/N(xmn1:m0:cgs)} 
+
+.include "../../../../../design.xyce"
+.lib "../../../../../sm141064.xyce" typical
+.end
+
