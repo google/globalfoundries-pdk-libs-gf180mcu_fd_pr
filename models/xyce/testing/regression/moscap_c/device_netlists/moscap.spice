@@ -1,30 +1,33 @@
-*Xyce Common Source Circuit
+***************************
+** cap
+***************************
+* Copyright 2022 Efabless Corporation
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+Ich 0 p dc 10u
+xcn p 0 {{device}} c_length={{length}}u c_width={{width}}u l={{length}}u w={{width}}u
+
+.ic v(p)=0.0
+.tran 10ns 100us
+
+* .print tran v(p) cj=par('10.0e-6  * time / v(p)')
+
+.meas tran CV FIND par('(10.0e-6  * time / v(p))*1.0e15') AT=100us
+
 ** library calling
 
-
-*****************
-** main netlist
-*****************
-.param volt = -3.3
-V1 in 0 dc {volt} ac 1
-R1 in out 1G
-xcn out 0 {{device}} c_length={{length}}u c_width={{width}}u l={{length}}u w={{width}}u
-
-.meas AC freq when Vdb(out)=-3 PRECISION=15
-
-
-
-
-*****************
-** Analysis
-*****************
-
-.ac dec 10 1 10G
-.step volt {{voltage}}
-
-.include "../../../../../design.xyce"
-.lib "../../../../../sm141064.xyce" moscap_{{corner}}
-
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" moscap_{{corner}}
 .end
-
 
