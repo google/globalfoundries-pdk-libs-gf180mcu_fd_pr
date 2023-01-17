@@ -8,8 +8,8 @@
 *****************
 
 Vcp c 0 dc 6
-Ib 0 b 9u
-
+Ib f b 9u
+Vbp f 0 dc 0
 xq1 c b 0 0 {{device}}
 
 
@@ -18,7 +18,7 @@ xq1 c b 0 0 {{device}}
 *****************
 .DC Vcp 0 6 0.1 Ib 1u 9u 2u
 .STEP TEMP {{temp}} -60 200
-.print DC FORMAT=CSV file=mos_iv_reg/npn/simulated/t{{temp}}_simulated_{{device}}.csv {-I(Vcp)}
+.print DC FORMAT=CSV file=bjt_iv_reg/npn/simulated/t{{temp}}_simulated_{{device}}.csv {-I(Vcp)} i(Vbp) v(c)
 
 .include "../../../../../../design.xyce"
 .lib "../../../../../../sm141064.xyce" bjt_typical

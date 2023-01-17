@@ -30,6 +30,8 @@ MOS = [
     "ibp=7.000E-06",
     "ibp=9.000E-06",
 ]
+NPN = [-0.000001, -0.000003, -0.000005, -0.000007, -0.000009]
+PNP = [0.000001, 0.000003, 0.000005, 0.000007, 0.000009]
 
 
 def call_simulator(file_name):
@@ -40,7 +42,14 @@ def call_simulator(file_name):
     os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log 2>/dev/null")
 
 
-def ext_measured(dirpath: str, device: str, vc: str, step: list[str], list_devices: list[str], ib: str) -> pd.DataFrame:
+def ext_measured(
+    dirpath: str,
+    device: str,
+    vc: str,
+    step: list[str],
+    list_devices: list[str],
+    ib: str,
+) -> pd.DataFrame:
     """ext_measured function calculates get measured data
 
     Args:
@@ -111,7 +120,7 @@ def ext_measured(dirpath: str, device: str, vc: str, step: list[str], list_devic
     return dfs
 
 
-def run_sim(dirpath: str, device: str, list_devices: list[str], temp: float)-> dict:
+def run_sim(dirpath: str, device: str, list_devices: list[str], temp: float) -> dict:
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
@@ -162,7 +171,9 @@ def run_sim(dirpath: str, device: str, list_devices: list[str], temp: float)-> d
     return info
 
 
-def run_sims(dirpath: str, list_devices: list[str], device: str, num_workers=mp.cpu_count()):
+def run_sims(
+    dirpath: str, list_devices: list[str], device: str, num_workers=mp.cpu_count()
+):
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
@@ -212,27 +223,36 @@ def run_sims(dirpath: str, list_devices: list[str], device: str, num_workers=mp.
 
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        sdf = pd.read_csv(
-            sf[i],
-            header=None,
-            delimiter=r"\s+",
-        )
-        sweep = int(sdf[0].count() / len(MOS))
-        new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
-
-        new_array[:, 0] = sdf.iloc[1 : sweep + 1, 0]
-        times = int(sdf.shape[0] / sweep)
-
-        for j in range(times):
-            new_array[:, (j + 1)] = sdf.iloc[(j * sweep) + 1 : ((j + 1) * sweep) + 1, 0]
-
-        # Writing final simulated data 1
-        sdf = pd.DataFrame(new_array)
-        sdf.rename(
-            columns={1: "ibp1", 2: "ibp2", 3: "ibp3", 4: "ibp4", 5: "ibp5"},
-            inplace=True,
-        )
-        sdf.to_csv(sf[i], index=False)
+        df2 = pd.read_csv(sf[i])
+        if device == "npn":
+            i_v = "{-I(VCP)}"
+            sdf = df2.pivot(index="V(C)", columns="I(VBP)", values=i_v)
+            sdf.rename(
+                columns={
+                    NPN[0]: "ibp1",
+                    NPN[1]: "ibp2",
+                    NPN[2]: "ibp3",
+                    NPN[3]: "ibp4",
+                    NPN[4]: "ibp5",
+                },
+                inplace=True,
+            )
+        else:
+            i_v = "{I(VCP)}"
+            sdf = df2.pivot(index="V(C)", columns="I(VBP)", values=i_v)
+            sdf.rename(
+                columns={
+                    PNP[0]: "ibp1",
+                    PNP[1]: "ibp2",
+                    PNP[2]: "ibp3",
+                    PNP[3]: "ibp4",
+                    PNP[4]: "ibp5",
+                },
+                inplace=True,
+            )
+            # reverse the rows
+            sdf = sdf.iloc[::-1]
+        sdf.to_csv(sf[i], index=True, header=True, sep=",")
 
     df1 = pd.DataFrame(results)
 
@@ -240,7 +260,12 @@ def run_sims(dirpath: str, list_devices: list[str], device: str, num_workers=mp.
 
 
 def error_cal(
-    sim_df: pd.DataFrame, meas_df: pd.DataFrame, device: str, step: list[str], ib: str, vc: str
+    sim_df: pd.DataFrame,
+    meas_df: pd.DataFrame,
+    device: str,
+    step: list[str],
+    ib: str,
+    vc: str,
 ) -> pd.DataFrame:
     """error function calculates the error between measured, simulated data
 
@@ -253,17 +278,20 @@ def error_cal(
         ib(str): select ib for npn or pnp
         vc(str): select vc for npn or pnp
     Returns:
-        df(pd.DataFrame): dataframe contains error results        
+        df(pd.DataFrame): dataframe contains error results
     """
     merged_dfs = list()
+    # create a new dataframe for rms error
+    rms_df = pd.DataFrame(columns=["device", "temp", "rms_error"])
+
     meas_df.to_csv(
-        f"mos_iv_reg/{device}/{device}_measured.csv", index=False, header=True
+        f"bjt_iv_reg/{device}/{device}_measured.csv", index=False, header=True
     )
-    meas_df = pd.read_csv(f"mos_iv_reg/{device}/{device}_measured.csv")
+    meas_df = pd.read_csv(f"bjt_iv_reg/{device}/{device}_measured.csv")
     for i in range(len(sim_df)):
         t = sim_df["temp"].iloc[i]
         dev = sim_df["dev"].iloc[i]
-        sim_path = f"mos_iv_reg/{device}/simulated/t{t}_simulated_{dev}.csv"
+        sim_path = f"bjt_iv_reg/{device}/simulated/t{t}_simulated_{dev}.csv"
 
         simulated_data = pd.read_csv(sim_path)
         if i == 0:
@@ -316,47 +344,55 @@ def error_cal(
         measured_data["temp"] = sim_df["temp"].iloc[i]
         result_data = simulated_data.merge(measured_data, how="left")
 
-        result_data["step1_error"] = (
+        result_data["ib_step1_error"] = (
             np.abs(result_data["ibp1"] - result_data["m_ibp1"])
             * 100.0
             / (result_data["m_ibp1"])
         )
-        result_data["step2_error"] = (
+        result_data["ib_step2_error"] = (
             np.abs(result_data["ibp2"] - result_data["m_ibp2"])
             * 100.0
             / (result_data["m_ibp2"])
         )
-        result_data["step3_error"] = (
+        result_data["ib_step3_error"] = (
             np.abs(result_data["ibp3"] - result_data["m_ibp3"])
             * 100.0
             / (result_data["m_ibp3"])
         )
-        result_data["step4_error"] = (
+        result_data["ib_step4_error"] = (
             np.abs(result_data["ibp4"] - result_data["m_ibp4"])
             * 100.0
             / (result_data["m_ibp4"])
         )
-        result_data["step5_error"] = (
+        result_data["ib_step5_error"] = (
             np.abs(result_data["ibp5"] - result_data["m_ibp5"])
             * 100.0
             / (result_data["m_ibp5"])
         )
         result_data["error"] = (
             np.abs(
-                result_data["step1_error"]
-                + result_data["step2_error"]
-                + result_data["step3_error"]
-                + result_data["step4_error"]
-                + result_data["step5_error"]
+                result_data["ib_step1_error"]
+                + result_data["ib_step2_error"]
+                + result_data["ib_step3_error"]
+                + result_data["ib_step4_error"]
+                + result_data["ib_step5_error"]
             )
             / 5
         )
-
+        # get rms error
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
+        # fill rms dataframe
+        rms_df.loc[i] = [
+            result_data["device"].iloc[0],
+            result_data["temp"].iloc[0],
+            result_data["rms_error"].iloc[0],
+        ]
         merged_dfs.append(result_data)
-        merged_out = pd.concat(merged_dfs)
-        merged_out.fillna(0, inplace=True)
-        merged_out.to_csv(f"mos_iv_reg/{device}/error_analysis.csv", index=False)
-    return merged_out
+    merged_out = pd.concat(merged_dfs)
+    merged_out.fillna(0, inplace=True)
+    merged_out.to_csv(f"bjt_iv_reg/{device}/error_analysis.csv", index=False)
+    rms_df.to_csv(f"bjt_iv_reg/{device}/final_error_analysis.csv", index=False)
+    return rms_df
 
 
 def main():
@@ -388,12 +424,14 @@ def main():
     step = ["1.000E-06", "3.000E-06", "5.000E-06", "7.000E-06", "9.000E-06"]
     for i, device in enumerate(devices):
         # Folder structure of measured values
-        dirpath = f"mos_iv_reg/{device}"
+        dirpath = f"bjt_iv_reg/{device}"
         if os.path.exists(dirpath) and os.path.isdir(dirpath):
             shutil.rmtree(dirpath)
         os.makedirs(f"{dirpath}", exist_ok=False)
 
-        read_file = glob.glob(f"../../180MCU_SPICE_DATA/BJT/bjt_{device}_icvc_f.nl_out.xlsx")
+        read_file = glob.glob(
+            f"../../180MCU_SPICE_DATA/BJT/bjt_{device}_icvc_f.nl_out.xlsx"
+        )
         if len(read_file) < 1:
             logging.info(f"# Can't find data file for device: {device}")
             read_fil = ""
@@ -402,7 +440,9 @@ def main():
         logging.info(f"# bjt_iv data points file : {read_fil}")
 
         if read_fil == "":
-            logging.info(f"# No datapoints available for validation for device {device}")
+            logging.info(
+                f"# No datapoints available for validation for device {device}"
+            )
             continue
         # From xlsx to csv
         read_file = pd.read_excel(
@@ -432,11 +472,11 @@ def main():
             for n in range(num_rows):
                 if dev == merged_all["device"].iloc[n]:
                     number_of_existance += 1
-                    error_total += merged_all["error"].iloc[n]
-                    if merged_all["error"].iloc[n] > max_error_total:
-                        max_error_total = merged_all["error"].iloc[n]
-                    elif merged_all["error"].iloc[n] < min_error_total:
-                        min_error_total = merged_all["error"].iloc[n]
+                    error_total += merged_all["rms_error"].iloc[n]
+                    if merged_all["rms_error"].iloc[n] > max_error_total:
+                        max_error_total = merged_all["rms_error"].iloc[n]
+                    elif merged_all["rms_error"].iloc[n] < min_error_total:
+                        min_error_total = merged_all["rms_error"].iloc[n]
 
             mean_error_total = error_total / number_of_existance
 

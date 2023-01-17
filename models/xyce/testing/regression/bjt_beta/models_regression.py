@@ -255,28 +255,28 @@ def run_sims(
     sf = glob.glob(f"{dirpath}/simulated_{Id_sim}/*.csv")
     # sweeping on all generated cvs files
     for i in range(len(sf)):
-        sdf = pd.read_csv(
-            sf[i],
-            header=None,
-            delimiter=r"\s+",
-        )
-        sweep = int(sdf[0].count() / steps)
-        new_array = np.empty((sweep, 1 + int(sdf.shape[0] / sweep)))
-
-        new_array[:, 0] = sdf.iloc[1 : sweep + 1, 0]
-        times = int(sdf.shape[0] / sweep)
-
-        for j in range(times):
-            new_array[:, (j + 1)] = sdf.iloc[(j * sweep) + 1 : ((j + 1) * sweep) + 1, 0]
-
-        # Writing final simulated data 1
-        sdf = pd.DataFrame(new_array)
-        sdf.rename(
-            columns={1: "vcp1", 2: "vcp2", 3: "vcp3"},
-            inplace=True,
-        )
-        sdf.to_csv(sf[i], index=False)
-
+        df2 = pd.read_csv(sf[i])
+        if device == "npn":
+            i_v = "{-I(VCP)}"
+            if Id_sim == "Ib":
+                i_v = "{-I(VBP)}"
+            sdf = df2.pivot(index="V(B)", columns="V(C)", values=i_v)
+            sdf.rename(
+                columns={1: "vcp1", 2: "vcp2", 3: "vcp3"},
+                inplace=True,
+            )
+        else:
+            i_v = "{I(VCP)}"
+            if Id_sim == "Ib":
+                i_v = "{I(VBP)}"
+            sdf = df2.pivot(index="V(B)", columns="V(C)", values=i_v)
+            sdf.rename(
+                columns={-1: "vcp1", -2: "vcp2", -3: "vcp3"},
+                inplace=True,
+            )
+            # reverse the rows
+            sdf = sdf.iloc[::-1]
+        sdf.to_csv(sf[i], index=True, header=True, sep=",")
     df1 = pd.DataFrame(results)
 
     return df
@@ -302,14 +302,17 @@ def error_cal(
         df(pd.DataFrame): dataframe contains error results
     """
     merged_dfs = list()
+    # create a new dataframe for rms error
+    rms_df = pd.DataFrame(columns=["device", "temp", "rms_error"])
+
     meas_df.to_csv(
-        f"mos_beta_reg/{device}/{device}_measured.csv", index=False, header=True
+        f"bjt_beta_reg/{device}/{device}_measured.csv", index=False, header=True
     )
-    meas_df = pd.read_csv(f"mos_beta_reg/{device}/{device}_measured.csv")
+    meas_df = pd.read_csv(f"bjt_beta_reg/{device}/{device}_measured.csv")
     for i in range(len(sim_df)):
         t = sim_df["temp"].iloc[i]
         dev = sim_df["dev"].iloc[i]
-        sim_path = f"mos_beta_reg/{device}/simulated_{Id_sim}/t{t}_simulated_{dev}.csv"
+        sim_path = f"bjt_beta_reg/{device}/simulated_{Id_sim}/t{t}_simulated_{dev}.csv"
         simulated_data = pd.read_csv(sim_path)
         if i == 0:
             measured_data = meas_df[
@@ -344,6 +347,15 @@ def error_cal(
         simulated_data["temp"] = sim_df["temp"].iloc[i]
         measured_data["temp"] = sim_df["temp"].iloc[i]
         result_data = simulated_data.merge(measured_data, how="left")
+        # clipping all the  values to lowest_curr
+        lowest_curr = 5e-12
+        result_data["vcp1"] = result_data["vcp1"].clip(lower=lowest_curr)
+        result_data["vcp2"] = result_data["vcp2"].clip(lower=lowest_curr)
+        result_data["vcp3"] = result_data["vcp3"].clip(lower=lowest_curr)
+        result_data["m_vcp1"] = result_data["m_vcp1"].clip(lower=lowest_curr)
+        result_data["m_vcp2"] = result_data["m_vcp2"].clip(lower=lowest_curr)
+        result_data["m_vcp3"] = result_data["m_vcp3"].clip(lower=lowest_curr)
+
         result_data["step1_error"] = (
             np.abs(result_data["vcp1"] - result_data["m_vcp1"])
             * 100.0
@@ -359,6 +371,8 @@ def error_cal(
             * 100.0
             / (result_data["m_vcp3"])
         )
+        # fill nan values with 0
+        result_data.fillna(0, inplace=True)
         result_data["error"] = (
             np.abs(
                 result_data["step1_error"]
@@ -367,12 +381,22 @@ def error_cal(
             )
             / 3
         )
-
+        # get rms error
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
+        # fill rms dataframe
+        rms_df.loc[i] = [
+            dev,
+            t,
+            result_data["rms_error"].iloc[0],
+        ]
         merged_dfs.append(result_data)
-        merged_out = pd.concat(merged_dfs)
-        merged_out.fillna(0, inplace=True)
-        merged_out.to_csv(f"mos_beta_reg/{device}/error_analysis.csv", index=False)
-    return merged_out
+    merged_out = pd.concat(merged_dfs)
+    merged_out.fillna(0, inplace=True)
+    merged_out.to_csv(f"bjt_beta_reg/{device}/{Id_sim}_error_analysis.csv", index=False)
+    rms_df.to_csv(
+        f"bjt_beta_reg/{device}/{Id_sim}_final_error_analysis.csv", index=False
+    )
+    return rms_df
 
 
 def main():
@@ -408,7 +432,7 @@ def main():
 
     for i, device in enumerate(devices):
         # Folder structure of measured values
-        dirpath = f"mos_beta_reg/{device}"
+        dirpath = f"bjt_beta_reg/{device}"
         if os.path.exists(dirpath) and os.path.isdir(dirpath):
             shutil.rmtree(dirpath)
         os.makedirs(f"{dirpath}", exist_ok=False)
@@ -477,11 +501,11 @@ def main():
                 for n in range(num_rows):
                     if dev == merged_all["device"].iloc[n]:
                         number_of_existance += 1
-                        error_total += merged_all["error"].iloc[n]
-                        if merged_all["error"].iloc[n] > max_error_total:
-                            max_error_total = merged_all["error"].iloc[n]
-                        elif merged_all["error"].iloc[n] < min_error_total:
-                            min_error_total = merged_all["error"].iloc[n]
+                        error_total += merged_all["rms_error"].iloc[n]
+                        if merged_all["rms_error"].iloc[n] > max_error_total:
+                            max_error_total = merged_all["rms_error"].iloc[n]
+                        elif merged_all["rms_error"].iloc[n] < min_error_total:
+                            min_error_total = merged_all["rms_error"].iloc[n]
 
                 mean_error_total = error_total / number_of_existance
 

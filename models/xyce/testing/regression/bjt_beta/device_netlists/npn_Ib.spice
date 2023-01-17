@@ -15,8 +15,7 @@ xq1 c b 0 0 {{device}}
 .DC Vbp 0.2 1.2 0.01 Vcp 1 3 1
 .STEP TEMP {{temp}} -60 200
 
-
-.print DC FORMAT=CSV file=mos_beta_reg/npn/simulated_Ib/t{{temp}}_simulated_{{device}}.csv {-I(Vbp)}
+.print DC FORMAT=CSV file=bjt_beta_reg/npn/simulated_Ib/t{{temp}}_simulated_{{device}}.csv {-I(Vbp)}  v(b) v(c)
 
 
 .include "../../../design.xyce"

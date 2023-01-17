@@ -1,0 +1,35 @@
+***************************
+** nfet_03v3_cv
+***************************
+
+** library calling
+
+
+
+** Circuit Description **
+* power supply
+vds D_tn 0 dc 0
+vgs G_tn 0 dc 3.3
+vbs S_tn 0 dc 0
+
+
+
+*l_diff_min = 0.24
+* ad = int((nf+1)/2) * width/nf * 0.24       = 24u                         
+* pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
+
+* circuit
+mn D_tn G_tn 0 S_tn {{device}}  W = {{width}}u L = {{length}}u 
+
+
+*****************
+** Analysis
+*****************
+.DC Vgs {{vgs}} Vbs {{vbs}}
+.STEP TEMP 25 -60 200
+.print DC FORMAT=CSV file=mos_cv_regr/{{device}}/{{device}}_netlists_Cgc/simulated_W{{width}}_L{{length}}.csv {(mn:cgs)} v(S_tn) v(G_tn)
+
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" typical
+.end
+
