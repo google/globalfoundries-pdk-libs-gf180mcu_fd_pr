@@ -41,6 +41,7 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 DEFAULT_TEMP = 25.0
 PASS_THRESH = 2.0
 
+
 def find_mimcap(filename):
     """
     Find mimcap in log
@@ -49,6 +50,7 @@ def find_mimcap(filename):
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     return float(process.communicate()[0][:-1].decode("utf-8").split("=")[1])
 
+
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
     Args:
@@ -56,25 +58,28 @@ def call_simulator(file_name):
     """
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
+
 def ext_measured(dev_data_path, device, corners):
     # Read Data
     df = pd.read_excel(dev_data_path)
-    
+
     length = []
     width = []
 
     for i in range(len(df)):
 
-        a_str = df["Unnamed: 2"][i]  # area_string parameter in the format "mim_1p5fF(100u x100u )"
-        if type(a_str) == str :
+        a_str = df["Unnamed: 2"][
+            i
+        ]  # area_string parameter in the format "mim_1p5fF(100u x100u )"
+        if type(a_str) == str:
 
             length.append(float(a_str.split("(")[1].split("x")[0].split("u")[0]))
             width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
-        
-        else :
+
+        else:
             length.append(a_str)
             width.append(a_str)
-    
+
     all_dfs = []
     for corner in corners:
         idf = df[[f"mimcap_{corner}"]].copy()
@@ -97,10 +102,10 @@ def ext_measured(dev_data_path, device, corners):
     df.drop_duplicates(inplace=True)
     return df
 
-def run_sim(dirpath, device, length, width, corner, temp=25):
-    """ Run simulation at specific information and corner """
-    netlist_tmp = "./device_netlists/mimcap.spice"
 
+def run_sim(dirpath, device, length, width, corner, temp=25):
+    """Run simulation at specific information and corner"""
+    netlist_tmp = "./device_netlists/mimcap.spice"
 
     info = {}
     info["device"] = device
@@ -136,16 +141,17 @@ def run_sim(dirpath, device, length, width, corner, temp=25):
         # Find mimcap in log
         try:
             mim = find_mimcap(f"{netlist_path}.log")
-            
+
         except Exception as e:
             mim = 0.0
-        
+
     except Exception as e:
         mim = 0.0
-    
+
     info["mim_sim_unscaled"] = mim
 
     return info
+
 
 def run_sims(df, dirpath, num_workers=mp.cpu_count()):
 
@@ -173,16 +179,14 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
                 logging.info(f"Test case generated an exception: {exc}")
 
     df = pd.DataFrame(results)
-    df = df[
-        ["device", "corner", "length", "width", "temp","mim_sim_unscaled"]
-    ]
+    df = df[["device", "corner", "length", "width", "temp", "mim_sim_unscaled"]]
 
     df["mim_sim"] = df["mim_sim_unscaled"]
     return df
 
 
 def main():
-        # ======= Checking ngspice  =======
+    # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
@@ -198,19 +202,19 @@ def main():
     # mimcap var.
     corners = ["typical", "ff", "ss"]
 
-    devices = [ 
+    devices = [
         "cap_mim_1f5_m2m3_noshield",
         "cap_mim_1f0_m2m3_noshield",
         "cap_mim_2f0_m2m3_noshield",
         "cap_mim_1f5_m3m4_noshield",
         "cap_mim_1f0_m3m4_noshield",
-        "cap_mim_2f0_m3m4_noshield",  
+        "cap_mim_2f0_m3m4_noshield",
         "cap_mim_1f5_m4m5_noshield",
         "cap_mim_1f0_m4m5_noshield",
         "cap_mim_2f0_m4m5_noshield",
         "cap_mim_1f5_m5m6_noshield",
         "cap_mim_1f0_m5m6_noshield",
-        "cap_mim_2f0_m5m6_noshield"          
+        "cap_mim_2f0_m5m6_noshield",
     ]
 
     for i, dev in enumerate(devices):
@@ -224,20 +228,18 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        mim_data_files = glob.glob(
-            f"../../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx"
-        )
+        mim_data_files = glob.glob(f"../../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx")
         if len(mim_data_files) < 1:
             logging.info(f"# Can't find mimcap file for device: {dev}")
             mim_file = ""
         else:
             mim_file = os.path.abspath(mim_data_files[0])
-        logging.info(f"# mimcap data points file : {mim_file}" )
+        logging.info(f"# mimcap data points file : {mim_file}")
 
-        if mim_file == "" :
+        if mim_file == "":
             logging.info(f"# No datapoints available for validation for device {dev}")
             continue
-            
+
         if mim_file != "":
             meas_df = ext_measured(mim_file, dev, corners)
         else:
@@ -259,18 +261,17 @@ def main():
         )
 
         merged_df.to_csv(f"{dev_path}/error_analysis.csv", index=False)
-        m1=merged_df["error"].min()
-        m2=merged_df["error"].max()
-        m3=merged_df["error"].mean()
+        m1 = merged_df["error"].min()
+        m2 = merged_df["error"].max()
+        m3 = merged_df["error"].mean()
         logging.info(
-            f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}")
+            f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"
+        )
 
         if merged_df["error"].max() < PASS_THRESH:
             logging.info(f"# Device {dev} has passed regression.")
         else:
             logging.error(f"# Device {dev} has failed regression. Needs more analysis.")
-
-        
 
 
 # # ================================================================
@@ -294,8 +295,6 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-    
+
     # Calling main function
     main()
-
-    
