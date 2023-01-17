@@ -21,7 +21,6 @@ xq1 {{connection}} {{device}}
 .ac dec 10 1 10G
 .step volt 0 -3.0 -0.1
 .STEP TEMP LIST {{temp}}
-
 .include "../../../../../design.xyce"
 .lib "../../../../../sm141064.xyce" bjt_{{corner}}
 

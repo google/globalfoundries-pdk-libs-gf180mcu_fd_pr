@@ -25,7 +25,7 @@ def call_simulator(file_name):
     Args:
         file_name (str): Netlist file name.
     """
-    os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log")
+    os.system(f"Xyce -hspice-ext all {file_name} -l {file_name}.log 2> /dev/null")
 
 
 def ext_measured(device, vn, d_in, cv_sim, corner, start, dirpath):
