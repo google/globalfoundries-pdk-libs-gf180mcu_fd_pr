@@ -326,12 +326,12 @@ def run_sims(
 
         sdf.rename(
             columns={
-                mos[0]: "vb1",
-                mos[1]: "vb2",
-                mos[2]: "vb3",
-                mos[3]: "vb4",
-                mos[4]: "vb5",
-                mos[5]: "vb6",
+                mos[0]: "simulated_vgs1",
+                mos[1]: "simulated_vgs2",
+                mos[2]: "simulated_vgs3",
+                mos[3]: "simulated_vgs4",
+                mos[4]: "simulated_vgs5",
+                mos[5]: "simulated_vgs6",
             },
             inplace=True,
         )
@@ -432,44 +432,44 @@ def error_cal(
             result_data["measured_vgs6"] = result_data["measured_vgs6"].clip(
                 lower=lowest_curr
             )
-            result_data["vb1"] = result_data["vb1"].clip(lower=lowest_curr)
-            result_data["vb2"] = result_data["vb2"].clip(lower=lowest_curr)
-            result_data["vb3"] = result_data["vb3"].clip(lower=lowest_curr)
-            result_data["vb4"] = result_data["vb4"].clip(lower=lowest_curr)
-            result_data["vb5"] = result_data["vb5"].clip(lower=lowest_curr)
-            result_data["vb6"] = result_data["vb6"].clip(lower=lowest_curr)
+            result_data["simulated_vgs1"] = result_data["simulated_vgs1"].clip(lower=lowest_curr)
+            result_data["simulated_vgs2"] = result_data["simulated_vgs2"].clip(lower=lowest_curr)
+            result_data["simulated_vgs3"] = result_data["simulated_vgs3"].clip(lower=lowest_curr)
+            result_data["simulated_vgs4"] = result_data["simulated_vgs4"].clip(lower=lowest_curr)
+            result_data["simulated_vgs5"] = result_data["simulated_vgs5"].clip(lower=lowest_curr)
+            result_data["simulated_vgs6"] = result_data["simulated_vgs6"].clip(lower=lowest_curr)
         result_data["device"] = device
         result_data["length"] = length
         result_data["width"] = w
         result_data["temp"] = t
 
         result_data["vds_step1_error"] = (
-            np.abs(result_data["measured_vgs1"] - result_data["vb1"])
+            np.abs(result_data["measured_vgs1"] - result_data["simulated_vgs1"])
             * 100.0
             / (result_data["measured_vgs1"])
         )
         result_data["vds_step2_error"] = (
-            np.abs(result_data["measured_vgs2"] - result_data["vb2"])
+            np.abs(result_data["measured_vgs2"] - result_data["simulated_vgs2"])
             * 100.0
             / (result_data["measured_vgs2"])
         )
         result_data["vds_step3_error"] = (
-            np.abs(result_data["measured_vgs3"] - result_data["vb3"])
+            np.abs(result_data["measured_vgs3"] - result_data["simulated_vgs3"])
             * 100.0
             / (result_data["measured_vgs3"])
         )
         result_data["vds_step4_error"] = (
-            np.abs(result_data["measured_vgs4"] - result_data["vb4"])
+            np.abs(result_data["measured_vgs4"] - result_data["simulated_vgs4"])
             * 100.0
             / (result_data["measured_vgs4"])
         )
         result_data["vds_step5_error"] = (
-            np.abs(result_data["measured_vgs5"] - result_data["vb5"])
+            np.abs(result_data["measured_vgs5"] - result_data["simulated_vgs5"])
             * 100.0
             / (result_data["measured_vgs5"])
         )
         result_data["vds_step6_error"] = (
-            np.abs(result_data["measured_vgs6"] - result_data["vb6"])
+            np.abs(result_data["measured_vgs6"] - result_data["simulated_vgs6"])
             * 100.0
             / (result_data["measured_vgs6"])
         )

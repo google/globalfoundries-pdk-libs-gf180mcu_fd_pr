@@ -18,7 +18,7 @@ xq1 c b 0 {{device}}
 *****************
 .DC Vcp 0 -3 -0.1 Ib -1u -9u -2u
 .STEP TEMP {{temp}} -60 200
-.print DC FORMAT=CSV file=bjt_iv_reg/pnp/simulated/t{{temp}}_simulated_{{device}}.csv {I(Vcp)} i(Vbp) v(c)
+.print DC FORMAT=CSV file=bjt_iv_reg/pnp/pnp_netlists/t{{temp}}_simulated_{{device}}.csv {I(Vcp)} i(Vbp) v(c)
 
 .include "../../../../../../design.xyce"
 .lib "../../../../../../sm141064.xyce" bjt_typical

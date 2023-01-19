@@ -145,8 +145,7 @@ def run_sim(dirpath: str, device: str, list_devices: list[str], temp: float) -> 
     s = f"{list_devices_str}netlist_t{temp_str}.spice"
     netlist_path = f"{dirpath}/{device}_netlists/{s}"
     s = f"t{temp}_simulated_{list_devices_str}.csv"
-    result_path = f"{dirpath}/simulated/{s}"
-    os.makedirs(f"{dirpath}/simulated", exist_ok=True)
+    result_path = f"{dirpath}/{device}_netlists/{s}"
 
     with open(netlist_tmp) as f:
         tmpl = Template(f.read())
@@ -219,7 +218,7 @@ def run_sims(
                 results.append(data)
             except Exception as exc:
                 logging.info(f"Test case generated an exception: {exc}")
-    sf = glob.glob(f"{dirpath}/simulated/*.csv")
+    sf = glob.glob(f"{dirpath}/{device}_netlists/*.csv")
 
     # sweeping on all generated cvs files
     for i in range(len(sf)):
@@ -291,7 +290,7 @@ def error_cal(
     for i in range(len(sim_df)):
         t = sim_df["temp"].iloc[i]
         dev = sim_df["dev"].iloc[i]
-        sim_path = f"bjt_iv_reg/{device}/simulated/t{t}_simulated_{dev}.csv"
+        sim_path = f"bjt_iv_reg/{device}/{device}_netlists/t{t}_simulated_{dev}.csv"
 
         simulated_data = pd.read_csv(sim_path)
         if i == 0:
@@ -450,8 +449,6 @@ def main():
         )
         read_file.to_csv(f"{dirpath}/{device}.csv", index=False, header=True)
 
-        # Folder structure of simulated values
-        os.makedirs(f"{dirpath}/simulated", exist_ok=False)
 
         # =========== Simulate ==============
         df = ext_measured(dirpath, device, vc[i], step, list_devices[i], ib[i])
