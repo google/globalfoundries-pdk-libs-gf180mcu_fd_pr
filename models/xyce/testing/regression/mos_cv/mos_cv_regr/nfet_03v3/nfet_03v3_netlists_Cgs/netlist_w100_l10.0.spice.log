@@ -1,0 +1,70 @@
+
+*****
+***** Welcome to the Xyce(TM) Parallel Electronic Simulator
+*****
+***** This is version Xyce Release 7.6-opensource
+***** Date: Thu Jan 19 17:20:43 EET 2023
+
+
+***** Executing netlist mos_cv_regr/nfet_03v3/nfet_03v3_netlists_Cgs/netlist_w100_l10.0.spice
+
+***** Reading and parsing netlist...
+Netlist warning in file ../../../sm141064.xyce at or near line 3749
+ Device model NFET_03V3.14: Given pbswgd is less than 0.1. Pbswgd is set to
+ 0.1
+***** Setting up topology...
+
+***** Device Count Summary ...
+       M level 14 (BSIM4)                     1
+       V level 1 (Independent Voltage Source) 2
+       ----------------------------------------
+       Total Devices                          3
+***** Setting up matrix structure...
+***** Number of Unknowns = 4
+***** Initializing...
+
+Netlist warning: Linear DC or STEP parameters for sweep over TEMP would result
+ in no steps taken.  Check sign of step value to assure stop value can be
+ reached from start value.  Start=25 Stop=-60 step=200.  Only a single
+ computation will be done at the start value.
+
+***** Solution Summary *****
+	Number Successful Steps Taken:		136
+	Number Failed Steps Attempted:		0
+	Number Jacobians Evaluated:		319
+	Number Linear Solves:			319
+	Number Failed Linear Solves:		0
+	Number Residual Evaluations:		456
+	Number Nonlinear Convergence Failures:	0
+	Total Residual Load Time:		0.00126624 seconds
+	Total Jacobian Load Time:		0.000298262 seconds
+	Total Linear Solution Time:		0.000893354 seconds
+
+
+***** Total Simulation Solvers Run Time: 0.00691509 seconds
+***** Total Elapsed Run Time:            0.222677 seconds
+*****
+***** End of Xyce(TM) Simulation
+*****
+
+Timing summary of 1 processor
+                 Stats                   Count       CPU Time              Wall Time
+---------------------------------------- ----- --------------------- ---------------------
+Xyce                                         1        0.253 (100.0%)        1.210 (100.0%)
+  Analysis                                   1        0.005 ( 1.85%)        0.007 ( 0.57%)
+    Step                                     1        0.005 ( 1.85%)        0.007 ( 0.57%)
+      DC Sweep                               1        0.005 ( 1.83%)        0.007 ( 0.56%)
+        Solve                              136        0.004 ( 1.44%)        0.005 ( 0.44%)
+          Residual                         456        0.001 ( 0.39%)        0.001 ( 0.12%)
+          Jacobian                         319        0.000 ( 0.10%)        0.000 ( 0.03%)
+          Linear Solve                     319        0.001 ( 0.26%)        0.001 ( 0.08%)
+        Successful Step                    136        0.001 ( 0.24%)        0.001 ( 0.08%)
+  Netlist Import                             1        0.209 (82.59%)        0.214 (17.66%)
+    Parse Context                            1        0.164 (64.84%)        0.169 (13.93%)
+    Distribute Devices                       1        0.044 (17.45%)        0.044 ( 3.65%)
+    Verify Devices                           1        0.000 (<0.01%)        0.000 (<0.01%)
+    Instantiate                              1        0.000 ( 0.04%)        0.000 ( 0.01%)
+  Late Initialization                        1        0.001 ( 0.23%)        0.001 ( 0.06%)
+    Global Indices                           1        0.000 (<0.01%)        0.000 (<0.01%)
+  Setup Matrix Structure                     1        0.000 ( 0.04%)        0.000 ( 0.01%)
+

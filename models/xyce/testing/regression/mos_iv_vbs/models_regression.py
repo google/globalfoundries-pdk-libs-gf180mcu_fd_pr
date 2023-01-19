@@ -447,7 +447,7 @@ def error_cal(
 
 def main():
     """Main function applies all regression steps"""
-        # ======= Checking Xyce  =======
+    # ======= Checking Xyce  =======
     Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
     if Xyce_v_ == "":
         logging.error("Xyce is not found. Please make sure Xyce is installed.")

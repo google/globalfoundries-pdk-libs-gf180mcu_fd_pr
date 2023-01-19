@@ -209,9 +209,9 @@ def run_sim(
         # Find res in log
         try:
             res = find_res(f"{netlist_path}.log")
-        except Exception as e:
+        except Exception:
             res = 0.0
-    except Exception as e:
+    except Exception:
         res = 0.0
 
     info["res_sim_unscaled"] = res
