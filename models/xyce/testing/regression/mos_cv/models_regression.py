@@ -437,7 +437,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
 
     results = []
     df["nf"] = 1
-    # df["nf"][0] = 20
+    df["nf"][0] = 20
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures_list = []
         for j, row in df.iterrows():
@@ -563,7 +563,7 @@ def error_cal(
     else:
         mos = MOS
         mos1 = MOS1
-    caps = ["c", "s", "d"]
+    caps = ["c"]#, "s", "d"]
 
     # create a new dataframe for rms error
     rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
@@ -581,7 +581,8 @@ def error_cal(
             w = df["W (um)"].iloc[int(i)]
             s = f"simulated_W{w}_L{length}.csv"
             sim_path = f"mos_cv_regr/{device}/{device}_netlists_Cg{cap}/{s}"
-
+            if w == "200":
+                continue
             simulated_data = pd.read_csv(sim_path)
 
             if cap == "c":
@@ -624,7 +625,7 @@ def error_cal(
                         },
                         inplace=True,
                     )
-                measured_data["v-sweep"] = simulated_data["v-sweep"]
+                measured_data["V(G_TN)"] = simulated_data["V(G_TN)"]
                 result_data = simulated_data.merge(measured_data, how="left")
 
             else:

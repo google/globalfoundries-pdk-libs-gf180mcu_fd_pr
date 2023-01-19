@@ -1,35 +1,30 @@
-***************************
-** nfet_03v3_cv
-***************************
+*****
+***** Welcome to the Xyce(TM) Parallel Electronic Simulator
+*****
+***** This is version Xyce Release 7.6-opensource
+
 
 ** library calling
 
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" typical
 
-
-** Circuit Description **
-* power supply
 vds D_tn 0 dc 0
 vgs G_tn 0 dc 3.3
 vbs S_tn 0 dc 0
 
 
-
-*l_diff_min = 0.24
-* ad = int((nf+1)/2) * width/nf * 0.24       = 24u                         
-* pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
-
 * circuit
-mn D_tn G_tn 0 S_tn {{device}}  W = {{width}}u L = {{length}}u 
+xmn1 D_tn G_tn 0 S_tn {{device}} W = {{width}}u L = {{length}}u nf={{nf}} ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u TEMP=25
 
 
-*****************
-** Analysis
-*****************
-.DC Vgs {{vgs}} Vbs {{vbs}}
-.STEP TEMP 25 -60 200
-.print DC FORMAT=CSV file=mos_cv_regr/{{device}}/{{device}}_netlists_Cgc/simulated_W{{width}}_L{{length}}.csv {(mn:cgs)} v(S_tn) v(G_tn)
 
-.include "../../../design.xyce"
-.lib "../../../sm141064.xyce" typical
+* measurement setup 
+.meas tran vds1 AVG v(D_tn) FROM=0.1ns TO=0.2ns
+
+* simulation setup
+.tran 1ns 4ns 0.5ns
+
+* print setup
+.print tran vds1
 .end
-

@@ -1,0 +1,6 @@
+
+* user provided init file
+set ngbehavior=hs
+set numthreads = 8
+
+
