@@ -38,22 +38,36 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 PASS_THRESH = 2.0
 
 
-def find_bjt(filepath):
-    """
-    Find bjt in csv files
+def find_bjt(filepath: str):
+    """Find bjt in csv files
+    Args:
+        filepath (str): Path to csv file.
+    Returns:
+        float: bjt value.
     """
     return os.path.exists(filepath)
 
 
-def call_simulator(file_name):
+def call_simulator(file_name: str):
     """Call simulation commands to perform simulation.
     Args:
         file_name (str): Netlist file name.
+    Returns:
+        int: Return code of the simulation. 0 for success.  Non-zero for failure.
     """
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def ext_npn_measured(dev_data_path, device, devices, dev_path):
+def ext_npn_measured(dev_data_path: str, device: str, devices: list[str], dev_path: str) -> pd.DataFrame:
+    """Extract measured values from excel file.
+    Args:
+        dev_data_path (str): Path to excel file.
+        device (str): Device name.
+        devices (str): List of devices.
+        dev_path (str): Path to device.
+    Returns:
+        pd.DataFrame: Dataframe containing measured values.
+    """
     # Read Data
     df = pd.read_excel(dev_data_path)
 
@@ -154,7 +168,16 @@ def ext_npn_measured(dev_data_path, device, devices, dev_path):
     return df
 
 
-def ext_pnp_measured(dev_data_path, device, devices, dev_path):
+def ext_pnp_measured(dev_data_path: str, device: str, devices: list[str], dev_path: str) -> pd.DataFrame:
+    """Extract measured values from excel file.
+    Args:
+        dev_data_path (str): Path to excel file.
+        device (str): Device name.
+        devices (str): List of devices.
+        dev_path (str): Path to device.
+    Returns:
+        pd.DataFrame: Dataframe containing measured values.
+    """
     # Read Data
     df = pd.read_excel(dev_data_path)
 
@@ -255,9 +278,16 @@ def ext_pnp_measured(dev_data_path, device, devices, dev_path):
     return df
 
 
-def run_sim(char, dirpath, device, temp):
-    """Run simulation at specific information and corner"""
-
+def run_sim(char: str, dirpath: str, device: str, temp: float) -> dict:
+    """Run simulation.
+    Args:
+        char (str): ib or ic to simulate.
+        dirpath (str): Path to device.
+        device (str): Device name.
+        temp (float): Temperature.
+    Returns:
+        dict: Dictionary containing simulation results.
+    """
     info = {}
     info["device"] = device
     info["temp"] = temp
@@ -308,7 +338,16 @@ def run_sim(char, dirpath, device, temp):
     return info
 
 
-def run_sims(char, df, dirpath, num_workers=mp.cpu_count()):
+def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
+    """Run simulations.
+    Args:
+        char (str): ib or ic to simulate.
+        df (pd.DataFrame): DataFrame containing device information.
+        dirpath (str): Path to device.
+        num_workers (int, optional): Number of workers. Defaults to mp.cpu_count().
+    Returns:
+        pd.DataFrame: DataFrame containing simulation results.
+    """
 
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -377,8 +416,12 @@ def main():
     """Main function applies all regression steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
+    version = (ngspice_v_.split("\n")[1])
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    elif "38" not in version:
+        logging.error("ngspice version is not supported. Please use ngspice version 38.")
         exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)

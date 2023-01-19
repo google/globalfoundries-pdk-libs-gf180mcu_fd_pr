@@ -70,7 +70,7 @@ VDS_P06V0D = "0 -6 -0.1"
 VDS_N06V0_ND = "0 6 0.1"
 
 
-def ext_measured(dev_data_path, device):
+def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
     """Extracting the measured data of  devices from excel sheet
 
     Args:
@@ -320,15 +320,15 @@ def call_simulator(file_name):
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def run_sim(dirpath, device, width, length, nf):
+def run_sim(dirpath: str, device: str, width: float, length: float, nf: int) -> dict:
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
         device(str): the device instance will be simulated
         id_rds(str): select id or rds
-        temp(float): a specific temp for simulation
-        width(float): a specific width for simulation
-        length(float): a specific length for simulation
+        width(float): width of the device
+        length(float): length of the device
+        nf(int): number of fingers
 
     Returns:
         info(dict): results are stored in,
@@ -433,16 +433,15 @@ def run_sim(dirpath, device, width, length, nf):
     return info
 
 
-def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
+def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
     Args:
-        df(pd.DataFrame): dataframe passed from the ext_measured function
-        dirpath(str): the path to the file where we write data
-        id_rds(str): select id or rds
-        num_workers=mp.cpu_count() (int): num of cpu used
-        device(str): name of the device
+        df(pd.DataFrame): dataframe contains all the information
+        dirpath(str): path to the file where we write data
+        device(str): the device instance will be simulated
+        num_workers(int): number of workers
     Returns:
         df(pd.DataFrame): dataframe contains simulated results
     """
@@ -780,10 +779,13 @@ def main():
     """Main function applies all regression steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
+    version = (ngspice_v_.split("\n")[1])
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
-
+    elif "38" not in version:
+        logging.error("ngspice version is not supported. Please use ngspice version 38.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -905,7 +907,7 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
         ],
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 

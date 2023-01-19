@@ -142,10 +142,10 @@ def run_sim(dirpath, device, length, width, corner, temp=25):
         try:
             mim = find_mimcap(f"{netlist_path}.log")
 
-        except Exception as e:
+        except Exception:
             mim = 0.0
 
-    except Exception as e:
+    except Exception:
         mim = 0.0
 
     info["mim_sim_unscaled"] = mim
@@ -188,8 +188,12 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
 def main():
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
+    version = (ngspice_v_.split("\n")[1])
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    elif "38" not in version:
+        logging.error("ngspice version is not supported. Please use ngspice version 38.")
         exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
@@ -228,7 +232,7 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        mim_data_files = glob.glob(f"../../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx")
+        mim_data_files = glob.glob("../../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx")
         if len(mim_data_files) < 1:
             logging.info(f"# Can't find mimcap file for device: {dev}")
             mim_file = ""
@@ -284,7 +288,7 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="comparator: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
     logging.basicConfig(
@@ -292,7 +296,7 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
         ],
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 

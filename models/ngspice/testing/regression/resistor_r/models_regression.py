@@ -42,7 +42,7 @@ DEFAULT_TEMP = 25.0
 DEFAULT_VOLTAGE = 1.0
 
 
-def find_res(filename):
+def find_res(filename: str) -> float:
     """
     Find res in log
     """
@@ -51,7 +51,7 @@ def find_res(filename):
     return float(process.communicate()[0][:-1].decode("utf-8").split(" ")[2])
 
 
-def call_simulator(file_name):
+def call_simulator(file_name: str) -> int:
     """Call simulation commands to perform simulation.
     Args:
         file_name (str): Netlist file name.
@@ -59,7 +59,15 @@ def call_simulator(file_name):
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def ext_const_temp_corners(dev_data_path, device, corners):
+def ext_const_temp_corners(dev_data_path: str, device: str, corners: str) -> pd.DataFrame:
+    """Extract constant temperature corners from excel file
+    Args:
+        dev_data_path (str): Path to excel file
+        device (str): Device name
+        corners (list): List of corners
+    Returns:
+        pd.DataFrame: Dataframe with extracted data
+    """
     # Read Data
     df = pd.read_excel(dev_data_path)
 
@@ -87,7 +95,15 @@ def ext_const_temp_corners(dev_data_path, device, corners):
     return df
 
 
-def ext_temp_corners(dev_data_path, device, corners):
+def ext_temp_corners(dev_data_path: str, device: str, corners: str) -> pd.DataFrame:
+    """Extract temperature corners from excel file
+    Args:
+        dev_data_path (str): Path to excel file
+        device (str): Device name
+        corners (list): List of corners
+    Returns:
+        pd.DataFrame: Dataframe with extracted data
+    """
     # Read Data
     df = pd.read_excel(dev_data_path)
 
@@ -118,8 +134,19 @@ def ext_temp_corners(dev_data_path, device, corners):
     return df
 
 
-def run_sim(dirpath, device, length, width, corner, voltage, temp=25):
-    """Run simulation at specific information and corner"""
+def run_sim(dirpath: str, device: str, length: float, width: float, corner: str, voltage: str, temp=25) -> dict:
+    """Run simulation for a given device, corner, voltage and temperature
+    Args:
+        dirpath (str): Path to directory where netlists are stored
+        device (str): Device name
+        length (float): Device length
+        width (float): Device width
+        corner (str): Corner
+        voltage (str): Voltage
+        temp (float, optional): Temperature. Defaults to 25.
+    Returns:
+        dict: Dictionary with simulation results
+    """
     netlist_tmp = "./device_netlists/res_op_analysis.spice"
 
     if "rm" in device or "tm" in device:
@@ -165,9 +192,9 @@ def run_sim(dirpath, device, length, width, corner, voltage, temp=25):
         # Find res in log
         try:
             res = find_res(f"{netlist_path}.log")
-        except Exception as e:
+        except Exception:
             res = 0.0
-    except Exception as e:
+    except Exception:
         res = 0.0
 
     info["res_sim_unscaled"] = res
@@ -175,8 +202,15 @@ def run_sim(dirpath, device, length, width, corner, voltage, temp=25):
     return info
 
 
-def run_sims(df, dirpath, num_workers=mp.cpu_count()):
-
+def run_sims(df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
+    """Run simulations for all devices in dataframe
+    Args:
+        df (pd.DataFrame): Dataframe
+        dirpath (str): Path to directory where netlists are stored
+        num_workers (int, optional): Number of workers. Defaults to mp.cpu_count().
+    Returns:
+        pd.DataFrame: Dataframe with simulation results
+    """
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
         futures_list = []
@@ -210,13 +244,19 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
 
 
 def main(num_cores):
-
+    """Main function
+    Args:
+        num_cores (int): Number of cores to use
+    """
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
+    version = (ngspice_v_.split("\n")[1])
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
-
+    elif "38" not in version:
+        logging.error("ngspice version is not supported. Please use ngspice version 38.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -343,7 +383,7 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="comparator: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
     logging.basicConfig(
@@ -351,7 +391,7 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
         ],
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 

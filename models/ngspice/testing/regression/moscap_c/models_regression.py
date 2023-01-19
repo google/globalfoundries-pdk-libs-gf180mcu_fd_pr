@@ -59,7 +59,15 @@ def call_simulator(file_name):
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def ext_measured(dev_data_path, device, corners):
+def ext_measured(dev_data_path: str, device: str, corners: str) -> pd.DataFrame:
+    """Extract measured data from excel file
+    Args:
+        dev_data_path (str): Path to excel file
+        device (str): Device type
+        corners (str): Corner type
+    Returns:
+        pd.DataFrame: Measured data
+    """
     # Read Data
     df = pd.read_excel(dev_data_path)
 
@@ -72,7 +80,7 @@ def ext_measured(dev_data_path, device, corners):
 
         a_str = df["Unnamed: 2"][i]  # area_string parameter
         moscap_corners = df["corners"][i]
-        moscap_val = df[f"CV (fF)"][i]
+        moscap_val = df["CV (fF)"][i]
 
         if ("nmos" in str(a_str)) and ("nmos" in device):
 
@@ -145,8 +153,18 @@ def ext_measured(dev_data_path, device, corners):
     return df
 
 
-def run_sim(dirpath, device, length, width, corner, temp=25):
-    """Run simulation at specific information and corner"""
+def run_sim(dirpath: str, device: str, length: float, width: float, corner: str, temp=25) -> dict:
+    """Run simulation for a given device, corner, length, width and temperature
+    Args:
+        dirpath (str): Path to directory
+        device (str): Device type
+        length (float): Device length
+        width (float): Device width
+        corner (str): Corner type
+        temp (float, optional): Device temperature. Defaults to 25.
+    Returns:
+        dict: Simulation results
+    """
     netlist_tmp = "./device_netlists/moscap.spice"
 
     info = {}
@@ -184,10 +202,10 @@ def run_sim(dirpath, device, length, width, corner, temp=25):
         try:
             moscap = find_moscap(f"{netlist_path}.log")
 
-        except Exception as e:
+        except Exception:
             moscap = 0.0
 
-    except Exception as e:
+    except Exception:
         moscap = 0.0
 
     # logging.info(moscap)
@@ -197,7 +215,15 @@ def run_sim(dirpath, device, length, width, corner, temp=25):
     return info
 
 
-def run_sims(df, dirpath, num_workers=mp.cpu_count()):
+def run_sims(df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
+    """Run simulations for a given dataframe
+    Args:
+        df (pd.DataFrame): Dataframe containing device, corner, length, width and temperature
+        dirpath (str): Path to directory
+        num_workers (int, optional): Number of workers. Defaults to mp.cpu_count().
+    Returns:
+        pd.DataFrame: Dataframe containing simulation results
+    """
 
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -230,10 +256,15 @@ def run_sims(df, dirpath, num_workers=mp.cpu_count()):
 
 
 def main():
+    """Main function for moscap regression """
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
+    version = (ngspice_v_.split("\n")[1])
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    elif "38" not in version:
+        logging.error("ngspice version is not supported. Please use ngspice version 38.")
         exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
@@ -335,7 +366,7 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="comparator: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
     logging.basicConfig(
@@ -343,7 +374,7 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
         ],
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 

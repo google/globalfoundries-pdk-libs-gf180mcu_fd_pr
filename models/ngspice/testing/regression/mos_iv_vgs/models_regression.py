@@ -650,8 +650,12 @@ def main():
     """Main function applies all regression vds_steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
+    version = (ngspice_v_.split("\n")[1])
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    elif "38" not in version:
+        logging.error("ngspice version is not supported. Please use ngspice version 38.")
         exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
