@@ -1,0 +1,35 @@
+***************************
+** {{device}}
+***************************
+
+** library calling
+
+
+
+** Circuit Description **
+* power supply
+
+Vgs G_tn 0 dc 3.3
+Vbs S_tn 0 dc 0
+
+
+
+*l_diff_min = 0.24
+* ad = int((nf+1)/2) * width/nf * 0.24       = 24u                         
+* pd = (int((nf+1)/2) * width/nf + 0.24)*2   = 200.48u                 
+
+* circuit
+xmn1 0 G_tn 0 S_tn {{device}} W = {{width}}u L = {{length}}u nf={{nf}} ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u TEMP=25
+
+
+*****************
+** Analysis
+*****************
+.DC Vgs {{vgs}} Vbs {{vbs}}
+.STEP TEMP 25 -60 200
+.print DC FORMAT=CSV file=mos_cv_regr/{{device}}/{{device}}_netlists_Cgc/simulated_W{{width}}_L{{length}}.csv {-1.0e15*N(xmn1:m0:cgs)} v(S_tn) v(G_tn) 
+
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" typical
+.end
+

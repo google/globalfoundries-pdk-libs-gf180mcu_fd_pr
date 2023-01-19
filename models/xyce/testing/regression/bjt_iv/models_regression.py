@@ -400,6 +400,9 @@ def main():
     if Xyce_v_ == "":
         logging.error("Xyce is not found. Please make sure Xyce is installed.")
         exit(1)
+    elif "7.6" not in Xyce_v_:
+        logging.error("Xyce version 7.6 is required.")
+        exit(1)        
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)

@@ -70,7 +70,7 @@ VDS_P06V0D = "0 -6 -0.1"
 VDS_N06V0_ND = "0 6 0.1"
 
 
-def ext_measured(dev_data_path, device):
+def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
     """Extracting the measured data of  devices from excel sheet
 
     Args:
@@ -110,7 +110,7 @@ def ext_measured(dev_data_path, device):
 
     vgs = "Vgs (V)"
     vds = "Vds (V)"
-    if device in ["pfet_03v3", "pfet_06v0","pfet_03v3_dss", "pfet_06v0_dss"]:
+    if device in ["pfet_03v3", "pfet_06v0", "pfet_03v3_dss", "pfet_06v0_dss"]:
         vgs = "-Vgs (V)"
         vds = "-Vds (V)"
     for i in range(loops):
@@ -119,7 +119,7 @@ def ext_measured(dev_data_path, device):
 
         if i == 0:
 
-            if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
+            if device in ["nfet_03v3", "pfet_03v3", "nfet_03v3_dss", "pfet_03v3_dss"]:
                 idf1 = df[
                     [
                         vgs,
@@ -205,7 +205,7 @@ def ext_measured(dev_data_path, device):
             )
         else:
 
-            if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
+            if device in ["nfet_03v3", "pfet_03v3", "nfet_03v3_dss", "pfet_03v3_dss"]:
                 idf1 = df[
                     [
                         vgs,
@@ -320,7 +320,8 @@ def call_simulator(file_name):
     log_file = file_name.replace("-hspice-ext all ", "")
     os.system(f"Xyce {file_name} -l {log_file}.log 2> /dev/null")
 
-def run_sim(dirpath, device, width, length, nf):
+
+def run_sim(dirpath: str, device: str, width: float, length: float, nf: float) -> dict:
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
@@ -334,9 +335,6 @@ def run_sim(dirpath, device, width, length, nf):
         info(dict): results are stored in,
         and passed to the run_sims function to extract data
     """
-
-    device1 = "nmos"
-    
 
     vbsc = VBS_N03V3C
     vdsd = VDS_N03V3D
@@ -362,9 +360,9 @@ def run_sim(dirpath, device, width, length, nf):
         vdsd = VDS_N06V0D
         vgsc = VGS_N06V0C
         vgsd = VGS_N06V0D
-    caps = ["c"]#, "d", "s"]
+    caps = ["c", "d", "s"]
     for cap in caps:
-        netlist_tmp = f"device_netlists_Cg{cap}/{device1}.spice"
+        netlist_tmp = f"device_netlists_Cg{cap}/mos.spice"
 
         info = {}
         info["device"] = device
@@ -374,13 +372,16 @@ def run_sim(dirpath, device, width, length, nf):
         length_str = length
         nf_str = nf
         if cap == "c":
-            vgs=vgsc
-            vds=vdsd
-            vbs=vbsc
+            vgs = vgsc
+            vds = vdsd
+            vbs = vbsc
         else:
-            vgs=vgsd
-            vds=vdsd
-            vbs=vbsc
+            vgs = vgsd
+            vds = vdsd
+            vbs = vbsc
+        if width_str == 200:
+            width_str = 100
+
         s = f"netlist_w{width_str}_l{length_str}.spice"
         netlist_path = f"{dirpath}/{device}_netlists_Cg{cap}/{s}"
         s = f"simulated_W{width_str}_L{length_str}.csv"
@@ -391,17 +392,18 @@ def run_sim(dirpath, device, width, length, nf):
             with open(netlist_path, "w") as netlist:
                 netlist.write(
                     tmpl.render(
-                    width=width_str, 
-                    length=length_str, 
-                    nf=nf_str,
-                    vgs=vgs,
-                    vds=vds,
-                    vbs=vbs,
-                    device=device,
-                    AD=float(width_str) * 0.24,
-                    PD=2 * (float(width_str) + 0.24),
-                    AS=float(width_str) * 0.24,
-                    PS=2 * (float(width_str) + 0.24),)
+                        width=width_str,
+                        length=length_str,
+                        nf=nf_str,
+                        vgs=vgs,
+                        vds=vds,
+                        vbs=vbs,
+                        device=device,
+                        AD=float(width_str) * 0.24,
+                        PD=2 * (float(width_str) + 0.24),
+                        AS=float(width_str) * 0.24,
+                        PS=2 * (float(width_str) + 0.24),
+                    )
                 )
 
         # Running ngspice for each netlist
@@ -421,7 +423,7 @@ def run_sim(dirpath, device, width, length, nf):
     return info
 
 
-def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
+def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
@@ -454,7 +456,7 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
             except Exception as exc:
                 logging.info(f"Test case generated an exception: {exc}")
 
-    caps = ["c"]#, "d", "s"]
+    caps = ["c", "d", "s"]
     for cap in caps:
         sf = glob.glob(f"{dirpath}/{device}_netlists_Cg{cap}/*.csv")
         if cap == "c":
@@ -462,7 +464,11 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 mos = PMOS3P3_VPS
             elif device == "pfet_06v0" or device == "pfet_06v0_dss":
                 mos = PMOS6P0_VPS
-            elif device == "nfet_06v0" or device == "nfet_06v0_dss" or  device == "nfet_06v0_nvt":
+            elif (
+                device == "nfet_06v0"
+                or device == "nfet_06v0_dss"
+                or device == "nfet_06v0_nvt"
+            ):
                 mos = NMOS6P0_VPS
             else:
                 mos = MOS
@@ -471,31 +477,32 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                 mos = PMOS3P3_VPS1
             elif device == "pfet_06v0" or device == "pfet_06v0_dss":
                 mos = PMOS6P0_VPS1
-            elif device == "nfet_06v0" or device == "nfet_06v0_dss" or  device == "nfet_06v0_nvt":
+            elif (
+                device == "nfet_06v0"
+                or device == "nfet_06v0_dss"
+                or device == "nfet_06v0_nvt"
+            ):
                 mos = NMOS6P0_VPS1
             else:
                 mos = MOS1
- 
 
         # sweeping on all generated cvs files
         for i in range(len(sf)):
-            df = pd.read_csv(
-                sf[i]
-            )
+            df = pd.read_csv(sf[i])
 
-            # use the first column as index
-            v_s = "V(S_TN)"
-            i_vds = "{N(XMN1:M0:CGS)}"
-            sdf = df.pivot(index="V(G_TN)", columns=(v_s), values=i_vds)
             if cap == "c":
-                    # Writing final simulated data 1
+                # use the first column as index
+                v_s = "V(S_TN)"
+                i_vds = "{-1.0E15*N(XMN1:M0:CGS)}"
+                v1 = "V(G_TN)"
+                sdf = df.pivot(index=v1, columns=(v_s), values=i_vds)
+                # Writing final simulated data 1
                 sdf.rename(
                     columns={
                         0: "vb1",
                         mos[1]: "vb2",
                         mos[2]: "vb3",
                         mos[3]: "vb4",
-                          
                     },
                     inplace=True,
                 )
@@ -506,20 +513,33 @@ def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
                         },
                         inplace=True,
                     )
-            else:
-             # Writing final simulated data 1
+            elif cap == "d":
+                # use the first column as index
+                v_s = "V(G_TN)"
+                i_vds = "{-1.0E15*N(XMN1:M0:CGD)}"
+                v1 = "V(D_TN)"
+                sdf = df.pivot(index=v1, columns=(v_s), values=i_vds)
+
+                # Writing final simulated data 1
                 sdf.rename(
-                    columns={
-                        0: "vgs1",
-                        mos[1]: "vgs2",
-                        mos[2]: "vgs3",
-                        mos[3]: "vgs4"
-                    },
+                    columns={0: "vgs1", mos[1]: "vgs2", mos[2]: "vgs3", mos[3]: "vgs4"},
+                    inplace=True,
+                )
+            else:
+                # use the first column as index
+                v_s = "V(G_TN)"
+                i_vds = "{-1.0E15*N(XMN1:M0:CGS)}"
+                v1 = "V(D_TN)"
+                sdf = df.pivot(index=v1, columns=(v_s), values=i_vds)
+
+                # Writing final simulated data 1
+                sdf.rename(
+                    columns={0: "vgs1", mos[1]: "vgs2", mos[2]: "vgs3", mos[3]: "vgs4"},
                     inplace=True,
                 )
             if device[0] == "p":
                 # reverse the rows
-                sdf = sdf.iloc[::-1]    
+                sdf = sdf.iloc[::-1]
             sdf.to_csv(sf[i], index=True, header=True, sep=",")
 
         df = pd.DataFrame(results)
@@ -563,7 +583,7 @@ def error_cal(
     else:
         mos = MOS
         mos1 = MOS1
-    caps = ["c"]#, "s", "d"]
+    caps = ["c", "s", "d"]
 
     # create a new dataframe for rms error
     rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
@@ -586,7 +606,12 @@ def error_cal(
             simulated_data = pd.read_csv(sim_path)
 
             if cap == "c":
-                if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
+                if device in [
+                    "nfet_03v3",
+                    "pfet_03v3",
+                    "nfet_03v3_dss",
+                    "pfet_03v3_dss",
+                ]:
                     measured_data = meas_df[
                         [
                             f"measured_vbs{i}={mos[0]}",
@@ -647,8 +672,7 @@ def error_cal(
                     inplace=True,
                 )
 
-                measured_data["v-sweep"] = simulated_data["v-sweep"]
-
+                measured_data["V(D_TN)"] = simulated_data["V(D_TN)"]
                 result_data = simulated_data.merge(measured_data, how="left")
 
             if cap == "c":
@@ -673,7 +697,12 @@ def error_cal(
                     * 100.0
                     / (result_data["measured_v4"])
                 )
-                if device in ["nfet_03v3", "pfet_03v3","nfet_03v3_dss", "pfet_03v3_dss"]:
+                if device in [
+                    "nfet_03v3",
+                    "pfet_03v3",
+                    "nfet_03v3_dss",
+                    "pfet_03v3_dss",
+                ]:
                     result_data["step5_error"] = (
                         np.abs(result_data["measured_v5"] - result_data["vb5"])
                         * 100.0
@@ -735,13 +764,11 @@ def error_cal(
             result_data["width"] = w
             result_data["temp"] = 25.0
             # fill nan values with 0
-            result_data.fillna(0, inplace=True)    
-            result_data["rms_error"] = np.sqrt(
-            np.mean(result_data["error"] ** 2)
-            )
+            result_data.fillna(0, inplace=True)
+            result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
             # fill rms dataframe
             rms_df.loc[i] = [25.0, w, length, result_data["rms_error"].iloc[0]]
-    
+
             merged_dfs.append(result_data)
             merged_out = pd.concat(merged_dfs)
             merged_out.fillna(0, inplace=True)
@@ -753,12 +780,14 @@ def error_cal(
 
 def main():
     """Main function applies all regression steps"""
-    # ======= Checking ngspice  =======
-    ngspice_v_ = os.popen("ngspice -v").read()
-    if ngspice_v_ == "":
-        logging.error("ngspice is not found. Please make sure ngspice is installed.")
-        exit(1)    
-    
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.6" not in Xyce_v_:
+        logging.error("Xyce version 7.6 is required.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -768,14 +797,17 @@ def main():
     main_regr_dir = "mos_cv_regr"
 
     devices = [
-    "nfet_03v3",
-    # "pfet_03v3", "nfet_06v0", "pfet_06v0",
-    #     "nfet_03v3_dss",
-    #     "pfet_03v3_dss",
-    #     "nfet_06v0_dss",
-    #     "pfet_06v0_dss", "nfet_06v0_nvt"
-]
-    measured_data = ["3p3_cv", "6p0_cv","3p3_sab_cv", "6p0_sab_cv", "6p0_nat_cv"]
+        "nfet_03v3",
+        "pfet_03v3",
+        "nfet_06v0",
+        "pfet_06v0",
+        "nfet_03v3_dss",
+        "pfet_03v3_dss",
+        "nfet_06v0_dss",
+        "pfet_06v0_dss",
+        "nfet_06v0_nvt",
+    ]
+    measured_data = ["3p3_cv", "6p0_cv", "3p3_sab_cv", "6p0_sab_cv", "6p0_nat_cv"]
     if os.path.exists(main_regr_dir) and os.path.isdir(main_regr_dir):
         shutil.rmtree(main_regr_dir)
 
@@ -787,7 +819,9 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{measured_data[int(i*0.5)]}.nl_out.xlsx")
+        data_files = glob.glob(
+            f"../../180MCU_SPICE_DATA/MOS/{measured_data[int(i*0.5)]}.nl_out.xlsx"
+        )
         if len(data_files) < 1:
             logging.erorr(f"# Can't find file for device: {dev}")
             file = ""
@@ -801,7 +835,6 @@ def main():
             meas_df1 = []
             meas_df2 = []
             meas_df3 = []
-
 
         df1 = pd.read_csv(f"mos_cv_regr/{dev}/{dev}.csv")
         df2 = df1[["L (um)", "W (um)"]].copy()
@@ -822,7 +855,7 @@ def main():
 
         error_cal(df, sim_df_id, meas_df1, meas_df2, meas_df3, dev_path, dev)
 
-        caps = ["c"]#, "d", "s"]
+        caps = ["c", "d", "s"]
 
         for cap in caps:
             # reading from the csv file contains all error data
@@ -836,7 +869,7 @@ def main():
             min_error_total = merged_all["rms_error"].min()
             max_error_total = merged_all["rms_error"].max()
             mean_error_total = merged_all["rms_error"].mean()
-            
+
             # Making sure that min, max, mean errors are not > 100%
             if min_error_total > 100:
                 min_error_total = 100
@@ -879,6 +912,6 @@ if __name__ == "__main__":
         format=f"%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
-    
+
     # Calling main function
     main()
