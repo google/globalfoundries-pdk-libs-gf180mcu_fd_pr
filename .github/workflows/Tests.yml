@@ -66,7 +66,7 @@ jobs:
           make test-"$(python -c 'print("${{ matrix.pdk }}".upper())')"-${{ matrix.test }}
   Regression_Test:
     runs-on: ubuntu-latest
-    container: "$IMAGE"
+    container: ghcr.io/mabrains/pdk_regression
     steps:
       - uses: actions/checkout@v3
       - name: dependencies
