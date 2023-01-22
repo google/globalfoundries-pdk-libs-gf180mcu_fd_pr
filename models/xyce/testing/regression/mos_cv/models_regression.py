@@ -491,7 +491,7 @@ def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_cou
             if cap == "c":
                 # use the first column as index
                 v_s = "V(S_TN)"
-                i_vds = "{-1.0E15*N(XMN1:M0:CGS)}"
+                i_vds = "{-1.0E15*N(XMN1:M0:CGS) - 1.0E15*N(XMN1:M0:CGD)}"
                 v1 = "V(G_TN)"
                 # drop time column
                 df.drop(df.columns[0], axis=1, inplace=True)
