@@ -64,3 +64,17 @@ jobs:
           -e PDK='${{ matrix.pdk }}'
           "$IMAGE"
           make test-"$(python -c 'print("${{ matrix.pdk }}".upper())')"-${{ matrix.test }}
+  Regression_Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Ngspice Regression 
+        run:  |
+             cd models/ngspice/testing/
+             make all
+        shell: bash
+      - name: Xyce Regression 
+        run:  |
+             cd models/xyce/testing/
+             make all
+        shell: bash        
