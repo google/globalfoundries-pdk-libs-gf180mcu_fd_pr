@@ -379,8 +379,6 @@ def run_sim(dirpath: str, device: str, width: float, length: float, nf: float) -
             vgs = vgsd
             vds = vdsd
             vbs = vbsc
-        if width_str == 200:
-            width_str = 100
 
         s = f"netlist_w{width_str}_l{length_str}.spice"
         netlist_path = f"{dirpath}/{device}_netlists_Cg{cap}/{s}"
@@ -489,12 +487,16 @@ def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_cou
         # sweeping on all generated cvs files
         for i in range(len(sf)):
             df = pd.read_csv(sf[i])
-
+ 
             if cap == "c":
                 # use the first column as index
                 v_s = "V(S_TN)"
-                i_vds = "{-1.0E15*N(XMN1:M0:CGS)}"
+                i_vds = "{-1.0E15*N(XMN1:M0:CGS) - 1.0E15*N(XMN1:M0:CGD)}"
                 v1 = "V(G_TN)"
+                # drop time column
+                df.drop(df.columns[0], axis=1, inplace=True)
+                # drop duplicate rows for columns V(S_TN) and V(G_TN)
+                df.drop_duplicates(subset=["V(S_TN)", "V(G_TN)"], inplace=True)
                 sdf = df.pivot(index=v1, columns=(v_s), values=i_vds)
                 # Writing final simulated data 1
                 sdf.rename(
@@ -514,6 +516,10 @@ def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_cou
                         inplace=True,
                     )
             elif cap == "d":
+                # drop time column
+                df.drop(df.columns[0], axis=1, inplace=True)
+                # drop duplicate rows for columns V(S_TN) and V(G_TN)
+                df.drop_duplicates(subset=["V(D_TN)", "V(G_TN)"], inplace=True)                
                 # use the first column as index
                 v_s = "V(G_TN)"
                 i_vds = "{-1.0E15*N(XMN1:M0:CGD)}"
@@ -526,6 +532,10 @@ def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_cou
                     inplace=True,
                 )
             else:
+                # drop time column
+                df.drop(df.columns[0], axis=1, inplace=True)
+                # drop duplicate rows for columns V(S_TN) and V(G_TN)
+                df.drop_duplicates(subset=["V(D_TN)", "V(G_TN)"], inplace=True)                
                 # use the first column as index
                 v_s = "V(G_TN)"
                 i_vds = "{-1.0E15*N(XMN1:M0:CGS)}"
