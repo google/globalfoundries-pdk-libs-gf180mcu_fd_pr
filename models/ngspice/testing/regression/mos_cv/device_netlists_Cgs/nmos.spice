@@ -42,30 +42,26 @@ set wr_vecnames
 compose  vgs_vector   start={{vgs1}}          stop={{vgs2}}          step={{vgs3}}
 
 set appendwrite
+let vgs_counter = 0
+while vgs_counter < length(vgs_vector)
+	option TEMP=25
+	alter vgs = vgs_vector[vgs_counter]
 
-foreach t 25
+	save  @mn[vds] @mn[vgs] @mn[id] @mn[cgs]
+	*******************
+	** simulation part
+	*******************
+	DC vds {{vds}}
 
-    let vgs_counter = 0
-    while vgs_counter < length(vgs_vector)
-        option TEMP=25
-        alter vgs = vgs_vector[vgs_counter]
+	* ** parameters calculation
 
-        save  @mn[vds] @mn[vgs] @mn[id] @mn[cgs]
-        *******************
-        ** simulation part
-        *******************
-        DC vds {{vds}}
-    
-        * ** parameters calculation
-	
 	let Cap = -{@mn[cgs]*1e15}
-        let Vg = @mn[vgs]
-        
-        wrdata mos_cv_regr/{{device}}/{{device}}_netlists_Cgs/simulated_W{{width}}_L{{length}}.csv Cap Vg
-        
-        reset
-        let vgs_counter = vgs_counter + 1
-    end
+	let Vg = @mn[vgs]
+
+	wrdata mos_cv_regr/{{device}}/{{device}}_netlists_Cgs/simulated_W{{width}}_L{{length}}.csv Cap Vg
+	print @mn
+	reset
+	let vgs_counter = vgs_counter + 1
 end
 .endc
 .end

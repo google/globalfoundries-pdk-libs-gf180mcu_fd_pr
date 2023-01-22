@@ -51,14 +51,14 @@ foreach t 25
         option TEMP=25
         alter vbs = vbs_vector[vbs_counter]
 
-        save  @m.xmn.m0[vs] @m.xmn.m0[vgs] @m.xmn.m0[id] @m.xmn.m0[cgb]
+        save  @m.xmn.m0[vs] @m.xmn.m0[vgs] @m.xmn.m0[id] @m.xmn.m0[cgs] @m.xmn.m0[cgd]
         *******************
         ** simulation part
         *******************
         DC vgs {{vgs}}
     
         * ** parameters calculation
-	let Cap = -{@m.xmn.m0[cgb]*1e15}
+	let Cap = -{@m.xmn.m0[cgs]*1e15} - {@m.xmn.m0[cgd]*1e15}
         let Vg = @m.xmn.m0[vbs]
         
         wrdata mos_cv_regr/{{device}}/{{device}}_netlists_Cgc/simulated_W{{width}}_L{{length}}.csv Cap Vg
