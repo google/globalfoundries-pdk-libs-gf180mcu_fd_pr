@@ -59,7 +59,7 @@ VGS_P06V0 = "0 -6 -0.05"
 VGS_N06V0_N = "-0.5 6 0.05"
 
 
-def ext_measured(dev_data_path, device):
+def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
     """Extracting the measured data of  devices from excel sheet
 
     Args:
@@ -265,15 +265,17 @@ def ext_measured(dev_data_path, device):
     return dfs
 
 
-def call_simulator(file_name):
+def call_simulator(file_name: str) -> int:
     """Call simulation commands to perform simulation.
     Args:
         file_name (str): Netlist file name.
+    Returns:
+        int: Return code of the simulation. 0 if success.  Non-zero if failed.
     """
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def run_sim(dirpath, device, width, length, temp=25):
+def run_sim(dirpath: str, device: str, width: float, length: float, temp=25) -> dict:
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
@@ -355,7 +357,7 @@ def run_sim(dirpath, device, width, length, temp=25):
     return info
 
 
-def run_sims(df, dirpath, device, num_workers=mp.cpu_count()):
+def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
@@ -567,8 +569,12 @@ def main():
     """Main function applies all regression vgs_steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
+    version = (ngspice_v_.split("\n")[1])
     if ngspice_v_ == "":
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    elif "38" not in version:
+        logging.error("ngspice version is not supported. Please use ngspice version 38.")
         exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
@@ -684,7 +690,7 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
         ],
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
