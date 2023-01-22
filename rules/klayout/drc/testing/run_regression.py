@@ -28,21 +28,26 @@ Options:
 """
 
 from subprocess import check_call
+from subprocess import Popen, PIPE
 import concurrent.futures
 import traceback
-
-import re
+import yaml
+import shutil
 from docopt import docopt
 import os
-import datetime
+from datetime import datetime
 import xml.etree.ElementTree as ET
 import time
 import pandas as pd
 import logging
 import glob
 from pathlib import Path
+from tqdm import tqdm
+import pytest
+
 
 SUPPORTED_TC_EXT = "gds"
+SUPPORTED_SW_EXT = "yaml"
 
 
 def parse_results_db(results_database):
@@ -250,43 +255,16 @@ def analyze_test_patterns_coverage(rules_df, tc_df, output_path):
     pd.DataFrame
         A DataFrame with analysis of the rule testing coverage.
     """
-    cov_rows_df = (
-        tc_df[["table_name", "rule_name", "test_type", "test_name"]]
-        .groupby(["table_name", "rule_name", "test_type"])
+    cov_df = (
+        tc_df[["table_name", "rule_name"]]
+        .groupby(["table_name", "rule_name"])
         .count()
         .reset_index(drop=False)
-        .rename(columns={"test_name": "count"})
     )
-    cov_df = cov_rows_df.pivot(
-        index=["table_name", "rule_name"], columns=["test_type"], values=["count"]
-    ).reset_index(drop=False)
-    cov_df.columns = ["_".join(pair) for pair in cov_df.columns]
-    cov_df.rename(
-        columns={
-            "table_name_": "table_name",
-            "rule_name_": "rule_name",
-            "count_fail": "fail_test_patterns_count",
-            "count_pass": "pass_test_patterns_count",
-        },
-        inplace=True,
-    )
-
-    cov_df = cov_df[
-        [
-            "table_name",
-            "rule_name",
-            "pass_test_patterns_count",
-            "fail_test_patterns_count",
-        ]
-    ]
     cov_df = cov_df.merge(rules_df, on="rule_name", how="outer")
-    cov_df[["pass_test_patterns_count", "fail_test_patterns_count"]] = (
-        cov_df[["pass_test_patterns_count", "fail_test_patterns_count"]]
-        .fillna(0)
-        .astype(int)
-    )
     cov_df["runset"].fillna("", inplace=True)
     cov_df.to_csv(os.path.join(output_path, "testcases_coverage.csv"), index=False)
+
     return cov_df
 
 
@@ -336,8 +314,105 @@ def analyze_regression_run(tc_cv_df, all_tc_df, output_path):
 
     return cov_df
 
+
 def convert_results_db_to_gds():
     pass
+
+
+def get_unit_tests_dataframe(gds_files):
+    """
+    This function is used for getting all test cases available in a formated data frame before running.
+
+    Parameters
+    ----------
+    gds_files : str
+        Path string to the location of unit test cases path.
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame that has all the targetted test cases that we need to run.
+    """
+
+    # Get rules from gds
+    rules = []
+    tc_df = pd.DataFrame()
+
+    for gds_file in gds_files:
+        with open('gen.rb', 'w') as f:
+            f.write(
+                f''' 
+                layout = RBA::Layout::new
+                layout.read("{gds_file}")
+                layer_info = "11/222"
+                layout.layer_indices.each do |layer_id|
+                    layout.each_cell do |cell|
+                        if cell.name.include? "RuleName_"
+                            cell.each_shape(layer_id) do |shape|
+                                if shape.to_s.include? "text"
+                                    puts layer_info.to_s
+                                    puts shape.to_s
+                                end
+                            end
+                        end
+                    end
+                end
+                ''')
+        results = Popen(['klayout', '-b', '-r' ,'gen.rb' , '-rd' , f'input={gds_file}' ], stdout=PIPE, stderr=PIPE)
+        stdout, stderr = results.communicate()
+        rules = str(stdout).split("'")[1::2]
+        rules.sort()
+
+        for rule in rules:
+            tc_df = pd.concat([tc_df, pd.DataFrame.from_records([{'test_path': gds_file, "rule_name": rule}])])
+    tc_df["table_name"] = tc_df["rule_name"].apply(
+        lambda x: x.split(".")[0]
+    )
+    os.remove('gen.rb') 
+
+    return tc_df
+
+
+def build_unit_tests_dataframe(unit_test_cases_dir, target_table, target_rule):
+    """
+    This function is used for getting all test cases available in a formated data frame before running.
+
+    Parameters
+    ----------
+    unit_test_cases_dir : str
+        Path string to the location of unit test cases path.
+    target_table : str or None
+        Name of table that we want to run regression for. If None, run all found.
+    target_rule : str or None
+        Name of rule that we want to run regression for. If None, run all found.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame that has all the targetted test cases that we need to run.
+    """
+    all_unit_test_cases = sorted(
+        Path(unit_test_cases_dir).rglob("*.{}".format(SUPPORTED_TC_EXT))
+    )
+    logging.info(
+        "## Total number of test cases found: {}".format(len(all_unit_test_cases))
+    )
+
+    # Get test cases df from test cases
+    tc_df = get_unit_tests_dataframe(all_unit_test_cases)
+
+    ## Filter test cases based on filter provided
+    if not target_rule is None:
+        tc_df = tc_df[tc_df["rule_name"] == target_rule]
+
+    if not target_table is None:
+        tc_df = tc_df[tc_df["table_name"] == target_table]
+
+    if len(tc_df) < 1:
+        logging.error("No test cases remaining after filtering.")
+        exit(1)
+
+    return tc_df
+
 
 def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
     """
@@ -365,24 +440,28 @@ def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
     
     ## Parse Existing Rules
     rules_df = parse_existing_rules(drc_dir, output_path)
-    logging.info("## Total number of rules found: {}".format(len(rules_df)))
+    logging.info("## Total number of rules found in rule decks: {}".format(len(rules_df)))
     print(rules_df)
 
-    test_cases_path = os.path.join(drc_dir, "testing")
+    ## Get all test cases available in the repo.
+    test_cases_path = os.path.join(drc_dir, "testing/testcases")
+    unit_test_cases_path = os.path.join(test_cases_path, "unit_testcases")
+    tc_df = build_unit_tests_dataframe(unit_test_cases_path, target_table, target_rule)
+    logging.info("## Total number of rules found in test cases: {}".format(len(tc_df)))
 
-    ## TODO: Completing DRC regression 
-    
-    exit ()
     ## Get tc_df with the correct rule deck per rule.
     tc_df = tc_df.merge(rules_df, how="left", on="rule_name")
-    tc_df["run_id"] = list(range(len(tc_df)))
-
+    tc_df["run_id"] = tc_df.groupby(['test_path']).ngroup()
     print(tc_df)
+
     tc_df.to_csv(os.path.join(output_path, "all_test_cases.csv"), index=False)
+
+    exit ()
 
     ## Do some test cases coverage analysis
     cov_df = analyze_test_patterns_coverage(rules_df, tc_df, output_path)
     print(cov_df)
+
 
     ## Run all test cases
     all_tc_df = run_all_test_cases(tc_df, output_path, cpu_count)
@@ -391,6 +470,7 @@ def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
         os.path.join(output_path, "all_test_cases_results.csv"), index=False
     )
 
+    
     ## Analyze regression run and generate a report
     regr_df = analyze_regression_run(cov_df, all_tc_df, output_path)
     print(regr_df)
@@ -449,11 +529,12 @@ def main(drc_dir: str, rules_dir: str, output_path: str, target_table: str, targ
 
     # Start of execution time
     t0 = time.time()
-
+    
     # Calling regression function
     run_status = run_regression(
         drc_dir, output_path, target_table, target_rule, cpu_count
     )
+
 
     #  End of execution time
     logging.info("Total execution time {}s".format(time.time() - t0))
@@ -463,7 +544,6 @@ def main(drc_dir: str, rules_dir: str, output_path: str, target_table: str, targ
     else:
         logging.error("Test failed.")
         exit(1)
-
 
 # ================================================================
 # -------------------------- MAIN --------------------------------
