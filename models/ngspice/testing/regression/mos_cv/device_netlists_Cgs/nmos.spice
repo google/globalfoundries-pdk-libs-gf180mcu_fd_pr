@@ -57,9 +57,9 @@ foreach t 25
         DC vds {{vds}}
     
         * ** parameters calculation
-	
 	let Cap = -{@mn[cgs]*1e15}
         let Vg = @mn[vgs]
+
         
         wrdata mos_cv_regr/{{device}}/{{device}}_netlists_Cgs/simulated_W{{width}}_L{{length}}.csv Cap Vg
         
