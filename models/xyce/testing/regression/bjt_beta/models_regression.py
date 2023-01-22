@@ -406,6 +406,9 @@ def main():
     if Xyce_v_ == "":
         logging.error("Xyce is not found. Please make sure Xyce is installed.")
         exit(1)
+    elif "7.6" not in Xyce_v_:
+        logging.error("Xyce version 7.6 is required.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -542,7 +545,7 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="comparator: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
     logging.basicConfig(

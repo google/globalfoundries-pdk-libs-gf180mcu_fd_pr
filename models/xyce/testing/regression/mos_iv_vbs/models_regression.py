@@ -286,11 +286,11 @@ def run_sims(
         sdf = df.pivot(index="V(G_TN)", columns=("V(B_TN)"), values=i_vds)
         sdf.rename(
             columns={
-                mos[0]: "vb1",
-                mos[1]: "vb2",
-                mos[2]: "vb3",
-                mos[3]: "vb4",
-                mos[4]: "vb5",
+                mos[0]: "simulated_vbs1",
+                mos[1]: "simulated_vbs2",
+                mos[2]: "simulated_vbs3",
+                mos[3]: "simulated_vbs4",
+                mos[4]: "simulated_vbs5",
             },
             inplace=True,
         )
@@ -385,34 +385,34 @@ def error_cal(
         result_data["measured_vbs5"] = result_data["measured_vbs5"].clip(
             lower=lowest_curr
         )
-        result_data["vb1"] = result_data["vb1"].clip(lower=lowest_curr)
-        result_data["vb2"] = result_data["vb2"].clip(lower=lowest_curr)
-        result_data["vb3"] = result_data["vb3"].clip(lower=lowest_curr)
-        result_data["vb4"] = result_data["vb4"].clip(lower=lowest_curr)
-        result_data["vb5"] = result_data["vb5"].clip(lower=lowest_curr)
+        result_data["simulated_vbs1"] = result_data["simulated_vbs1"].clip(lower=lowest_curr)
+        result_data["simulated_vbs2"] = result_data["simulated_vbs2"].clip(lower=lowest_curr)
+        result_data["simulated_vbs3"] = result_data["simulated_vbs3"].clip(lower=lowest_curr)
+        result_data["simulated_vbs4"] = result_data["simulated_vbs4"].clip(lower=lowest_curr)
+        result_data["simulated_vbs5"] = result_data["simulated_vbs5"].clip(lower=lowest_curr)
 
         result_data["step1_error"] = (
-            np.abs(result_data["measured_vbs1"] - result_data["vb1"])
+            np.abs(result_data["measured_vbs1"] - result_data["simulated_vbs1"])
             * 100.0
             / (result_data["measured_vbs1"])
         )
         result_data["step2_error"] = (
-            np.abs(result_data["measured_vbs2"] - result_data["vb2"])
+            np.abs(result_data["measured_vbs2"] - result_data["simulated_vbs2"])
             * 100.0
             / (result_data["measured_vbs2"])
         )
         result_data["step3_error"] = (
-            np.abs(result_data["measured_vbs3"] - result_data["vb3"])
+            np.abs(result_data["measured_vbs3"] - result_data["simulated_vbs3"])
             * 100.0
             / (result_data["measured_vbs3"])
         )
         result_data["step4_error"] = (
-            np.abs(result_data["measured_vbs4"] - result_data["vb4"])
+            np.abs(result_data["measured_vbs4"] - result_data["simulated_vbs4"])
             * 100.0
             / (result_data["measured_vbs4"])
         )
         result_data["step5_error"] = (
-            np.abs(result_data["measured_vbs5"] - result_data["vb5"])
+            np.abs(result_data["measured_vbs5"] - result_data["simulated_vbs5"])
             * 100.0
             / (result_data["measured_vbs5"])
         )
@@ -446,7 +446,15 @@ def error_cal(
 
 
 def main():
-
+    """Main function applies all regression steps"""
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.6" not in Xyce_v_:
+        logging.error("Xyce version 7.6 is required.")
+        exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)

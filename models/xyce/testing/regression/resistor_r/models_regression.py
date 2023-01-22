@@ -209,9 +209,9 @@ def run_sim(
         # Find res in log
         try:
             res = find_res(f"{netlist_path}.log")
-        except Exception as e:
+        except Exception:
             res = 0.0
-    except Exception as e:
+    except Exception:
         res = 0.0
 
     info["res_sim_unscaled"] = res
@@ -270,6 +270,9 @@ def main(num_cores: int):
     Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
     if Xyce_v_ == "":
         logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.6" not in Xyce_v_:
+        logging.error("Xyce version 7.6 is required.")
         exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
@@ -397,7 +400,7 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="comparator: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
     logging.basicConfig(
@@ -405,7 +408,7 @@ if __name__ == "__main__":
         handlers=[
             logging.StreamHandler(),
         ],
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
