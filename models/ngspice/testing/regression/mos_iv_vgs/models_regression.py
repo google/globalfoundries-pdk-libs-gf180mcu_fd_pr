@@ -642,7 +642,7 @@ def error_cal(
 
         merged_out.fillna(0, inplace=True)
         merged_out.to_csv(f"{dev_path}/error_analysis_{id_rds}.csv", index=False)
-        rms_df.to_csv(f"{dev_path}/finalerror_analysis_{id_rds}.csv", index=False)
+        rms_df.to_csv(f"{dev_path}/final_error_analysis_{id_rds}.csv", index=False)
     return None
 
 
@@ -735,7 +735,7 @@ def main():
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
         for s in ["Id", "Rds"]:
-            merged_all = pd.read_csv(f"{dev_path}/finalerror_analysis_{s}.csv")
+            merged_all = pd.read_csv(f"{dev_path}/final_error_analysis_{s}.csv")
 
             # calculating the error of each device and reporting it
             min_error_total = float()

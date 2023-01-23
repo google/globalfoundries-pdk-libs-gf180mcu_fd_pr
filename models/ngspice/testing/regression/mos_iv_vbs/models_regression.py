@@ -20,7 +20,6 @@ Usage:
   --num_cores=<num>      Number of cores to be used by simulator
 """
 
-from unittest.mock import DEFAULT
 from docopt import docopt
 import pandas as pd
 import numpy as np
@@ -30,22 +29,17 @@ import concurrent.futures
 import shutil
 import multiprocessing as mp
 import logging
-
-import subprocess
 import glob
 
-pd.options.mode.chained_assignment = None  # default='warn'
-# constants
+# CONSTANTS VALUES
 PASS_THRESH = 2.0
 MOS = [0, -0.825, -1.65, -2.48, -3.3]
 MOS1 = [0, -0.825, -1.65, -2.475, -3.3]
-PMOS3P3_VPS = [0, 0.825, 1.65, 2.48, 3.3]
-PMOS3P3_VPS1 = [0, 0.825, 1.65, 2.475, 3.3]
-NMOS6P0_VPS = [0, -0.75, -1.5, -2.25, -3]
-PMOS6P0_VPS = [0, 0.75, 1.5, 2.25, 3]
-# nmos6p0_nat_vbs = [0, -0.75, -1.5, -2.25, -3]
-# #######################
-# #######################
+PMOS3P3_VBS = [0, 0.825, 1.65, 2.48, 3.3]
+PMOS3P3_VBS1 = [0, 0.825, 1.65, 2.475, 3.3]
+NMOS6P0_VBS = [0, -0.75, -1.5, -2.25, -3]
+PMOS6P0_VBS = [0, 0.75, 1.5, 2.25, 3]
+
 VBS_N03V3 = "0 -3.3 -0.825"
 VBS_P03V3 = "0 3.3 0.825"
 VBS_N06V0 = "0 -3 -0.75"
@@ -79,13 +73,13 @@ def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
     all_dfs = []
 
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
-        mos = PMOS3P3_VPS
+        mos = PMOS3P3_VBS
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
-        mos = PMOS6P0_VPS
+        mos = PMOS6P0_VBS
     elif (
         device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss"
     ):
-        mos = NMOS6P0_VPS
+        mos = NMOS6P0_VBS
     else:
         mos = MOS
 
@@ -394,13 +388,13 @@ def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_cou
 
     sf = glob.glob(f"{dirpath}/{device}_netlists/*.csv")
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
-        mos = PMOS3P3_VPS1
+        mos = PMOS3P3_VBS1
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
-        mos = PMOS6P0_VPS
+        mos = PMOS6P0_VBS
     elif (
         device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss"
     ):
-        mos = NMOS6P0_VPS
+        mos = NMOS6P0_VBS
     else:
         mos = MOS1
     # sweeping on all generated cvs files
@@ -449,13 +443,13 @@ def error_cal(
     df["temp"][temp_range : 2 * temp_range] = -40
     df["temp"][2 * temp_range : 3 * temp_range] = 125
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
-        mos = PMOS3P3_VPS
+        mos = PMOS3P3_VBS
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
-        mos = PMOS6P0_VPS
+        mos = PMOS6P0_VBS
     elif (
         device == "nfet_06v0" or device == "nfet_06v0_nvt" or device == "nfet_06v0_dss"
     ):
-        mos = NMOS6P0_VPS
+        mos = NMOS6P0_VBS
     else:
         mos = MOS
     # create a new dataframe for rms error
@@ -560,7 +554,7 @@ def error_cal(
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
         merged_out.to_csv(f"{dev_path}/error_analysis.csv", index=False)
-        rms_df.to_csv(f"{dev_path}/finalerror_analysis.csv", index=False)
+        rms_df.to_csv(f"{dev_path}/final_error_analysis.csv", index=False)
 
     return None
 
@@ -584,6 +578,7 @@ def main():
     pd.set_option("display.max_rows", None)
     pd.set_option("max_colwidth", None)
     pd.set_option("display.width", 1000)
+    pd.options.mode.chained_assignment = None
 
     main_regr_dir = "mos_iv_regr"
 
@@ -642,8 +637,7 @@ def main():
 
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
-
-        merged_all = pd.read_csv(f"{dev_path}/finalerror_analysis.csv")
+        merged_all = pd.read_csv(f"{dev_path}/final_error_analysis.csv")
 
         # calculating the error of each device and reporting it
         min_error_total = float()

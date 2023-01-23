@@ -629,7 +629,7 @@ def main():
             merged_out = pd.concat(merged_dfs)
 
             merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
-            rms_df.to_csv(f"{dev_path}/finalerror_analysis_{c}.csv", index=False)
+            rms_df.to_csv(f"{dev_path}/final_error_analysis_{c}.csv", index=False)
             merged_all = rms_df
             # calculating the error of each device and reporting it
             for dev in list_dev:
