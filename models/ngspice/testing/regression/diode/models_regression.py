@@ -13,7 +13,7 @@
 # limitations under the License.
 """
 Usage:
-  model_reg.py [--num_cores=<num>]
+  models_regression.py [--num_cores=<num>]
 
   -h, --help             Show help text.
   -v, --version          Show version.
@@ -29,12 +29,8 @@ import concurrent.futures
 import shutil
 import multiprocessing as mp
 import logging
-
 import glob
 
-import warnings
-
-warnings.simplefilter(action="ignore", category=FutureWarning)
 
 DEFAULT_TEMP = 25.0
 PASS_THRESH = 2.0
@@ -381,13 +377,16 @@ def main():
     """
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
-    version = (ngspice_v_.split("\n")[1])
-    if ngspice_v_ == "":
+
+    if "ngspice-" not in ngspice_v_:
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
-    elif "38" not in version:
-        logging.error("ngspice version is not supported. Please use ngspice version 38.")
-        exit(1)
+    else:
+        version = (ngspice_v_.split("\n")[1])
+        if "38" not in version:
+            logging.error("ngspice version is not supported. Please use ngspice version 38.")
+            exit(1)
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
