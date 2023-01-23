@@ -31,19 +31,39 @@ import multiprocessing as mp
 import glob
 import logging
 
-pd.options.mode.chained_assignment = None  # default='warn'
-# constants
+# CONSTANT VALUES
 PASS_THRESH = 2.0
 
+# Space from COMP contact to Poly2 on COMP V3.3
+comp_cont_spc_gate_v3_3 = 0.15
+
+# COMP overlap of contact V3.3
+comp_enc_cont_v3_3 = 0.07 
+
+# Min/max contact size V3.3
+cont_min_size_v3_3 = 0.22 
+
+# Space from COMP contact to Poly2 on COMP V5
+comp_cont_spc_gate_v5_0 = 0.15
+
+# COMP overlap of contact V5
+comp_enc_cont_v5_0 = 0.07
+
+# Min/max contact size V5
+cont_min_size_v5_0 = 0.2
+
+ld = {"v3_3": comp_cont_spc_gate_v3_3 + comp_enc_cont_v3_3 + cont_min_size_v3_3,
+      "v5_0": comp_cont_spc_gate_v5_0 + comp_enc_cont_v5_0 + cont_min_size_v5_0}
+
 MOS = [0, -0.825, -1.65, -2.475, -3.3]
-PMOS3P3_VPS = ["-0", 0.825, 1.65, 2.475, 3.3]
-NMOS6P0_VPS = [0, -1, -2, -3]
-PMOS6P0_VPS = ["-0", 1, 2, 3]
+PMOS3P3_VBS = ["-0", 0.825, 1.65, 2.475, 3.3]
+NMOS6P0_VBS = [0, -1, -2, -3]
+PMOS6P0_VBS = ["-0", 1, 2, 3]
 
 MOS1 = [0, 1.1, 2.2, 3.3]
-PMOS3P3_VPS1 = ["-0", -1.1, -2.2, -3.3]
-NMOS6P0_VPS1 = [0, 2, 4, 6]
-PMOS6P0_VPS1 = ["-0", -2, -4, -6]
+PMOS3P3_VBS1 = ["-0", -1.1, -2.2, -3.3]
+NMOS6P0_VBS1 = [0, 2, 4, 6]
+PMOS6P0_VBS1 = ["-0", -2, -4, -6]
 # #######################
 VBS_N03V3C = [0, -3.3, -0.825]
 VBS_P03V3C = [0, 3.3, 0.825]
@@ -93,17 +113,17 @@ def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
     all_dfs3 = []
 
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
-        mos = PMOS3P3_VPS
-        mos1 = PMOS3P3_VPS1
+        mos = PMOS3P3_VBS
+        mos1 = PMOS3P3_VBS1
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
-        mos = PMOS6P0_VPS
-        mos1 = PMOS6P0_VPS1
+        mos = PMOS6P0_VBS
+        mos1 = PMOS6P0_VBS1
     elif device == "nfet_06v0" or device == "nfet_06v0_dss":
-        mos = NMOS6P0_VPS
-        mos1 = NMOS6P0_VPS1
+        mos = NMOS6P0_VBS
+        mos1 = NMOS6P0_VBS1
     elif device == "nfet_06v0_nvt":
-        mos = NMOS6P0_VPS
-        mos1 = NMOS6P0_VPS1
+        mos = NMOS6P0_VBS
+        mos1 = NMOS6P0_VBS1
     else:
         mos = MOS
         mos1 = MOS1
@@ -347,22 +367,27 @@ def run_sim(dirpath: str, device: str, width: float, length: float, nf: int) -> 
     vdsd = VDS_N03V3D
     vgsc = VGS_N03V3C
     vgsd = VGS_N03V3D
+    ld_select = "v3_3"
+
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
         vbsc = VBS_P03V3C
         vdsd = VDS_P03V3D
         vgsc = VGS_P03V3C
         vgsd = VGS_P03V3D
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+        ld_select = "v5_0"
         vbsc = VBS_P06V0C
         vdsd = VDS_P06V0D
         vgsc = VGS_P06V0C
         vgsd = VGS_P06V0D
     elif device == "nfet_06v0" or device == "nfet_06v0_dss":
+        ld_select = "v5_0"
         vbsc = VBS_N06V0C
         vdsd = VDS_N06V0D
         vgsc = VGS_N06V0C
         vgsd = VGS_N06V0D
     elif device == "nfet_06v0_nvt":
+        ld_select = "v5_0"
         vbsc = VBS_N06V0C
         vdsd = VDS_N06V0D
         vgsc = VGS_N06V0C
@@ -409,10 +434,10 @@ def run_sim(dirpath: str, device: str, width: float, length: float, nf: int) -> 
                         vbs2=vbs[1],
                         vbs3=vbs[2],
                         device=device,
-                        AD=float(width_str) * 0.24,
-                        PD=2 * (float(width_str) + 0.24),
-                        AS=float(width_str) * 0.24,
-                        PS=2 * (float(width_str) + 0.24),
+                        AD=float(width_str) * ld[ld_select],
+                        PD=2 * (float(width_str) + ld[ld_select]),
+                        AS=float(width_str) * ld[ld_select],
+                        PS=2 * (float(width_str) + ld[ld_select]),
                     )
                 )
 
@@ -428,7 +453,7 @@ def run_sim(dirpath: str, device: str, width: float, length: float, nf: int) -> 
         except Exception:
             mos_iv = "None"
 
-        info["mos_cg{cap}_simulated"] = mos_iv
+        info[f"mos_cg{cap}_simulated"] = mos_iv
 
     return info
 
@@ -470,28 +495,28 @@ def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_cou
         sf = glob.glob(f"{dirpath}/{device}_netlists_Cg{cap}/*.csv")
         if cap == "c":
             if device == "pfet_03v3" or device == "pfet_03v3_dss":
-                mos = PMOS3P3_VPS
+                mos = PMOS3P3_VBS
             elif device == "pfet_06v0" or device == "pfet_06v0_dss":
-                mos = PMOS6P0_VPS
+                mos = PMOS6P0_VBS
             elif (
                 device == "nfet_06v0"
                 or device == "nfet_06v0_dss"
                 or device == "nfet_06v0_nvt"
             ):
-                mos = NMOS6P0_VPS
+                mos = NMOS6P0_VBS
             else:
                 mos = MOS
         else:
             if device == "pfet_03v3" or device == "pfet_03v3_dss":
-                mos = PMOS3P3_VPS1
+                mos = PMOS3P3_VBS1
             elif device == "pfet_06v0" or device == "pfet_06v0_dss":
-                mos = PMOS6P0_VPS1
+                mos = PMOS6P0_VBS1
             elif (
                 device == "nfet_06v0"
                 or device == "nfet_06v0_dss"
                 or device == "nfet_06v0_nvt"
             ):
-                mos = NMOS6P0_VPS1
+                mos = NMOS6P0_VBS1
             else:
                 mos = MOS1
 
@@ -566,17 +591,17 @@ def error_cal(
 
     # adding error columns to the merged dataframe
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
-        mos = PMOS3P3_VPS
-        mos1 = PMOS3P3_VPS1
+        mos = PMOS3P3_VBS
+        mos1 = PMOS3P3_VBS1
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
-        mos = PMOS6P0_VPS
-        mos1 = PMOS6P0_VPS1
+        mos = PMOS6P0_VBS
+        mos1 = PMOS6P0_VBS1
     elif device == "nfet_06v0" or device == "nfet_06v0_dss":
-        mos = NMOS6P0_VPS
-        mos1 = NMOS6P0_VPS1
+        mos = NMOS6P0_VBS
+        mos1 = NMOS6P0_VBS1
     elif device == "nfet_06v0_nvt":
-        mos = NMOS6P0_VPS
-        mos1 = NMOS6P0_VPS1
+        mos = NMOS6P0_VBS
+        mos1 = NMOS6P0_VBS1
     else:
         mos = MOS
         mos1 = MOS1
@@ -794,6 +819,7 @@ def main():
     pd.set_option("display.max_rows", None)
     pd.set_option("max_colwidth", None)
     pd.set_option("display.width", 1000)
+    pd.options.mode.chained_assignment = None
 
     main_regr_dir = "mos_cv_regr"
 

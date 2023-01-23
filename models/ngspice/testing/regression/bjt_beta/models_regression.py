@@ -398,6 +398,7 @@ def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count
                 )
                 # reverse the rows
                 sdf = sdf.iloc[::-1]
+                sdf.index = -1 * sdf.index
             sdf.to_csv(sf[i], index=True, header=True, sep=",")
     df = pd.DataFrame(results)
 
@@ -524,8 +525,14 @@ def main():
                 simulated_data = pd.read_csv(merged_df[f"beta_{c}_sim"][i])
                 measured_data["v-sweep"] = simulated_data["v-sweep"]
                 result_data = simulated_data.merge(measured_data, how="left")
-                # clipping all the  values to lowest_curr
-                lowest_curr = 5e-12
+
+                ## We found that most of the curr are in the range of milli-Amps and most of the
+                ## error happens in the off mode of the BJT. And it causes large rmse for the values. 
+                ## We will clip at 5nA for all currents to make sure that for small signal it works as expected. 
+
+                # Clipping all the  values to lowest_curr
+                lowest_curr = 5.0e-9
+
                 result_data[f"simulated_{c}_vcp_step1"] = result_data[
                     f"simulated_{c}_vcp_step1"
                 ].clip(lower=lowest_curr)

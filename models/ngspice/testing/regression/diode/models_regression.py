@@ -32,6 +32,7 @@ import logging
 import glob
 
 
+# CONSTANT VALUES
 DEFAULT_TEMP = 25.0
 PASS_THRESH = 2.0
 MAX_VOLTAGE = 3.3
@@ -350,8 +351,9 @@ def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count
                 results.append(data)
             except Exception as exc:
                 logging.info("Test case generated an exception: %s" % (exc))
-
-    sf = glob.glob(f"{dirpath}/*_netlists_{char}/*.csv")  # stored simulated data files
+    
+    # stored simulated data files
+    sf = glob.glob(f"{dirpath}/*_netlists_{char}/*.csv")  
     for i in range(len(sf)):
         sdf = pd.read_csv(
             sf[i],
@@ -459,7 +461,7 @@ def main():
                 f"# Device {dev} number of {c}_measured_datapoints : {len(meas_df) * meas_len}"
             )
 
-            sim_df = run_sims(c, meas_df, dev_path, 3)
+            sim_df = run_sims(c, meas_df, dev_path, workers_count)
             sim_len = len(pd.read_csv(glob.glob(f"{dev_path}/*_netlists_{c}/*.csv")[1]))
             logging.info(
                 f"# Device {dev} number of {c}_simulated datapoints : {len(sim_df) * sim_len}"

@@ -20,6 +20,7 @@ set filetype=ascii
 set wr_singlescale
 set wr_vecnames
 dc Vbp -0.2 -1.2 -0.01 Vcp -1 -3 -1
+
 wrdata bjt_beta_regr/pnp/pnp_netlists/ic_simulated_{{device}}_t{{temp}}.csv i(Vcp) v(c)
 wrdata bjt_beta_regr/pnp/pnp_netlists/ib_simulated_{{device}}_t{{temp}}.csv i(Vbp) v(c)
 .endc
