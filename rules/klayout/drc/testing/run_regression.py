@@ -43,12 +43,103 @@ import logging
 import glob
 from pathlib import Path
 from tqdm import tqdm
-import pytest
+import re 
 
 
 SUPPORTED_TC_EXT = "gds"
 SUPPORTED_SW_EXT = "yaml"
 
+def check_klayout_version():
+    """
+    check_klayout_version checks klayout version and makes sure it would work with the DRC.
+    """
+    # ======= Checking Klayout version =======
+    klayout_v_ = os.popen("klayout -b -v").read()
+    klayout_v_ = klayout_v_.split("\n")[0]
+    klayout_v_list = []
+
+    if klayout_v_ == "":
+        logging.error("Klayout is not found. Please make sure klayout is installed.")
+        exit(1)
+    else:
+        klayout_v_list = [int(v) for v in klayout_v_.split(" ")[-1].split(".")]
+
+    logging.info(f"Your Klayout version is: {klayout_v_}")
+
+    if len(klayout_v_list) < 1 or len(klayout_v_list) > 3:
+        logging.error("Was not able to get klayout version properly.")
+        exit(1)
+    elif len(klayout_v_list) == 2:
+        if klayout_v_list[1] < 28:
+            logging.warning(f"Prerequisites at a minimum: KLayout 0.28.0")
+            logging.error(
+                "Using this klayout version has not been assesed in this development. Limits are unknown"
+            )
+            exit(1)
+    elif len(klayout_v_list) == 3:
+        if klayout_v_list[1] < 28 :
+            logging.warning(f"Prerequisites at a minimum: KLayout 0.28.0")
+            logging.error(
+                "Using this klayout version has not been assesed in this development. Limits are unknown"
+            )
+            exit(1)
+
+def get_switches(yaml_file,rule_name):
+    """Parse yaml file and extract switches data
+    Parameters
+    ----------
+    yaml_file : str
+            yaml config file path given py the user.
+    Returns
+    -------
+    yaml_dic : dictionary
+            dictionary containing switches data.
+    """
+
+    # load yaml config data
+    with open(yaml_file, 'r') as stream:
+        try:
+            yaml_dic = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+    switches = list()
+    for param,value in yaml_dic[rule_name].items():
+        switch = f"{param}={value}"
+        switches.append(switch)
+
+    return switches
+
+
+
+def generate_merged_gds(rule_deck_path , testcase_path , db_path ):
+    # Get the same rule deck with gds output
+    
+    # Marker layers
+    ly_num = 10000
+    ly_dt = 0
+    
+    # Generation of merged gds 
+    # GDS file contains violations markers merged
+    #  with original testcases
+    num_exc = 0
+    merged_gds_source = f'\n source.layout.write("merged_output.gds") \n'
+    with open(rule_deck_path, 'r') as lines:
+        with open("markers.drc", 'w') as marker:
+            for num,line in enumerate(lines):
+                if ".output" in line:
+                    line = re.sub(r'\([\s\S]*\)', f'({ly_num}, {ly_dt})', line )
+                    ly_dt +=1
+                
+                if "if $report" in line:
+                    num_exc = num
+
+                if num not in range(num_exc,num_exc+7):
+                    marker.write(line)                
+            marker.write(merged_gds_source)                
+
+    call_str = f"klayout -b -r markers.drc -rd input={testcase_path} -rd report={db_path}"    
+    check_call(call_str, shell=True)
 
 def parse_results_db(results_database):
     """
@@ -81,10 +172,8 @@ def run_test_case(
     drc_dir,
     layout_path,
     run_dir,
-    test_type,
     test_table,
     test_rule,
-    thrCount,
     switches="",
 ):
     """
@@ -100,10 +189,6 @@ def run_test_case(
         Path string to the layout of the test pattern we want to test.
     run_dir : stirng or Path object
         Path to the location where is the regression run is done.
-    test_type : string
-        Type of the test case either pass or fail.
-    test_rule : string
-        Rule under test
     switches : string
         String that holds all the DRC run switches required to enable this.
     
@@ -113,33 +198,51 @@ def run_test_case(
         A pandas DataFrame with the rule and rule deck used.
     """
 
-    pattern_clean = layout_path.with_suffix("").stem
-    output_loc = f"{run_dir}/{test_table}/{test_rule}/{test_type}_patterns"
-    pattern_results = f"{output_loc}/{pattern_clean}_database.lyrdb"
+    # Get switches used for each run
+    sw_file = os.path.join(Path(layout_path.parent.parent).absolute(), f"{test_rule}.{SUPPORTED_SW_EXT}")
+
+    if os.path.exists(sw_file):
+        switches = " ".join(get_switches(sw_file, test_rule))        
+    else:
+        switches = "--variant=C"  # default switch
+
+    pattern_clean = ".".join(os.path.basename(layout_path).split(".")[:-1])
+    output_loc = f"{run_dir}/{test_table}/{test_rule}_patterns"
     pattern_log = f"{output_loc}/{pattern_clean}_drc.log"
-
-    if runset_file == "nan" or runset_file is None or runset_file == "":
-        return "cannot_find_rule"
-
-    drc_file_path = os.path.join(drc_dir, runset_file)
-
-    call_str = f"klayout -b -r {drc_file_path} -rd input={layout_path} -rd report={pattern_results} -rd thr={thrCount} {switches}"
+    
     os.makedirs(output_loc, exist_ok=True)
-    check_call(call_str, shell=True)
 
-    if os.path.isfile(pattern_results):
-        rules_with_violations = parse_results_db(pattern_results)
-        print(rules_with_violations)
-        if test_type == "pass":
-            if test_rule in rules_with_violations:
-                return "false_negative"
-            else:
-                return "true_positive"
+    if "antenna" in runset_file:
+        switches += " --antenna_only"
+    elif "density" in runset_file:
+        switches += " --density_only"
+
+    call_str = f"python3 {drc_dir}/run_drc.py --path={layout_path} {switches} --table={test_table} --run_dir={output_loc} --run_mode=flat --thr=1  > {pattern_log} 2>&1"
+    try:
+        check_call(call_str, shell=True)
+    except Exception as e:
+        pattern_results = glob.glob(os.path.join(output_loc, f"{pattern_clean}*.lyrdb"))
+        if len(pattern_results) < 1:
+            logging.error("%s generated an exception: %s" % (pattern_clean, e))
+            traceback.print_exc()
+            raise
+    
+    pattern_results = glob.glob(os.path.join(output_loc, f"{pattern_clean}*.lyrdb"))
+    if len(pattern_results) > 0:
+        violated_rules = set()
+        for p in pattern_results:
+            rules_with_violations = parse_results_db(p)
+            violated_rules.update(rules_with_violations)
+
+        if test_rule in violated_rules:
+            return "false_negative"
         else:
-            if test_rule in rules_with_violations:
-                return "true_negative"
-            else:
-                return "false_positive"
+            return "true_positive"
+
+        # if test_rule in violated_rules:
+        #     return "true_negative"
+        # else:
+        #     return "false_positive"
     else:
         return "database_not_found"
 
@@ -174,7 +277,6 @@ def run_all_test_cases(tc_df, run_dir, thrCount):
                     drc_dir,
                     row["test_path"],
                     run_dir,
-                    row["test_type"],
                     row["table_name"],
                     row["rule_name"],
                     thrCount,
@@ -456,12 +558,11 @@ def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
 
     tc_df.to_csv(os.path.join(output_path, "all_test_cases.csv"), index=False)
 
-    exit ()
-
     ## Do some test cases coverage analysis
     cov_df = analyze_test_patterns_coverage(rules_df, tc_df, output_path)
     print(cov_df)
 
+    exit ()
 
     ## Run all test cases
     all_tc_df = run_all_test_cases(tc_df, output_path, cpu_count)
@@ -530,6 +631,9 @@ def main(drc_dir: str, rules_dir: str, output_path: str, target_table: str, targ
     # Start of execution time
     t0 = time.time()
     
+    ## Check Klayout version
+    check_klayout_version()
+
     # Calling regression function
     run_status = run_regression(
         drc_dir, output_path, target_table, target_rule, cpu_count
