@@ -71,20 +71,20 @@ def ext_cv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
     # Read Data
     df = pd.read_excel(dev_data_path)
 
-    dim_df = df[["W (um)" , "L (um)"]].copy()
+    dim_df = df[["Area" , "Pj"]].copy()
     dim_df.rename(
-        columns={"W (um)": "width" , "L (um)": "length"},
+        columns={"Area": "area" , "Pj": "perim"},
         inplace=True,
     )
 
     all_dfs = []
 
-    loops = dim_df["length"].count()
+    loops = dim_df["perim"].count()
     for corner in corners:
 
         for i in range(0, loops):
-            width = dim_df["width"].iloc[int(i)]
-            length = dim_df["length"].iloc[int(i)]
+            area = dim_df["area"].iloc[int(i)]
+            perim = dim_df["perim"].iloc[int(i)]
 
             if i % 4 == 0:
                 temp = -40
@@ -95,8 +95,8 @@ def ext_cv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
             else:
                 temp = 175
 
-            length_list = []
-            width_list = []
+            perim_list = []
+            area_list = []
             temp_list = []
             corner_list = []
             meas_list = []
@@ -134,20 +134,20 @@ def ext_cv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
                 {"measured_volt": meas_volt, "diode_measured": meas_diode}
             )
 
-            meas_csv = f"measured_W{width}_L{length}_t{temp}_{corner}.csv"
+            meas_csv = f"measured_A{area}_P{perim}_t{temp}_{corner}.csv"
 
             os.makedirs(f"{dev_path}/measured_cv", exist_ok=True)
             meas_data.to_csv(f"{dev_path}/measured_cv/{meas_csv}", index=False)
 
-            length_list.append(length)
-            width_list.append(width)
+            perim_list.append(perim)
+            area_list.append(area)
             temp_list.append(temp)
             corner_list.append(corner)
             meas_list.append(f"{dev_path}/measured_cv/{meas_csv}")
             
             sdf = {
-                "length": length_list,
-                "width": width_list,
+                "perim": perim_list,
+                "area": area_list,
                 "temp": temp_list,
                 "corner": corner_list,
                 "diode_measured": meas_list,
@@ -159,7 +159,7 @@ def ext_cv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
     df.dropna(axis=0, inplace=True)
     df.drop_duplicates(inplace=True)
     df["device"] = device
-    df = df[["device", "length", "width", "temp", "corner", "diode_measured"]]
+    df = df[["device", "perim", "area", "temp", "corner", "diode_measured"]]
     
     return df
 
@@ -178,20 +178,20 @@ def ext_iv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
     # Read Data
     df = pd.read_excel(dev_data_path)
 
-    dim_df = df[["W (um)" , "L (um)"]].copy()
+    dim_df = df[["Area" , "Pj"]].copy()
     dim_df.rename(
-        columns={"W (um)": "width" , "L (um)": "length"},
+        columns={"Area": "area" , "Pj": "perim"},
         inplace=True,
     )
 
     all_dfs = []
 
-    loops = dim_df["length"].count()
+    loops = dim_df["perim"].count()
     for corner in corners:
 
         for i in range(0, loops):
-            width = dim_df["width"].iloc[int(i)]
-            length = dim_df["length"].iloc[int(i)]
+            area = dim_df["area"].iloc[int(i)]
+            perim = dim_df["perim"].iloc[int(i)]
 
             if i % 4 == 0:
                 temp = -40
@@ -202,8 +202,8 @@ def ext_iv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
             else:
                 temp = 175
 
-            length_list = []
-            width_list = []
+            perim_list = []
+            area_list = []
             temp_list = []
             corner_list = []
             meas_list = []
@@ -228,20 +228,20 @@ def ext_iv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
                     },
                     inplace=True,
                 )
-            meas_csv = f"measured_W{width}_L{length}_t{temp}_{corner}.csv"
+            meas_csv = f"measured_A{area}_P{perim}_t{temp}_{corner}.csv"
 
             os.makedirs(f"{dev_path}/measured_iv", exist_ok=True)
             idf.to_csv(f"{dev_path}/measured_iv/{meas_csv}", index=False)
 
-            length_list.append(length)
-            width_list.append(width)
+            perim_list.append(perim)
+            area_list.append(area)
             temp_list.append(temp)
             corner_list.append(corner)
             meas_list.append(f"{dev_path}/measured_iv/{meas_csv}")
 
             sdf = {
-                "length": length_list,
-                "width": width_list,
+                "perim": perim_list,
+                "area": area_list,
                 "temp": temp_list,
                 "corner": corner_list,
                 "diode_measured": meas_list,
@@ -252,19 +252,19 @@ def ext_iv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
     df = pd.concat(all_dfs)
     df.dropna(axis=0, inplace=True)
     df["device"] = device
-    df = df[["device", "length", "width", "temp", "corner", "diode_measured"]]
+    df = df[["device", "perim", "area", "temp", "corner", "diode_measured"]]
 
     return df
 
 
-def run_sim(char: str, dirpath: str, device: str, length: float, width: float, corner: str, temp: float) -> dict:
+def run_sim(char: str, dirpath: str, device: str, perim: float, area: float, corner: str, temp: float) -> dict:
     """Run simulation.
     Args:
         char (str): Characteristic.
         dirpath (str): Path to directory.
         device (str): Device name.
-        length (float): Device length.
-        width (float): Device width.
+        perim (float): Device perimeter.
+        area (float): Device area.
         corner (str): Corner name.
         temp (float): Temperature.
     Returns:
@@ -276,15 +276,15 @@ def run_sim(char: str, dirpath: str, device: str, length: float, width: float, c
     info["device"] = device
     info["corner"] = corner
     info["temp"] = temp
-    info["width"] = width
-    info["length"] = length
+    info["area"] = area
+    info["perim"] = perim
 
-    width_str = "{:.1f}".format(width)
-    length_str = "{:.1f}".format(length)
+    area_str = "{:.1f}".format(area)
+    perim_str = "{:.1f}".format(perim)
     temp_str = "{:.1f}".format(temp)
 
-    net_sp = f"netlist_W{width_str}_L{length_str}_t{temp_str}_{corner}.spice"
-    res_csv = f"simulated_W{width_str}_L{length_str}_t{temp_str}_{corner}.csv"
+    net_sp = f"netlist_A{area_str}_P{perim_str}_t{temp_str}_{corner}.spice"
+    res_csv = f"simulated_A{area_str}_P{perim_str}_t{temp_str}_{corner}.csv"
     netlist_path = f"{dirpath}/{device}_netlists_{char}/{net_sp}"
     result_path = f"{dirpath}/{device}_netlists_{char}/{res_csv}"
 
@@ -296,8 +296,8 @@ def run_sim(char: str, dirpath: str, device: str, length: float, width: float, c
             netlist.write(
                 tmpl.render(
                     device=device,
-                    width=width_str,
-                    length=length_str,
+                    area=area_str,
+                    perim=perim_str,
                     corner=corner,
                     temp=temp_str,
                 )
@@ -339,8 +339,8 @@ def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count
                     char,
                     dirpath,
                     row["device"],
-                    row["length"],
-                    row["width"],
+                    row["perim"],
+                    row["area"],
                     row["corner"],
                     row["temp"],
                 )
@@ -369,7 +369,7 @@ def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count
 
     df = pd.DataFrame(results)
 
-    df = df[["device", "length", "width", "temp", "corner", "diode_sim_unscaled"]]
+    df = df[["device", "perim", "area", "temp", "corner", "diode_sim_unscaled"]]
     df["diode_sim"] = df["diode_sim_unscaled"]
 
     return df
@@ -413,7 +413,7 @@ def main():
         "sc_diode",
     ]
 
-    char = ["cv", "iv"]
+    char_measured = ["iv" , "cv"]
 
     for i, dev in enumerate(devices):
         dev_path = f"{main_regr_dir}/{dev}"
@@ -426,12 +426,12 @@ def main():
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        for c in char:
+        for char in char_measured:
 
             # cv section
 
             diode_data_files = glob.glob(
-                f"../../180MCU_SPICE_DATA/Diode/{dev}_{c}.nl_out.xlsx"
+                f"../../180MCU_SPICE_DATA/Diode/{dev}_{char}.nl_out.xlsx"
             )
             if len(diode_data_files) < 1:
                 logging.error(f"# Can't find diode file for device: {dev}")
@@ -439,48 +439,46 @@ def main():
             else:
                 diode_file = os.path.abspath(diode_data_files[0])
 
-            logging.info(f"# diode_{c} data points file : {diode_file}")
+            logging.info(f"# diode_{char} data points file : {diode_file}")
 
-            avail_mess = f"# No {c}_datapoints available for"
+            avail_mess = f"# No {char}_datapoints available for"
             if diode_file == "":
                 logging.info(f"{avail_mess} validation for device {dev}")
                 continue
 
-            if "c" in c:
-                f = ext_cv_measured
-            elif "i" in c:
-                f = ext_iv_measured
+            if char == "iv":
+                meas_func = ext_iv_measured
+            else:
+                meas_func = ext_cv_measured
 
             if diode_file != "":
-                meas_df = f(diode_file, dev, corners, dev_path)
+                meas_df = meas_func(diode_file, dev, corners, dev_path)
             else:
                 meas_df = []
-
-            meas_len = len(pd.read_csv(glob.glob(f"{dev_path}/measured_{c}/*.csv")[1]))
-
+            
+            meas_len = len(pd.read_csv(glob.glob(f"{dev_path}/measured_{char}/*.csv")[1]))
+        
             logging.info(
-                f"# Device {dev} number of {c}_measured_datapoints : {len(meas_df) * meas_len}"
+                f"# Device {dev} number of {char}_measured_datapoints : {len(meas_df) * meas_len}"
             )
 
-            sim_df = run_sims(c, meas_df, dev_path, workers_count)
+            sim_df = run_sims(char, meas_df, dev_path, workers_count)
             
-            print (glob.glob(f"{dev_path}/*_netlists_{c}/*.csv"))
-            
-            sim_len = len(pd.read_csv(glob.glob(f"{dev_path}/*_netlists_{c}/*.csv")[1]))
+
+            sim_len = len(pd.read_csv(glob.glob(f"{dev_path}/*_netlists_{char}/*.csv")[1]))
             logging.info(
-                f"# Device {dev} number of {c}_simulated datapoints : {len(sim_df) * sim_len}"
+                f"# Device {dev} number of {char}_simulated datapoints : {len(sim_df) * sim_len}"
             )
 
             # compare section
-
             merged_df = meas_df.merge(
-                sim_df, on=["device", "corner", "length", "width", "temp"], how="left"
+                sim_df, on=["device", "corner", "perim", "area", "temp"], how="left"
             )
             
             merged_dfs = []
             # create a new dataframe for rms error
             rms_df = pd.DataFrame(
-                columns=["device", "length", "width", "temp", "corner", "rms_error"]
+                columns=["device", "perim", "area", "temp", "corner", "rms_error"]
             )
 
             for i in range(len(merged_df)):
@@ -499,17 +497,17 @@ def main():
                     .split(".")[0]
                 )
                 result_data["device"] = merged_df["diode_measured"][i].split("/")[1]
-                result_data["length"] = (
+                result_data["area"] = (
                     merged_df["diode_measured"][i]
                     .split("/")[-1]
                     .split("_")[1]
-                    .split("W")[1]
+                    .split("A")[1]
                 )
-                result_data["width"] = (
+                result_data["perim"] = (
                     merged_df["diode_measured"][i]
                     .split("/")[-1]
                     .split("_")[2]
-                    .split("L")[1]
+                    .split("P")[1]
                 )
                 result_data["temp"] = (
                     merged_df["diode_measured"][i]
@@ -532,8 +530,8 @@ def main():
                 # fill rms dataframe
                 rms_df.loc[i] = [
                     result_data["device"][0],
-                    result_data["length"][0],
-                    result_data["width"][0],
+                    result_data["perim"][0],
+                    result_data["area"][0],
                     result_data["temp"][0],
                     result_data["corner"][0],
                     result_data["rms_error"][0],
@@ -542,8 +540,8 @@ def main():
                 result_data = result_data[
                     [
                         "device",
-                        "length",
-                        "width",
+                        "perim",
+                        "area",
                         "temp",
                         "corner",
                         "measured_volt",
@@ -557,8 +555,8 @@ def main():
 
             merged_out = pd.concat(merged_dfs)
 
-            merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
-            rms_df.to_csv(f"{dev_path}/final_error_analysis_{c}.csv", index=False)
+            merged_out.to_csv(f"{dev_path}/error_analysis_{char}.csv", index=False)
+            rms_df.to_csv(f"{dev_path}/final_error_analysis_{char}.csv", index=False)
 
             # calculating the error of each device and reporting it
             min_error_total = float()
@@ -579,13 +577,13 @@ def main():
 
             # logging.infoing min, max, mean errors to the consol
             logging.info(
-                f"# Device {dev} {c} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
+                f"# Device {dev} {char} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
             if merged_out["error"].max() < PASS_THRESH:
-                logging.info(f"# Device {dev} {c} has passed regression.")
+                logging.info(f"# Device {dev} {char} has passed regression.")
             else:
                 logging.error(
-                    f"# Device {dev} {c} has failed regression. Needs more analysis."
+                    f"# Device {dev} {char} has failed regression. Needs more analysis."
                 )
 
 
