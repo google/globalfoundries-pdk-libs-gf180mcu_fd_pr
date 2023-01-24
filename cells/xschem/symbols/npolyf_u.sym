@@ -1,4 +1,4 @@
-v {xschem version=3.0.0 file_version=1.2
+v {xschem version=3.1.0 file_version=1.2
 
 * Copyright 2022 GlobalFoundries PDK Authors
 *
@@ -21,7 +21,7 @@ format="@spiceprefix@name @pinlist @model r_width=@W r_length=@L m=@m"
 template="name=R1
 W=1e-6
 L=1e-6
-model=nplus_u
+model=npolyf_u
 spiceprefix=X
 m=1"
 }
