@@ -19,22 +19,17 @@ Vn n 0 dc 1
 .temp {{temp}}
 .options tnom={{temp}}
 
- 
-
-dn1 n 0 {{device}} AREA = {{area}}p PJ = {{pj}}u 
+dn1 n 0 {{device}} AREA = {{area}}p PJ = {{perim}}u 
 
 **** begin architecture code
-
 
 .control
 set filetype=ascii
 
 dc Vn -40.41 1.41 0.41
-print abs(i(Vn))
 
-wrdata diode_regr/{{device}}/{{device}}_netlists_iv/simulated_A{{area}}_P{{pj}}_t{{temp}}_{{corner}}.csv abs(i(Vn))
+wrdata diode_regr/{{device}}/{{device}}_netlists_iv/simulated_A{{area}}_P{{perim}}_t{{temp}}_{{corner}}.csv abs(i(Vn))
 .endc
-
 
 
 ** library calling

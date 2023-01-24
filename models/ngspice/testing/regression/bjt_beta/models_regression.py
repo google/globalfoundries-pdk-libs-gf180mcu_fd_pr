@@ -31,10 +31,6 @@ import multiprocessing as mp
 import logging
 import glob
 
-import warnings
-
-warnings.simplefilter(action="ignore", category=FutureWarning)
-
 PASS_THRESH = 2.0
 
 
@@ -402,6 +398,7 @@ def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count
                 )
                 # reverse the rows
                 sdf = sdf.iloc[::-1]
+                sdf.index = -1 * sdf.index
             sdf.to_csv(sf[i], index=True, header=True, sep=",")
     df = pd.DataFrame(results)
 
@@ -416,13 +413,16 @@ def main():
     """Main function applies all regression steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
-    version = (ngspice_v_.split("\n")[1])
-    if ngspice_v_ == "":
+
+    if "ngspice-" not in ngspice_v_:
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
-    elif "38" not in version:
-        logging.error("ngspice version is not supported. Please use ngspice version 38.")
-        exit(1)
+    else:
+        version = (ngspice_v_.split("\n")[1])
+        if "38" not in version:
+            logging.error("ngspice version is not supported. Please use ngspice version 38.")
+            exit(1)
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -525,8 +525,14 @@ def main():
                 simulated_data = pd.read_csv(merged_df[f"beta_{c}_sim"][i])
                 measured_data["v-sweep"] = simulated_data["v-sweep"]
                 result_data = simulated_data.merge(measured_data, how="left")
-                # clipping all the  values to lowest_curr
-                lowest_curr = 5e-12
+
+                ## We found that most of the curr are in the range of milli-Amps and most of the
+                ## error happens in the off mode of the BJT. And it causes large rmse for the values. 
+                ## We will clip at 5nA for all currents to make sure that for small signal it works as expected. 
+
+                # Clipping all the  values to lowest_curr
+                lowest_curr = 5.0e-9
+
                 result_data[f"simulated_{c}_vcp_step1"] = result_data[
                     f"simulated_{c}_vcp_step1"
                 ].clip(lower=lowest_curr)
@@ -630,7 +636,7 @@ def main():
             merged_out = pd.concat(merged_dfs)
 
             merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
-            rms_df.to_csv(f"{dev_path}/finalerror_analysis_{c}.csv", index=False)
+            rms_df.to_csv(f"{dev_path}/final_error_analysis_{c}.csv", index=False)
             merged_all = rms_df
             # calculating the error of each device and reporting it
             for dev in list_dev:

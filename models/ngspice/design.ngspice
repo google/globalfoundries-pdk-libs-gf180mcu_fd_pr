@@ -61,8 +61,8 @@
 *********** Default mc switches **********
 **
 .param
-+  sw_stat_global = 1
-+  sw_stat_mismatch = 1
++  sw_stat_global = 0
++  sw_stat_mismatch = 0
 **
 ********* Default mc skew value *********
 **

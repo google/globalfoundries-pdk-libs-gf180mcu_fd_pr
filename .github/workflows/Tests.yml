@@ -66,10 +66,12 @@ jobs:
           make test-"$(python -c 'print("${{ matrix.pdk }}".upper())')"-${{ matrix.test }}
   Regression_Test:
     runs-on: ubuntu-latest
+    container: ghcr.io/mabrains/pdk_regression
     steps:
       - uses: actions/checkout@v3
       - name: Ngspice Regression 
         run:  |
+             ngspice -v
              cd models/ngspice/testing/
              make all
         shell: bash

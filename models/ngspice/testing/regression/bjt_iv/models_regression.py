@@ -29,11 +29,8 @@ import concurrent.futures
 import shutil
 import multiprocessing as mp
 import logging
-
 import glob
-import warnings
 
-warnings.simplefilter(action="ignore", category=FutureWarning)
 PASS_THRESH = 2.0
 NPN = [0.000001, 0.000003, 0.000005, 0.000007, 0.000009]
 PNP = [-0.000001, -0.000003, -0.000005, -0.000007, -0.000009]
@@ -158,6 +155,7 @@ def ext_npn_measured(icvc_file: str, devices: list, dev_path: str) -> pd.DataFra
 
     df = pd.concat(all_dfs)
     df.dropna(axis=0, inplace=True)
+    df.drop_duplicates(inplace=True)
     df = df[["device", "temp", "ib_measured"]]
 
     return df
@@ -508,7 +506,9 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
 
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
+        merged_out.drop_duplicates(inplace=True)
         merged_out.to_csv(f"{dev_path}/error_analysis.csv", index=False)
+        rms_df.drop_duplicates(inplace=True)
         rms_df.to_csv(f"{dev_path}/final_error_analysis.csv", index=False)
     return None
 
@@ -517,13 +517,16 @@ def main():
     """Main function applies all regression v_collector_steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
-    version = (ngspice_v_.split("\n")[1])
-    if ngspice_v_ == "":
+
+    if "ngspice-" not in ngspice_v_:
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
-    elif "38" not in version:
-        logging.error("ngspice version is not supported. Please use ngspice version 38.")
-        exit(1)
+    else:
+        version = (ngspice_v_.split("\n")[1])
+        if "38" not in version:
+            logging.error("ngspice version is not supported. Please use ngspice version 38.")
+            exit(1)
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)

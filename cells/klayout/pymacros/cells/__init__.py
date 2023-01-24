@@ -52,7 +52,8 @@ class gf180mcu(pya.Library):
         # BJT
         self.layout().register_pcell(
             "npn_bjt", npn_bjt()
-        )  # npn_10p00x10p00 , npn_05p00x05p00 , npn_00p54x16p00 , npn_00p54x08p00 , npn_00p54x04p00 , npn_00p54x02p00
+        )  # npn_10p00x10p00 , npn_05p00x05p00 , npn_00p54x16p00 ,
+           # npn_00p54x08p00 , npn_00p54x04p00 , npn_00p54x02p00
         self.layout().register_pcell(
             "pnp_bjt", pnp_bjt()
         )  # pnp_10p00x10p00 , pnp_05p00x05p00 , pnp_10p00x00p42 , pnp_05p00x00p42
@@ -95,29 +96,35 @@ class gf180mcu(pya.Library):
         )  # cap_mim (Option-A) , cap_mim_tm (Option-B)
 
         # RES
-        self.layout().register_pcell("metal_resistor", metal_resistor())
-
-        self.layout().register_pcell("nplus_s_resistor", nplus_s_resistor())
-        self.layout().register_pcell("pplus_s_resistor", pplus_s_resistor())
-
-        self.layout().register_pcell("nplus_u_resistor", nplus_u_resistor())
-        self.layout().register_pcell("pplus_u_resistor", pplus_u_resistor())
-
-        self.layout().register_pcell("nwell_resistor", nwell_resistor())
-        self.layout().register_pcell("pwell_resistor", pwell_resistor())
-
-        self.layout().register_pcell("npolyf_s_resistor", npolyf_s_resistor())
-        self.layout().register_pcell("ppolyf_s_resistor", ppolyf_s_resistor())
-
-        self.layout().register_pcell("npolyf_u_resistor", npolyf_u_resistor())
-        self.layout().register_pcell("ppolyf_u_resistor", ppolyf_u_resistor())
-
+        self.layout().register_pcell(
+            "metal_resistor", metal_resistor())
+        self.layout().register_pcell(
+            "nplus_s_resistor", nplus_s_resistor())
+        self.layout().register_pcell(
+            "pplus_s_resistor", pplus_s_resistor())
+        self.layout().register_pcell(
+            "nplus_u_resistor", nplus_u_resistor())
+        self.layout().register_pcell(
+            "pplus_u_resistor", pplus_u_resistor())
+        self.layout().register_pcell(
+            "nwell_resistor", nwell_resistor())
+        self.layout().register_pcell(
+            "pwell_resistor", pwell_resistor())
+        self.layout().register_pcell(
+            "npolyf_s_resistor", npolyf_s_resistor())
+        self.layout().register_pcell(
+            "ppolyf_s_resistor", ppolyf_s_resistor())
+        self.layout().register_pcell(
+            "npolyf_u_resistor", npolyf_u_resistor())
+        self.layout().register_pcell(
+            "ppolyf_u_resistor", ppolyf_u_resistor())
         self.layout().register_pcell(
             "ppolyf_u_high_Rs_resistor", ppolyf_u_high_Rs_resistor()
         )
 
         # eFuse
-        # self.layout().register_pcell("efuse"  , efuse())
+        # self.layout().register_pcell(
+        # "efuse"  , efuse())
 
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
