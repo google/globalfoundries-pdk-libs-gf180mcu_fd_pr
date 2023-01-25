@@ -78,73 +78,14 @@ test-DRC-gf180mcu_fd_sc_mcu9t5v0: print_klayout_version
 #=================================
 
 .ONESHELL:
-test-DRC-main : print_klayout_version test-DRC-foundry-Option-1 test-DRC-foundry-Option-2 test-DRC-foundry-Option-3 test-DRC-foundry-Option-4 test-DRC-Option-A test-DRC-Option-B test-DRC-Option-C
+test-DRC-main : print_klayout_version 
+	@python3 run_regression.py
 	@echo "========== DRC-Regression is done =========="
 
 .ONESHELL:
-test-DRC-foundry-Option-1:
-	@cd $(Testing_DIR)
-	@echo "========== DRC-Regression foundry-Option-1 =========="
-	@python3 run_regression.py 																\
-		--path=testcases/0.0.DM000013_13_1P6M_6kA_MIMA_SOLDER_BUMP.gds.gz					\
-		--metal_top="6K" --mim_option="A"  --metal_level=6 --run_name="DRC-foundry-Option-1"
-
-.ONESHELL:
-test-DRC-foundry-Option-2:
-	@cd $(Testing_DIR)
-	@echo "========== DRC-Regression foundry-Option-2 =========="
-	@python3 run_regression.py 																\
-		--path=testcases/0.0.DM000013_13_1P6M_9kA_MIMB_WEDGE.gds.gz							\
-		--metal_top="9K" --mim_option="B"  --metal_level=6  --run_name="DRC-foundry-Option-2"
-
-.ONESHELL:
-test-DRC-foundry-Option-3:
-	@cd $(Testing_DIR)
-	@echo "========== DRC-Regression foundry-Option-3 =========="
-	@python3 run_regression.py 																\
-		--path=testcases/0.0.DM000013_13_1P6M_11kA_MIMA_Gold_Bump.gds.gz					\
-		--metal_top="11K" --mim_option="A"  --metal_level=6	--run_name="DRC-foundry-Option-3"
-
-.ONESHELL:
-test-DRC-foundry-Option-4:
-	@cd $(Testing_DIR)
-	@echo "========== DRC-Regression foundry-Option-4 =========="
-	@python3 run_regression.py 																\
-		--path=testcases/0.0.DM000013_13_1P6M_30kA_MIMB_BALL.gds.gz							\
-		--metal_top="30K" --mim_option="B"  --metal_level=6	--run_name="DRC-foundry-Option-4"
-
-.ONESHELL:
-test-DRC-Option-A:
-	@cd $(Testing_DIR)
-	@echo "========== DRC-Regression Option-A =========="
-	@python3 run_regression.py 														\
-		--path=testcases/0.0.DM000013_13_1P6M_11kA_MIMA_Gold_Bump.gds.gz			\
-		--metal_top="30K" --mim_option="A"  --metal_level=3	--run_name="DRC-Option-A"
-
-.ONESHELL:
-test-DRC-Option-B:
-	@cd $(Testing_DIR)
-	@echo "========== DRC-Regression Option-B =========="
-	@python3 run_regression.py 														\
-		--path=testcases/0.0.DM000013_13_1P6M_11kA_MIMA_Gold_Bump.gds.gz			\
-		--metal_top="11K" --mim_option="B"  --metal_level=4	--run_name="DRC-Option-B"
-
-.ONESHELL:
-test-DRC-Option-C:
-	@cd $(Testing_DIR)
-	@echo "========== DRC-Regression Option-C =========="
-	@python3 run_regression.py 														\
-		--path=testcases/0.0.DM000013_13_1P6M_11kA_MIMA_Gold_Bump.gds.gz			\
-		--path=testcases/Manual_testcases.gds						 				\
-		--path=testcases/density_testcases/Mn_4_fail.gds				 			\
-		--path=testcases/density_testcases/Mn_4_pass.gds				 			\
-		--path=testcases/density_testcases/MT30_7_fail.gds			 				\
-		--path=testcases/density_testcases/MT30_7_pass.gds			 				\
-		--path=testcases/density_testcases/MT_3_fail.gds				 			\
-		--path=testcases/density_testcases/MT_3_pass.gds				 			\
-		--path=testcases/density_testcases/PL_8_fail.gds				 			\
-		--path=testcases/density_testcases/PL_8_pass.gds				 			\
-		--metal_top="9K" --mim_option="B"  --metal_level=5	--run_name="DRC-Option-C"
+test-DRC-% : print_klayout_version 
+	@python3 run_regression.py --table=$*
+	@echo "========== DRC-Regression is done =========="
 
 #=================================
 # -------- test-DRC-switch -------
@@ -182,10 +123,5 @@ help:
 	@echo "... test-DRC-gf180mcu_fd_sc_mcu7t5v0		(To run standard cells 7 tracks DRC regression    )"
 	@echo "... test-DRC-gf180mcu_fd_sc_mcu9t5v0		(To run standard cells 9 tracks DRC regression    )"
 	@echo "... test-DRC-main              			(To run main DRC full regression                  )"
-	@echo "... test-DRC-foundry-Option-1  			(To run main DRC regression using foundry-Option-1)"
-	@echo "... test-DRC-foundry-Option-2  			(To run main DRC regression using foundry-Option-2)"
-	@echo "... test-DRC-foundry-Option-3  			(To run main DRC regression using foundry-Option-3)"
-	@echo "... test-DRC-foundry-Option-4  			(To run main DRC regression using foundry-Option-4)"
-	@echo "... test-DRC-Option-A          			(To run main DRC regression using Option-A        )"
-	@echo "... test-DRC-Option-B          			(To run main DRC regression using Option-B        )"
-	@echo "... test-DRC-Option-C          			(To run main DRC regression using Option-C        )"
+	@echo "... test-DRC-[table_name]  			    (To run main DRC regression on specific table     )"
+
