@@ -69,6 +69,12 @@ def darw_polygons(polygon_data, cell, lay_num, dt, path_width):
             points = [(float(p.split(",")[0]), float(p.split(",")[1])) for p in poly.split(";")]
             print("           All points : " , points)
             cell.add(gdstk.FlexPath(points, path_width, layer=lay_num, datatype=dt))
+            
+    elif tag == "edge":
+        for poly in polygons:
+            points = [(float(p.split(",")[0]), float(p.split(",")[1])) for p in poly.split(";")]
+            print("           All points : " , points)
+            cell.add(gdstk.FlexPath(points, path_width, layer=lay_num, datatype=dt))
     else:
         print(f"## Error unknown type: {tag} ignored")
 
