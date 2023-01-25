@@ -28,4 +28,8 @@ dnwell_layer  : LayerSpec = (12 , 0 )
 lvpwell_layer : LayerSpec = (204, 0 )
 dualgate_layer: LayerSpec = (55 , 0 )
 v5_xtor_layer : LayerSpec = (112, 1 )
+m1_layer : LayerSpec = (34 , 0 )
+m2_layer : LayerSpec = (36 , 0 )
+m1_lbl  : LayerSpec = (34 , 10)
+via1_layer : LayerSpec =(35 , 0 )
 
