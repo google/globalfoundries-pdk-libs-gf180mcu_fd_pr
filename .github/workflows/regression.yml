@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: regression testing
+name: Ngspice regression
 
 # Prevent keeping resources busy when a branch/PR is updated
 # https://docs.github.com/en/actions/using-jobs/using-concurrency
@@ -28,6 +28,8 @@ on:
 jobs:
   regression:
     runs-on: ubuntu-latest  
+    strategy:
+      fail-fast: false
     name: ngspice-regression
 
     steps:
