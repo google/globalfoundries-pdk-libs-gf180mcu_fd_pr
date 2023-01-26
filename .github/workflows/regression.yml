@@ -38,5 +38,4 @@ jobs:
           submodules: 'recursive'
       - name: ngspice-regression
         run: |
-          cd models/ngspice/testing/
           make ngspice-regression                 
