@@ -104,7 +104,7 @@ test-DRC-switch: print_klayout_version
 .ONESHELL:
 clean:
 	@echo "==== Cleaning old runs ===="
-	@cd $(Testing_DIR)/ && rm -rf run_20* *report* markers.drc regression.drc merged_* sc pattern.csv database.lyrdb
+	@cd $(Testing_DIR)/ && rm -rf unit_tests_*
 	@echo "==== Cleaning all runs is done ===="
 
 #==========================
