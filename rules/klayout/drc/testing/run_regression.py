@@ -204,26 +204,26 @@ def run_test_case(
 
     # Creating run folder structure
     pattern_clean = ".".join(os.path.basename(layout_path).split(".")[:-1])
-    output_loc = f"{run_dir}/{test_table}_data"
+    output_loc = f"{run_dir}/{test_table}/{test_rule}_data"
     pattern_log = f"{output_loc}/{pattern_clean}_drc.log"
 
     # command to run drc
     call_str = f"python3 {drc_dir}/run_drc.py --path={layout_path} {switches} --table={test_table} --run_dir={output_loc} --run_mode=flat --thr=1  > {pattern_log} 2>&1"
 
-    # Checking if run is already done before
-    if os.path.exists(output_loc) and os.path.isdir(output_loc):
-        pass
-    else:
-        os.makedirs(output_loc, exist_ok=True)
-        # Starting klayout run
-        try:
-            check_call(call_str, shell=True)
-        except Exception as e:
-            pattern_results = glob.glob(os.path.join(output_loc, f"{pattern_clean}*.lyrdb"))
-            if len(pattern_results) < 1:
-                logging.error("%s generated an exception: %s" % (pattern_clean, e))
-                traceback.print_exc()
-                raise
+    # # Checking if run is already done before
+    # if os.path.exists(output_loc) and os.path.isdir(output_loc):
+    #     pass
+    # else:
+    os.makedirs(output_loc, exist_ok=True)
+    # Starting klayout run
+    try:
+        check_call(call_str, shell=True)
+    except Exception as e:
+        pattern_results = glob.glob(os.path.join(output_loc, f"{pattern_clean}*.lyrdb"))
+        if len(pattern_results) < 1:
+            logging.error("%s generated an exception: %s" % (pattern_clean, e))
+            traceback.print_exc()
+            raise
 
     # Checking if run is completed or failed
     pattern_results = glob.glob(os.path.join(output_loc, f"{pattern_clean}*.lyrdb"))
@@ -243,7 +243,7 @@ def run_test_case(
 
             if os.path.exists(final_report):
                 pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count= parse_results_db(test_rule, final_report)
-
+            
                 return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
             else:
 
@@ -276,7 +276,7 @@ def run_all_test_cases(tc_df, run_dir, thrCount):
 
     results = []
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=thrCount) as executor:
         future_to_run_id = dict()
         for i, row in tc_df.iterrows():
             future_to_run_id[
@@ -798,7 +798,7 @@ def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
 
     ## Get tc_df with the correct rule deck per rule.
     tc_df = tc_df.merge(rules_df, how="left", on="rule_name")
-    tc_df["run_id"] = tc_df.groupby(['test_path']).ngroup()
+    tc_df["run_id"] = list(range(len(tc_df)))
     tc_df.drop_duplicates(inplace=True)
     print(tc_df)
 
@@ -817,17 +817,9 @@ def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
         os.path.join(output_path, "all_test_cases_results.csv"), index=False
     )
 
-    # Generating merged testcase for violated rules
-    
-    exit ()
-
-    ## Analyze regression run and generate a report
-    regr_df = analyze_regression_run(cov_df, all_tc_df, output_path)
-    print(regr_df)
-
     ## Check if there any rules that generated false positive or false negative
     failing_results = all_tc_df[
-        ~all_tc_df["run_status"].isin(["true_positive", "true_negative"])
+        ~all_tc_df["run_status"].isin(["Passed_rule", "Not_tested"])
     ]
     print(failing_results)
     logging.info("## Failing testcases : {}".format(len(failing_results)))
