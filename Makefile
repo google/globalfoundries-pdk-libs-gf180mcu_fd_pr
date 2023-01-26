@@ -54,9 +54,9 @@ test-LVS-switch: | $(CONDA_ENV_PYTHON)
 ## ngspice Regression section
 ################################################################################
 ngspice-regression: | $(CONDA_ENV_PYTHON)
-	@$(IN_CONDA_ENV) ls
-	@$(IN_CONDA_ENV) pwd
-	@$(IN_CONDA_ENV) ngspice -v
+	@$(IN_CONDA_ENV) cd models/ngspice/testing/
+	@$(IN_CONDA_ENV) make all
+
 	
 
 
