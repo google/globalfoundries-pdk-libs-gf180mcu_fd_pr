@@ -133,16 +133,15 @@ def parse_results_db(test_rule, results_database):
     myroot = mytree.getroot()
     # Initial values for counter
     pass_patterns = 0
-    fail_patterns = 0    
+    fail_patterns = 0
     falsePos = 0
     falseNeg = 0
-
 
     for z in myroot[7]:
         if f"'{test_rule}_pass_patterns'" == f"{z[1].text}":
             pass_patterns += 1
         if f"'{test_rule}_fail_patterns'" == f"{z[1].text}":
-            fail_patterns += 1        
+            fail_patterns += 1
         if f"'{test_rule}_false_positive'" == f"{z[1].text}":
             falsePos += 1
         if f"'{test_rule}_false_negative'" == f"{z[1].text}":
@@ -183,7 +182,7 @@ def run_test_case(
     """
 
     # Initial value for counters
-    falsePos_count = 0 
+    falsePos_count = 0
     falseNeg_count = 0
     pass_patterns_count = 0
     fail_patterns_count = 0
@@ -210,12 +209,8 @@ def run_test_case(
     # command to run drc
     call_str = f"python3 {drc_dir}/run_drc.py --path={layout_path} {switches} --table={test_table} --run_dir={output_loc} --run_mode=flat --thr=1  > {pattern_log} 2>&1"
 
-    # # Checking if run is already done before
-    # if os.path.exists(output_loc) and os.path.isdir(output_loc):
-    #     pass
-    # else:
-    os.makedirs(output_loc, exist_ok=True)
     # Starting klayout run
+    os.makedirs(output_loc, exist_ok=True)
     try:
         check_call(call_str, shell=True)
     except Exception as e:
@@ -227,33 +222,34 @@ def run_test_case(
 
     # Checking if run is completed or failed
     pattern_results = glob.glob(os.path.join(output_loc, f"{pattern_clean}*.lyrdb"))
-    
+
     if len(pattern_results) > 0:
-        # db to gds conversion 
-        marker_output,runset_analysis = convert_results_db_to_gds(pattern_results[0])
+        # db to gds conversion
+        marker_output, runset_analysis = convert_results_db_to_gds(pattern_results[0])
 
         # Generating merged testcase for violated rules
         merged_output = generate_merged_testcase(layout_path, marker_output)
 
-        # Generating final db file 
+        # Generating final db file
         if os.path.exists(merged_output):
             final_report = f'{merged_output.split(".")[0]}_final.lyrdb'
             call_str = f"klayout -b -r {runset_analysis} -rd input={merged_output} -rd report={final_report}"
-            check_call(call_str,shell=True)
+            check_call(call_str, shell=True)
 
             if os.path.exists(final_report):
-                pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count= parse_results_db(test_rule, final_report)
-            
+                pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count = parse_results_db(test_rule, final_report)
+
                 return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
             else:
 
                 return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
         else:
-            
+
             return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
 
     else:
         return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
+
 
 def run_all_test_cases(tc_df, run_dir, thrCount):
     """
@@ -296,13 +292,13 @@ def run_all_test_cases(tc_df, run_dir, thrCount):
             run_id = future_to_run_id[future]
             try:
                 pass_patterns, fail_patterns, false_positive, false_negative = future.result()
-                if pass_patterns+ fail_patterns > 0:
+                if pass_patterns + fail_patterns > 0:
                     if false_positive + false_negative == 0:
                         status_string = "Passed_rule"
                     else:
                         status_string = "Failed_rule"
                 else:
-                        status_string = "Not_tested"
+                    status_string = "Not_tested"
             except Exception as exc:
                 logging.error("%d generated an exception: %s" % (run_id, exc))
                 traceback.print_exc()
@@ -310,8 +306,8 @@ def run_all_test_cases(tc_df, run_dir, thrCount):
 
             info = dict()
             info["run_id"] = run_id
-            info["pass_patterns"]  = pass_patterns
-            info["fail_patterns"]  = fail_patterns
+            info["pass_patterns"] = pass_patterns
+            info["fail_patterns"] = fail_patterns
             info["false_positive"] = false_positive
             info["false_negative"] = false_negative
             info["run_status"] = status_string
@@ -390,53 +386,6 @@ def analyze_test_patterns_coverage(rules_df, tc_df, output_path):
     return cov_df
 
 
-def analyze_regression_run(tc_cv_df, all_tc_df, output_path):
-    """
-    This function analyze the regression run post running and generate a report with all the required details.
-
-    Parameters
-    ----------
-    tc_cv_df : pd.DataFrame
-        DataFrame that holds the test cases cover report.
-    all_tc_df : pd.DataFrame
-        DataFrame that holds all the test cases and the run results associated.
-    output_path : string or Path
-        Path of the run location to store the output analysis file.
-
-    Returns
-    -------
-    pd.DataFrame
-        A DataFrame with analysis of the rule testing coverage.
-    """
-    cov_rows_df = (
-        all_tc_df[["table_name", "rule_name", "test_type", "test_name", "run_status"]]
-        .groupby(["table_name", "rule_name", "test_type", "run_status"])
-        .count()
-        .reset_index(drop=False)
-        .rename(columns={"test_name": "count"})
-    )
-
-    cov_df = cov_rows_df.pivot(
-        index=["table_name", "rule_name"],
-        columns=["test_type", "run_status"],
-        values=["count"],
-    ).reset_index(drop=False)
-    cov_df.columns = ["_".join(pair) for pair in cov_df.columns]
-    cov_df.rename(
-        columns={"table_name__": "table_name", "rule_name__": "rule_name"}, inplace=True
-    )
-
-    cov_df = cov_df.merge(tc_cv_df, on=["rule_name", "table_name"], how="outer")
-    all_count_columns = [c for c in cov_df.columns if "count" in c]
-
-    cov_df[all_count_columns] = cov_df[all_count_columns].fillna(0).astype(int)
-
-    cov_df["runset"].fillna("", inplace=True)
-    cov_df.to_csv(os.path.join(output_path, "regression_run_analysis.csv"), index=False)
-
-    return cov_df
-
-
 def generate_merged_testcase(orignal_testcase, marker_testcase):
     """
     This function will merge orignal gds file with generated
@@ -446,14 +395,14 @@ def generate_merged_testcase(orignal_testcase, marker_testcase):
     ----------
     orignal_testcase : string or Path object
         Path string to the orignal testcase
-    
+
     marker_testcase : string or Path
         Path of the output marker gds file generated from db file.
 
     Returns
     -------
     merged_gds_path : string or Path
-        Path of the final merged gds file generated.    
+        Path of the final merged gds file generated.
     """
 
     new_lib = gdstk.Library()
@@ -461,7 +410,7 @@ def generate_merged_testcase(orignal_testcase, marker_testcase):
     lib_org = gdstk.read_gds(orignal_testcase)
     lib_marker = gdstk.read_gds(marker_testcase)
 
-    #Getting flattened top cells
+    # Getting flattened top cells
     top_cell_org = lib_org.top_level()[0].flatten(apply_repetitions=True)
     top_cell_marker = lib_marker.top_level()[0].flatten(apply_repetitions=True)
     marker_polygons = top_cell_marker.get_polygons(apply_repetitions=True, include_paths=True, depth=None)
@@ -472,7 +421,7 @@ def generate_merged_testcase(orignal_testcase, marker_testcase):
 
     # Adding flattened merged cell
     new_lib.add(top_cell_org.flatten(apply_repetitions=True))
-    
+
     # Writing final merged gds file
     merged_gds_path = f'{marker_testcase.replace(".gds", "")}_merged.gds'
     new_lib.write_gds(merged_gds_path)
@@ -496,7 +445,7 @@ def darw_polygons(polygon_data, cell, lay_num, lay_dt, path_width):
         Data type of layer used to draw violated polygons
     path_width : float
         Width  will used to draw edges
-        
+
     Returns
     -------
     None
@@ -527,7 +476,7 @@ def darw_polygons(polygon_data, cell, lay_num, lay_dt, path_width):
             points = [(float(p.split(",")[0]), float(p.split(",")[1])) for p in poly.split(";")]
             print("           All points : " , points)
             cell.add(gdstk.FlexPath(points, path_width, layer=lay_num, datatype=lay_dt))
-            
+
     elif tag == "edge":
         for poly in polygons:
             points = [(float(p.split(",")[0]), float(p.split(",")[1])) for p in poly.split(";")]
@@ -540,19 +489,19 @@ def darw_polygons(polygon_data, cell, lay_num, lay_dt, path_width):
 def convert_results_db_to_gds(results_database: str):
     """
     This function will parse Klayout database for analysis.
-    It converts the lyrdb klayout database file to GDSII file 
+    It converts the lyrdb klayout database file to GDSII file
 
     Parameters
     ----------
     results_database : string or Path object
         Path string to the results file
-    
+
     Returns
     -------
     output_gds_path : string or Path
         Path of the output marker gds file generated from db file.
     output_runset_path : string or Path
-        Path of the output drc runset used for analysis.               
+        Path of the output drc runset used for analysis.
     """
 
     # layer used as a marker
@@ -573,12 +522,12 @@ def convert_results_db_to_gds(results_database: str):
     rule_data_type_map = list()
     analysis_rules = []
 
-    for ev, elem in tqdm(ET.iterparse(results_database, events=('start','end'))):
-        
+    for ev, elem in tqdm(ET.iterparse(results_database, events=('start', 'end'))):
+
         if elem.tag != "item" and not in_item:
             elem.clear()
             continue
-        
+
         if elem.tag != "item" and in_item:
             continue
 
@@ -592,7 +541,7 @@ def convert_results_db_to_gds(results_database: str):
         if len(values) > 0:
             polygons = values[0].findall("value")
         else:
-            polygons = [] 
+            polygons = []
 
         if cell_name == "":
             all_cells = elem.findall("cell")
@@ -612,17 +561,17 @@ def convert_results_db_to_gds(results_database: str):
             if rule_name is None:
                 elem.clear()
                 continue
-            
+
         else:
             elem.clear()
             continue
 
-        if not rule_name in rule_data_type_map:
+        if rule_name not in rule_data_type_map:
             rule_data_type_map.append(rule_name)
-        
+
         ## Drawing polygons here.
         rule_lay_dt = rule_data_type_map.index(rule_name) + 1
-        if not cell is None:
+        if cell is not None:
             for p in polygons:
                 polygons = darw_polygons(p.text, cell, rule_lay_num, rule_lay_dt, path_width)
                 break
@@ -630,7 +579,7 @@ def convert_results_db_to_gds(results_database: str):
         ## Clearing memeory
         in_item = False
         elem.clear()
-        
+
         # Writing final marker gds file
         output_gds_path = f'{results_database.replace(".lyrdb", "")}_markers.gds'
         lib.write_gds(output_gds_path)
@@ -640,17 +589,17 @@ def convert_results_db_to_gds(results_database: str):
 
         runset_analysis_setup = f'''
         source($input)
-        report("DRC analysis run report at", $report)                
+        report("DRC analysis run report at", $report)
         pass_marker = {pass_marker}
         fail_marker = {fail_marker}
         fail_marker2 = {fail_marker2}
         text_marker = {text_marker}
         '''
 
-        pass_patterns_rule =f'''
+        pass_patterns_rule = f'''
         pass_marker.interacting( text_marker.texts("{rule_name}") ).output("{rule_name}_pass_patterns", "{rule_name}_pass_patterns polygons")
         '''
-        fail_patterns_rule =f'''
+        fail_patterns_rule = f'''
         fail_marker2.interacting(fail_marker.interacting(text_marker.texts("{rule_name}")) ).or( fail_marker.interacting(text_marker.texts("{rule_name}")).not_interacting(fail_marker2) ).output("{rule_name}_fail_patterns", "{rule_name}_fail_patterns polygons")
         '''
         false_pos_rule = f'''
@@ -659,7 +608,7 @@ def convert_results_db_to_gds(results_database: str):
         false_neg_rule = f'''
         ((fail_marker2.interacting(fail_marker.interacting(text_marker.texts("{rule_name}")))).or((fail_marker.interacting(input(11, 222).texts("{rule_name}")).not_interacting(fail_marker2)))).not_interacting(input({rule_lay_num}, {rule_lay_dt})).output("{rule_name}_false_negative", "{rule_name}_false_negative occurred")
         '''
-        
+
         # Adding list of analysis rules
         if not any(rule_name in rule_txt for rule_txt in analysis_rules):
             analysis_rules.append(pass_patterns_rule)
@@ -668,7 +617,7 @@ def convert_results_db_to_gds(results_database: str):
             analysis_rules.append(false_neg_rule)
 
     with open(output_runset_path, "a+") as runset_analysis:
-        # analysis_rules = list(dict.fromkeys(analysis_rules))        
+        # analysis_rules = list(dict.fromkeys(analysis_rules))
         runset_analysis.write(runset_analysis_setup)
         runset_analysis.write("".join(analysis_rules))
 
@@ -699,9 +648,9 @@ def get_unit_tests_dataframe(gds_files):
 
     # Getting all rules names from testcases
     for gds_file in gds_files:
-        library = gdstk.read_gds(gds_file) 
-        top_cells = library.top_level() #Get top cells
-        for cell in top_cells: 
+        library = gdstk.read_gds(gds_file)
+        top_cells = library.top_level()  # Get top cells
+        for cell in top_cells:
             flatten_cell = cell.flatten()
             # Get all text labels for each cell
             labels = flatten_cell.get_labels(apply_repetitions=True, depth=None, layer=lay_num, texttype=lay_dt)
@@ -712,7 +661,7 @@ def get_unit_tests_dataframe(gds_files):
                     rules.append(rule)
                     test_paths.append(gds_file)
 
-    tc_df = pd.DataFrame({"test_path":test_paths, "rule_name": rules})
+    tc_df = pd.DataFrame({"test_path": test_paths, "rule_name": rules})
     tc_df["table_name"] = tc_df["test_path"].apply(
         lambda x: x.name.replace(".gds", "")
     )
@@ -808,7 +757,7 @@ def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
     cov_df = analyze_test_patterns_coverage(rules_df, tc_df, output_path)
     cov_df.drop_duplicates(inplace=True)
     print(cov_df)
-    
+
     ## Run all test cases
     all_tc_df = run_all_test_cases(tc_df, output_path, cpu_count)
     all_tc_df.drop_duplicates(inplace=True)
