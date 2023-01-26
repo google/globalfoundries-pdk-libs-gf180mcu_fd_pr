@@ -45,8 +45,14 @@ jobs:
           submodules: 'recursive'
       - name: Testing ${{ matrix.part }} for ${{ matrix.test }}
         run: |
-          make test-"$(python -c 'print("${{ matrix.part }}".upper())')"-${{ matrix.test }}
+          make test-"$(python -c 'print("${{ matrix.part }}".upper())')"-${{ matrix.test }}     
+    name: ngspice-regression
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
       - name: ngspice-regression
         run: |
           cd models/ngspice/testing/
-          make ngspice-regression          
+          make ngspice-regression                 
