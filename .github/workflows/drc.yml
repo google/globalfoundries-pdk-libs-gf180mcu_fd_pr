@@ -27,14 +27,22 @@ on:
 
 jobs:
   regression:
-    runs-on: ubuntu-latest  
-    name: ngspice-regression
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { tool: klayout, part: drc, test: main }
+          - { tool: klayout, part: drc, test: switch }
+          - { tool: klayout, part: lvs, test: main }
+          - { tool: klayout, part: lvs, test: switch }
+
+    name: ${{ matrix.part }} | ${{ matrix.test }}
 
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - name: ngspice-regression
+      - name: Testing ${{ matrix.part }} for ${{ matrix.test }}
         run: |
-          cd models/ngspice/testing/
-          make ngspice-regression                 
+          make test-"$(python -c 'print("${{ matrix.part }}".upper())')"-${{ matrix.test }}                     
