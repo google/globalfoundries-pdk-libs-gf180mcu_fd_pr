@@ -8,4 +8,4 @@ dependencies:
   - python
   - pip
   - pip:
-    - -r actions_req/requirements.txt
+    - -r requirements.txt
