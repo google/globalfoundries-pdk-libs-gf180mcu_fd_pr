@@ -29,5 +29,4 @@ jobs:
           submodules: 'recursive'
       - name: Lint with flake8
         run: |
-          cd actions_req/
           make lint

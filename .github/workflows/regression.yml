@@ -47,3 +47,4 @@ jobs:
         run: |
           cd actions_req/
           make test-"$(python -c 'print("${{ matrix.part }}".upper())')"-${{ matrix.test }}
+          make ngspice-regression
