@@ -46,7 +46,7 @@ jobs:
       - name: Testing ${{ matrix.part }} for ${{ matrix.test }}
         run: |
           make test-"$(python -c 'print("${{ matrix.part }}".upper())')"-${{ matrix.test }}
-          make ngspice-regression
       - name: ngspice-regression
         run: |
+          cd models/ngspice/testing/
           make ngspice-regression          
