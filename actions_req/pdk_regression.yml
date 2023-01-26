@@ -4,7 +4,8 @@ channels:
   - defaults
 dependencies:
   - klayout
+  - ngspice
   - python
   - pip
   - pip:
-    - -r requirements.txt
+    - -r actions_req/requirements.txt

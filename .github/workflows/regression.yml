@@ -45,4 +45,5 @@ jobs:
           submodules: 'recursive'
       - name: Testing ${{ matrix.part }} for ${{ matrix.test }}
         run: |
+          cd actions_req/
           make test-"$(python -c 'print("${{ matrix.part }}".upper())')"-${{ matrix.test }}

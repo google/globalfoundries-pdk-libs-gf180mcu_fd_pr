@@ -17,12 +17,12 @@ TOP_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 
 # A pip `requirements.txt` file.
 # https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
-REQUIREMENTS_FILE := requirements.txt
+REQUIREMENTS_FILE := actions_req/requirements.txt
 
 # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html
-ENVIRONMENT_FILE := pdk_regression.yml
+ENVIRONMENT_FILE := actions_req/pdk_regression.yml
 
-include third_party/make-env/conda.mk
+include actions_req/third_party/make-env/conda.mk
 
 # Lint python code
 lint: | $(CONDA_ENV_PYTHON)
@@ -49,3 +49,18 @@ test-LVS-main: | $(CONDA_ENV_PYTHON)
 # DRC main testing
 test-LVS-switch: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) klayout -v
+
+################################################################################
+## ngspice Regression section
+################################################################################
+ngspice-regression: | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) ls
+	@$(IN_CONDA_ENV) pwd
+	@$(IN_CONDA_ENV) ngspice -v
+	
+
+
+
+
+
+	
