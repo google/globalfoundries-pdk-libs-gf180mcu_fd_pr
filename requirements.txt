@@ -3,9 +3,5 @@ pandas
 numpy
 logging
 glob
-subprocess
-shutil
-concurrent
-os 
 docopt
 jinja2
