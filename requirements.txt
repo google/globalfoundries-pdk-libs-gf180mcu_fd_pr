@@ -4,3 +4,4 @@ numpy
 docopt
 jinja2
 openpyxl
+sympy

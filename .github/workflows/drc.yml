@@ -32,12 +32,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { tool: klayout, part: drc, test: main }
-          - { tool: klayout, part: drc, test: switch }
-          - { tool: klayout, part: lvs, test: main }
-          - { tool: klayout, part: lvs, test: switch }
-
-    name: ${{ matrix.part }} | ${{ matrix.test }}
+          - { pdk: drc, test: main }
+          - { pdk: drc, test: switch }
+          - { pdk: drc, test: gf180mcu_fd_io }
+          - { pdk: drc, test: gf180mcu_fd_ip_sram }
+          - { pdk: drc, test: gf180mcu_fd_sc_mcu7t5v0 }
+          - { pdk: drc, test: gf180mcu_fd_sc_mcu9t5v0 }
+          - { pdk: lvs, test: main }
+          - { pdk: lvs, test: switch }
+          - { pdk: lvs, test: gf180mcu_fd_sc_mcu7t5v0}
+          - { pdk: lvs, test: gf180mcu_fd_sc_mcu9t5v0 }
+    name: ${{ matrix.pdk }} | ${{ matrix.test }}
 
     steps:
       - uses: actions/checkout@v3
