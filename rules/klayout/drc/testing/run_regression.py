@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Run GlobalFoundries 180nm BCDLite DRC Unit Regression.
+Run GlobalFoundries 180nm MCU DRC Unit Regression.
 
 Usage:
     run_regression.py (--help| -h)
