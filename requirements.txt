@@ -1,7 +1,6 @@
 flake8
 pandas
 numpy
-logging
 glob
 docopt
 jinja2
