@@ -1,0 +1,10 @@
+name: pdk_regression
+channels:
+  - litex-hub
+  - defaults
+dependencies:
+  - klayout
+  - python
+  - pip
+  - pip:
+    - -r requirements.txt
