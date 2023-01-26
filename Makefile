@@ -55,9 +55,9 @@ test-LVS-switch: | $(CONDA_ENV_PYTHON)
 ################################################################################
 ngspice-regression: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) cd models/ngspice/testing/
-	@$(IN_CONDA_ENV) ls
-	@$(IN_CONDA_ENV) cat Makefile
-	@$(IN_CONDA_ENV) make all
+	@$(IN_CONDA_ENV) cd models/ngspice/testing/ && ls
+	@$(IN_CONDA_ENV) cd models/ngspice/testing/ && cat Makefile
+	@$(IN_CONDA_ENV) cd models/ngspice/testing/ && make all
 
 	
 
