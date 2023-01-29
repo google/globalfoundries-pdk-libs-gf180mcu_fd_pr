@@ -59,9 +59,6 @@ class nfet(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("None", "None")
         self.Type_handle.add_choice("Bulk Tie", "Bulk Tie")
         self.Type_handle.add_choice("Guard Ring", "Guard Ring")
-        self.Type_handle.add_choice("top", "top")
-        self.Type_handle.add_choice("bottom", "bottom")
-        self.Type_handle.add_choice("alternating", "alternating")
 
         self.param("w", self.TypeDouble, "Width", default=fet_3p3_w, unit="um")
         self.param("l", self.TypeDouble, "Length", default=fet_3p3_l, unit="um")

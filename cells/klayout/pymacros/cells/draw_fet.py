@@ -25,7 +25,7 @@ from .via_generator import *
 from .layers_def import *
 
 
-@gf.cell
+# @gf.cell
 def draw_nfet(
     layout ,
     l: float = 0.28,
@@ -83,6 +83,12 @@ def draw_nfet(
     con_comp_enc = 0.07
     con_pl_enc = 0.07
     con_m1_enc = 0.06
+    psdm_enc_dn = 0.66
+    pcmpgr_enc_dn = 2.5
+    dg_enc_cmp = 0.24
+    dg_enc_poly = 0.4
+    lvpwell_enc_ncmp = 0.43
+    lvpwell_enc_pcmp = 0.12
 
     sd_l_con = (
         ((sd_con_col) * con_size)
@@ -212,7 +218,7 @@ def draw_nfet(
             columns=1,
             spacing=(0, pc_size[1] + w + 2 * end_cap),
         )
-        pc.move((sd_l - ((pc_x - l) / 2), -pc_size[1] - end_cap + mv))
+        pc.move((poly.xmin - ((pc_x - l) / 2), -pc_size[1] - end_cap + mv))
 
     else:
 
@@ -690,7 +696,7 @@ def draw_nfet(
         nplus.xmin = sd_diff.xmin - comp_np_enc
         nplus.ymin = sd_diff_intr.ymin - gate_np_enc
 
-    elif bulk == "bulk tie":
+    elif bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
             gf.components.rectangle(
                 size=(sd_l + con_sp, sd_diff.size[1]), layer=comp_layer
@@ -728,7 +734,7 @@ def draw_nfet(
         )
         c_inst.add_ref(bulk_con)
 
-    elif bulk == "Gaurd Ring":
+    elif bulk == "Guard Ring":
 
         nsdm = c_inst.add_ref(
             gf.components.rectangle(
@@ -894,8 +900,204 @@ def draw_nfet(
             )
         )
 
-    if bulk != "Gaurd Ring":
+        inst_size = psdm.size
+        inst_xmin = psdm.xmin
+        inst_ymin = psdm.ymin
+
+        if volt == "5V" or volt == "6V" :
+            dg = c.add_ref(gf.components.rectangle(size=(B.size[0] + (2*dg_enc_cmp),B.size[1]+(2*dg_enc_cmp)),layer=dualgate_layer))
+            dg.xmin = B.xmin - dg_enc_cmp
+            dg.ymin = B.ymin - dg_enc_cmp
+
+            if volt == "5V" :
+                v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
+        
+    if bulk != "Guard Ring" : 
         c.add_ref(c_inst)
+
+        inst_size = c_inst.size
+        inst_xmin = c_inst.xmin
+        inst_ymin = c_inst.ymin
+
+        if volt == "5V" or volt == "6V" :
+            dg = c.add_ref(gf.components.rectangle(size=(c_inst.size[0] + (2*dg_enc_cmp),c_inst.size[1]+(2*dg_enc_poly)),layer=dualgate_layer))
+            dg.xmin = c_inst.xmin - dg_enc_cmp
+            dg.ymin = c_inst.ymin - dg_enc_poly
+
+            if volt == "5V" :
+                v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
+    
+
+    if deepnwell == 1 :
+        dn_rect = c.add_ref(
+            gf.components.rectangle(size=(inst_size[0]+(2*psdm_enc_dn),inst_size[1]+(2*psdm_enc_dn)),layer=dnwell_layer)
+        )
+
+        dn_rect.xmin = inst_xmin - psdm_enc_dn
+        dn_rect.ymin = inst_ymin - psdm_enc_dn
+
+        if pcmpgr == 1 :
+
+            c_temp_gr = gf.Component("temp_store guard ring")
+            rect_pcmpgr_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (dn_rect.xmax - dn_rect.xmin) + 2 * pcmpgr_enc_dn,
+                        (dn_rect.ymax - dn_rect.ymin) + 2 * pcmpgr_enc_dn,
+                    ),
+                    layer=comp_layer,
+                )
+            )
+            rect_pcmpgr_in.move(
+                (dn_rect.xmin - pcmpgr_enc_dn, dn_rect.ymin - pcmpgr_enc_dn)
+            )
+            rect_pcmpgr_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * grw,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * grw,
+                    ),
+                    layer=comp_layer,
+                )
+            )
+            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+            B = c.add_ref(
+                gf.geometry.boolean(
+                    A=rect_pcmpgr_out,
+                    B=rect_pcmpgr_in,
+                    operation="A-B",
+                    layer=comp_layer,
+                )
+            )
+
+            psdm_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * comp_pp_enc,
+                    ),
+                    layer=pplus_layer,
+                )
+            )
+            psdm_in.move(
+                (rect_pcmpgr_in.xmin + comp_pp_enc, rect_pcmpgr_in.ymin + comp_pp_enc)
+            )
+            psdm_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin)
+                        + 2 * comp_pp_enc,
+                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin)
+                        + 2 * comp_pp_enc,
+                    ),
+                    layer=pplus_layer,
+                )
+            )
+            psdm_out.move(
+                (
+                    rect_pcmpgr_out.xmin - comp_pp_enc,
+                    rect_pcmpgr_out.ymin - comp_pp_enc,
+                )
+            )
+            psdm = c.add_ref(
+                gf.geometry.boolean(
+                    A=psdm_out, B=psdm_in, operation="A-B", layer=pplus_layer
+                )
+            )
+
+            # generating contacts
+
+            ring_con_bot = c.add_ref(
+                via_generator(
+                    x_range=(
+                        rect_pcmpgr_in.xmin + con_size,
+                        rect_pcmpgr_in.xmax - con_size,
+                    ),
+                    y_range=(rect_pcmpgr_out.ymin, rect_pcmpgr_in.ymin),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=contact_layer,
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )
+
+            ring_con_up = c.add_ref(
+                via_generator(
+                    x_range=(
+                        rect_pcmpgr_in.xmin + con_size,
+                        rect_pcmpgr_in.xmax - con_size,
+                    ),
+                    y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=contact_layer,
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )
+
+            ring_con_r = c.add_ref(
+                via_generator(
+                    x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
+                    y_range=(
+                        rect_pcmpgr_in.ymin + con_size,
+                        rect_pcmpgr_in.ymax - con_size,
+                    ),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=contact_layer,
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )
+
+            ring_con_l = c.add_ref(
+                via_generator(
+                    x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
+                    y_range=(
+                        rect_pcmpgr_in.ymin + con_size,
+                        rect_pcmpgr_in.ymax - con_size,
+                    ),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=contact_layer,
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )
+
+            comp_m1_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        rect_pcmpgr_in.size[0],rect_pcmpgr_in.size[1]
+                        # (l_d) + 2 * comp_spacing,
+                        # (c_inst.ymax - c_inst.ymin) + 2 * poly2_comp_spacing,
+                    ),
+                    layer=m1_layer,
+                )
+            )
+            # comp_m1_in.move((-comp_spacing, c_inst.ymin - poly2_comp_spacing))
+
+            comp_m1_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * grw,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * grw,
+                    ),
+                    layer=m1_layer,
+                )
+            )
+            comp_m1_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+            m1 = c.add_ref(
+                gf.geometry.boolean(
+                    A=rect_pcmpgr_out,
+                    B=rect_pcmpgr_in,
+                    operation="A-B",
+                    layer=m1_layer,
+                )
+            )
+        
 
     # creating layout and cell in klayout
     c.write_gds(f"nfet_temp.gds")
@@ -907,5 +1109,5 @@ def draw_nfet(
 
 
 if __name__ == "__main__":
-    c = draw_nfet(nf=3, con_bet_fin=0, bulk="None", interdig=1, patt="ABA")
+    c = draw_nfet(nf=3, con_bet_fin=0, bulk="Guard Ring")
     c.show()
