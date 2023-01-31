@@ -68,6 +68,9 @@ class gf180mcu(pya.Library):
         self.layout().register_pcell(
             "diode_nw2ps", diode_nw2ps()
         )  # diode_nw2ps_03v3   , diode_nw2ps_06v0
-
+        self.layout().register_pcell(
+            "diode_pw2dw", diode_pw2dw()
+        )  # diode_pw2dw_03v3 , diode_pw2dw_06v0
+        
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
