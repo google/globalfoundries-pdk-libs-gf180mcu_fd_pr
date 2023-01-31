@@ -28,6 +28,6 @@ def draw_bjt(layout, device_name):
     if os.path.exists(gds_file) and os.path.isfile(gds_file):
         layout.read(gds_file)
     else:
-        print (f"{gds_file} is not exist, please recheck")
+        print(f"{gds_file} is not exist, please recheck")
 
     return layout.cell(device_name)

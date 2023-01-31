@@ -97,7 +97,7 @@ class nfet(pya.PCellDeclarationHelper):
                 self.l = nfet_06v0_l
             if (self.w) < fet_5_6_w:
                 self.w = fet_5_6_w
-        
+
         if (self.ld) < fet_ld:
             self.ld = fet_ld
 

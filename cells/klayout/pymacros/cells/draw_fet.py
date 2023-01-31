@@ -93,9 +93,7 @@ def draw_nfet(
     lvpwell_enc_pcmp = 0.12
 
     sd_l_con = (
-        ((sd_con_col) * con_size)
-        + ((sd_con_col - 1) * con_sp)
-        + 2 * con_comp_enc
+        ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
     )
     sd_l = sd_l_con
 
@@ -109,9 +107,7 @@ def draw_nfet(
     if interdig == 1 and nf > 1 and nf != len(patt) and patt != "":
         nf = len(patt)
 
-    l_d = (
-        nf * l + (nf - 1) * inter_sd_l + 2 * (con_comp_enc)
-    )  #  diffution total length
+    l_d = nf * l + (nf - 1) * inter_sd_l + 2 * (con_comp_enc)  #  diffution total length
     rect_d_intr = gf.components.rectangle(size=(l_d, w), layer=comp_layer)
     sd_diff_intr = c_inst.add_ref(rect_d_intr)
 
@@ -133,9 +129,7 @@ def draw_nfet(
     )
 
     sd_diff.xmin = sd_diff_intr.xmin - cmpc_size[0]
-    sd_diff.ymin = (
-        sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
-    )
+    sd_diff.ymin = sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
 
     sd_con = via_stack(
         x_range=(sd_diff.xmin, sd_diff_intr.xmin),
@@ -182,9 +176,7 @@ def draw_nfet(
 
     c_pc = gf.Component("poly con")
 
-    rect_pc = c_pc.add_ref(
-        gf.components.rectangle(size=pc_size, layer=poly2_layer)
-    )
+    rect_pc = c_pc.add_ref(gf.components.rectangle(size=pc_size, layer=poly2_layer))
 
     poly_con = via_stack(
         x_range=(rect_pc.xmin, rect_pc.xmax),
@@ -197,9 +189,7 @@ def draw_nfet(
 
     if nf == 1:
         poly = c_inst.add_ref(
-            gf.components.rectangle(
-                size=(l, w + 2 * end_cap), layer=poly2_layer
-            )
+            gf.components.rectangle(size=(l, w + 2 * end_cap), layer=poly2_layer)
         )
         poly.xmin = sd_diff_intr.xmin + con_comp_enc
         poly.ymin = sd_diff_intr.ymin - end_cap
@@ -233,14 +223,7 @@ def draw_nfet(
                 w_p2 = w_p1
                 e_c = 0.2
             else:
-                w_p2 = (
-                    w_p1
-                    + con_pl_enc
-                    + con_size
-                    + con_pl_enc
-                    + poly2_spacing
-                    + 0.1
-                )
+                w_p2 = w_p1 + con_pl_enc + con_size + con_pl_enc + poly2_spacing + 0.1
                 e_c = 0
 
             if gate_con_pos == "bottom":
@@ -378,8 +361,7 @@ def draw_nfet(
                                             (
                                                 (
                                                     pc2.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - pc2.ymin
                                             ),
@@ -398,9 +380,7 @@ def draw_nfet(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
                                         m2_arru.ymin + i * (m2_y + m2_spacing),
-                                        m2_arru.ymin
-                                        + i * (m2_y + m2_spacing)
-                                        + m2_y,
+                                        m2_arru.ymin + i * (m2_y + m2_spacing) + m2_y,
                                     ),
                                     via_enclosure=via_enc,
                                     via_layer=via1_layer,
@@ -428,8 +408,7 @@ def draw_nfet(
                                             (
                                                 (
                                                     pc1.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - pc1.ymin
                                             ),
@@ -447,9 +426,7 @@ def draw_nfet(
                                 via1_dr = via_generator(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
-                                        m2_arrb.ymax
-                                        - i * (m2_spacing + m2_y)
-                                        - m2_y,
+                                        m2_arrb.ymax - i * (m2_spacing + m2_y) - m2_y,
                                         m2_arrb.ymax - i * (m2_spacing + m2_y),
                                     ),
                                     via_enclosure=via_enc,
@@ -477,18 +454,14 @@ def draw_nfet(
                                 m2_join_b = c_inst.add_ref(
                                     gf.components.rectangle(
                                         size=(
-                                            m2_y
-                                            + (i + 1) * (m3_spacing + m3_x),
+                                            m2_y + (i + 1) * (m3_spacing + m3_x),
                                             m2_y,
                                         ),
                                         layer=m2_layer,
                                     ).move(
                                         (
                                             m2_arrb.xmin
-                                            - (
-                                                m2_y
-                                                + (i + 1) * (m3_spacing + m3_x)
-                                            ),
+                                            - (m2_y + (i + 1) * (m3_spacing + m3_x)),
                                             m2_arrb.ymax
                                             - i * (m2_spacing + m2_y)
                                             - m2_y,
@@ -498,20 +471,15 @@ def draw_nfet(
                                 m2_join_u = c_inst.add_ref(
                                     gf.components.rectangle(
                                         size=(
-                                            m2_y
-                                            + (i + 1) * (m3_spacing + m3_x),
+                                            m2_y + (i + 1) * (m3_spacing + m3_x),
                                             m2_y,
                                         ),
                                         layer=m2_layer,
                                     ).move(
                                         (
                                             m2_arru.xmin
-                                            - (
-                                                m2_y
-                                                + (i + 1) * (m3_spacing + m3_x)
-                                            ),
-                                            m2_arru.ymin
-                                            + j * (m2_spacing + m2_y),
+                                            - (m2_y + (i + 1) * (m3_spacing + m3_x)),
+                                            m2_arru.ymin + j * (m2_spacing + m2_y),
                                         )
                                     )
                                 )
@@ -563,8 +531,7 @@ def draw_nfet(
                                             (
                                                 (
                                                     pc2.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - ((1 - j % 2) * pc1.ymin)
                                                 - (j % 2) * pc2.ymin
@@ -577,14 +544,7 @@ def draw_nfet(
                                     (
                                         (
                                             sd_l
-                                            - (
-                                                (
-                                                    poly_con.xmax
-                                                    - poly_con.xmin
-                                                    - l
-                                                )
-                                                / 2
-                                            )
+                                            - ((poly_con.xmax - poly_con.xmin - l) / 2)
                                             + j * (l + inter_sd_l)
                                         ),
                                         (1 - j % 2) * (pc1.ymin + 0.06)
@@ -595,9 +555,7 @@ def draw_nfet(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
                                         m2_arr.ymin + i * (m2_spacing + m2_y),
-                                        m2_arr.ymin
-                                        + i * (m2_spacing + m2_y)
-                                        + m2_y,
+                                        m2_arr.ymin + i * (m2_spacing + m2_y) + m2_y,
                                     ),
                                     via_enclosure=via_enc,
                                     via_layer=via1_layer,
@@ -635,8 +593,7 @@ def draw_nfet(
                                             (
                                                 (
                                                     pc1.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - (j % 2) * pc1.ymin
                                                 - (1 - j % 2) * pc2.ymin
@@ -649,14 +606,7 @@ def draw_nfet(
                                     (
                                         (
                                             sd_l
-                                            - (
-                                                (
-                                                    poly_con.xmax
-                                                    - poly_con.xmin
-                                                    - l
-                                                )
-                                                / 2
-                                            )
+                                            - ((poly_con.xmax - poly_con.xmin - l) / 2)
                                             + j * (l + inter_sd_l)
                                         ),
                                         -(m1.ymax - m1.ymin)
@@ -667,9 +617,7 @@ def draw_nfet(
                                 via1_dr = via_generator(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
-                                        m2_arr.ymax
-                                        - i * (m2_spacing + m2_y)
-                                        - m2_y,
+                                        m2_arr.ymax - i * (m2_spacing + m2_y) - m2_y,
                                         m2_arr.ymax - i * (m2_spacing + m2_y),
                                     ),
                                     via_enclosure=via_enc,
@@ -789,16 +737,12 @@ def draw_nfet(
                 layer=pplus_layer,
             )
         )
-        psdm_in.move(
-            (rect_bulk_in.xmin + comp_pp_enc, rect_bulk_in.ymin + comp_pp_enc)
-        )
+        psdm_in.move((rect_bulk_in.xmin + comp_pp_enc, rect_bulk_in.ymin + comp_pp_enc))
         psdm_out = c_temp.add_ref(
             gf.components.rectangle(
                 size=(
-                    (rect_bulk_out.xmax - rect_bulk_out.xmin)
-                    + 2 * comp_pp_enc,
-                    (rect_bulk_out.ymax - rect_bulk_out.ymin)
-                    + 2 * comp_pp_enc,
+                    (rect_bulk_out.xmax - rect_bulk_out.xmin) + 2 * comp_pp_enc,
+                    (rect_bulk_out.ymax - rect_bulk_out.ymin) + 2 * comp_pp_enc,
                 ),
                 layer=pplus_layer,
             )
@@ -1009,9 +953,7 @@ def draw_nfet(
                     layer=comp_layer,
                 )
             )
-            rect_pcmpgr_out.move(
-                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
-            )
+            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
             B = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -1024,10 +966,8 @@ def draw_nfet(
             psdm_in = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin)
-                        - 2 * comp_pp_enc,
-                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin)
-                        - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * comp_pp_enc,
                     ),
                     layer=pplus_layer,
                 )
@@ -1041,10 +981,8 @@ def draw_nfet(
             psdm_out = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin)
-                        + 2 * comp_pp_enc,
-                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin)
-                        + 2 * comp_pp_enc,
+                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * comp_pp_enc,
+                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * comp_pp_enc,
                     ),
                     layer=pplus_layer,
                 )
@@ -1141,9 +1079,7 @@ def draw_nfet(
                     layer=m1_layer,
                 )
             )
-            comp_m1_out.move(
-                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
-            )
+            comp_m1_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
             m1 = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -1184,16 +1120,16 @@ def draw_pfet(
     """
     Retern pfet
 
-    Args: 
-        layout : layout object 
-        l : Float of gate length 
+    Args:
+        layout : layout object
+        l : Float of gate length
         w : Float of gate width
         sd_l : Float of source and drain diffusion length
-        inter_sd_l : Float of source and drain diffusion length between fingers 
-        nf : integer of number of fingers 
-        M : integer of number of multipliers 
-        grw : gaurd ring width when enabled 
-        type : string of the device type 
+        inter_sd_l : Float of source and drain diffusion length between fingers
+        nf : integer of number of fingers
+        M : integer of number of multipliers
+        grw : gaurd ring width when enabled
+        type : string of the device type
         bulk : String of bulk connection type (None, Bulk Tie, Guard Ring)
         con_bet_fin : boolean of having contacts for diffusion between fingers
         gate_con_pos : string of choosing the gate contact position (bottom, top, alternating )
@@ -1230,9 +1166,7 @@ def draw_pfet(
     dnwell_enc_pcmp = 1.1
 
     sd_l_con = (
-        ((sd_con_col) * con_size)
-        + ((sd_con_col - 1) * con_sp)
-        + 2 * con_comp_enc
+        ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
     )
     sd_l = sd_l_con
 
@@ -1246,9 +1180,7 @@ def draw_pfet(
     if interdig == 1 and nf > 1 and nf != len(patt) and patt != "":
         nf = len(patt)
 
-    l_d = (
-        nf * l + (nf - 1) * inter_sd_l + 2 * (con_comp_enc)
-    )  #  diffution total length
+    l_d = nf * l + (nf - 1) * inter_sd_l + 2 * (con_comp_enc)  #  diffution total length
     rect_d_intr = gf.components.rectangle(size=(l_d, w), layer=comp_layer)
     sd_diff_intr = c_inst.add_ref(rect_d_intr)
 
@@ -1270,9 +1202,7 @@ def draw_pfet(
     )
 
     sd_diff.xmin = sd_diff_intr.xmin - cmpc_size[0]
-    sd_diff.ymin = (
-        sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
-    )
+    sd_diff.ymin = sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
 
     sd_con = via_stack(
         x_range=(sd_diff.xmin, sd_diff_intr.xmin),
@@ -1319,9 +1249,7 @@ def draw_pfet(
 
     c_pc = gf.Component("poly con")
 
-    rect_pc = c_pc.add_ref(
-        gf.components.rectangle(size=pc_size, layer=poly2_layer)
-    )
+    rect_pc = c_pc.add_ref(gf.components.rectangle(size=pc_size, layer=poly2_layer))
 
     poly_con = via_stack(
         x_range=(rect_pc.xmin, rect_pc.xmax),
@@ -1334,9 +1262,7 @@ def draw_pfet(
 
     if nf == 1:
         poly = c_inst.add_ref(
-            gf.components.rectangle(
-                size=(l, w + 2 * end_cap), layer=poly2_layer
-            )
+            gf.components.rectangle(size=(l, w + 2 * end_cap), layer=poly2_layer)
         )
         poly.xmin = sd_diff_intr.xmin + con_comp_enc
         poly.ymin = sd_diff_intr.ymin - end_cap
@@ -1370,14 +1296,7 @@ def draw_pfet(
                 w_p2 = w_p1
                 e_c = 0.2
             else:
-                w_p2 = (
-                    w_p1
-                    + con_pl_enc
-                    + con_size
-                    + con_pl_enc
-                    + poly2_spacing
-                    + 0.1
-                )
+                w_p2 = w_p1 + con_pl_enc + con_size + con_pl_enc + poly2_spacing + 0.1
                 e_c = 0
 
             if gate_con_pos == "bottom":
@@ -1515,8 +1434,7 @@ def draw_pfet(
                                             (
                                                 (
                                                     pc2.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - pc2.ymin
                                             ),
@@ -1535,9 +1453,7 @@ def draw_pfet(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
                                         m2_arru.ymin + i * (m2_y + m2_spacing),
-                                        m2_arru.ymin
-                                        + i * (m2_y + m2_spacing)
-                                        + m2_y,
+                                        m2_arru.ymin + i * (m2_y + m2_spacing) + m2_y,
                                     ),
                                     via_enclosure=via_enc,
                                     via_layer=via1_layer,
@@ -1565,8 +1481,7 @@ def draw_pfet(
                                             (
                                                 (
                                                     pc1.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - pc1.ymin
                                             ),
@@ -1584,9 +1499,7 @@ def draw_pfet(
                                 via1_dr = via_generator(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
-                                        m2_arrb.ymax
-                                        - i * (m2_spacing + m2_y)
-                                        - m2_y,
+                                        m2_arrb.ymax - i * (m2_spacing + m2_y) - m2_y,
                                         m2_arrb.ymax - i * (m2_spacing + m2_y),
                                     ),
                                     via_enclosure=via_enc,
@@ -1614,18 +1527,14 @@ def draw_pfet(
                                 m2_join_b = c_inst.add_ref(
                                     gf.components.rectangle(
                                         size=(
-                                            m2_y
-                                            + (i + 1) * (m3_spacing + m3_x),
+                                            m2_y + (i + 1) * (m3_spacing + m3_x),
                                             m2_y,
                                         ),
                                         layer=m2_layer,
                                     ).move(
                                         (
                                             m2_arrb.xmin
-                                            - (
-                                                m2_y
-                                                + (i + 1) * (m3_spacing + m3_x)
-                                            ),
+                                            - (m2_y + (i + 1) * (m3_spacing + m3_x)),
                                             m2_arrb.ymax
                                             - i * (m2_spacing + m2_y)
                                             - m2_y,
@@ -1635,20 +1544,15 @@ def draw_pfet(
                                 m2_join_u = c_inst.add_ref(
                                     gf.components.rectangle(
                                         size=(
-                                            m2_y
-                                            + (i + 1) * (m3_spacing + m3_x),
+                                            m2_y + (i + 1) * (m3_spacing + m3_x),
                                             m2_y,
                                         ),
                                         layer=m2_layer,
                                     ).move(
                                         (
                                             m2_arru.xmin
-                                            - (
-                                                m2_y
-                                                + (i + 1) * (m3_spacing + m3_x)
-                                            ),
-                                            m2_arru.ymin
-                                            + j * (m2_spacing + m2_y),
+                                            - (m2_y + (i + 1) * (m3_spacing + m3_x)),
+                                            m2_arru.ymin + j * (m2_spacing + m2_y),
                                         )
                                     )
                                 )
@@ -1700,8 +1604,7 @@ def draw_pfet(
                                             (
                                                 (
                                                     pc2.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - ((1 - j % 2) * pc1.ymin)
                                                 - (j % 2) * pc2.ymin
@@ -1714,14 +1617,7 @@ def draw_pfet(
                                     (
                                         (
                                             sd_l
-                                            - (
-                                                (
-                                                    poly_con.xmax
-                                                    - poly_con.xmin
-                                                    - l
-                                                )
-                                                / 2
-                                            )
+                                            - ((poly_con.xmax - poly_con.xmin - l) / 2)
                                             + j * (l + inter_sd_l)
                                         ),
                                         (1 - j % 2) * (pc1.ymin + 0.06)
@@ -1732,9 +1628,7 @@ def draw_pfet(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
                                         m2_arr.ymin + i * (m2_spacing + m2_y),
-                                        m2_arr.ymin
-                                        + i * (m2_spacing + m2_y)
-                                        + m2_y,
+                                        m2_arr.ymin + i * (m2_spacing + m2_y) + m2_y,
                                     ),
                                     via_enclosure=via_enc,
                                     via_layer=via1_layer,
@@ -1772,8 +1666,7 @@ def draw_pfet(
                                             (
                                                 (
                                                     pc1.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - (j % 2) * pc1.ymin
                                                 - (1 - j % 2) * pc2.ymin
@@ -1786,14 +1679,7 @@ def draw_pfet(
                                     (
                                         (
                                             sd_l
-                                            - (
-                                                (
-                                                    poly_con.xmax
-                                                    - poly_con.xmin
-                                                    - l
-                                                )
-                                                / 2
-                                            )
+                                            - ((poly_con.xmax - poly_con.xmin - l) / 2)
                                             + j * (l + inter_sd_l)
                                         ),
                                         -(m1.ymax - m1.ymin)
@@ -1804,9 +1690,7 @@ def draw_pfet(
                                 via1_dr = via_generator(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
-                                        m2_arr.ymax
-                                        - i * (m2_spacing + m2_y)
-                                        - m2_y,
+                                        m2_arr.ymax - i * (m2_spacing + m2_y) - m2_y,
                                         m2_arr.ymax - i * (m2_spacing + m2_y),
                                     ),
                                     via_enclosure=via_enc,
@@ -2040,16 +1924,12 @@ def draw_pfet(
                 layer=nplus_layer,
             )
         )
-        nsdm_in.move(
-            (rect_bulk_in.xmin + comp_np_enc, rect_bulk_in.ymin + comp_np_enc)
-        )
+        nsdm_in.move((rect_bulk_in.xmin + comp_np_enc, rect_bulk_in.ymin + comp_np_enc))
         nsdm_out = c_temp.add_ref(
             gf.components.rectangle(
                 size=(
-                    (rect_bulk_out.xmax - rect_bulk_out.xmin)
-                    + 2 * comp_np_enc,
-                    (rect_bulk_out.ymax - rect_bulk_out.ymin)
-                    + 2 * comp_np_enc,
+                    (rect_bulk_out.xmax - rect_bulk_out.xmin) + 2 * comp_np_enc,
+                    (rect_bulk_out.ymax - rect_bulk_out.ymin) + 2 * comp_np_enc,
                 ),
                 layer=nplus_layer,
             )
@@ -2230,9 +2110,7 @@ def draw_pfet(
                     layer=comp_layer,
                 )
             )
-            rect_pcmpgr_out.move(
-                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
-            )
+            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
             B = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -2245,10 +2123,8 @@ def draw_pfet(
             psdm_in = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin)
-                        - 2 * comp_pp_enc,
-                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin)
-                        - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * comp_pp_enc,
                     ),
                     layer=pplus_layer,
                 )
@@ -2262,10 +2138,8 @@ def draw_pfet(
             psdm_out = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin)
-                        + 2 * comp_pp_enc,
-                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin)
-                        + 2 * comp_pp_enc,
+                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * comp_pp_enc,
+                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * comp_pp_enc,
                     ),
                     layer=pplus_layer,
                 )
@@ -2356,9 +2230,7 @@ def draw_pfet(
                     layer=m1_layer,
                 )
             )
-            comp_m1_out.move(
-                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
-            )
+            comp_m1_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
             m1 = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -2431,9 +2303,7 @@ def draw_nfet_06v0_nvt(
     lvpwell_enc_ncmp = 0.43
 
     sd_l_con = (
-        ((sd_con_col) * con_size)
-        + ((sd_con_col - 1) * con_sp)
-        + 2 * con_comp_enc
+        ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
     )
     sd_l = sd_l_con
 
@@ -2447,9 +2317,7 @@ def draw_nfet_06v0_nvt(
     if interdig == 1 and nf > 1 and nf != len(patt) and patt != "":
         nf = len(patt)
 
-    l_d = (
-        nf * l + (nf - 1) * inter_sd_l + 2 * (con_comp_enc)
-    )  #  diffution total length
+    l_d = nf * l + (nf - 1) * inter_sd_l + 2 * (con_comp_enc)  #  diffution total length
     rect_d_intr = gf.components.rectangle(size=(l_d, w), layer=comp_layer)
     sd_diff_intr = c_inst.add_ref(rect_d_intr)
 
@@ -2471,9 +2339,7 @@ def draw_nfet_06v0_nvt(
     )
 
     sd_diff.xmin = sd_diff_intr.xmin - cmpc_size[0]
-    sd_diff.ymin = (
-        sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
-    )
+    sd_diff.ymin = sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
 
     sd_con = via_stack(
         x_range=(sd_diff.xmin, sd_diff_intr.xmin),
@@ -2520,9 +2386,7 @@ def draw_nfet_06v0_nvt(
 
     c_pc = gf.Component("poly con")
 
-    rect_pc = c_pc.add_ref(
-        gf.components.rectangle(size=pc_size, layer=poly2_layer)
-    )
+    rect_pc = c_pc.add_ref(gf.components.rectangle(size=pc_size, layer=poly2_layer))
 
     poly_con = via_stack(
         x_range=(rect_pc.xmin, rect_pc.xmax),
@@ -2535,9 +2399,7 @@ def draw_nfet_06v0_nvt(
 
     if nf == 1:
         poly = c_inst.add_ref(
-            gf.components.rectangle(
-                size=(l, w + 2 * end_cap), layer=poly2_layer
-            )
+            gf.components.rectangle(size=(l, w + 2 * end_cap), layer=poly2_layer)
         )
         poly.xmin = sd_diff_intr.xmin + con_comp_enc
         poly.ymin = sd_diff_intr.ymin - end_cap
@@ -2571,14 +2433,7 @@ def draw_nfet_06v0_nvt(
                 w_p2 = w_p1
                 e_c = 0.2
             else:
-                w_p2 = (
-                    w_p1
-                    + con_pl_enc
-                    + con_size
-                    + con_pl_enc
-                    + poly2_spacing
-                    + 0.1
-                )
+                w_p2 = w_p1 + con_pl_enc + con_size + con_pl_enc + poly2_spacing + 0.1
                 e_c = 0
 
             if gate_con_pos == "bottom":
@@ -2716,8 +2571,7 @@ def draw_nfet_06v0_nvt(
                                             (
                                                 (
                                                     pc2.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - pc2.ymin
                                             ),
@@ -2736,9 +2590,7 @@ def draw_nfet_06v0_nvt(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
                                         m2_arru.ymin + i * (m2_y + m2_spacing),
-                                        m2_arru.ymin
-                                        + i * (m2_y + m2_spacing)
-                                        + m2_y,
+                                        m2_arru.ymin + i * (m2_y + m2_spacing) + m2_y,
                                     ),
                                     via_enclosure=via_enc,
                                     via_layer=via1_layer,
@@ -2766,8 +2618,7 @@ def draw_nfet_06v0_nvt(
                                             (
                                                 (
                                                     pc1.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - pc1.ymin
                                             ),
@@ -2785,9 +2636,7 @@ def draw_nfet_06v0_nvt(
                                 via1_dr = via_generator(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
-                                        m2_arrb.ymax
-                                        - i * (m2_spacing + m2_y)
-                                        - m2_y,
+                                        m2_arrb.ymax - i * (m2_spacing + m2_y) - m2_y,
                                         m2_arrb.ymax - i * (m2_spacing + m2_y),
                                     ),
                                     via_enclosure=via_enc,
@@ -2815,18 +2664,14 @@ def draw_nfet_06v0_nvt(
                                 m2_join_b = c_inst.add_ref(
                                     gf.components.rectangle(
                                         size=(
-                                            m2_y
-                                            + (i + 1) * (m3_spacing + m3_x),
+                                            m2_y + (i + 1) * (m3_spacing + m3_x),
                                             m2_y,
                                         ),
                                         layer=m2_layer,
                                     ).move(
                                         (
                                             m2_arrb.xmin
-                                            - (
-                                                m2_y
-                                                + (i + 1) * (m3_spacing + m3_x)
-                                            ),
+                                            - (m2_y + (i + 1) * (m3_spacing + m3_x)),
                                             m2_arrb.ymax
                                             - i * (m2_spacing + m2_y)
                                             - m2_y,
@@ -2836,20 +2681,15 @@ def draw_nfet_06v0_nvt(
                                 m2_join_u = c_inst.add_ref(
                                     gf.components.rectangle(
                                         size=(
-                                            m2_y
-                                            + (i + 1) * (m3_spacing + m3_x),
+                                            m2_y + (i + 1) * (m3_spacing + m3_x),
                                             m2_y,
                                         ),
                                         layer=m2_layer,
                                     ).move(
                                         (
                                             m2_arru.xmin
-                                            - (
-                                                m2_y
-                                                + (i + 1) * (m3_spacing + m3_x)
-                                            ),
-                                            m2_arru.ymin
-                                            + j * (m2_spacing + m2_y),
+                                            - (m2_y + (i + 1) * (m3_spacing + m3_x)),
+                                            m2_arru.ymin + j * (m2_spacing + m2_y),
                                         )
                                     )
                                 )
@@ -2901,8 +2741,7 @@ def draw_nfet_06v0_nvt(
                                             (
                                                 (
                                                     pc2.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - ((1 - j % 2) * pc1.ymin)
                                                 - (j % 2) * pc2.ymin
@@ -2915,14 +2754,7 @@ def draw_nfet_06v0_nvt(
                                     (
                                         (
                                             sd_l
-                                            - (
-                                                (
-                                                    poly_con.xmax
-                                                    - poly_con.xmin
-                                                    - l
-                                                )
-                                                / 2
-                                            )
+                                            - ((poly_con.xmax - poly_con.xmin - l) / 2)
                                             + j * (l + inter_sd_l)
                                         ),
                                         (1 - j % 2) * (pc1.ymin + 0.06)
@@ -2933,9 +2765,7 @@ def draw_nfet_06v0_nvt(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
                                         m2_arr.ymin + i * (m2_spacing + m2_y),
-                                        m2_arr.ymin
-                                        + i * (m2_spacing + m2_y)
-                                        + m2_y,
+                                        m2_arr.ymin + i * (m2_spacing + m2_y) + m2_y,
                                     ),
                                     via_enclosure=via_enc,
                                     via_layer=via1_layer,
@@ -2973,8 +2803,7 @@ def draw_nfet_06v0_nvt(
                                             (
                                                 (
                                                     pc1.ymax
-                                                    + (i + 1)
-                                                    * (m2_spacing + m2_y)
+                                                    + (i + 1) * (m2_spacing + m2_y)
                                                 )
                                                 - (j % 2) * pc1.ymin
                                                 - (1 - j % 2) * pc2.ymin
@@ -2987,14 +2816,7 @@ def draw_nfet_06v0_nvt(
                                     (
                                         (
                                             sd_l
-                                            - (
-                                                (
-                                                    poly_con.xmax
-                                                    - poly_con.xmin
-                                                    - l
-                                                )
-                                                / 2
-                                            )
+                                            - ((poly_con.xmax - poly_con.xmin - l) / 2)
                                             + j * (l + inter_sd_l)
                                         ),
                                         -(m1.ymax - m1.ymin)
@@ -3005,9 +2827,7 @@ def draw_nfet_06v0_nvt(
                                 via1_dr = via_generator(
                                     x_range=(m1.xmin, m1.xmax),
                                     y_range=(
-                                        m2_arr.ymax
-                                        - i * (m2_spacing + m2_y)
-                                        - m2_y,
+                                        m2_arr.ymax - i * (m2_spacing + m2_y) - m2_y,
                                         m2_arr.ymax - i * (m2_spacing + m2_y),
                                     ),
                                     via_enclosure=via_enc,
@@ -3127,16 +2947,12 @@ def draw_nfet_06v0_nvt(
                 layer=pplus_layer,
             )
         )
-        psdm_in.move(
-            (rect_bulk_in.xmin + comp_pp_enc, rect_bulk_in.ymin + comp_pp_enc)
-        )
+        psdm_in.move((rect_bulk_in.xmin + comp_pp_enc, rect_bulk_in.ymin + comp_pp_enc))
         psdm_out = c_temp.add_ref(
             gf.components.rectangle(
                 size=(
-                    (rect_bulk_out.xmax - rect_bulk_out.xmin)
-                    + 2 * comp_pp_enc,
-                    (rect_bulk_out.ymax - rect_bulk_out.ymin)
-                    + 2 * comp_pp_enc,
+                    (rect_bulk_out.xmax - rect_bulk_out.xmin) + 2 * comp_pp_enc,
+                    (rect_bulk_out.ymax - rect_bulk_out.ymin) + 2 * comp_pp_enc,
                 ),
                 layer=pplus_layer,
             )

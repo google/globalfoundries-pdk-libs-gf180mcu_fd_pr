@@ -38,10 +38,10 @@ PASS_THRESH = 2.0
 comp_cont_spc_gate_v3_3 = 0.15
 
 # COMP overlap of contact V3.3
-comp_enc_cont_v3_3 = 0.07 
+comp_enc_cont_v3_3 = 0.07
 
 # Min/max contact size V3.3
-cont_min_size_v3_3 = 0.22 
+cont_min_size_v3_3 = 0.22
 
 # Space from COMP contact to Poly2 on COMP V5
 comp_cont_spc_gate_v5_0 = 0.15
@@ -52,8 +52,10 @@ comp_enc_cont_v5_0 = 0.07
 # Min/max contact size V5
 cont_min_size_v5_0 = 0.2
 
-ld = {"v3_3": comp_cont_spc_gate_v3_3 + comp_enc_cont_v3_3 + cont_min_size_v3_3,
-      "v5_0": comp_cont_spc_gate_v5_0 + comp_enc_cont_v5_0 + cont_min_size_v5_0}
+ld = {
+    "v3_3": comp_cont_spc_gate_v3_3 + comp_enc_cont_v3_3 + cont_min_size_v3_3,
+    "v5_0": comp_cont_spc_gate_v5_0 + comp_enc_cont_v5_0 + cont_min_size_v5_0,
+}
 
 MOS = [0, -0.825, -1.65, -2.475, -3.3]
 PMOS3P3_VBS = ["-0", 0.825, 1.65, 2.475, 3.3]
@@ -458,7 +460,9 @@ def run_sim(dirpath: str, device: str, width: float, length: float, nf: int) -> 
     return info
 
 
-def run_sims(df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
+def run_sims(
+    df: pd.DataFrame, dirpath: str, device: str, num_workers=mp.cpu_count()
+) -> pd.DataFrame:
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
 
@@ -812,7 +816,9 @@ def main():
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
         print(version)
         if version <= 37:
-            logging.error("ngspice version is not supported. Please use ngspice version 38 or newer.")
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
             exit(1)
 
     # pandas setup

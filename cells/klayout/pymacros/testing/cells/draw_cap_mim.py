@@ -20,14 +20,14 @@ import pya
 
 
 def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
-    """ Calculate number of cantacts in a given dimensions and the free space for symmetry.
-        By getting the min enclosure,the width of the box,the width ans spacing of the contacts.
-        Parameters
-        ----------
-        box_width    (double) : length you place the via or cont. in
-        min_enc      (double) : spacing between the edge of the box and the first contact.
-        cont_spacing (double) : spacing between different contacts
-        cont_width   (double) : contacts in the same direction
+    """Calculate number of cantacts in a given dimensions and the free space for symmetry.
+    By getting the min enclosure,the width of the box,the width ans spacing of the contacts.
+    Parameters
+    ----------
+    box_width    (double) : length you place the via or cont. in
+    min_enc      (double) : spacing between the edge of the box and the first contact.
+    cont_spacing (double) : spacing between different contacts
+    cont_width   (double) : contacts in the same direction
     """
     spc_cont = box_width - 2 * min_enc
     num_cont = int((spc_cont + cont_spacing) / (cont_width + cont_spacing))

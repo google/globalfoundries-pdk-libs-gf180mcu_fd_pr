@@ -68,16 +68,22 @@ class nfet(pya.PCellDeclarationHelper):
             "grw", self.TypeDouble, "Guard Ring Width", default=fet_grw, unit="um"
         )
 
-        self.Type_handle  = self.param("gate_con_pos", self.TypeList, "Gate Contact Position")
+        self.Type_handle = self.param(
+            "gate_con_pos", self.TypeList, "Gate Contact Position"
+        )
         self.Type_handle.add_choice("top", "top")
         self.Type_handle.add_choice("bottom", "bottom")
         self.Type_handle.add_choice("alternating", "alternating")
-        
-        self.param("con_bet_fin", self.TypeBoolean, "Contact Between Fingers", default=1)
+
+        self.param(
+            "con_bet_fin", self.TypeBoolean, "Contact Between Fingers", default=1
+        )
         self.param("sd_con_col", self.TypeInt, "Diffusion Contacts Columns", default=1)
 
         self.param("interdig", self.TypeBoolean, "Interdigitation", default=0)
-        self.param("patt", self.TypeString,"Pattern in case of Interdigitation", default= "")
+        self.param(
+            "patt", self.TypeString, "Pattern in case of Interdigitation", default=""
+        )
 
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
@@ -109,7 +115,7 @@ class nfet(pya.PCellDeclarationHelper):
                 self.l = nfet_06v0_l
             if (self.w) < fet_5_6_w:
                 self.w = fet_5_6_w
-        
+
         if (self.ld) < fet_ld:
             self.ld = fet_ld
 
@@ -135,20 +141,20 @@ class nfet(pya.PCellDeclarationHelper):
     def produce_impl(self):
         instance = draw_nfet(
             self.layout,
-            l = self.l,
-            w= self.w,
-            sd_con_col= self.sd_con_col,
-            inter_sd_l= self.ld,
-            nf= self.nf,
-            grw= self.grw,
-            bulk= self.bulk,
-            volt= self.volt,
-            con_bet_fin= self.con_bet_fin,
-            gate_con_pos= self.gate_con_pos,
-            interdig= self.interdig,
-            patt= self.patt,
-            deepnwell= self.deepnwell,
-            pcmpgr= self.pcmpgr
+            l=self.l,
+            w=self.w,
+            sd_con_col=self.sd_con_col,
+            inter_sd_l=self.ld,
+            nf=self.nf,
+            grw=self.grw,
+            bulk=self.bulk,
+            volt=self.volt,
+            con_bet_fin=self.con_bet_fin,
+            gate_con_pos=self.gate_con_pos,
+            interdig=self.interdig,
+            patt=self.patt,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             instance.cell_index(),
@@ -191,16 +197,22 @@ class pfet(pya.PCellDeclarationHelper):
             "grw", self.TypeDouble, "Guard Ring Width", default=fet_grw, unit="um"
         )
 
-        self.Type_handle  = self.param("gate_con_pos", self.TypeList, "Gate Contact Position")
+        self.Type_handle = self.param(
+            "gate_con_pos", self.TypeList, "Gate Contact Position"
+        )
         self.Type_handle.add_choice("top", "top")
         self.Type_handle.add_choice("bottom", "bottom")
         self.Type_handle.add_choice("alternating", "alternating")
-        
-        self.param("con_bet_fin", self.TypeBoolean, "Contact Between Fingers", default=1)
+
+        self.param(
+            "con_bet_fin", self.TypeBoolean, "Contact Between Fingers", default=1
+        )
         self.param("sd_con_col", self.TypeInt, "Diffusion Contacts Columns", default=1)
 
         self.param("interdig", self.TypeBoolean, "Interdigitation", default=0)
-        self.param("patt", self.TypeString,"Pattern in case of Interdigitation", default= "")
+        self.param(
+            "patt", self.TypeString, "Pattern in case of Interdigitation", default=""
+        )
 
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
@@ -258,20 +270,20 @@ class pfet(pya.PCellDeclarationHelper):
     def produce_impl(self):
         instance = draw_pfet(
             self.layout,
-            l = self.l,
-            w= self.w,
-            sd_con_col= self.sd_con_col,
-            inter_sd_l= self.ld,
-            nf= self.nf,
-            grw= self.grw,
-            bulk= self.bulk,
-            volt= self.volt,
-            con_bet_fin= self.con_bet_fin,
-            gate_con_pos= self.gate_con_pos,
-            interdig= self.interdig,
-            patt= self.patt,
-            deepnwell= self.deepnwell,
-            pcmpgr= self.pcmpgr
+            l=self.l,
+            w=self.w,
+            sd_con_col=self.sd_con_col,
+            inter_sd_l=self.ld,
+            nf=self.nf,
+            grw=self.grw,
+            bulk=self.bulk,
+            volt=self.volt,
+            con_bet_fin=self.con_bet_fin,
+            gate_con_pos=self.gate_con_pos,
+            interdig=self.interdig,
+            patt=self.patt,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             instance.cell_index(),
@@ -308,16 +320,22 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
             "grw", self.TypeDouble, "Guard Ring Width", default=fet_grw, unit="um"
         )
 
-        self.Type_handle  = self.param("gate_con_pos", self.TypeList, "Gate Contact Position")
+        self.Type_handle = self.param(
+            "gate_con_pos", self.TypeList, "Gate Contact Position"
+        )
         self.Type_handle.add_choice("top", "top")
         self.Type_handle.add_choice("bottom", "bottom")
         self.Type_handle.add_choice("alternating", "alternating")
-        
-        self.param("con_bet_fin", self.TypeBoolean, "Contact Between Fingers", default=1)
+
+        self.param(
+            "con_bet_fin", self.TypeBoolean, "Contact Between Fingers", default=1
+        )
         self.param("sd_con_col", self.TypeInt, "Diffusion Contacts Columns", default=1)
 
         self.param("interdig", self.TypeBoolean, "Interdigitation", default=0)
-        self.param("patt", self.TypeString,"Pattern in case of Interdigitation", default= "")
+        self.param(
+            "patt", self.TypeString, "Pattern in case of Interdigitation", default=""
+        )
 
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
@@ -365,19 +383,19 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
     def produce_impl(self):
         instance = draw_nfet_06v0_nvt(
             self.layout,
-            l = self.l,
-            w= self.w,
-            sd_con_col= self.sd_con_col,
-            inter_sd_l= self.ld,
-            nf= self.nf,
-            grw= self.grw,
-            bulk= self.bulk,
-            con_bet_fin= self.con_bet_fin,
-            gate_con_pos= self.gate_con_pos,
-            interdig= self.interdig,
-            patt= self.patt,
+            l=self.l,
+            w=self.w,
+            sd_con_col=self.sd_con_col,
+            inter_sd_l=self.ld,
+            nf=self.nf,
+            grw=self.grw,
+            bulk=self.bulk,
+            con_bet_fin=self.con_bet_fin,
+            gate_con_pos=self.gate_con_pos,
+            interdig=self.interdig,
+            patt=self.patt,
         )
-        
+
         write_cells = pya.CellInstArray(
             instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
@@ -388,4 +406,3 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
         )
         self.cell.insert(write_cells)
         self.cell.flatten(1)
-

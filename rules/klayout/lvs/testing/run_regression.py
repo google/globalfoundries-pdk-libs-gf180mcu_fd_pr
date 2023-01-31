@@ -66,6 +66,7 @@ def check_klayout_version():
             )
             exit(1)
 
+
 def lvs_check(table, files):
 
     pass_count = 0
@@ -292,7 +293,7 @@ def main():
         ["cap_mim_2f0_m4m5_noshield", "-rd mim_option=B -rd mim_cap=2"],
         ["cap_mim_1f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1"],
         ["cap_mim_1f5_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1.5"],
-        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"]        
+        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"],
     ]
 
     # MOS Capacitor
