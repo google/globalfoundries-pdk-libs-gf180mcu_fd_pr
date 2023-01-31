@@ -58,7 +58,9 @@ def call_simulator(file_name: str) -> int:
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def ext_cv_measured(dev_data_path: str, device: str, corners: str, dev_path: str) -> pd.DataFrame:
+def ext_cv_measured(
+    dev_data_path: str, device: str, corners: str, dev_path: str
+) -> pd.DataFrame:
     """Extract measured data from csv file.
     Args:
         dev_data_path (str): Path to csv file.
@@ -71,9 +73,9 @@ def ext_cv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
     # Read Data
     df = pd.read_excel(dev_data_path)
 
-    dim_df = df[["Area" , "Pj"]].copy()
+    dim_df = df[["Area", "Pj"]].copy()
     dim_df.rename(
-        columns={"Area": "area" , "Pj": "perim"},
+        columns={"Area": "area", "Pj": "perim"},
         inplace=True,
     )
 
@@ -144,7 +146,7 @@ def ext_cv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
             temp_list.append(temp)
             corner_list.append(corner)
             meas_list.append(f"{dev_path}/measured_cv/{meas_csv}")
-            
+
             sdf = {
                 "perim": perim_list,
                 "area": area_list,
@@ -160,11 +162,13 @@ def ext_cv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
     df.drop_duplicates(inplace=True)
     df["device"] = device
     df = df[["device", "perim", "area", "temp", "corner", "diode_measured"]]
-    
+
     return df
 
 
-def ext_iv_measured(dev_data_path: str, device: str, corners: str, dev_path: str) -> pd.DataFrame:
+def ext_iv_measured(
+    dev_data_path: str, device: str, corners: str, dev_path: str
+) -> pd.DataFrame:
     """Extract measured data from csv file.
     Args:
         dev_data_path (str): Path to csv file.
@@ -178,9 +182,9 @@ def ext_iv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
     # Read Data
     df = pd.read_excel(dev_data_path)
 
-    dim_df = df[["Area" , "Pj"]].copy()
+    dim_df = df[["Area", "Pj"]].copy()
     dim_df.rename(
-        columns={"Area": "area" , "Pj": "perim"},
+        columns={"Area": "area", "Pj": "perim"},
         inplace=True,
     )
 
@@ -257,7 +261,15 @@ def ext_iv_measured(dev_data_path: str, device: str, corners: str, dev_path: str
     return df
 
 
-def run_sim(char: str, dirpath: str, device: str, perim: float, area: float, corner: str, temp: float) -> dict:
+def run_sim(
+    char: str,
+    dirpath: str,
+    device: str,
+    perim: float,
+    area: float,
+    corner: str,
+    temp: float,
+) -> dict:
     """Run simulation.
     Args:
         char (str): Characteristic.
@@ -319,7 +331,9 @@ def run_sim(char: str, dirpath: str, device: str, perim: float, area: float, cor
     return info
 
 
-def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
+def run_sims(
+    char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()
+) -> pd.DataFrame:
     """Run simulations.
     Args:
         char (str): Characteristic.
@@ -352,9 +366,9 @@ def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count
                 results.append(data)
             except Exception as exc:
                 logging.info("Test case generated an exception: %s" % (exc))
-    
+
     # stored simulated data files
-    sf = glob.glob(f"{dirpath}/*_netlists_{char}/*.csv")  
+    sf = glob.glob(f"{dirpath}/*_netlists_{char}/*.csv")
     for i in range(len(sf)):
         sdf = pd.read_csv(
             sf[i],
@@ -376,8 +390,7 @@ def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count
 
 
 def main():
-    """Main function.
-    """
+    """Main function."""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
 
@@ -388,7 +401,9 @@ def main():
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
         print(version)
         if version <= 37:
-            logging.error("ngspice version is not supported. Please use ngspice version 38 or newer.")
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
             exit(1)
 
     # pandas setup
@@ -414,7 +429,7 @@ def main():
         "sc_diode",
     ]
 
-    char_measured = ["iv" , "cv"]
+    char_measured = ["iv", "cv"]
 
     for i, dev in enumerate(devices):
         dev_path = f"{main_regr_dir}/{dev}"
@@ -456,17 +471,20 @@ def main():
                 meas_df = meas_func(diode_file, dev, corners, dev_path)
             else:
                 meas_df = []
-            
-            meas_len = len(pd.read_csv(glob.glob(f"{dev_path}/measured_{char}/*.csv")[1]))
-        
+
+            meas_len = len(
+                pd.read_csv(glob.glob(f"{dev_path}/measured_{char}/*.csv")[1])
+            )
+
             logging.info(
                 f"# Device {dev} number of {char}_measured_datapoints : {len(meas_df) * meas_len}"
             )
 
             sim_df = run_sims(char, meas_df, dev_path, workers_count)
-            
 
-            sim_len = len(pd.read_csv(glob.glob(f"{dev_path}/*_netlists_{char}/*.csv")[1]))
+            sim_len = len(
+                pd.read_csv(glob.glob(f"{dev_path}/*_netlists_{char}/*.csv")[1])
+            )
             logging.info(
                 f"# Device {dev} number of {char}_simulated datapoints : {len(sim_df) * sim_len}"
             )
@@ -475,7 +493,7 @@ def main():
             merged_df = meas_df.merge(
                 sim_df, on=["device", "corner", "perim", "area", "temp"], how="left"
             )
-            
+
             merged_dfs = []
             # create a new dataframe for rms error
             rms_df = pd.DataFrame(

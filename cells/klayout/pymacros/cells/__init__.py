@@ -46,8 +46,6 @@ class gf180mcu(pya.Library):
             "pfet", pfet()
         )  # pfet_03v3 , pfet_05v0 , pfet_06v0
         self.layout().register_pcell("nfet_06v0_nvt", nfet_06v0_nvt())
-        # self.layout().register_pcell("nfet_10v0_asym", nfet_10v0_asym())
-        # self.layout().register_pcell("pfet_10v0_asym", pfet_10v0_asym())
 
         # BJT
         self.layout().register_pcell(
