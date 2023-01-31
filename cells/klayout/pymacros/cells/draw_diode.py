@@ -1038,3 +1038,31 @@ def draw_diode_pw2dw(
     cell_name = "diode_pw2dw_dev"
 
     return layout.cell(cell_name)
+
+
+def draw_diode_dw2ps(
+    layout,
+    l: float = 0.1,
+    w: float = 0.1,
+    cw: float = 0.1,
+    volt: str = "3.3V",
+) -> gf.Component:
+    """
+    Usage:-
+     used to draw LVPWELL/DNWELL diode by specifying parameters
+    Arguments:-
+     layout     : Object of layout
+     l          : Float of diff length
+     w          : Float of diff width
+     volt       : String of operating voltage of the diode [3.3V, 5V/6V]
+    """
+
+    c = gf.Component("diode_dw2ps_dev")
+
+    # creating layout and cell in klayout
+
+    c.write_gds("diode_dw2ps_temp.gds")
+    layout.read("diode_dw2ps_temp.gds")
+    cell_name = "diode_dw2ps_dev"
+
+    return layout.cell(cell_name)
