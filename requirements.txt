@@ -5,3 +5,4 @@ docopt
 jinja2
 openpyxl
 sympy
+klayout
