@@ -33,4 +33,4 @@ m2_layer : LayerSpec = (36 , 0 )
 m1_lbl  : LayerSpec = (34 , 10)
 via1_layer : LayerSpec =(35 , 0 )
 nwell_layer : LayerSpec = (21 , 0 )
-
+nat_layer : LayerSpec = (5, 0)
