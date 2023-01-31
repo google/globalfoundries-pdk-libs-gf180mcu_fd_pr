@@ -525,7 +525,9 @@ def main():
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
         print(version)
         if version <= 37:
-            logging.error("ngspice version is not supported. Please use ngspice version 38 or newer.")
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
             exit(1)
 
     # pandas setup

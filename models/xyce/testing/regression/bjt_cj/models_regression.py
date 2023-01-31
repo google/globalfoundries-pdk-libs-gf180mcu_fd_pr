@@ -536,9 +536,7 @@ def main():
             no_rows = NO_ROWS_PNP
 
         if cj_file != "":
-            meas_df = ext_measured(
-                cj_file, dev, list_dev, dev_path, no_rows
-            )
+            meas_df = ext_measured(cj_file, dev, list_dev, dev_path, no_rows)
         else:
             meas_df = list()
 

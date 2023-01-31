@@ -432,12 +432,24 @@ def error_cal(
             result_data["measured_vgs6"] = result_data["measured_vgs6"].clip(
                 lower=lowest_curr
             )
-            result_data["simulated_vgs1"] = result_data["simulated_vgs1"].clip(lower=lowest_curr)
-            result_data["simulated_vgs2"] = result_data["simulated_vgs2"].clip(lower=lowest_curr)
-            result_data["simulated_vgs3"] = result_data["simulated_vgs3"].clip(lower=lowest_curr)
-            result_data["simulated_vgs4"] = result_data["simulated_vgs4"].clip(lower=lowest_curr)
-            result_data["simulated_vgs5"] = result_data["simulated_vgs5"].clip(lower=lowest_curr)
-            result_data["simulated_vgs6"] = result_data["simulated_vgs6"].clip(lower=lowest_curr)
+            result_data["simulated_vgs1"] = result_data["simulated_vgs1"].clip(
+                lower=lowest_curr
+            )
+            result_data["simulated_vgs2"] = result_data["simulated_vgs2"].clip(
+                lower=lowest_curr
+            )
+            result_data["simulated_vgs3"] = result_data["simulated_vgs3"].clip(
+                lower=lowest_curr
+            )
+            result_data["simulated_vgs4"] = result_data["simulated_vgs4"].clip(
+                lower=lowest_curr
+            )
+            result_data["simulated_vgs5"] = result_data["simulated_vgs5"].clip(
+                lower=lowest_curr
+            )
+            result_data["simulated_vgs6"] = result_data["simulated_vgs6"].clip(
+                lower=lowest_curr
+            )
         result_data["device"] = device
         result_data["length"] = length
         result_data["width"] = w
