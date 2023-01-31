@@ -47,16 +47,16 @@ def draw_nfet(
     """
     Retern nfet
 
-    Args: 
-        layout : layout object 
-        l : Float of gate length 
+    Args:
+        layout : layout object
+        l : Float of gate length
         w : Float of gate width
         sd_l : Float of source and drain diffusion length
-        inter_sd_l : Float of source and drain diffusion length between fingers 
-        nf : integer of number of fingers 
-        M : integer of number of multipliers 
-        grw : gaurd ring width when enabled 
-        type : string of the device type 
+        inter_sd_l : Float of source and drain diffusion length between fingers
+        nf : integer of number of fingers
+        M : integer of number of multipliers
+        grw : gaurd ring width when enabled
+        type : string of the device type
         bulk : String of bulk connection type (None, Bulk Tie, Guard Ring)
         con_bet_fin : boolean of having contacts for diffusion between fingers
         gate_con_pos : string of choosing the gate contact position (bottom, top, alternating )
@@ -1222,10 +1222,7 @@ def draw_pfet(
     con_sp = 0.28
     con_comp_enc = 0.07
     con_pl_enc = 0.07
-    con_m1_enc = 0.06
-    psdm_enc_dn = 0.66
     pcmpgr_enc_dn = 2.5
-    dn_enc_nwell = 0.5
     dg_enc_cmp = 0.24
     dg_enc_poly = 0.4
     dnwell_enc_ncmp = 0.66
@@ -2185,10 +2182,6 @@ def draw_pfet(
             nw.xmin = B.xmin - nw_enc_ncmp
             nw.ymin = B.ymin - nw_enc_ncmp
 
-        inst_size = psdm.size
-        inst_xmin = psdm.xmin
-        inst_ymin = psdm.ymin
-
         if volt == "5V" or volt == "6V":
             dg = c.add_ref(
                 gf.components.rectangle(
@@ -2211,21 +2204,7 @@ def draw_pfet(
                 v5x.xmin = dg.xmin
                 v5x.ymin = dg.ymin
 
-    if bulk != "Guard Ring":
-
-        inst_size = c_inst.size
-        inst_xmin = c_inst.xmin
-        inst_ymin = c_inst.ymin
-
-        # if volt == "5V" or volt == "6V" :
-        #     dg = c.add_ref(gf.components.rectangle(size=(sd_diff.size[0] + (2*dg_enc_cmp),c_inst.size[1]+(2*dg_enc_poly)),layer=dualgate_layer))
-        #     dg.xmin = sd_diff.xmin - dg_enc_cmp
-        #     dg.ymin = c_inst.ymin - dg_enc_poly
-
-        #     if volt == "5V" :
-        #         v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
-        #         v5x.xmin = dg.xmin
-        #         v5x.ymin = dg.ymin
+        
 
     if deepnwell == 1:
         if pcmpgr == 1:
@@ -2367,13 +2346,10 @@ def draw_pfet(
                     size=(
                         rect_pcmpgr_in.size[0],
                         rect_pcmpgr_in.size[1]
-                        # (l_d) + 2 * comp_spacing,
-                        # (c_inst.ymax - c_inst.ymin) + 2 * poly2_comp_spacing,
                     ),
                     layer=m1_layer,
                 )
             )
-            # comp_m1_in.move((-comp_spacing, c_inst.ymin - poly2_comp_spacing))
 
             comp_m1_out = c_temp_gr.add_ref(
                 gf.components.rectangle(
