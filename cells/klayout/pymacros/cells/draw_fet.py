@@ -85,6 +85,7 @@ def draw_nfet(
     con_m1_enc = 0.06
     psdm_enc_dn = 0.66
     pcmpgr_enc_dn = 2.5
+    dn_enc_lvpwell = 2.5
     dg_enc_cmp = 0.24
     dg_enc_poly = 0.4
     lvpwell_enc_ncmp = 0.43
@@ -933,12 +934,20 @@ def draw_nfet(
     
 
     if deepnwell == 1 :
-        dn_rect = c.add_ref(
-            gf.components.rectangle(size=(inst_size[0]+(2*psdm_enc_dn),inst_size[1]+(2*psdm_enc_dn)),layer=dnwell_layer)
+
+        lvp_rect = c.add_ref(
+            gf.components.rectangle(size=(inst_size[0]+(2*lvpwell_enc_ncmp),inst_size[1]+(2*lvpwell_enc_ncmp)),layer=lvpwell_layer)
         )
 
-        dn_rect.xmin = inst_xmin - psdm_enc_dn
-        dn_rect.ymin = inst_ymin - psdm_enc_dn
+        lvp_rect.xmin = inst_xmin - lvpwell_enc_ncmp
+        lvp_rect.ymin = inst_ymin - lvpwell_enc_ncmp
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(size=(lvp_rect.size[0] + (2*dn_enc_lvpwell),lvp_rect.size[1] + (2*dn_enc_lvpwell)),layer=dnwell_layer)
+        )
+
+        dn_rect.xmin = lvp_rect.xmin - dn_enc_lvpwell
+        dn_rect.ymin = lvp_rect.ymin - dn_enc_lvpwell
 
         if pcmpgr == 1 :
 
