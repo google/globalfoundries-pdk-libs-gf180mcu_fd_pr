@@ -27,7 +27,7 @@ from .layers_def import *
 
 # @gf.cell
 def draw_nfet(
-    layout ,
+    layout,
     l: float = 0.28,
     w: float = 0.22,
     sd_con_col: int = 1,
@@ -905,51 +905,86 @@ def draw_nfet(
         inst_xmin = psdm.xmin
         inst_ymin = psdm.ymin
 
-        if volt == "5V" or volt == "6V" :
-            dg = c.add_ref(gf.components.rectangle(size=(B.size[0] + (2*dg_enc_cmp),B.size[1]+(2*dg_enc_cmp)),layer=dualgate_layer))
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        B.size[0] + (2 * dg_enc_cmp),
+                        B.size[1] + (2 * dg_enc_cmp),
+                    ),
+                    layer=dualgate_layer,
+                )
+            )
             dg.xmin = B.xmin - dg_enc_cmp
             dg.ymin = B.ymin - dg_enc_cmp
 
-            if volt == "5V" :
-                v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=v5_xtor_layer
+                    )
+                )
                 v5x.xmin = dg.xmin
                 v5x.ymin = dg.ymin
-        
-    if bulk != "Guard Ring" : 
+
+    if bulk != "Guard Ring":
         c.add_ref(c_inst)
 
         inst_size = c_inst.size
         inst_xmin = c_inst.xmin
         inst_ymin = c_inst.ymin
 
-        if volt == "5V" or volt == "6V" :
-            dg = c.add_ref(gf.components.rectangle(size=(c_inst.size[0] + (2*dg_enc_cmp),c_inst.size[1]+(2*dg_enc_poly)),layer=dualgate_layer))
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        c_inst.size[0] + (2 * dg_enc_cmp),
+                        c_inst.size[1] + (2 * dg_enc_poly),
+                    ),
+                    layer=dualgate_layer,
+                )
+            )
             dg.xmin = c_inst.xmin - dg_enc_cmp
             dg.ymin = c_inst.ymin - dg_enc_poly
 
-            if volt == "5V" :
-                v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=v5_xtor_layer
+                    )
+                )
                 v5x.xmin = dg.xmin
                 v5x.ymin = dg.ymin
-    
 
-    if deepnwell == 1 :
+    if deepnwell == 1:
 
         lvp_rect = c.add_ref(
-            gf.components.rectangle(size=(inst_size[0]+(2*lvpwell_enc_ncmp),inst_size[1]+(2*lvpwell_enc_ncmp)),layer=lvpwell_layer)
+            gf.components.rectangle(
+                size=(
+                    inst_size[0] + (2 * lvpwell_enc_ncmp),
+                    inst_size[1] + (2 * lvpwell_enc_ncmp),
+                ),
+                layer=lvpwell_layer,
+            )
         )
 
         lvp_rect.xmin = inst_xmin - lvpwell_enc_ncmp
         lvp_rect.ymin = inst_ymin - lvpwell_enc_ncmp
 
         dn_rect = c.add_ref(
-            gf.components.rectangle(size=(lvp_rect.size[0] + (2*dn_enc_lvpwell),lvp_rect.size[1] + (2*dn_enc_lvpwell)),layer=dnwell_layer)
+            gf.components.rectangle(
+                size=(
+                    lvp_rect.size[0] + (2 * dn_enc_lvpwell),
+                    lvp_rect.size[1] + (2 * dn_enc_lvpwell),
+                ),
+                layer=dnwell_layer,
+            )
         )
 
         dn_rect.xmin = lvp_rect.xmin - dn_enc_lvpwell
         dn_rect.ymin = lvp_rect.ymin - dn_enc_lvpwell
 
-        if pcmpgr == 1 :
+        if pcmpgr == 1:
 
             c_temp_gr = gf.Component("temp_store guard ring")
             rect_pcmpgr_in = c_temp_gr.add_ref(
@@ -973,7 +1008,9 @@ def draw_nfet(
                     layer=comp_layer,
                 )
             )
-            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+            rect_pcmpgr_out.move(
+                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
+            )
             B = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -986,14 +1023,19 @@ def draw_nfet(
             psdm_in = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * comp_pp_enc,
-                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin)
+                        - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin)
+                        - 2 * comp_pp_enc,
                     ),
                     layer=pplus_layer,
                 )
             )
             psdm_in.move(
-                (rect_pcmpgr_in.xmin + comp_pp_enc, rect_pcmpgr_in.ymin + comp_pp_enc)
+                (
+                    rect_pcmpgr_in.xmin + comp_pp_enc,
+                    rect_pcmpgr_in.ymin + comp_pp_enc,
+                )
             )
             psdm_out = c_temp_gr.add_ref(
                 gf.components.rectangle(
@@ -1079,7 +1121,8 @@ def draw_nfet(
             comp_m1_in = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        rect_pcmpgr_in.size[0],rect_pcmpgr_in.size[1]
+                        rect_pcmpgr_in.size[0],
+                        rect_pcmpgr_in.size[1]
                         # (l_d) + 2 * comp_spacing,
                         # (c_inst.ymax - c_inst.ymin) + 2 * poly2_comp_spacing,
                     ),
@@ -1097,7 +1140,9 @@ def draw_nfet(
                     layer=m1_layer,
                 )
             )
-            comp_m1_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+            comp_m1_out.move(
+                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
+            )
             m1 = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -1106,7 +1151,6 @@ def draw_nfet(
                     layer=m1_layer,
                 )
             )
-        
 
     # creating layout and cell in klayout
     c.write_gds(f"nfet_temp.gds")
@@ -1119,7 +1163,7 @@ def draw_nfet(
 
 # @gf.cell
 def draw_pfet(
-    layout ,
+    layout,
     l: float = 0.28,
     w: float = 0.22,
     sd_con_col: int = 1,
@@ -1796,31 +1840,55 @@ def draw_pfet(
         c.add_ref(c_inst)
 
         # deep nwell generation
-        if deepnwell == 1 : 
-            dn_rect = c.add_ref(gf.components.rectangle(
-                size=(sd_diff.size[0]+(2*dnwell_enc_pcmp),sd_diff.size[1]+(2*dnwell_enc_pcmp)),
-                layer=dnwell_layer
-            ))
+        if deepnwell == 1:
+            dn_rect = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        sd_diff.size[0] + (2 * dnwell_enc_pcmp),
+                        sd_diff.size[1] + (2 * dnwell_enc_pcmp),
+                    ),
+                    layer=dnwell_layer,
+                )
+            )
 
             dn_rect.xmin = sd_diff.xmin - dnwell_enc_pcmp
             dn_rect.ymin = sd_diff.ymin - dnwell_enc_pcmp
 
-        else : 
+        else:
 
-            # nwell generation 
-            nw = c.add_ref(gf.components.rectangle(size=(sd_diff.size[0]+(2*nw_enc_pcmp),sd_diff.size[1]+(2*nw_enc_pcmp)),layer=nwell_layer))
+            # nwell generation
+            nw = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        sd_diff.size[0] + (2 * nw_enc_pcmp),
+                        sd_diff.size[1] + (2 * nw_enc_pcmp),
+                    ),
+                    layer=nwell_layer,
+                )
+            )
             nw.xmin = sd_diff.xmin - nw_enc_pcmp
             nw.ymin = sd_diff.ymin - nw_enc_pcmp
 
-
         # dualgate generation
-        if volt == "5V" or volt == "6V" :
-            dg = c.add_ref(gf.components.rectangle(size=(sd_diff.size[0] + (2*dg_enc_cmp),c_inst.size[1]+(2*dg_enc_poly)),layer=dualgate_layer))
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        sd_diff.size[0] + (2 * dg_enc_cmp),
+                        c_inst.size[1] + (2 * dg_enc_poly),
+                    ),
+                    layer=dualgate_layer,
+                )
+            )
             dg.xmin = sd_diff.xmin - dg_enc_cmp
             dg.ymin = c_inst.ymin - dg_enc_poly
 
-            if volt == "5V" :
-                v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=v5_xtor_layer
+                    )
+                )
                 v5x.xmin = dg.xmin
                 v5x.ymin = dg.ymin
 
@@ -1865,33 +1933,59 @@ def draw_pfet(
         c.add_ref(c_inst)
 
         # deep nwell generation
-        if deepnwell == 1 : 
-            dn_rect = c.add_ref(gf.components.rectangle(
-                size=(sd_diff.size[0] + rect_bulk.size[0] +(dnwell_enc_pcmp+dnwell_enc_ncmp),sd_diff.size[1]+(2*dnwell_enc_pcmp)),
-                layer=dnwell_layer
-            ))
+        if deepnwell == 1:
+            dn_rect = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        sd_diff.size[0]
+                        + rect_bulk.size[0]
+                        + (dnwell_enc_pcmp + dnwell_enc_ncmp),
+                        sd_diff.size[1] + (2 * dnwell_enc_pcmp),
+                    ),
+                    layer=dnwell_layer,
+                )
+            )
 
             dn_rect.xmin = sd_diff.xmin - dnwell_enc_pcmp
             dn_rect.ymin = sd_diff.ymin - dnwell_enc_pcmp
 
-        else : 
+        else:
 
-            # nwell generation 
-            nw = c.add_ref(gf.components.rectangle(size=(sd_diff.size[0] + rect_bulk.size[0] +(nw_enc_pcmp + nw_enc_ncmp)
-            ,sd_diff.size[1]+(2*nw_enc_pcmp)),layer=nwell_layer))
+            # nwell generation
+            nw = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        sd_diff.size[0]
+                        + rect_bulk.size[0]
+                        + (nw_enc_pcmp + nw_enc_ncmp),
+                        sd_diff.size[1] + (2 * nw_enc_pcmp),
+                    ),
+                    layer=nwell_layer,
+                )
+            )
             nw.xmin = sd_diff.xmin - nw_enc_pcmp
             nw.ymin = sd_diff.ymin - nw_enc_pcmp
 
-        
-
         # dualgate generation
-        if volt == "5V" or volt == "6V" :
-            dg = c.add_ref(gf.components.rectangle(size=(sd_diff.size[0] + rect_bulk.size[0] + (2*dg_enc_cmp),c_inst.size[1]+(2*dg_enc_poly)),layer=dualgate_layer))
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        sd_diff.size[0] + rect_bulk.size[0] + (2 * dg_enc_cmp),
+                        c_inst.size[1] + (2 * dg_enc_poly),
+                    ),
+                    layer=dualgate_layer,
+                )
+            )
             dg.xmin = sd_diff.xmin - dg_enc_cmp
             dg.ymin = c_inst.ymin - dg_enc_poly
 
-            if volt == "5V" :
-                v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=v5_xtor_layer
+                    )
+                )
                 v5x.xmin = dg.xmin
                 v5x.ymin = dg.ymin
 
@@ -2062,42 +2156,62 @@ def draw_pfet(
         )
 
         # deep nwell generation
-        if deepnwell == 1 : 
-            dn_rect = c.add_ref(gf.components.rectangle(
-                size=(B.size[0]+(2*dnwell_enc_ncmp),B.size[1]+(2*dnwell_enc_ncmp)),
-                layer=dnwell_layer
-            ))
+        if deepnwell == 1:
+            dn_rect = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        B.size[0] + (2 * dnwell_enc_ncmp),
+                        B.size[1] + (2 * dnwell_enc_ncmp),
+                    ),
+                    layer=dnwell_layer,
+                )
+            )
 
             dn_rect.xmin = B.xmin - dnwell_enc_ncmp
             dn_rect.ymin = B.ymin - dnwell_enc_ncmp
 
-        else : 
+        else:
 
-            # nwell generation 
-            nw = c.add_ref(gf.components.rectangle(size=(B.size[0] +(2*nw_enc_ncmp)
-            ,B.size[1]+(2*nw_enc_ncmp)),layer=nwell_layer))
+            # nwell generation
+            nw = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        B.size[0] + (2 * nw_enc_ncmp),
+                        B.size[1] + (2 * nw_enc_ncmp),
+                    ),
+                    layer=nwell_layer,
+                )
+            )
             nw.xmin = B.xmin - nw_enc_ncmp
             nw.ymin = B.ymin - nw_enc_ncmp
-            
-
 
         inst_size = psdm.size
         inst_xmin = psdm.xmin
         inst_ymin = psdm.ymin
 
-        if volt == "5V" or volt == "6V" :
-            dg = c.add_ref(gf.components.rectangle(size=(B.size[0] + (2*dg_enc_cmp),B.size[1]+(2*dg_enc_cmp)),layer=dualgate_layer))
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        B.size[0] + (2 * dg_enc_cmp),
+                        B.size[1] + (2 * dg_enc_cmp),
+                    ),
+                    layer=dualgate_layer,
+                )
+            )
             dg.xmin = B.xmin - dg_enc_cmp
             dg.ymin = B.ymin - dg_enc_cmp
 
-            if volt == "5V" :
-                v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=v5_xtor_layer
+                    )
+                )
                 v5x.xmin = dg.xmin
                 v5x.ymin = dg.ymin
-        
-        
-        
-    if bulk != "Guard Ring" : 
+
+    if bulk != "Guard Ring":
 
         inst_size = c_inst.size
         inst_xmin = c_inst.xmin
@@ -2112,9 +2226,9 @@ def draw_pfet(
         #         v5x = c.add_ref(gf.components.rectangle(size=(dg.size[0],dg.size[1]),layer=v5_xtor_layer))
         #         v5x.xmin = dg.xmin
         #         v5x.ymin = dg.ymin
-    
-    if deepnwell == 1 :
-        if pcmpgr == 1 :
+
+    if deepnwell == 1:
+        if pcmpgr == 1:
 
             c_temp_gr = gf.Component("temp_store guard ring")
             rect_pcmpgr_in = c_temp_gr.add_ref(
@@ -2138,7 +2252,9 @@ def draw_pfet(
                     layer=comp_layer,
                 )
             )
-            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+            rect_pcmpgr_out.move(
+                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
+            )
             B = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -2151,14 +2267,19 @@ def draw_pfet(
             psdm_in = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * comp_pp_enc,
-                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin)
+                        - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin)
+                        - 2 * comp_pp_enc,
                     ),
                     layer=pplus_layer,
                 )
             )
             psdm_in.move(
-                (rect_pcmpgr_in.xmin + comp_pp_enc, rect_pcmpgr_in.ymin + comp_pp_enc)
+                (
+                    rect_pcmpgr_in.xmin + comp_pp_enc,
+                    rect_pcmpgr_in.ymin + comp_pp_enc,
+                )
             )
             psdm_out = c_temp_gr.add_ref(
                 gf.components.rectangle(
@@ -2244,7 +2365,8 @@ def draw_pfet(
             comp_m1_in = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        rect_pcmpgr_in.size[0],rect_pcmpgr_in.size[1]
+                        rect_pcmpgr_in.size[0],
+                        rect_pcmpgr_in.size[1]
                         # (l_d) + 2 * comp_spacing,
                         # (c_inst.ymax - c_inst.ymin) + 2 * poly2_comp_spacing,
                     ),
@@ -2262,7 +2384,9 @@ def draw_pfet(
                     layer=m1_layer,
                 )
             )
-            comp_m1_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+            comp_m1_out.move(
+                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
+            )
             m1 = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -2271,13 +2395,15 @@ def draw_pfet(
                     layer=m1_layer,
                 )
             )
-        
+
     # creating layout and cell in klayout
     c.write_gds(f"nfet_temp.gds")
     layout.read(f"nfet_temp.gds")
     cell_name = "sky_nfet_dev"
 
     return layout.cell(cell_name)
+
+
 #     # return c
 
 
