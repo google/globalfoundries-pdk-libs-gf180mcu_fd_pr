@@ -1,0 +1,7 @@
+flake8
+pandas
+numpy
+docopt
+jinja2
+openpyxl
+sympy
