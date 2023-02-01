@@ -20,8 +20,8 @@ import pya
 import os
 from .draw_cap_mim import *
 
-mim_l = 0.28
-mim_w = 0.28
+mim_l = 1.02
+mim_w = 1.02
 
 
 class cap_mim(pya.PCellDeclarationHelper):
@@ -93,7 +93,7 @@ class cap_mim(pya.PCellDeclarationHelper):
             if (self.mim_option) == "MIM-A":
                 raise TypeError(f"Current stack ({option}) doesn't allow this option")
         np_instance = draw_cap_mim(
-            self.layout, self.l, self.w, self.mim_option, self.metal_level
+            self.layout, l=self.l, w=self.w, mim_option=self.mim_option, metal_level=self.metal_level
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),

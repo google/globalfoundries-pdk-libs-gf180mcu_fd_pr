@@ -18,8 +18,6 @@
 
 from gdsfactory.types import LayerSpec
 
-
- 
 comp_layer : LayerSpec = (22,0)
          
 dnwell_layer : LayerSpec = (12,0)
