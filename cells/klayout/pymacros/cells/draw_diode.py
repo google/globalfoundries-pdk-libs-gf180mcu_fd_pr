@@ -1046,6 +1046,7 @@ def draw_diode_dw2ps(
     w: float = 0.1,
     cw: float = 0.1,
     volt: str = "3.3V",
+    pcmpgr: bool = 0,
 ) -> gf.Component:
     """
     Usage:-
@@ -1058,6 +1059,360 @@ def draw_diode_dw2ps(
     """
 
     c = gf.Component("diode_dw2ps_dev")
+
+    if volt == "5/6V":
+        dn_enc_ncmp = 0.66
+    else:
+        dn_enc_ncmp = 0.62
+
+    comp_spacing = 0.32
+    np_enc_comp: float = 0.16
+    pp_enc_comp: float = 0.16
+
+    con_size = 0.22
+    con_sp = 0.28
+    con_comp_enc = 0.07
+
+    dg_enc_dn = 0.5
+
+    pcmpgr_enc_dn = 2.5
+
+    if (w < ((2 * cw) + comp_spacing)) or (l < ((2 * cw) + comp_spacing)):
+        ncmp = c.add_ref(
+            gf.components.rectangle(size=(w, l), layer=comp_layer)
+        )
+
+        ncmp_con = c.add_ref(
+            via_stack(
+                x_range=(ncmp.xmin, ncmp.xmax),
+                y_range=(ncmp.ymin, ncmp.ymax),
+                base_layer=comp_layer,
+                metal_level=1,
+            )
+        )
+
+        nplus = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    ncmp.size[0] + (2 * np_enc_comp),
+                    ncmp.size[1] + (2 * np_enc_comp),
+                ),
+                layer=nplus_layer,
+            )
+        )
+        nplus.xmin = ncmp.xmin - np_enc_comp
+        nplus.ymin = ncmp.ymin - np_enc_comp
+    else:
+        c_temp = gf.Component("temp_store guard ring")
+        ncmp_in = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(w - (2 * cw), l - (2 * cw)), layer=comp_layer,
+            )
+        )
+        ncmp_out = c_temp.add_ref(
+            gf.components.rectangle(size=(w, l), layer=comp_layer,)
+        )
+        ncmp_out.move((ncmp_in.xmin - cw, ncmp_in.ymin - cw))
+        ncmp = c.add_ref(
+            gf.geometry.boolean(
+                A=ncmp_out, B=ncmp_in, operation="A-B", layer=comp_layer,
+            )
+        )
+
+        pplus_in = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (ncmp_in.xmax - ncmp_in.xmin) - 2 * pp_enc_comp,
+                    (ncmp_in.ymax - ncmp_in.ymin) - 2 * pp_enc_comp,
+                ),
+                layer=pplus_layer,
+            )
+        )
+        pplus_in.move(
+            (ncmp_in.xmin + pp_enc_comp, ncmp_in.ymin + pp_enc_comp,)
+        )
+        pplus_out = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (ncmp_out.xmax - ncmp_out.xmin) + 2 * pp_enc_comp,
+                    (ncmp_out.ymax - ncmp_out.ymin) + 2 * pp_enc_comp,
+                ),
+                layer=pplus_layer,
+            )
+        )
+        pplus_out.move(
+            (ncmp_out.xmin - pp_enc_comp, ncmp_out.ymin - pp_enc_comp,)
+        )
+        pplus = c.add_ref(
+            gf.geometry.boolean(
+                A=pplus_out, B=pplus_in, operation="A-B", layer=pplus_layer
+            )
+        )
+
+        # generating contacts
+
+        ring_con_bot = c.add_ref(
+            via_generator(
+                x_range=(ncmp_in.xmin + con_size, ncmp_in.xmax - con_size,),
+                y_range=(ncmp_out.ymin, ncmp_in.ymin),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=contact_layer,
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )
+
+        ring_con_up = c.add_ref(
+            via_generator(
+                x_range=(ncmp_in.xmin + con_size, ncmp_in.xmax - con_size,),
+                y_range=(ncmp_in.ymax, ncmp_out.ymax),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=contact_layer,
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )
+
+        ring_con_r = c.add_ref(
+            via_generator(
+                x_range=(ncmp_out.xmin, ncmp_in.xmin),
+                y_range=(ncmp_in.ymin + con_size, ncmp_in.ymax - con_size,),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=contact_layer,
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )
+
+        ring_con_l = c.add_ref(
+            via_generator(
+                x_range=(ncmp_in.xmax, ncmp_out.xmax),
+                y_range=(ncmp_in.ymin + con_size, ncmp_in.ymax - con_size,),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=contact_layer,
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )
+
+        comp_m1_in = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(ncmp_in.size[0], ncmp_in.size[1]), layer=m1_layer,
+            )
+        )
+
+        comp_m1_out = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (ncmp_in.xmax - ncmp_in.xmin) + 2 * cw,
+                    (ncmp_in.ymax - ncmp_in.ymin) + 2 * cw,
+                ),
+                layer=m1_layer,
+            )
+        )
+        comp_m1_out.move((ncmp_in.xmin - cw, ncmp_in.ymin - cw))
+        m1 = c.add_ref(
+            gf.geometry.boolean(
+                A=ncmp_out, B=ncmp_in, operation="A-B", layer=m1_layer,
+            )
+        )
+
+    # generate dnwell
+
+    dn_rect = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                ncmp.size[0] + (2 * dn_enc_ncmp),
+                ncmp.size[1] + (2 * dn_enc_ncmp),
+            ),
+            layer=dnwell_layer,
+        )
+    )
+    dn_rect.xmin = ncmp.xmin - dn_enc_ncmp
+    dn_rect.ymin = ncmp.ymin - dn_enc_ncmp
+
+    diode_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(dn_rect.size[0], dn_rect.size[1]), layer=well_diode_mk_layer
+        )
+    )
+    diode_mk.xmin = dn_rect.xmin
+    diode_mk.ymin = dn_rect.ymin
+
+    if pcmpgr == 1:
+
+        c_temp_gr = gf.Component("temp_store guard ring")
+        rect_pcmpgr_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (dn_rect.xmax - dn_rect.xmin) + 2 * pcmpgr_enc_dn,
+                    (dn_rect.ymax - dn_rect.ymin) + 2 * pcmpgr_enc_dn,
+                ),
+                layer=comp_layer,
+            )
+        )
+        rect_pcmpgr_in.move(
+            (dn_rect.xmin - pcmpgr_enc_dn, dn_rect.ymin - pcmpgr_enc_dn)
+        )
+        rect_pcmpgr_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                ),
+                layer=comp_layer,
+            )
+        )
+        rect_pcmpgr_out.move(
+            (rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw)
+        )
+        B = c.add_ref(
+            gf.geometry.boolean(
+                A=rect_pcmpgr_out,
+                B=rect_pcmpgr_in,
+                operation="A-B",
+                layer=comp_layer,
+            )
+        )
+
+        psdm_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin)
+                    - 2 * pp_enc_comp,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin)
+                    - 2 * pp_enc_comp,
+                ),
+                layer=pplus_layer,
+            )
+        )
+        psdm_in.move(
+            (
+                rect_pcmpgr_in.xmin + pp_enc_comp,
+                rect_pcmpgr_in.ymin + pp_enc_comp,
+            )
+        )
+        psdm_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin)
+                    + 2 * pp_enc_comp,
+                    (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin)
+                    + 2 * pp_enc_comp,
+                ),
+                layer=pplus_layer,
+            )
+        )
+        psdm_out.move(
+            (
+                rect_pcmpgr_out.xmin - pp_enc_comp,
+                rect_pcmpgr_out.ymin - pp_enc_comp,
+            )
+        )
+        psdm = c.add_ref(
+            gf.geometry.boolean(
+                A=psdm_out, B=psdm_in, operation="A-B", layer=pplus_layer
+            )
+        )
+
+        # generating contacts
+
+        ring_con_bot = c.add_ref(
+            via_generator(
+                x_range=(
+                    rect_pcmpgr_in.xmin + con_size,
+                    rect_pcmpgr_in.xmax - con_size,
+                ),
+                y_range=(rect_pcmpgr_out.ymin, rect_pcmpgr_in.ymin),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=contact_layer,
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )
+
+        ring_con_up = c.add_ref(
+            via_generator(
+                x_range=(
+                    rect_pcmpgr_in.xmin + con_size,
+                    rect_pcmpgr_in.xmax - con_size,
+                ),
+                y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=contact_layer,
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )
+
+        ring_con_r = c.add_ref(
+            via_generator(
+                x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
+                y_range=(
+                    rect_pcmpgr_in.ymin + con_size,
+                    rect_pcmpgr_in.ymax - con_size,
+                ),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=contact_layer,
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )
+
+        ring_con_l = c.add_ref(
+            via_generator(
+                x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
+                y_range=(
+                    rect_pcmpgr_in.ymin + con_size,
+                    rect_pcmpgr_in.ymax - con_size,
+                ),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=contact_layer,
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )
+
+        comp_m1_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(rect_pcmpgr_in.size[0], rect_pcmpgr_in.size[1]),
+                layer=m1_layer,
+            )
+        )
+
+        comp_m1_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                ),
+                layer=m1_layer,
+            )
+        )
+        comp_m1_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        m1 = c.add_ref(
+            gf.geometry.boolean(
+                A=rect_pcmpgr_out,
+                B=rect_pcmpgr_in,
+                operation="A-B",
+                layer=m1_layer,
+            )
+        )
+
+    # generate dualgate
+
+    if volt == "5/6V":
+        dg = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    dn_rect.size[0] + (2 * dg_enc_dn),
+                    dn_rect.size[1] + (2 * dg_enc_dn),
+                ),
+                layer=dualgate_layer,
+            )
+        )
+        dg.xmin = dn_rect.xmin - dg_enc_dn
+        dg.ymin = dn_rect.ymin - dg_enc_dn
 
     # creating layout and cell in klayout
 

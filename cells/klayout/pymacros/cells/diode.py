@@ -336,6 +336,7 @@ class diode_dw2ps(pya.PCellDeclarationHelper):
         super(diode_dw2ps, self).__init__()
 
         # ===================== PARAMETERS DECLARATIONS =====================
+        self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
         self.Type_handle = self.param("volt", self.TypeList, "Voltage area")
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
@@ -381,7 +382,7 @@ class diode_dw2ps(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         diode_dw2ps_instance = draw_diode_dw2ps(
-            self.layout, l=self.l, w=self.w,cw= self.cw,volt= self.volt
+            self.layout, l=self.l, w=self.w,cw= self.cw,volt= self.volt, pcmpgr=self.pcmpgr
         )
         write_cells = pya.CellInstArray(
             diode_dw2ps_instance.cell_index(),
@@ -394,4 +395,3 @@ class diode_dw2ps(pya.PCellDeclarationHelper):
 
         self.cell.insert(write_cells)
         self.cell.flatten(1)
-
