@@ -16,7 +16,7 @@
 # FET Generator for GF180MCU
 ########################################################################################################################
 import pya
-from .draw_fet import *
+from .draw_fet import draw_nfet, draw_nfet_06v0_nvt, draw_pfet
 
 fet_3p3_l = 0.28
 fet_3p3_w = 0.22

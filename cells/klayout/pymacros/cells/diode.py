@@ -17,7 +17,14 @@
 ########################################################################################################################
 
 import pya
-from .draw_diode import *
+from .draw_diode import (
+    draw_diode_dw2ps,
+    draw_diode_nd2ps,
+    draw_diode_nw2ps,
+    draw_diode_pd2nw,
+    draw_diode_pw2dw,
+    draw_sc_diode,
+)
 
 np_l = 0.36
 np_w = 0.36

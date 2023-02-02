@@ -17,7 +17,7 @@
 ########################################################################################################################
 
 import pya
-from .draw_cap_mos import *
+from .draw_cap_mos import draw_cap_nmos, draw_cap_nmos_b, draw_cap_pmos, draw_cap_pmos_b
 
 cap_nmos_w = 1.88
 cap_nmos_l = 1

@@ -18,7 +18,20 @@
 
 import pya
 import os
-from .draw_res import *
+from .draw_res import (
+    draw_metal_res,
+    draw_nplus_s_res,
+    draw_nplus_u_res,
+    draw_npolyf_s_res,
+    draw_npolyf_u_res,
+    draw_nwell_res,
+    draw_pplus_s_res,
+    draw_pplus_u_res,
+    draw_ppolyf_s_res,
+    draw_ppolyf_u_high_Rs_res,
+    draw_ppolyf_u_res,
+    draw_pwell_res,
+)
 
 rm1_l = 0.23
 rm1_w = 0.23

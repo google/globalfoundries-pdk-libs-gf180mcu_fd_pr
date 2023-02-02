@@ -18,7 +18,7 @@
 
 import pya
 import os
-from .draw_cap_mim import *
+from .draw_cap_mim import draw_cap_mim
 
 mim_l = 1.02
 mim_w = 1.02
