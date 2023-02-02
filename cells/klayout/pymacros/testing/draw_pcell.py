@@ -29,8 +29,9 @@ top = layout.create_cell("TOP")
 lib = pya.Library.library_by_name("gf180mcu")
 
 # ===== Draw function
-def draw_pcell(device_name, device_space):
 
+
+def draw_pcell(device_name, device_space):
     # dnwell layer
     # dnwell         = layout.layer(12 , 0 )
 
@@ -40,7 +41,6 @@ def draw_pcell(device_name, device_space):
     # Count num. of patterns [instances]
     patterns_no = df.shape[0]
     pcell_row_no = int(math.sqrt(patterns_no))
-    pcell_col_no = int(patterns_no / pcell_row_no) + 1
 
     # inital value for instances location
     x_shift = 0
