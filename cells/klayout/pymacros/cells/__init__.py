@@ -76,6 +76,11 @@ class gf180mcu(pya.Library):
         )  # diode_dw2ps_03v3 , diode_dw2ps_06v0
         self.layout().register_pcell("sc_diode", sc_diode())
 
+        # MIM_CAP DEVICES
+        self.layout().register_pcell(
+            "cap_mim", cap_mim()
+        )
+
         # cap_mos
         self.layout().register_pcell(
             "cap_nmos", cap_nmos()
