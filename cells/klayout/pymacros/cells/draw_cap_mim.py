@@ -1,6 +1,6 @@
 import gdsfactory as gf
 
-from .via_generator import *
+from .via_generator import via_generator, via_stack
 from .layers_def import layer
 
 
@@ -8,8 +8,8 @@ def draw_cap_mim(
     layout,
     mim_option: str = "A",
     metal_level: str = "M4",
-    l: float = 2,
-    w: float = 2,
+    lc: float = 2,
+    wc: float = 2,
 ):
 
     """
@@ -17,8 +17,8 @@ def draw_cap_mim(
 
     Args:
         layout : layout object
-        l : float of capm length
-        w : float of capm width
+        lc : float of cap length
+        wc : float of cap width
 
 
     """
@@ -60,15 +60,12 @@ def draw_cap_mim(
 
     # drawing cap identifier and bottom , upper layers
 
-    m_up = c.add_ref(
-        gf.components.rectangle(
-            size=(w, l),
-            layer=upper_layer,
-        )
-    )
+    m_up = c.add_ref(gf.components.rectangle(size=(wc, lc), layer=upper_layer,))
 
     fusetop = c.add_ref(
-        gf.components.rectangle(size=(m_up.size[0], m_up.size[1]), layer=layer["fusetop"])
+        gf.components.rectangle(
+            size=(m_up.size[0], m_up.size[1]), layer=layer["fusetop"]
+        )
     )
     fusetop.xmin = m_up.xmin
     fusetop.ymin = m_up.ymin
@@ -89,7 +86,9 @@ def draw_cap_mim(
     m_dn.ymin = m_up.ymin - bot_enc_top
 
     cap_mk = c.add_ref(
-        gf.components.rectangle(size=(m_dn.size[0], m_dn.size[1]), layer=layer["cap_mk"])
+        gf.components.rectangle(
+            size=(m_dn.size[0], m_dn.size[1]), layer=layer["cap_mk"]
+        )
     )
     cap_mk.xmin = m_dn.xmin
     cap_mk.ymin = m_dn.ymin
