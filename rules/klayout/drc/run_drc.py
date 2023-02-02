@@ -289,7 +289,7 @@ def generate_klayout_switches(arguments, layout_path):
     switches = dict()
 
     # No. of threads
-    thrCount = 2 if arguments["--thr"] == None else int(arguments["--thr"])
+    thrCount = 2 if arguments["--thr"] is None else int(arguments["--thr"])
     switches["thr"] = str(int(thrCount))
 
     if arguments["--run_mode"] in ["flat", "deep", "tiling"]:
@@ -375,14 +375,14 @@ def check_klayout_version():
         exit(1)
     elif len(klayout_v_list) == 2:
         if klayout_v_list[1] < 28:
-            logging.warning(f"Prerequisites at a minimum: KLayout 0.28.0")
+            logging.warning("Prerequisites at a minimum: KLayout 0.28.0")
             logging.error(
                 "Using this klayout version has not been assesed in this development. Limits are unknown"
             )
             exit(1)
     elif len(klayout_v_list) == 3:
         if klayout_v_list[1] < 28:
-            logging.warning(f"Prerequisites at a minimum: KLayout 0.28.0")
+            logging.warning("Prerequisites at a minimum: KLayout 0.28.0")
             logging.error(
                 "Using this klayout version has not been assesed in this development. Limits are unknown"
             )
@@ -407,8 +407,7 @@ def check_layout_path(layout_path):
     if not os.path.isfile(layout_path):
         logging.error("## GDS file path provided doesn't exist or not a file.")
         exit(1)
-
-    if not ".gds" in layout_path and not ".oas" in layout_path:
+    if ".gds" not in layout_path and ".oas" not in layout_path:
         logging.error(
             "## Layout is not in GDSII or OASIS format. Please use gds format."
         )
@@ -471,7 +470,7 @@ def run_check(drc_file: str, drc_name: str, path: str, run_dir: str, sws: dict):
     new_sws["report"] = report_path
     sws_str = build_switches_string(new_sws)
     sws_str += f" -rd table_name={drc_name}"
-    log_file = os.path.join(run_dir, "{}_{}.log".format(layout_base_name, drc_name))
+    # log_file = os.path.join(run_dir, "{}_{}.log".format(layout_base_name, drc_name))
 
     run_str = f"klayout -b -r {drc_file} {sws_str}"
 
@@ -701,7 +700,7 @@ if __name__ == "__main__":
             logging.FileHandler(os.path.join(drc_run_dir, "{}.log".format(now_str))),
             logging.StreamHandler(),
         ],
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 

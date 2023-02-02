@@ -21,6 +21,8 @@ import warnings
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 # ======================  Generation of switches patterns ====================================
+
+
 def gen_patterns():
 
     test_name = [
@@ -73,8 +75,8 @@ def run_switches():
     RUN_DIRECTORY = "switch_checking/run_switch_results/"
     csv_path = "pattern.csv"
     PASS = "pass"
-    FAIL = "fail"
-    ERROR_MESSEGE = "More than one variable for"
+    # FAIL = "fail"
+    # ERROR_MESSEGE = "More than one variable for"
     LOG_FILE_NAME = "run.log"
 
     def run_test_case(test_case, switches, expected_result, expected_log):
@@ -196,7 +198,7 @@ def main():
     # logs format
     logging.basicConfig(
         level=logging.DEBUG,
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
