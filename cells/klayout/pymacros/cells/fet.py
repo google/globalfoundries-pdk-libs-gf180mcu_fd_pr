@@ -60,8 +60,8 @@ class nfet(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("Bulk Tie", "Bulk Tie")
         self.Type_handle.add_choice("Guard Ring", "Guard Ring")
 
-        self.param("w", self.TypeDouble, "Width", default=fet_3p3_w, unit="um")
-        self.param("l", self.TypeDouble, "Length", default=fet_3p3_l, unit="um")
+        self.param("w_gate", self.TypeDouble, "Width", default=fet_3p3_w, unit="um")
+        self.param("l_gate", self.TypeDouble, "Length", default=fet_3p3_l, unit="um")
         self.param("ld", self.TypeDouble, "Diffusion Length", default=fet_ld, unit="um")
         self.param("nf", self.TypeInt, "Number of Fingers", default=1)
         self.param(
@@ -90,31 +90,31 @@ class nfet(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "nfet(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "nfet(L=" + ("%.3f" % self.l_gate) + ",W=" + ("%.3f" % self.w_gate) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
         # numeric parameter has changed (by comparing against the effective
         # radius ru) and set ru to the effective radius. We also update the
         # numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.w_gate * self.l_gate
+        self.perim = 2 * (self.w_gate + self.l_gate)
         # w,l must be larger or equal than min. values.
         if self.volt == "3.3V":
-            if (self.l) < fet_3p3_l:
-                self.l = fet_3p3_l
-            if (self.w) < fet_3p3_w:
-                self.w = fet_3p3_w
+            if (self.l_gate) < fet_3p3_l:
+                self.l_gate = fet_3p3_l
+            if (self.w_gate) < fet_3p3_w:
+                self.w_gate = fet_3p3_w
         elif self.volt == "5V":
-            if (self.l) < nfet_05v0_l:
-                self.l = nfet_05v0_l
-            if (self.w) < fet_5_6_w:
-                self.w = fet_5_6_w
+            if (self.l_gate) < nfet_05v0_l:
+                self.l_gate = nfet_05v0_l
+            if (self.w_gate) < fet_5_6_w:
+                self.w_gate = fet_5_6_w
         elif self.volt == "6V":
-            if (self.l) < nfet_06v0_l:
-                self.l = nfet_06v0_l
-            if (self.w) < fet_5_6_w:
-                self.w = fet_5_6_w
+            if (self.l_gate) < nfet_06v0_l:
+                self.l_gate = nfet_06v0_l
+            if (self.w_gate) < fet_5_6_w:
+                self.w_gate = fet_5_6_w
 
         if (self.ld) < fet_ld:
             self.ld = fet_ld
@@ -130,8 +130,8 @@ class nfet(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.l_gateayout.dbu / 2
+        self.l_gate = self.l_gateayout.get_info(self.l_gateayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -141,8 +141,8 @@ class nfet(pya.PCellDeclarationHelper):
     def produce_impl(self):
         instance = draw_nfet(
             self.layout,
-            l=self.l,
-            w=self.w,
+            l_gate=self.l_gate,
+            w_gate=self.w_gate,
             sd_con_col=self.sd_con_col,
             inter_sd_l=self.ld,
             nf=self.nf,
@@ -189,8 +189,8 @@ class pfet(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("Bulk Tie", "Bulk Tie")
         self.Type_handle.add_choice("Guard Ring", "Guard Ring")
 
-        self.param("w", self.TypeDouble, "Width", default=fet_3p3_w, unit="um")
-        self.param("l", self.TypeDouble, "Length", default=fet_3p3_l, unit="um")
+        self.param("w_gate", self.TypeDouble, "Width", default=fet_3p3_w, unit="um")
+        self.param("l_gate", self.TypeDouble, "Length", default=fet_3p3_l, unit="um")
         self.param("ld", self.TypeDouble, "Diffusion Length", default=fet_ld, unit="um")
         self.param("nf", self.TypeInt, "Number of Fingers", default=1)
         self.param(
@@ -219,31 +219,31 @@ class pfet(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "pfet(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "pfet(L=" + ("%.3f" % self.l_gate) + ",W=" + ("%.3f" % self.w_gate) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
         # numeric parameter has changed (by comparing against the effective
         # radius ru) and set ru to the effective radius. We also update the
         # numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.w_gate * self.l_gate
+        self.perim = 2 * (self.w_gate + self.l_gate)
         # w,l must be larger or equal than min. values.
         if self.volt == "3.3V":
-            if (self.l) < fet_3p3_l:
-                self.l = fet_3p3_l
-            if (self.w) < fet_3p3_w:
-                self.w = fet_3p3_w
+            if (self.l_gate) < fet_3p3_l:
+                self.l_gate = fet_3p3_l
+            if (self.w_gate) < fet_3p3_w:
+                self.w_gate = fet_3p3_w
         elif self.volt == "5V":
-            if (self.l) < pfet_05v0_l:
-                self.l = pfet_05v0_l
-            if (self.w) < fet_5_6_w:
-                self.w = fet_5_6_w
+            if (self.l_gate) < pfet_05v0_l:
+                self.l_gate = pfet_05v0_l
+            if (self.w_gate) < fet_5_6_w:
+                self.w_gate = fet_5_6_w
         elif self.volt == "6V":
-            if (self.l) < pfet_06v0_l:
-                self.l = pfet_06v0_l
-            if (self.w) < fet_5_6_w:
-                self.w = fet_5_6_w
+            if (self.l_gate) < pfet_06v0_l:
+                self.l_gate = pfet_06v0_l
+            if (self.w_gate) < fet_5_6_w:
+                self.w_gate = fet_5_6_w
 
         if (self.ld) < fet_ld:
             self.ld = fet_ld
@@ -259,8 +259,8 @@ class pfet(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.l_gateayout.dbu / 2
+        self.l_gate = self.l_gateayout.get_info(self.l_gateayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -270,8 +270,8 @@ class pfet(pya.PCellDeclarationHelper):
     def produce_impl(self):
         instance = draw_pfet(
             self.layout,
-            l=self.l,
-            w=self.w,
+            l_gate=self.l_gate,
+            w_gate=self.w_gate,
             sd_con_col=self.sd_con_col,
             inter_sd_l=self.ld,
             nf=self.nf,
@@ -312,8 +312,8 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("Bulk Tie", "Bulk Tie")
         self.Type_handle.add_choice("Guard Ring", "Guard Ring")
 
-        self.param("w", self.TypeDouble, "Width", default=nfet_nat_w, unit="um")
-        self.param("l", self.TypeDouble, "Length", default=nfet_nat_l, unit="um")
+        self.param("w_gate", self.TypeDouble, "Width", default=nfet_nat_w, unit="um")
+        self.param("l_gate", self.TypeDouble, "Length", default=nfet_nat_l, unit="um")
         self.param("ld", self.TypeDouble, "Diffusion Length", default=fet_ld, unit="um")
         self.param("nf", self.TypeInt, "Number of Fingers", default=1)
         self.param(
@@ -342,21 +342,21 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "nfet_06v0_nvt(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "nfet_06v0_nvt(L=" + ("%.3f" % self.l_gate) + ",W=" + ("%.3f" % self.w_gate) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
         # numeric parameter has changed (by comparing against the effective
         # radius ru) and set ru to the effective radius. We also update the
         # numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.w_gate * self.l_gate
+        self.perim = 2 * (self.w_gate + self.l_gate)
         # w,l must be larger or equal than min. values.
-        if (self.l) < nfet_nat_l:
-            self.l = nfet_nat_l
+        if (self.l_gate) < nfet_nat_l:
+            self.l_gate = nfet_nat_l
 
-        if (self.w) < nfet_nat_w:
-            self.w = nfet_nat_w
+        if (self.w_gate) < nfet_nat_w:
+            self.w_gate = nfet_nat_w
 
         if (self.grw) < fet_grw:
             self.grw = fet_grw
@@ -372,8 +372,8 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.l_gateayout.dbu / 2
+        self.l_gate = self.l_gateayout.get_info(self.l_gateayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -383,8 +383,8 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
     def produce_impl(self):
         instance = draw_nfet_06v0_nvt(
             self.layout,
-            l=self.l,
-            w=self.w,
+            l_gate=self.l_gate,
+            w_gate=self.w_gate,
             sd_con_col=self.sd_con_col,
             inter_sd_l=self.ld,
             nf=self.nf,
