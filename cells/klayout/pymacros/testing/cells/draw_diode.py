@@ -35,7 +35,7 @@ def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
     return num_cont, free_spc
 
 
-def draw_diode_nd2ps(layout, l, w, volt, deepnwell, pcmpgr):
+def draw_diode_nd2ps(layout, la, wa, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw N+/LVPWELL diode (Outside DNWELL) by specifying parameters
@@ -63,8 +63,8 @@ def draw_diode_nd2ps(layout, l, w, volt, deepnwell, pcmpgr):
     dbu_PERCISION = 1 / layout.dbu
     pcmp2ncmp_spc = 0.48 * dbu_PERCISION
     ncmp_w = 0.36 * dbu_PERCISION
-    pcmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
+    pcmp_w = wa * dbu_PERCISION
+    cmp_l = la * dbu_PERCISION
     implant_comp_enc = 0.16 * dbu_PERCISION
     comp_cont_enc = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -162,7 +162,7 @@ def draw_diode_nd2ps(layout, l, w, volt, deepnwell, pcmpgr):
     diode_np_cell.insert(pcmp_con_arr)
 
     # Inserting Deep NWELL layers
-    if deepnwell == True:
+    if deepnwell:
         diode_np_cell.shapes(lvpwell).insert(
             pya.Box(
                 -lvpwell_enc_pcmp,
@@ -181,7 +181,7 @@ def draw_diode_nd2ps(layout, l, w, volt, deepnwell, pcmpgr):
         )
 
         # Inserting Deep NWELL P+ Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -lvpwell_enc_pcmp - dnwell_enc_lvpwell - pcmp_gr2dnw,
                 -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw,
@@ -264,7 +264,7 @@ def draw_diode_nd2ps(layout, l, w, volt, deepnwell, pcmpgr):
             )
         )
         # Inserting dualgate
-        if deepnwell == True:
+        if deepnwell:
             diode_np_cell.shapes(dualgate).insert(
                 pya.Box(
                     -lvpwell_enc_pcmp - dnwell_enc_lvpwell - dg_enc_dnwell,
@@ -301,7 +301,7 @@ def draw_diode_nd2ps(layout, l, w, volt, deepnwell, pcmpgr):
     return diode_np_cell
 
 
-def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
+def draw_diode_pd2nw(layout, la, wa, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3.3V P+/Nwell diode (Outside DNWELL) by specifying parameters
@@ -329,8 +329,8 @@ def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
     dbu_PERCISION = 1 / layout.dbu
     pcmp2ncmp_spc = 0.48 * dbu_PERCISION
     ncmp_w = 0.36 * dbu_PERCISION
-    pcmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
+    pcmp_w = wa * dbu_PERCISION
+    cmp_l = la * dbu_PERCISION
     implant_comp_enc = 0.16 * dbu_PERCISION
     comp_cont_enc = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -345,7 +345,7 @@ def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
     pcmp_gr2dnw = 2.5 * dbu_PERCISION
     dnwell_violat = 0 * dbu_PERCISION
 
-    if volt == "5/6V" or deepnwell == True:
+    if volt == "5/6V" or deepnwell:
         nwell_ncmp_enc = 0.16 * dbu_PERCISION
         nwell_pcmp_enc = 0.6 * dbu_PERCISION
         dnwell_violat = 0.12 * dbu_PERCISION
@@ -444,7 +444,7 @@ def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
     diode_pn_cell.insert(pcmp_con_arr)
 
     # Inserting Deep NWELL layers
-    if deepnwell == True:
+    if deepnwell:
         diode_pn_cell.shapes(dnwell).insert(
             pya.Box(
                 -nwell_ncmp_enc - dnwell_enc_nwell - dnwell_violat,
@@ -455,7 +455,7 @@ def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
         )
 
         # Inserting Deep NWELL P+ Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -nwell_ncmp_enc - dnwell_enc_nwell - pcmp_gr2dnw - dnwell_violat,
                 -nwell_pcmp_enc - dnwell_enc_nwell - pcmp_gr2dnw,
@@ -538,7 +538,7 @@ def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
 
     if volt == "5/6V":
         # Inserting dualgate
-        if deepnwell == True:
+        if deepnwell:
             diode_pn_cell.shapes(dualgate).insert(
                 pya.Box(
                     -nwell_ncmp_enc - dnwell_enc_nwell - dg_enc_dnwell - dnwell_violat,
@@ -571,7 +571,7 @@ def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
     return diode_pn_cell
 
 
-def draw_diode_nw2ps(layout, l, w, volt):
+def draw_diode_nw2ps(layout, la, wa, volt):
     """
     Usage:-
      used to draw 3.3V Nwell/Psub diode by specifying parameters
@@ -596,8 +596,8 @@ def draw_diode_nw2ps(layout, l, w, volt):
     dbu_PERCISION = 1 / layout.dbu
     pcmp2ncmp_spc = 0.44 * dbu_PERCISION
     ncmp_w = 0.36 * dbu_PERCISION
-    pcmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
+    pcmp_w = wa * dbu_PERCISION
+    cmp_l = la * dbu_PERCISION
     implant_comp_enc = 0.16 * dbu_PERCISION
     comp_cont_enc = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -725,7 +725,7 @@ def draw_diode_nw2ps(layout, l, w, volt):
     return diode_nw2ps_cell
 
 
-def draw_diode_pw2dw(layout, l, w, volt):
+def draw_diode_pw2dw(layout, la, wa, volt):
     """
     Usage:-
      used to draw LVPWELL/DNWELL diode by specifying parameters
@@ -742,7 +742,6 @@ def draw_diode_pw2dw(layout, l, w, volt):
     comp = layout.layer(22, 0)
     nplus = layout.layer(32, 0)
     pplus = layout.layer(31, 0)
-    nwell = layout.layer(21, 0)
     contact = layout.layer(33, 0)
     metal1 = layout.layer(34, 0)
     dualgate = layout.layer(55, 0)
@@ -750,8 +749,8 @@ def draw_diode_pw2dw(layout, l, w, volt):
 
     # Define variables
     dbu_PERCISION = 1 / layout.dbu
-    lvpwell_w = w * dbu_PERCISION
-    lvpwell_l = l * dbu_PERCISION
+    lvpwell_w = wa * dbu_PERCISION
+    lvpwell_l = la * dbu_PERCISION
     dnwell_lvpwell_enc = 2.5 * dbu_PERCISION
     lvpwell_pcmp_enc = 0.12 * dbu_PERCISION
     cmp_w = 0.36 * dbu_PERCISION
@@ -1255,7 +1254,7 @@ def draw_diode_pw2dw(layout, l, w, volt):
     return diode_pw2dw_cell
 
 
-def draw_diode_dw2ps(layout, l, w, volt):
+def draw_diode_dw2ps(layout, la, wa, volt):
     """
     Usage:-
      used to draw LVPWELL/DNWELL diode by specifying parameters
@@ -1267,12 +1266,10 @@ def draw_diode_dw2ps(layout, l, w, volt):
     """
 
     # Define layers
-    lvpwell = layout.layer(204, 0)
     dnwell = layout.layer(12, 0)
     comp = layout.layer(22, 0)
     nplus = layout.layer(32, 0)
     pplus = layout.layer(31, 0)
-    nwell = layout.layer(21, 0)
     contact = layout.layer(33, 0)
     metal1 = layout.layer(34, 0)
     dualgate = layout.layer(55, 0)
@@ -1280,13 +1277,11 @@ def draw_diode_dw2ps(layout, l, w, volt):
 
     # Define variables
     dbu_PERCISION = 1 / layout.dbu
-    dnwell_w = w * dbu_PERCISION
-    dnwell_l = l * dbu_PERCISION
+    dnwell_w = wa * dbu_PERCISION
+    dnwell_l = la * dbu_PERCISION
     dnwell_pcmp_enc = 0.62 * dbu_PERCISION
     cmp_w = 0.36 * dbu_PERCISION
-    pcmp2ncmp_spc = 0.32 * dbu_PERCISION
     implant_comp_enc = 0.03 * dbu_PERCISION
-    ncmp_ext = 0.56 * dbu_PERCISION
     lvpwell_gr_spc = 2.5 * dbu_PERCISION
     cont_spc_tol = 0.11 * dbu_PERCISION
     comp_cont_enc = 0.07 * dbu_PERCISION
@@ -1721,7 +1716,7 @@ def draw_diode_dw2ps(layout, l, w, volt):
     return diode_dw2ps_cell
 
 
-def draw_sc_diode(layout, l, w, m, pcmpgr):
+def draw_sc_diode(layout, la, wa, m, pcmpgr):
     """
     Usage:-
      used to draw N+/LVPWELL diode (Outside DNWELL) by specifying parameters
@@ -1746,8 +1741,8 @@ def draw_sc_diode(layout, l, w, m, pcmpgr):
     dbu_PERCISION = 1 / layout.dbu
     ncmp_metcmp_spc = 0.28 * dbu_PERCISION
     ncmp_w = 0.36 * dbu_PERCISION
-    sc_w = w * dbu_PERCISION
-    sc_l = l * dbu_PERCISION
+    sc_w = wa * dbu_PERCISION
+    sc_l = la * dbu_PERCISION
     implant_comp_enc = 0.03 * dbu_PERCISION
     comp_cont_enc = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -1866,7 +1861,7 @@ def draw_sc_diode(layout, l, w, m, pcmpgr):
     )
 
     # Inserting Deep NWELL P+ Guard Ring
-    if pcmpgr == True:
+    if pcmpgr:
         cmp_inner = pya.Box(
             -dnwell_cmp_enc_x - pcmp_gr2dnw,
             -dnwell_cmp_enc_y - pcmp_gr2dnw,

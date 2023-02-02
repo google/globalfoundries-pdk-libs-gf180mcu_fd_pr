@@ -21,13 +21,13 @@ import pya
 tol = 1.05
 
 
-def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
+def draw_nfet(layout, l_gate, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw NFET transistor by specifying parameters
     Arguments:-
      layout     : Object of layout
-     l          : Float of gate length
+     l_gate          : Float of gate length
      w          : Float of gate width
      ld         : Float of diffusion length
      nf         : Integer of number of fingers
@@ -55,7 +55,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     nf = int(nf)
     grw = grw * dbu_PERCISION
     ld = ld * dbu_PERCISION
-    l = l * dbu_PERCISION
+    l_gate = l_gate * dbu_PERCISION
     w = w * dbu_PERCISION
     cmp2cont = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -80,7 +80,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     pcmp_gr2dnw = 2.5 * dbu_PERCISION
     gr_w = 0.36 * dbu_PERCISION
 
-    if deepnwell == True:
+    if deepnwell:
         cmp2cmp = 0.36 * dbu_PERCISION
         ply2gr = 0.3 * dbu_PERCISION
 
@@ -112,8 +112,8 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 (cont_size + 2 * cmp2cont - w) / 2,
                 (
                     2 * (ld + ld_violat)
-                    + l
-                    + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                    + l_gate
+                    + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                 ),
                 w + (cont_size + 2 * cmp2cont - w) / 2,
             )
@@ -122,7 +122,12 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         w_changed = True
     else:
         cell.shapes(comp).insert(
-            pya.Box(0, 0, (2 * ld + l + (nf - 1) * (ld + l + cont2ply - cmp2cont)), w)
+            pya.Box(
+                0,
+                0,
+                (2 * ld + l_gate + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)),
+                w,
+            )
         )
 
     cell.shapes(nplus).insert(
@@ -131,9 +136,9 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
             -np_enc_gate,
             (
                 2 * (ld + ld_violat)
-                + l
+                + l_gate
                 + np_enc_cmp
-                + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
             ),
             w + np_enc_gate,
         )
@@ -144,7 +149,9 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     gate_cell_index = layout.add_cell("gate")
     gate_cell = layout.cell(gate_cell_index)
     gate_cell.shapes(poly2).insert(
-        pya.Box(ld + ld_violat, -ply_ext_cmp, (ld + ld_violat + l), (w + ply_ext_cmp))
+        pya.Box(
+            ld + ld_violat, -ply_ext_cmp, (ld + ld_violat + l_gate), (w + ply_ext_cmp)
+        )
     )
 
     # adding gate array
@@ -152,7 +159,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         pya.CellInstArray.new(
             gate_cell_index,
             pya.Trans.new(pya.Point.new(0, 0)),
-            pya.Point.new(ld + ld_violat + l + cont2ply - cmp2cont, 0),
+            pya.Point.new(ld + ld_violat + l_gate + cont2ply - cmp2cont, 0),
             pya.Point.new(0, 0),
             int(nf),
             1,
@@ -174,7 +181,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
 
     # adding contact array and metals
     # Left contacts
-    if not (w_changed == True and nf > 1) and (ld >= 440):
+    if not (w_changed and nf > 1) and (ld >= 440):
         cell.insert(
             pya.CellInstArray.new(
                 cont_cell_index,
@@ -196,22 +203,22 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         )
 
     # Adding diffusion to avoid contact violation
-    if nf == 1 and w_changed == True:
+    if nf == 1 and w_changed:
         cell.shapes(comp).insert(pya.Box(0, 0, ld - (cont_size - 2 * cmp2cont), w))
 
     # Right contacts and metals for each finger
     for i in range(nf):
         # Contacts
-        if not (w_changed == True and nf > 1) and (ld >= 440):
+        if not (w_changed and nf > 1) and (ld >= 440):
             cell.insert(
                 pya.CellInstArray.new(
                     cont_cell_index,
                     pya.Trans.new(
                         pya.Point.new(
                             (
-                                (l + ld + ld_violat + cont2ply - cmp2cont) * i
+                                (l_gate + ld + ld_violat + cont2ply - cmp2cont) * i
                                 + 2 * (ld + ld_violat)
-                                + l
+                                + l_gate
                                 - cont_size
                                 - dx
                             ),
@@ -228,27 +235,27 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
 
             cell.shapes(metal1).insert(
                 pya.Box(
-                    (ld + 2 * ld_violat + l + cont2ply - cmp2cont) * (i + 1)
+                    (ld + 2 * ld_violat + l_gate + cont2ply - cmp2cont) * (i + 1)
                     - metal_violat,
                     -metal_violat,
                     ld
                     + metal_violat
                     + ld_violat
-                    + (ld + ld_violat + l + cont2ply - cmp2cont) * (i + 1)
+                    + (ld + ld_violat + l_gate + cont2ply - cmp2cont) * (i + 1)
                     - (cont_size - 2 * cmp2cont),
                     w + metal_violat,
                 )
             )
 
     # Adding diffusion to avoid contact violation
-    if nf == 1 and w_changed == True:
+    if nf == 1 and w_changed:
         cell.shapes(comp).insert(
             pya.Box(
-                (ld + 2 * ld_violat + l + cont2ply - cmp2cont) * (i + 1),
+                (ld + 2 * ld_violat + l_gate + cont2ply - cmp2cont) * (i + 1),
                 0,
                 ld
                 + ld_violat
-                + (ld + ld_violat + l + cont2ply - cmp2cont) * (i + 1)
+                + (ld + ld_violat + l_gate + cont2ply - cmp2cont) * (i + 1)
                 - (cont_size - 2 * cmp2cont),
                 w,
             )
@@ -259,7 +266,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         cell.shapes(comp).insert(region)
 
     if bulk == "Bulk Tie":
-        if deepnwell == True:
+        if deepnwell:
             if volt == "5V":
                 # Inserting 5V layers
                 cell.shapes(v5_xtor).insert(
@@ -272,11 +279,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_lvpwell - lvpwell_enc_ncmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_lvpwell
                             + lvpwell_enc_ncmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + dg_enc_dnwell,
                     )
@@ -292,11 +299,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_lvpwell - lvpwell_enc_ncmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_lvpwell
                             + lvpwell_enc_ncmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + dg_enc_dnwell,
                     )
@@ -314,11 +321,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_lvpwell - lvpwell_enc_ncmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_lvpwell
                             + lvpwell_enc_ncmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + dg_enc_dnwell,
                     )
@@ -331,9 +338,9 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -lvpwell_enc_ncmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + lvpwell_enc_ncmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + lvpwell_enc_ncmp,
                 )
@@ -346,26 +353,26 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + lvpwell_enc_ncmp + dnwell_enc_lvpwell,
                 )
             )
 
             # Inserting Double Guard Ring
-            if pcmpgr == True:
+            if pcmpgr:
                 cmp_inner = pya.Box(
                     -dnwell_enc_lvpwell - lvpwell_enc_pcmp - cmp2cmp - ld - pcmp_gr2dnw,
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp - pcmp_gr2dnw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     )
                     + pcmp_gr2dnw,
                     w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + pcmp_gr2dnw,
@@ -380,10 +387,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp - pcmp_gr2dnw - gr_w,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     )
                     + pcmp_gr2dnw
                     + gr_w,
@@ -402,10 +409,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp - pcmp_gr2dnw + pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     )
                     + pcmp_gr2dnw
                     - pp_enc_cmp,
@@ -430,10 +437,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     - pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     )
                     + pcmp_gr2dnw
                     + gr_w
@@ -457,9 +464,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -470,9 +478,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -485,9 +494,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -530,7 +540,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         )
 
     elif bulk == "Guard Ring":
-        if deepnwell == True:
+        if deepnwell:
             if volt == "5V":
                 # Inserting 5V layers
                 cell.shapes(v5_xtor).insert(
@@ -547,13 +557,14 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
                             + lvpwell_enc_pcmp
                             + dnwell_enc_lvpwell
                             + dg_enc_dnwell
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (
                             w
@@ -580,13 +591,14 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
                             + lvpwell_enc_pcmp
                             + dnwell_enc_lvpwell
                             + dg_enc_dnwell
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (
                             w
@@ -615,13 +627,14 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
                             + lvpwell_enc_pcmp
                             + dnwell_enc_lvpwell
                             + dg_enc_dnwell
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (
                             w
@@ -641,11 +654,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -lvpwell_enc_pcmp - (ply_ext_cmp + ply2gr) - grw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + lvpwell_enc_pcmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (w + (ply_ext_cmp + ply2gr) + grw + lvpwell_enc_pcmp),
                 )
@@ -661,12 +674,12 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     - grw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + lvpwell_enc_pcmp
                         + dnwell_enc_lvpwell
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (
                         w
@@ -679,7 +692,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
             )
 
             # Inserting Double Guard Ring
-            if pcmpgr == True:
+            if pcmpgr:
                 cmp_inner = pya.Box(
                     -dnwell_enc_lvpwell
                     - lvpwell_enc_pcmp
@@ -693,13 +706,13 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     - pcmp_gr2dnw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + lvpwell_enc_pcmp
                         + dnwell_enc_lvpwell
                         + pcmp_gr2dnw
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (
                         w
@@ -725,14 +738,14 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     - gr_w,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + lvpwell_enc_pcmp
                         + dnwell_enc_lvpwell
                         + pcmp_gr2dnw
                         + gr_w
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (
                         w
@@ -762,14 +775,14 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     + pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + lvpwell_enc_pcmp
                         + dnwell_enc_lvpwell
                         + pcmp_gr2dnw
                         - pp_enc_cmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (
                         w
@@ -798,7 +811,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     - pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + lvpwell_enc_pcmp
@@ -806,7 +819,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         + pcmp_gr2dnw
                         + gr_w
                         + pp_enc_cmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (
                         w
@@ -831,10 +844,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(ply_ext_cmp + ply2gr + dg_enc_cmp) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + dg_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + ply_ext_cmp + ply2gr + dg_enc_cmp + grw),
                     )
@@ -845,10 +859,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(ply_ext_cmp + ply2gr + dg_enc_cmp) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + dg_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + ply_ext_cmp + ply2gr + dg_enc_cmp + grw),
                     )
@@ -861,10 +876,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(ply_ext_cmp + ply2gr + dg_enc_cmp) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + dg_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + ply_ext_cmp + ply2gr + dg_enc_cmp + grw),
                     )
@@ -881,18 +897,20 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr)),
                     ),
@@ -901,20 +919,22 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr) + grw),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr) - grw,
                     ),
@@ -943,18 +963,20 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + (cmp2cmp - pp_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr - pp_enc_cmp),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + (cmp2cmp - pp_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr - pp_enc_cmp)),
                     ),
@@ -969,20 +991,22 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + pp_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr + pp_enc_cmp) + grw),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + pp_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr + pp_enc_cmp) - grw,
                     ),
@@ -1002,18 +1026,20 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr)),
                     ),
@@ -1022,20 +1048,22 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr) + grw),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr) - grw,
                     ),
@@ -1066,9 +1094,9 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 (
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + 2 * cmp2cmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     )
                     - 3 * cont2cont
                 )
@@ -1079,9 +1107,9 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         dxgr_h = (
             (
                 2 * (ld + ld_violat)
-                + l
+                + l_gate
                 + cont2cont
-                + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
             )
             - nxgr_h * cont_size
             - (nxgr_h - 1) * cont2cont
@@ -1122,11 +1150,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 pya.Trans.new(
                     pya.Point.new(
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         - dxgr
                         + (cmp2cmp - cont_size)
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont),
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont),
                         (-(ply_ext_cmp + ply2gr) - grw + dygr),
                     )
                 ),
@@ -1152,7 +1180,7 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         )
 
     else:
-        if deepnwell == True:
+        if deepnwell:
             if volt == "5V":
                 # Inserting 5V layers
                 cell.shapes(v5_xtor).insert(
@@ -1161,11 +1189,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_lvpwell - lvpwell_enc_ncmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_lvpwell
                             + lvpwell_enc_ncmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + dg_enc_dnwell,
                     )
@@ -1177,11 +1205,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_lvpwell - lvpwell_enc_ncmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_lvpwell
                             + lvpwell_enc_ncmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + dg_enc_dnwell,
                     )
@@ -1195,11 +1223,11 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_lvpwell - lvpwell_enc_ncmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_lvpwell
                             + lvpwell_enc_ncmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + dg_enc_dnwell,
                     )
@@ -1212,9 +1240,9 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -lvpwell_enc_ncmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + lvpwell_enc_ncmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + lvpwell_enc_ncmp,
                 )
@@ -1227,27 +1255,27 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + lvpwell_enc_ncmp + dnwell_enc_lvpwell,
                 )
             )
 
             # Inserting Double Guard Ring
-            if pcmpgr == True:
+            if pcmpgr:
                 cmp_inner = pya.Box(
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp - pcmp_gr2dnw,
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp - pcmp_gr2dnw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
                         + pcmp_gr2dnw
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + pcmp_gr2dnw,
                 )
@@ -1256,12 +1284,12 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp - pcmp_gr2dnw - gr_w,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
                         + pcmp_gr2dnw
                         + gr_w
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + lvpwell_enc_ncmp + dnwell_enc_lvpwell + pcmp_gr2dnw + gr_w,
                 )
@@ -1273,12 +1301,12 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_lvpwell - lvpwell_enc_ncmp - pcmp_gr2dnw + pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
                         + pcmp_gr2dnw
                         - pp_enc_cmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w
                     + lvpwell_enc_ncmp
@@ -1299,13 +1327,13 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     - pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_lvpwell
                         + lvpwell_enc_ncmp
                         + pcmp_gr2dnw
                         + gr_w
                         + pp_enc_cmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w
                     + lvpwell_enc_ncmp
@@ -1326,9 +1354,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -1339,9 +1368,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -1354,9 +1384,10 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -1366,13 +1397,13 @@ def draw_nfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     return cell
 
 
-def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
+def draw_pfet(layout, l_gate, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw PFET transistor by specifying parameters
     Arguments:-
      layout     : Object of layout
-     l          : Float of gate length
+     l_gate          : Float of gate length
      w          : Float of gate width
      ld         : Float of diffusion length
      nf         : Integer of number of fingers
@@ -1400,7 +1431,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     nf = int(nf)
     grw = grw * dbu_PERCISION
     ld = ld * dbu_PERCISION
-    l = l * dbu_PERCISION
+    l_gate = l_gate * dbu_PERCISION
     w = w * dbu_PERCISION
     cmp2cont = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -1426,7 +1457,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     pcmp_gr2dnw = 2.5 * dbu_PERCISION
     gr_w = 0.36 * dbu_PERCISION
 
-    if deepnwell == True:
+    if deepnwell:
         cmp2cmp = 0.36 * dbu_PERCISION
         ply2gr = 0.3 * dbu_PERCISION
 
@@ -1460,8 +1491,8 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 (cont_size + 2 * cmp2cont - w) / 2,
                 (
                     2 * (ld + ld_violat)
-                    + l
-                    + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                    + l_gate
+                    + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                 ),
                 w + (cont_size + 2 * cmp2cont - w) / 2,
             )
@@ -1470,7 +1501,12 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         w_changed = True
     else:
         cell.shapes(comp).insert(
-            pya.Box(0, 0, (2 * ld + l + (nf - 1) * (ld + l + cont2ply - cmp2cont)), w)
+            pya.Box(
+                0,
+                0,
+                (2 * ld + l_gate + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)),
+                w,
+            )
         )
 
     cell.shapes(pplus).insert(
@@ -1479,9 +1515,9 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
             -np_enc_gate,
             (
                 2 * (ld + ld_violat)
-                + l
+                + l_gate
                 + np_enc_cmp
-                + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
             ),
             w + np_enc_gate,
         )
@@ -1492,7 +1528,9 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     gate_cell_index = layout.add_cell("gate")
     gate_cell = layout.cell(gate_cell_index)
     gate_cell.shapes(poly2).insert(
-        pya.Box(ld + ld_violat, -ply_ext_cmp, (ld + ld_violat + l), (w + ply_ext_cmp))
+        pya.Box(
+            ld + ld_violat, -ply_ext_cmp, (ld + ld_violat + l_gate), (w + ply_ext_cmp)
+        )
     )
 
     # adding gate array
@@ -1500,7 +1538,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         pya.CellInstArray.new(
             gate_cell_index,
             pya.Trans.new(pya.Point.new(0, 0)),
-            pya.Point.new(ld + ld_violat + l + cont2ply - cmp2cont, 0),
+            pya.Point.new(ld + ld_violat + l_gate + cont2ply - cmp2cont, 0),
             pya.Point.new(0, 0),
             int(nf),
             1,
@@ -1522,7 +1560,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
 
     # adding contact array and metals
     # Left contacts
-    if not (w_changed == True and nf > 1) and (ld >= 440):
+    if not (w_changed and nf > 1) and (ld >= 440):
         cell.insert(
             pya.CellInstArray.new(
                 cont_cell_index,
@@ -1544,22 +1582,22 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         )
 
     # Adding diffusion to avoid contact violation
-    if nf == 1 and w_changed == True:
+    if nf == 1 and w_changed:
         cell.shapes(comp).insert(pya.Box(0, 0, ld - (cont_size - 2 * cmp2cont), w))
 
     # Right contacts and metals for each finger
     for i in range(nf):
         # Contacts
-        if not (w_changed == True and nf > 1) and (ld >= 440):
+        if not (w_changed and nf > 1) and (ld >= 440):
             cell.insert(
                 pya.CellInstArray.new(
                     cont_cell_index,
                     pya.Trans.new(
                         pya.Point.new(
                             (
-                                (l + ld + ld_violat + cont2ply - cmp2cont) * i
+                                (l_gate + ld + ld_violat + cont2ply - cmp2cont) * i
                                 + 2 * (ld + ld_violat)
-                                + l
+                                + l_gate
                                 - cont_size
                                 - dx
                             ),
@@ -1576,27 +1614,27 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
 
             cell.shapes(metal1).insert(
                 pya.Box(
-                    (ld + 2 * ld_violat + l + cont2ply - cmp2cont) * (i + 1)
+                    (ld + 2 * ld_violat + l_gate + cont2ply - cmp2cont) * (i + 1)
                     - metal_violat,
                     -metal_violat,
                     ld
                     + metal_violat
                     + ld_violat
-                    + (ld + ld_violat + l + cont2ply - cmp2cont) * (i + 1)
+                    + (ld + ld_violat + l_gate + cont2ply - cmp2cont) * (i + 1)
                     - (cont_size - 2 * cmp2cont),
                     w + metal_violat,
                 )
             )
 
     # Adding diffusion to avoid contact violation
-    if nf == 1 and w_changed == True:
+    if nf == 1 and w_changed:
         cell.shapes(comp).insert(
             pya.Box(
-                (ld + 2 * ld_violat + l + cont2ply - cmp2cont) * (i + 1),
+                (ld + 2 * ld_violat + l_gate + cont2ply - cmp2cont) * (i + 1),
                 0,
                 ld
                 + ld_violat
-                + (ld + ld_violat + l + cont2ply - cmp2cont) * (i + 1)
+                + (ld + ld_violat + l_gate + cont2ply - cmp2cont) * (i + 1)
                 - (cont_size - 2 * cmp2cont),
                 w,
             )
@@ -1607,7 +1645,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         cell.shapes(comp).insert(region)
 
     if bulk == "Bulk Tie":
-        if deepnwell == True:
+        if deepnwell:
             if volt == "5V":
                 # Inserting 5V layers
                 cell.shapes(v5_xtor).insert(
@@ -1616,10 +1654,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_pcmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_pcmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + dnwell_enc_pcmp + dg_enc_dnwell,
                     )
@@ -1631,10 +1669,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_pcmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_pcmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + dnwell_enc_pcmp + dg_enc_dnwell,
                     )
@@ -1648,10 +1686,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_pcmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_pcmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + dnwell_enc_pcmp + dg_enc_dnwell,
                     )
@@ -1664,25 +1702,25 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_pcmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp,
                 )
             )
 
             # Inserting Double Guard Ring
-            if pcmpgr == True:
+            if pcmpgr:
                 cmp_inner = pya.Box(
                     -dnwell_enc_ncmp - cmp2cmp - ld - pcmp_gr2dnw,
                     -dnwell_enc_pcmp - pcmp_gr2dnw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
                         + pcmp_gr2dnw
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp + pcmp_gr2dnw,
                 )
@@ -1691,11 +1729,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_pcmp - pcmp_gr2dnw - gr_w,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
                         + pcmp_gr2dnw
                         + gr_w
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp + pcmp_gr2dnw + gr_w,
                 )
@@ -1707,11 +1745,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_pcmp - pcmp_gr2dnw + pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
                         + pcmp_gr2dnw
                         - pp_enc_cmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp + pcmp_gr2dnw - pp_enc_cmp,
                 )
@@ -1720,12 +1758,12 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_pcmp - pcmp_gr2dnw - gr_w - pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
                         + pcmp_gr2dnw
                         + gr_w
                         + pp_enc_cmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp + pcmp_gr2dnw + gr_w + pp_enc_cmp,
                 )
@@ -1741,9 +1779,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -1754,9 +1793,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -1769,9 +1809,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -1784,9 +1825,9 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -nwell_enc_pcomp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + nwell_enc_pcomp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     w + nwell_enc_pcomp,
                 )
@@ -1829,7 +1870,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         )
 
     elif bulk == "Guard Ring":
-        if deepnwell == True:
+        if deepnwell:
             if volt == "5V":
                 # Inserting 5V layers
                 cell.shapes(v5_xtor).insert(
@@ -1838,12 +1879,13 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_ncmp - (ply_ext_cmp + ply2gr) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
                             + dnwell_enc_ncmp
                             + dg_enc_dnwell
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (
                             w
@@ -1861,12 +1903,13 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_ncmp - (ply_ext_cmp + ply2gr) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
                             + dnwell_enc_ncmp
                             + dg_enc_dnwell
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (
                             w
@@ -1886,12 +1929,13 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_ncmp - (ply_ext_cmp + ply2gr) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
                             + dnwell_enc_ncmp
                             + dg_enc_dnwell
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (
                             w
@@ -1910,29 +1954,29 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_ncmp - (ply_ext_cmp + ply2gr) - grw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + dnwell_enc_ncmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (w + (ply_ext_cmp + ply2gr) + grw + dnwell_enc_ncmp),
                 )
             )
 
             # Inserting Double Guard Ring
-            if pcmpgr == True:
+            if pcmpgr:
                 cmp_inner = pya.Box(
                     -dnwell_enc_ncmp - cmp2cmp - grw - pcmp_gr2dnw,
                     -dnwell_enc_ncmp - (ply_ext_cmp + ply2gr) - grw - pcmp_gr2dnw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + dnwell_enc_ncmp
                         + pcmp_gr2dnw
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (w + (ply_ext_cmp + ply2gr) + grw + dnwell_enc_ncmp + pcmp_gr2dnw),
                 )
@@ -1945,13 +1989,13 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     - gr_w,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + dnwell_enc_ncmp
                         + pcmp_gr2dnw
                         + gr_w
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (
                         w
@@ -1974,13 +2018,13 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     + pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + dnwell_enc_ncmp
                         + pcmp_gr2dnw
                         - pp_enc_cmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (
                         w
@@ -2001,14 +2045,14 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     - pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + cmp2cmp
                         + dnwell_enc_ncmp
                         + pcmp_gr2dnw
                         + gr_w
                         + pp_enc_cmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (
                         w
@@ -2032,10 +2076,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(ply_ext_cmp + ply2gr + dg_enc_cmp) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + dg_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + ply_ext_cmp + ply2gr + dg_enc_cmp + grw),
                     )
@@ -2046,10 +2091,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(ply_ext_cmp + ply2gr + dg_enc_cmp) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + dg_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + ply_ext_cmp + ply2gr + dg_enc_cmp + grw),
                     )
@@ -2062,10 +2108,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(ply_ext_cmp + ply2gr + dg_enc_cmp) - grw,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + dg_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + ply_ext_cmp + ply2gr + dg_enc_cmp + grw),
                     )
@@ -2078,11 +2125,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -ply_ext_cmp - ply2gr - nwell_enc_ncomp - grw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         + nwell_enc_ncomp
                         + cmp2cmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     (w + ply_ext_cmp + ply2gr + nwell_enc_ncomp + grw),
                 )
@@ -2099,18 +2146,20 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr)),
                     ),
@@ -2119,20 +2168,22 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr) + grw),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr) - grw,
                     ),
@@ -2161,18 +2212,20 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + (cmp2cmp - pp_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr - pp_enc_cmp),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + (cmp2cmp - pp_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr - pp_enc_cmp)),
                     ),
@@ -2187,20 +2240,22 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + pp_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr + pp_enc_cmp) + grw),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + (cmp2cmp + pp_enc_cmp)
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr + pp_enc_cmp) - grw,
                     ),
@@ -2220,18 +2275,20 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr)),
                     ),
@@ -2240,20 +2297,22 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (ply_ext_cmp + ply2gr) + grw),
                     ),
                     pya.Point(
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + grw
                             + cmp2cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         -(ply_ext_cmp + ply2gr) - grw,
                     ),
@@ -2284,9 +2343,9 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 (
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + 2 * cmp2cmp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     )
                     - 3 * cont2cont
                 )
@@ -2297,9 +2356,9 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         dxgr_h = (
             (
                 2 * (ld + ld_violat)
-                + l
+                + l_gate
                 + cont2cont
-                + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
             )
             - nxgr_h * cont_size
             - (nxgr_h - 1) * cont2cont
@@ -2340,11 +2399,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                 pya.Trans.new(
                     pya.Point.new(
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + grw
                         - dxgr
                         + (cmp2cmp - cont_size)
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont),
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont),
                         (-(ply_ext_cmp + ply2gr) - grw + dygr),
                     )
                 ),
@@ -2370,7 +2429,7 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
         )
 
     else:
-        if deepnwell == True:
+        if deepnwell:
             if volt == "5V":
                 # Inserting 5V layers
                 cell.shapes(v5_xtor).insert(
@@ -2379,10 +2438,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_pcmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_pcmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + dnwell_enc_pcmp + dg_enc_dnwell,
                     )
@@ -2394,10 +2453,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_pcmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_pcmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + dnwell_enc_pcmp + dg_enc_dnwell,
                     )
@@ -2411,10 +2470,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -dg_enc_dnwell - dnwell_enc_pcmp,
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_dnwell
                             + dnwell_enc_pcmp
-                            + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                         ),
                         w + dnwell_enc_pcmp + dg_enc_dnwell,
                     )
@@ -2427,25 +2486,25 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_pcmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp,
                 )
             )
 
             # Inserting Double Guard Ring
-            if pcmpgr == True:
+            if pcmpgr:
                 cmp_inner = pya.Box(
                     -dnwell_enc_pcmp - pcmp_gr2dnw,
                     -dnwell_enc_pcmp - pcmp_gr2dnw,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
                         + pcmp_gr2dnw
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp + pcmp_gr2dnw,
                 )
@@ -2454,11 +2513,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_pcmp - pcmp_gr2dnw - gr_w,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
                         + pcmp_gr2dnw
                         + gr_w
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp + pcmp_gr2dnw + gr_w,
                 )
@@ -2470,11 +2529,11 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_pcmp - pcmp_gr2dnw + pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
                         + pcmp_gr2dnw
                         - pp_enc_cmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp + pcmp_gr2dnw - pp_enc_cmp,
                 )
@@ -2483,12 +2542,12 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -dnwell_enc_pcmp - pcmp_gr2dnw - gr_w - pp_enc_cmp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + dnwell_enc_pcmp
                         + pcmp_gr2dnw
                         + gr_w
                         + pp_enc_cmp
-                        + (nf - 1) * (ld + ld_violat + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + ld_violat + l_gate + cont2ply - cmp2cont)
                     ),
                     w + dnwell_enc_pcmp + pcmp_gr2dnw + gr_w + pp_enc_cmp,
                 )
@@ -2504,9 +2563,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -2517,9 +2577,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -2532,9 +2593,10 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                         -(dg_enc_ply + ply_ext_cmp),
                         (
                             2 * (ld + ld_violat)
-                            + l
+                            + l_gate
                             + dg_enc_cmp
-                            + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                            + (nf - 1)
+                            * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                         ),
                         w + (dg_enc_ply + ply_ext_cmp),
                     )
@@ -2547,9 +2609,9 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
                     -nwell_enc_pcomp,
                     (
                         2 * (ld + ld_violat)
-                        + l
+                        + l_gate
                         + nwell_enc_pcomp
-                        + (nf - 1) * ((ld + ld_violat) + l + cont2ply - cmp2cont)
+                        + (nf - 1) * ((ld + ld_violat) + l_gate + cont2ply - cmp2cont)
                     ),
                     w + nwell_enc_pcomp,
                 )
@@ -2559,13 +2621,13 @@ def draw_pfet(layout, l, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     return cell
 
 
-def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
+def draw_nfet_06v0_nvt(layout, l_gate, w, ld, nf, grw, bulk):
     """
     Usage:-
      used to draw Native NFET 6V transistor by specifying parameters
     Arguments:-
      layout : Object of layout
-     l      : Float of gate length
+     l_gate      : Float of gate length
      w      : Float of gate width
      ld     : Float of diffusion length
      nf     : Integer of number of fingers
@@ -2588,7 +2650,7 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
     nf = int(nf)
     grw = grw * dbu_PERCISION
     ld = ld * dbu_PERCISION
-    l = l * dbu_PERCISION
+    l_gate = l_gate * dbu_PERCISION
     w = w * dbu_PERCISION
     cmp2cont = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -2607,13 +2669,20 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
 
     # Inserting diffusion
     cell.shapes(comp).insert(
-        pya.Box(0, 0, (2 * ld + l + (nf - 1) * (ld + l + cont2ply - cmp2cont)), w)
+        pya.Box(
+            0, 0, (2 * ld + l_gate + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)), w
+        )
     )
     cell.shapes(nplus).insert(
         pya.Box(
             -np_enc_cmp,
             -np_enc_gate,
-            (2 * ld + l + np_enc_cmp + (nf - 1) * (ld + l + cont2ply - cmp2cont)),
+            (
+                2 * ld
+                + l_gate
+                + np_enc_cmp
+                + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
+            ),
             w + np_enc_gate,
         )
     )
@@ -2621,7 +2690,12 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
         pya.Box(
             -nat_enc_cmp,
             -nat_enc_cmp,
-            (2 * ld + l + nat_enc_cmp + (nf - 1) * (ld + l + cont2ply - cmp2cont)),
+            (
+                2 * ld
+                + l_gate
+                + nat_enc_cmp
+                + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
+            ),
             w + nat_enc_cmp,
         )
     )
@@ -2629,7 +2703,12 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
         pya.Box(
             -nat_enc_cmp,
             -nat_enc_cmp,
-            (2 * ld + l + nat_enc_cmp + (nf - 1) * (ld + l + cont2ply - cmp2cont)),
+            (
+                2 * ld
+                + l_gate
+                + nat_enc_cmp
+                + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
+            ),
             w + nat_enc_cmp,
         )
     )
@@ -2639,7 +2718,7 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
     gate_cell_index = layout.add_cell("gate")
     gate_cell = layout.cell(gate_cell_index)
     gate_cell.shapes(poly2).insert(
-        pya.Box(ld, -ply_ext_cmp, (ld + l), (w + ply_ext_cmp))
+        pya.Box(ld, -ply_ext_cmp, (ld + l_gate), (w + ply_ext_cmp))
     )
 
     # adding gate array
@@ -2647,7 +2726,7 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
         pya.CellInstArray.new(
             gate_cell_index,
             pya.Trans.new(pya.Point.new(0, 0)),
-            pya.Point.new(ld + l + cont2ply - cmp2cont, 0),
+            pya.Point.new(ld + l_gate + cont2ply - cmp2cont, 0),
             pya.Point.new(0, 0),
             int(nf),
             1,
@@ -2691,9 +2770,9 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                 pya.Trans.new(
                     pya.Point.new(
                         (
-                            (l + ld + cont2ply - cmp2cont) * i
+                            (l_gate + ld + cont2ply - cmp2cont) * i
                             + 2 * ld
-                            + l
+                            + l_gate
                             - cont_size
                             - dx
                         ),
@@ -2709,10 +2788,10 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
         # Metals
         cell.shapes(metal1).insert(
             pya.Box(
-                (ld + l + cont2ply - cmp2cont) * (i + 1),
+                (ld + l_gate + cont2ply - cmp2cont) * (i + 1),
                 0,
                 ld
-                + (ld + l + cont2ply - cmp2cont) * (i + 1)
+                + (ld + l_gate + cont2ply - cmp2cont) * (i + 1)
                 - (cont_size - 2 * cmp2cont),
                 w,
             )
@@ -2773,18 +2852,18 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + (nat_enc_cmp + cmp2cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         -(nat_enc_cmp + cmp2cmp),
                     ),
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + (nat_enc_cmp + cmp2cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (nat_enc_cmp + cmp2cmp)),
                     ),
@@ -2798,20 +2877,20 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + grw
                             + (nat_enc_cmp + cmp2cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (nat_enc_cmp + cmp2cmp) + grw),
                     ),
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + grw
                             + (nat_enc_cmp + cmp2cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         -(nat_enc_cmp + cmp2cmp) - grw,
                     ),
@@ -2841,18 +2920,18 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + (nat_enc_cmp + cmp2cmp - pp_enc_cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         -(nat_enc_cmp + cmp2cmp - pp_enc_cmp),
                     ),
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + (nat_enc_cmp + cmp2cmp - pp_enc_cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (nat_enc_cmp + cmp2cmp - pp_enc_cmp)),
                     ),
@@ -2867,20 +2946,20 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + grw
                             + (nat_enc_cmp + cmp2cmp + pp_enc_cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (nat_enc_cmp + cmp2cmp + pp_enc_cmp) + grw),
                     ),
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + grw
                             + (nat_enc_cmp + cmp2cmp + pp_enc_cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         -(nat_enc_cmp + cmp2cmp + pp_enc_cmp) - grw,
                     ),
@@ -2904,18 +2983,18 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + (nat_enc_cmp + cmp2cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         -(nat_enc_cmp + cmp2cmp),
                     ),
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + (nat_enc_cmp + cmp2cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (nat_enc_cmp + cmp2cmp)),
                     ),
@@ -2929,20 +3008,20 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + grw
                             + (nat_enc_cmp + cmp2cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         (w + (nat_enc_cmp + cmp2cmp) + grw),
                     ),
                     pya.Point(
                         (
                             2 * ld
-                            + l
+                            + l_gate
                             + grw
                             + (nat_enc_cmp + cmp2cmp)
-                            + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                            + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                         ),
                         -(nat_enc_cmp + cmp2cmp) - grw,
                     ),
@@ -2973,9 +3052,9 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                 (
                     (
                         2 * ld
-                        + l
+                        + l_gate
                         + 2 * (nat_enc_cmp + cmp2cmp)
-                        + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                        + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
                     )
                     - 3 * cont2cont
                 )
@@ -2986,9 +3065,9 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
         dxgr_h = (
             (
                 2 * ld
-                + l
+                + l_gate
                 + (nat_enc_cmp + cmp2cmp)
-                + (nf - 1) * (ld + l + cont2ply - cmp2cont)
+                + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont)
             )
             - nxgr_h * cont_size
             - (nxgr_h - 1) * cont2cont
@@ -3031,13 +3110,13 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
                 pya.Trans.new(
                     pya.Point.new(
                         2 * ld
-                        + l
+                        + l_gate
                         + grw
                         - dxgr
                         + nat_enc_cmp
                         + cmp2cmp
                         - cont_size
-                        + (nf - 1) * (ld + l + cont2ply - cmp2cont),
+                        + (nf - 1) * (ld + l_gate + cont2ply - cmp2cont),
                         (-(nat_enc_cmp + cmp2cmp) - grw + dygr),
                     )
                 ),
@@ -3067,13 +3146,13 @@ def draw_nfet_06v0_nvt(layout, l, w, ld, nf, grw, bulk):
     return cell
 
 
-def draw_nfet_10v0_asym(layout, l, w):
+def draw_nfet_10v0_asym(layout, l_gate, w):
     """
     Usage:-
      used to draw LDNFET 10V transistor by specifying parameters
     Arguments:-
      layout : Object of layout
-     l      : Float of gate length
+     l_gate      : Float of gate length
      w      : Float of gate width
     """
 
@@ -3090,7 +3169,7 @@ def draw_nfet_10v0_asym(layout, l, w):
 
     # Define variables
     dbu_PERCISION = 1 / layout.dbu
-    l = l * dbu_PERCISION
+    l_gate = l_gate * dbu_PERCISION
     w = w * dbu_PERCISION
     cmp2cont = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -3129,7 +3208,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                 + mvsd_ov_cmp
                 + cmp2cmp
             )
-            - l,
+            - l_gate,
             -(mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size + dg_enc_cmp) - w / 2,
             (
                 dg_enc_cmp
@@ -3142,7 +3221,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                 + mvsd_ov_cmp
                 + cmp2cmp
             )
-            + l,
+            + l_gate,
             (mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size + dg_enc_cmp) + w / 2,
         )
     )
@@ -3159,7 +3238,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                 + mvsd_ov_cmp
                 + cmp2cmp
             )
-            - l,
+            - l_gate,
             -(mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size + dg_enc_cmp) - w / 2,
             (
                 dg_enc_cmp
@@ -3172,7 +3251,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                 + mvsd_ov_cmp
                 + cmp2cmp
             )
-            + l,
+            + l_gate,
             (mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size + dg_enc_cmp) + w / 2,
         )
     )
@@ -3194,7 +3273,7 @@ def draw_nfet_10v0_asym(layout, l, w):
             (cont_size / 2 + cmp2cmp),
             -w / 2,
             (cont_size / 2 + cmp2cmp + mvsd_ov_cmp + cont2ply + cont_size + cmp2cont)
-            + l,
+            + l_gate,
             w / 2,
         )
     )
@@ -3203,7 +3282,7 @@ def draw_nfet_10v0_asym(layout, l, w):
             -(cont_size / 2 + cmp2cmp),
             -w / 2,
             -(cont_size / 2 + cmp2cmp + mvsd_ov_cmp + cont2ply + cont_size + cmp2cont)
-            - l,
+            - l_gate,
             w / 2,
         )
     )
@@ -3219,7 +3298,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                 + cmp2cont
                 + np_enc_cmp
             )
-            - l,
+            - l_gate,
             -w / 2 - np_enc_gate,
             (
                 cont_size / 2
@@ -3230,7 +3309,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                 + cmp2cont
                 + np_enc_cmp
             )
-            + l,
+            + l_gate,
             w / 2 + np_enc_gate,
         )
     )
@@ -3240,7 +3319,7 @@ def draw_nfet_10v0_asym(layout, l, w):
         pya.Box(
             (cont_size / 2 + drain2ply),
             -w / 2 - ply_ext_cmp,
-            (cont_size / 2 + cmp2cmp + mvsd_ov_cmp) + l,
+            (cont_size / 2 + cmp2cmp + mvsd_ov_cmp) + l_gate,
             w / 2 + mvsd_ext_cmp + mvsd2gr - ply2gr,
         )
     )
@@ -3248,7 +3327,7 @@ def draw_nfet_10v0_asym(layout, l, w):
         pya.Box(
             -(cont_size / 2 + drain2ply),
             -w / 2 - ply_ext_cmp,
-            -(cont_size / 2 + cmp2cmp + mvsd_ov_cmp) - l,
+            -(cont_size / 2 + cmp2cmp + mvsd_ov_cmp) - l_gate,
             w / 2 + mvsd_ext_cmp + mvsd2gr - ply2gr,
         )
     )
@@ -3265,12 +3344,12 @@ def draw_nfet_10v0_asym(layout, l, w):
     dy = (w - ny * cont_size - (ny - 1) * cont2cont) / 2
     ng = (
         int(
-            ((l + mvsd_ov_cmp + ply_fld) - (cont_size + 2 * cmp2cont))
+            ((l_gate + mvsd_ov_cmp + ply_fld) - (cont_size + 2 * cmp2cont))
             / (cont_size + cont2cont)
         )
         + 1
     )
-    dg = (l + mvsd_ov_cmp + ply_fld - ng * cont_size - (ng - 1) * cont2cont) / 2
+    dg = (l_gate + mvsd_ov_cmp + ply_fld - ng * cont_size - (ng - 1) * cont2cont) / 2
 
     # Inserting contact array and metals
     # gate contacts and metal
@@ -3308,7 +3387,7 @@ def draw_nfet_10v0_asym(layout, l, w):
         pya.Box(
             (cont_size / 2 + drain2ply),
             w / 2 + mvsd_ext_cmp + mvsd2gr - ply2gr - metal_w,
-            (cont_size / 2 + cmp2cmp + mvsd_ov_cmp) + l,
+            (cont_size / 2 + cmp2cmp + mvsd_ov_cmp) + l_gate,
             w / 2 + mvsd_ext_cmp + mvsd2gr - ply2gr,
         )
     )
@@ -3316,7 +3395,7 @@ def draw_nfet_10v0_asym(layout, l, w):
         pya.Box(
             -(cont_size / 2 + drain2ply),
             w / 2 + mvsd_ext_cmp + mvsd2gr - ply2gr - metal_w,
-            -(cont_size / 2 + cmp2cmp + mvsd_ov_cmp) - l,
+            -(cont_size / 2 + cmp2cmp + mvsd_ov_cmp) - l_gate,
             w / 2 + mvsd_ext_cmp + mvsd2gr - ply2gr,
         )
     )
@@ -3340,7 +3419,8 @@ def draw_nfet_10v0_asym(layout, l, w):
             cont_cell_index,
             pya.Trans.new(
                 pya.Point.new(
-                    (cont_size / 2 + cmp2cmp + mvsd_ov_cmp + cont2ply) + l, -w / 2 + dy
+                    (cont_size / 2 + cmp2cmp + mvsd_ov_cmp + cont2ply) + l_gate,
+                    -w / 2 + dy,
                 )
             ),
             pya.Point.new((cont_size + cont2cont), 0),
@@ -3354,7 +3434,7 @@ def draw_nfet_10v0_asym(layout, l, w):
             cont_cell_index,
             pya.Trans.new(
                 pya.Point.new(
-                    -(1.5 * cont_size + cmp2cmp + mvsd_ov_cmp + cont2ply) - l,
+                    -(1.5 * cont_size + cmp2cmp + mvsd_ov_cmp + cont2ply) - l_gate,
                     -w / 2 + dy,
                 )
             ),
@@ -3367,18 +3447,18 @@ def draw_nfet_10v0_asym(layout, l, w):
     cell.shapes(metal1).insert(
         pya.Box(
             (1.5 * cont_size + cmp2cmp + mvsd_ov_cmp + cont2ply + cmp2cont - metal_w)
-            + l,
+            + l_gate,
             -w / 2,
-            (1.5 * cont_size + cmp2cmp + mvsd_ov_cmp + cont2ply + cmp2cont) + l,
+            (1.5 * cont_size + cmp2cmp + mvsd_ov_cmp + cont2ply + cmp2cont) + l_gate,
             w / 2,
         )
     )
     cell.shapes(metal1).insert(
         pya.Box(
             -(1.5 * cont_size + cmp2cmp + mvsd_ov_cmp + cont2ply + cmp2cont - metal_w)
-            - l,
+            - l_gate,
             -w / 2,
-            -(1.5 * cont_size + cmp2cmp + mvsd_ov_cmp + cont2ply + cmp2cont) - l,
+            -(1.5 * cont_size + cmp2cmp + mvsd_ov_cmp + cont2ply + cmp2cont) - l_gate,
             w / 2,
         )
     )
@@ -3398,7 +3478,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size) - w / 2,
                 ),
                 pya.Point(
@@ -3412,7 +3492,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -3425,7 +3505,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -3438,7 +3518,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvsd_ext_cmp + mvsd2gr) - w / 2,
                 ),
                 pya.Point(
@@ -3451,7 +3531,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvsd_ext_cmp + mvsd2gr) - w / 2,
                 ),
                 pya.Point(
@@ -3464,7 +3544,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvsd_ext_cmp + mvsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -3478,7 +3558,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -3492,7 +3572,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size) + w / 2,
                 ),
                 pya.Point(
@@ -3506,7 +3586,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size) + w / 2,
                 ),
                 pya.Point(
@@ -3520,7 +3600,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size) - w / 2,
                 ),
             ],
@@ -3543,7 +3623,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size + pp_enc_cmp)
                     - w / 2,
                 ),
@@ -3559,7 +3639,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr - pp_enc_cmp) + w / 2,
                 ),
                 pya.Point(
@@ -3573,7 +3653,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         - pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr - pp_enc_cmp) + w / 2,
                 ),
                 pya.Point(
@@ -3587,7 +3667,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         - pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvsd_ext_cmp + mvsd2gr - pp_enc_cmp) - w / 2,
                 ),
                 pya.Point(
@@ -3601,7 +3681,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         - pp_enc_cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvsd_ext_cmp + mvsd2gr - pp_enc_cmp) - w / 2,
                 ),
                 pya.Point(
@@ -3615,7 +3695,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         - pp_enc_cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvsd_ext_cmp + mvsd2gr - pp_enc_cmp) + w / 2,
                 ),
                 pya.Point(
@@ -3630,7 +3710,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr - pp_enc_cmp) + w / 2,
                 ),
                 pya.Point(
@@ -3645,7 +3725,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size + pp_enc_cmp)
                     + w / 2,
                 ),
@@ -3661,7 +3741,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size + pp_enc_cmp)
                     + w / 2,
                 ),
@@ -3677,7 +3757,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size + pp_enc_cmp)
                     - w / 2,
                 ),
@@ -3700,7 +3780,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size) - w / 2,
                 ),
                 pya.Point(
@@ -3714,7 +3794,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -3727,7 +3807,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -3740,7 +3820,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvsd_ext_cmp + mvsd2gr) - w / 2,
                 ),
                 pya.Point(
@@ -3753,7 +3833,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvsd_ext_cmp + mvsd2gr) - w / 2,
                 ),
                 pya.Point(
@@ -3766,7 +3846,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvsd_ext_cmp + mvsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -3780,7 +3860,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -3794,7 +3874,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size) + w / 2,
                 ),
                 pya.Point(
@@ -3808,7 +3888,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size) + w / 2,
                 ),
                 pya.Point(
@@ -3822,7 +3902,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvsd_ext_cmp + mvsd2gr + 2 * cmp2cont + cont_size) - w / 2,
                 ),
             ],
@@ -3842,7 +3922,7 @@ def draw_nfet_10v0_asym(layout, l, w):
     ) / 2
     nxgr_h = int(
         (
-            2 * l
+            2 * l_gate
             + 2
             * (
                 0.5 * cont_size
@@ -3859,7 +3939,7 @@ def draw_nfet_10v0_asym(layout, l, w):
         / (cont_size + cont2cont)
     )
     dxgr_h = (
-        2 * l
+        2 * l_gate
         + 2
         * (
             0.5 * cont_size
@@ -3891,7 +3971,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     dygr - (mvsd_ext_cmp + mvsd2gr + cmp2cont + cont_size) - w / 2,
                 )
             ),
@@ -3918,7 +3998,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         + cmp2cont
                     )
-                    - l,
+                    - l_gate,
                     -(mvsd_ext_cmp + mvsd2gr + cmp2cont + cont_size) - w / 2,
                 )
             ),
@@ -3944,7 +4024,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + mvsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     dygr - (mvsd_ext_cmp + mvsd2gr + cmp2cont + cont_size) - w / 2,
                 )
             ),
@@ -3971,7 +4051,7 @@ def draw_nfet_10v0_asym(layout, l, w):
                         + cmp2cmp
                         + cmp2cont
                     )
-                    - l,
+                    - l_gate,
                     (mvsd_ext_cmp + mvsd2gr + cmp2cont) + w / 2,
                 )
             ),
@@ -3986,13 +4066,13 @@ def draw_nfet_10v0_asym(layout, l, w):
     return cell
 
 
-def draw_pfet_10v0_asym(layout, l, w, dgr_en):
+def draw_pfet_10v0_asym(layout, l_gate, w, dgr_en):
     """
     Usage:-
      used to draw LDPFET 10V transistor by specifying parameters
     Arguments:-
      layout : Object of layout
-     l      : Float of gate length
+     l_gate      : Float of gate length
      w      : Float of gate width
      dgr_en : Boolean to enable double guard ring
     """
@@ -4011,7 +4091,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
 
     # Define variables
     dbu_PERCISION = 1 / layout.dbu
-    l = l * dbu_PERCISION
+    l_gate = l_gate * dbu_PERCISION
     w = w * dbu_PERCISION
     cmp2cont = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
@@ -4052,7 +4132,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                 + mvpsd_ov_cmp
                 + cmp2cmp
             )
-            - l,
+            - l_gate,
             -(mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size + dnw_enc_cmp)
             - w / 2,
             (
@@ -4066,7 +4146,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                 + mvpsd_ov_cmp
                 + cmp2cmp
             )
-            + l,
+            + l_gate,
             (mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size + dnw_enc_cmp) + w / 2,
         )
     )
@@ -4085,7 +4165,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                 + mvpsd_ov_cmp
                 + cmp2cmp
             )
-            - l,
+            - l_gate,
             -(
                 mvpsd_ext_cmp
                 + mvpsd2gr
@@ -4109,7 +4189,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                 + mvpsd_ov_cmp
                 + cmp2cmp
             )
-            + l,
+            + l_gate,
             (
                 mvpsd_ext_cmp
                 + mvpsd2gr
@@ -4137,7 +4217,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                 + mvpsd_ov_cmp
                 + cmp2cmp
             )
-            - l,
+            - l_gate,
             -(
                 mvpsd_ext_cmp
                 + mvpsd2gr
@@ -4161,7 +4241,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                 + mvpsd_ov_cmp
                 + cmp2cmp
             )
-            + l,
+            + l_gate,
             (
                 mvpsd_ext_cmp
                 + mvpsd2gr
@@ -4192,7 +4272,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
             (cont_size / 2 + cmp2cmp),
             -w / 2,
             (cont_size / 2 + cmp2cmp + mvpsd_ov_cmp + cont2ply + cont_size + cmp2cont)
-            + l,
+            + l_gate,
             w / 2,
         )
     )
@@ -4201,7 +4281,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
             -(cont_size / 2 + cmp2cmp),
             -w / 2,
             -(cont_size / 2 + cmp2cmp + mvpsd_ov_cmp + cont2ply + cont_size + cmp2cont)
-            - l,
+            - l_gate,
             w / 2,
         )
     )
@@ -4217,7 +4297,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                 + cmp2cont
                 + np_enc_cmp
             )
-            - l,
+            - l_gate,
             -w / 2 - np_enc_gate,
             (
                 cont_size / 2
@@ -4228,7 +4308,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                 + cmp2cont
                 + np_enc_cmp
             )
-            + l,
+            + l_gate,
             w / 2 + np_enc_gate,
         )
     )
@@ -4238,7 +4318,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
         pya.Box(
             (cont_size / 2 + drain2ply),
             -w / 2 - ply_ext_cmp,
-            (cont_size / 2 + cmp2cmp + mvpsd_ov_cmp) + l,
+            (cont_size / 2 + cmp2cmp + mvpsd_ov_cmp) + l_gate,
             w / 2 + mvpsd_ext_cmp + mvpsd2gr - ply2gr,
         )
     )
@@ -4246,7 +4326,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
         pya.Box(
             -(cont_size / 2 + drain2ply),
             -w / 2 - ply_ext_cmp,
-            -(cont_size / 2 + cmp2cmp + mvpsd_ov_cmp) - l,
+            -(cont_size / 2 + cmp2cmp + mvpsd_ov_cmp) - l_gate,
             w / 2 + mvpsd_ext_cmp + mvpsd2gr - ply2gr,
         )
     )
@@ -4263,12 +4343,12 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
     dy = (w - ny * cont_size - (ny - 1) * cont2cont) / 2
     ng = (
         int(
-            ((l + mvpsd_ov_cmp + ply_fld) - (cont_size + 2 * cmp2cont))
+            ((l_gate + mvpsd_ov_cmp + ply_fld) - (cont_size + 2 * cmp2cont))
             / (cont_size + cont2cont)
         )
         + 1
     )
-    dg = (l + mvpsd_ov_cmp + ply_fld - ng * cont_size - (ng - 1) * cont2cont) / 2
+    dg = (l_gate + mvpsd_ov_cmp + ply_fld - ng * cont_size - (ng - 1) * cont2cont) / 2
 
     # Inserting contact array and metals
     # Gate contacts and metal
@@ -4314,7 +4394,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
         pya.Box(
             (cont_size / 2 + drain2ply),
             w / 2 + mvpsd_ext_cmp + mvpsd2gr - ply2gr - metal_w,
-            (cont_size / 2 + cmp2cmp + mvpsd_ov_cmp) + l,
+            (cont_size / 2 + cmp2cmp + mvpsd_ov_cmp) + l_gate,
             w / 2 + mvpsd_ext_cmp + mvpsd2gr - ply2gr,
         )
     )
@@ -4322,7 +4402,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
         pya.Box(
             -(cont_size / 2 + drain2ply),
             w / 2 + mvpsd_ext_cmp + mvpsd2gr - ply2gr - metal_w,
-            -(cont_size / 2 + cmp2cmp + mvpsd_ov_cmp) - l,
+            -(cont_size / 2 + cmp2cmp + mvpsd_ov_cmp) - l_gate,
             w / 2 + mvpsd_ext_cmp + mvpsd2gr - ply2gr,
         )
     )
@@ -4346,7 +4426,8 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
             cont_cell_index,
             pya.Trans.new(
                 pya.Point.new(
-                    (cont_size / 2 + cmp2cmp + mvpsd_ov_cmp + cont2ply) + l, -w / 2 + dy
+                    (cont_size / 2 + cmp2cmp + mvpsd_ov_cmp + cont2ply) + l_gate,
+                    -w / 2 + dy,
                 )
             ),
             pya.Point.new((cont_size + cont2cont), 0),
@@ -4360,7 +4441,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
             cont_cell_index,
             pya.Trans.new(
                 pya.Point.new(
-                    -(1.5 * cont_size + cmp2cmp + mvpsd_ov_cmp + cont2ply) - l,
+                    -(1.5 * cont_size + cmp2cmp + mvpsd_ov_cmp + cont2ply) - l_gate,
                     -w / 2 + dy,
                 )
             ),
@@ -4373,18 +4454,18 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
     cell.shapes(metal1).insert(
         pya.Box(
             (1.5 * cont_size + cmp2cmp + mvpsd_ov_cmp + cont2ply + cmp2cont - metal_w)
-            + l,
+            + l_gate,
             -w / 2,
-            (1.5 * cont_size + cmp2cmp + mvpsd_ov_cmp + cont2ply + cmp2cont) + l,
+            (1.5 * cont_size + cmp2cmp + mvpsd_ov_cmp + cont2ply + cmp2cont) + l_gate,
             w / 2,
         )
     )
     cell.shapes(metal1).insert(
         pya.Box(
             -(1.5 * cont_size + cmp2cmp + mvpsd_ov_cmp + cont2ply + cmp2cont - metal_w)
-            - l,
+            - l_gate,
             -w / 2,
-            -(1.5 * cont_size + cmp2cmp + mvpsd_ov_cmp + cont2ply + cmp2cont) - l,
+            -(1.5 * cont_size + cmp2cmp + mvpsd_ov_cmp + cont2ply + cmp2cont) - l_gate,
             w / 2,
         )
     )
@@ -4404,7 +4485,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size) - w / 2,
                 ),
                 pya.Point(
@@ -4418,7 +4499,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -4431,7 +4512,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -4444,7 +4525,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr) - w / 2,
                 ),
                 pya.Point(
@@ -4457,7 +4538,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr) - w / 2,
                 ),
                 pya.Point(
@@ -4470,7 +4551,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -4484,7 +4565,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -4498,7 +4579,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size) + w / 2,
                 ),
                 pya.Point(
@@ -4512,7 +4593,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size) + w / 2,
                 ),
                 pya.Point(
@@ -4526,7 +4607,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size) - w / 2,
                 ),
             ],
@@ -4549,7 +4630,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size + pp_enc_cmp)
                     - w / 2,
                 ),
@@ -4565,7 +4646,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr - pp_enc_cmp) + w / 2,
                 ),
                 pya.Point(
@@ -4579,7 +4660,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         - pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr - pp_enc_cmp) + w / 2,
                 ),
                 pya.Point(
@@ -4593,7 +4674,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         - pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr - pp_enc_cmp) - w / 2,
                 ),
                 pya.Point(
@@ -4607,7 +4688,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         - pp_enc_cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr - pp_enc_cmp) - w / 2,
                 ),
                 pya.Point(
@@ -4621,7 +4702,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         - pp_enc_cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr - pp_enc_cmp) + w / 2,
                 ),
                 pya.Point(
@@ -4636,7 +4717,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr - pp_enc_cmp) + w / 2,
                 ),
                 pya.Point(
@@ -4651,7 +4732,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size + pp_enc_cmp)
                     + w / 2,
                 ),
@@ -4667,7 +4748,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size + pp_enc_cmp)
                     + w / 2,
                 ),
@@ -4683,7 +4764,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         + pp_enc_cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size + pp_enc_cmp)
                     - w / 2,
                 ),
@@ -4706,7 +4787,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size) - w / 2,
                 ),
                 pya.Point(
@@ -4720,7 +4801,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -4733,7 +4814,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -4746,7 +4827,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr) - w / 2,
                 ),
                 pya.Point(
@@ -4759,7 +4840,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr) - w / 2,
                 ),
                 pya.Point(
@@ -4772,7 +4853,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -4786,7 +4867,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr) + w / 2,
                 ),
                 pya.Point(
@@ -4800,7 +4881,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size) + w / 2,
                 ),
                 pya.Point(
@@ -4814,7 +4895,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size) + w / 2,
                 ),
                 pya.Point(
@@ -4828,7 +4909,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr + 2 * cmp2cont + cont_size) - w / 2,
                 ),
             ],
@@ -4848,7 +4929,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
     ) / 2
     nxgr_h = int(
         (
-            2 * l
+            2 * l_gate
             + 2
             * (
                 0.5 * cont_size
@@ -4865,7 +4946,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
         / (cont_size + cont2cont)
     )
     dxgr_h = (
-        2 * l
+        2 * l_gate
         + 2
         * (
             0.5 * cont_size
@@ -4897,7 +4978,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    - l,
+                    - l_gate,
                     dygr - (mvpsd_ext_cmp + mvpsd2gr + cmp2cont + cont_size) - w / 2,
                 )
             ),
@@ -4924,7 +5005,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         + cmp2cont
                     )
-                    - l,
+                    - l_gate,
                     -(mvpsd_ext_cmp + mvpsd2gr + cmp2cont + cont_size) - w / 2,
                 )
             ),
@@ -4950,7 +5031,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + mvpsd_ov_cmp
                         + cmp2cmp
                     )
-                    + l,
+                    + l_gate,
                     dygr - (mvpsd_ext_cmp + mvpsd2gr + cmp2cont + cont_size) - w / 2,
                 )
             ),
@@ -4977,7 +5058,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                         + cmp2cmp
                         + cmp2cont
                     )
-                    - l,
+                    - l_gate,
                     (mvpsd_ext_cmp + mvpsd2gr + cmp2cont) + w / 2,
                 )
             ),
@@ -5007,7 +5088,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5031,7 +5112,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5055,7 +5136,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5079,7 +5160,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5103,7 +5184,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5127,7 +5208,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5151,7 +5232,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5175,7 +5256,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5199,7 +5280,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5223,7 +5304,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5256,7 +5337,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             + np_enc_cmp
                         )
-                        - l,
+                        - l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5282,7 +5363,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             + np_enc_cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5308,7 +5389,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             - np_enc_cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5334,7 +5415,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             - np_enc_cmp
                         )
-                        - l,
+                        - l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5360,7 +5441,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             - np_enc_cmp
                         )
-                        + l,
+                        + l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5386,7 +5467,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             - np_enc_cmp
                         )
-                        + l,
+                        + l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5412,7 +5493,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             + np_enc_cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5438,7 +5519,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             + np_enc_cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5464,7 +5545,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             + np_enc_cmp
                         )
-                        + l,
+                        + l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5490,7 +5571,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + cmp2cmp
                             + np_enc_cmp
                         )
-                        + l,
+                        + l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5524,7 +5605,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5548,7 +5629,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5572,7 +5653,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5596,7 +5677,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5620,7 +5701,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5644,7 +5725,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5668,7 +5749,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5692,7 +5773,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5716,7 +5797,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         (
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5740,7 +5821,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5789,7 +5870,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
         ) / 2
         nxgr_h = int(
             (
-                2 * l
+                2 * l_gate
                 + 2
                 * (
                     pcmp_gr2dnw
@@ -5808,7 +5889,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
             / (cont_size + cont2cont)
         )
         dxgr_h = (
-            2 * l
+            2 * l_gate
             + 2
             * (
                 pcmp_gr2dnw
@@ -5844,7 +5925,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         dygr
                         - (
                             mvpsd_ext_cmp
@@ -5882,7 +5963,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         -(
                             mvpsd_ext_cmp
                             + mvpsd2gr
@@ -5918,7 +5999,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        + l,
+                        + l_gate,
                         dygr
                         - (
                             mvpsd_ext_cmp
@@ -5956,7 +6037,7 @@ def draw_pfet_10v0_asym(layout, l, w, dgr_en):
                             + mvpsd_ov_cmp
                             + cmp2cmp
                         )
-                        - l,
+                        - l_gate,
                         mvpsd_ext_cmp
                         + mvpsd2gr
                         + 3 * cmp2cont

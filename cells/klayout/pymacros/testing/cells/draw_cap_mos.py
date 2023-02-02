@@ -35,7 +35,7 @@ def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
     return num_cont, free_spc
 
 
-def draw_cap_nmos(layout, l, w, volt, deepnwell, pcmpgr):
+def draw_cap_nmos(layout, l_gate, w_gate, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw NMOS capacitor (Outside DNWELL) by specifying parameters
@@ -60,8 +60,8 @@ def draw_cap_nmos(layout, l, w, volt, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    cmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
+    cmp_w = w_gate * dbu_PERCISION
+    cmp_l = l_gate * dbu_PERCISION
     poly_ext = 0.46 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
     cmp_poly_enc = 0.44 * dbu_PERCISION
@@ -237,7 +237,7 @@ def draw_cap_nmos(layout, l, w, volt, deepnwell, pcmpgr):
     cap_nmos_cell.shapes(mos_cap_mk).insert(pya.Box(0, 0, cmp_w, cmp_l))
 
     # Inserting marker
-    if deepnwell == True:
+    if deepnwell:
         # Inserting PCOMP Guard Ring
         cmp_inner = pya.Box(
             -pcmp2ncmp_spc,
@@ -345,7 +345,7 @@ def draw_cap_nmos(layout, l, w, volt, deepnwell, pcmpgr):
         cap_nmos_cell.insert(top_con_arr)
 
         # Inserting Double Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -pcmp2ncmp_spc
                 - gr_w
@@ -504,7 +504,7 @@ def draw_cap_nmos(layout, l, w, volt, deepnwell, pcmpgr):
 
     if volt == "5/6V":
         # Inserting dualgate
-        if deepnwell == True:
+        if deepnwell:
             cap_nmos_cell.shapes(dualgate).insert(
                 pya.Box(
                     -pcmp2ncmp_spc
@@ -547,7 +547,7 @@ def draw_cap_nmos(layout, l, w, volt, deepnwell, pcmpgr):
     return cap_nmos_cell
 
 
-def draw_cap_pmos(layout, l, w, volt, deepnwell, pcmpgr):
+def draw_cap_pmos(layout, l_gate, w_gate, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw PMOS capacitor (Outside DNWELL) by specifying parameters
@@ -571,8 +571,8 @@ def draw_cap_pmos(layout, l, w, volt, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    cmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
+    cmp_w = w_gate * dbu_PERCISION
+    cmp_l = l_gate * dbu_PERCISION
     poly_ext = 0.46 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
     cmp_poly_enc = 0.44 * dbu_PERCISION
@@ -953,7 +953,7 @@ def draw_cap_pmos(layout, l, w, volt, deepnwell, pcmpgr):
     cap_pmos_cell.shapes(mos_cap_mk).insert(pya.Box(0, 0, cmp_w, cmp_l))
 
     # Inserting marker
-    if deepnwell == True:
+    if deepnwell:
         # Inserting dnwell
         cap_pmos_cell.shapes(dnwell).insert(
             pya.Box(
@@ -965,7 +965,7 @@ def draw_cap_pmos(layout, l, w, volt, deepnwell, pcmpgr):
         )
 
         # Inserting Double Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -ncmp_pcmp_spc - gr_width - dnwell_enc_ncmp - pcmp_gr2dnw,
                 -poly_ext - poly_ncmp_spc - gr_width - dnwell_enc_ncmp - pcmp_gr2dnw,
@@ -1063,7 +1063,7 @@ def draw_cap_pmos(layout, l, w, volt, deepnwell, pcmpgr):
 
     if volt == "5/6V":
         # Inserting dualgate
-        if deepnwell == True:
+        if deepnwell:
             cap_pmos_cell.shapes(dualgate).insert(
                 pya.Box(
                     -ncmp_pcmp_spc - gr_width - dnwell_enc_ncmp - dg_enc_dnwell,
@@ -1095,7 +1095,7 @@ def draw_cap_pmos(layout, l, w, volt, deepnwell, pcmpgr):
     return cap_pmos_cell
 
 
-def draw_cap_nmos_b(layout, l, w, volt):
+def draw_cap_nmos_b(layout, l_gate, w_gate, volt):
     """
     Usage:-
      used to draw 3.3V NMOS capacitor (inside NWell) by specifying parameters
@@ -1117,10 +1117,9 @@ def draw_cap_nmos_b(layout, l, w, volt):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    cmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
+    cmp_w = w_gate * dbu_PERCISION
+    cmp_l = l_gate * dbu_PERCISION
     poly_ext = 0.3 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
     cmp_poly_enc = 0.44 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
     cont_min_spc = 0.25 * dbu_PERCISION
@@ -1129,11 +1128,8 @@ def draw_cap_nmos_b(layout, l, w, volt):
     metal_cmp_ext_x = 0.59 * dbu_PERCISION
     metal_cmp_ext_y = 2.2 * dbu_PERCISION
     met_width = 1 * dbu_PERCISION
-    poly_met_enc_x = 0.17 * dbu_PERCISION
-    poly_met_enc_y = 0.01 * dbu_PERCISION
     met_con_min = 0.34 * dbu_PERCISION
     cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    cmp_cont_poly_spc = 0.17 * dbu_PERCISION
     nwell_cmp_enc_x = 0.18 * dbu_PERCISION
     nwell_cmp_enc_y = 1.38 * dbu_PERCISION
     poly_extra_in = 0.27 * dbu_PERCISION
@@ -1340,7 +1336,7 @@ def draw_cap_nmos_b(layout, l, w, volt):
     return cap_nmos_b_cell
 
 
-def draw_cap_pmos_b(layout, l, w, volt):
+def draw_cap_pmos_b(layout, l_gate, w_gate, volt):
     """
     Usage:-
      used to draw PMOS capacitor (inside Psub) by specifying parameters
@@ -1361,8 +1357,8 @@ def draw_cap_pmos_b(layout, l, w, volt):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    cmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
+    cmp_w = w_gate * dbu_PERCISION
+    cmp_l = l_gate * dbu_PERCISION
     poly_ext = 0.3 * dbu_PERCISION
     cmp_poly_enc = 0.44 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
