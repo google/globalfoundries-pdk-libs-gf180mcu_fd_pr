@@ -96,7 +96,13 @@ class diode_nd2ps(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         np_instance = draw_diode_nd2ps(
-            self.layout, l=self.l, w=self.w,cw= self.cw,volt= self.volt, deepnwell=self.deepnwell, pcmpgr=self.pcmpgr
+            self.layout,
+            l=self.l,
+            w=self.w,
+            cw=self.cw,
+            volt=self.volt,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -167,7 +173,13 @@ class diode_pd2nw(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         np_instance = draw_diode_pd2nw(
-            self.layout, l=self.l, w=self.w,cw= self.cw,volt= self.volt, deepnwell=self.deepnwell, pcmpgr=self.pcmpgr
+            self.layout,
+            l=self.l,
+            w=self.w,
+            cw=self.cw,
+            volt=self.volt,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -238,7 +250,7 @@ class diode_nw2ps(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         nwp_instance = draw_diode_nw2ps(
-            self.layout, l=self.l, w=self.w,cw= self.cw,volt= self.volt
+            self.layout, l=self.l, w=self.w, cw=self.cw, volt=self.volt
         )
         write_cells = pya.CellInstArray(
             nwp_instance.cell_index(),
@@ -310,7 +322,12 @@ class diode_pw2dw(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         diode_pw2dw_instance = draw_diode_pw2dw(
-            self.layout, l=self.l, w=self.w,cw= self.cw,volt= self.volt, pcmpgr=self.pcmpgr
+            self.layout,
+            l=self.l,
+            w=self.w,
+            cw=self.cw,
+            volt=self.volt,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             diode_pw2dw_instance.cell_index(),
@@ -382,7 +399,12 @@ class diode_dw2ps(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         diode_dw2ps_instance = draw_diode_dw2ps(
-            self.layout, l=self.l, w=self.w,cw= self.cw,volt= self.volt, pcmpgr=self.pcmpgr
+            self.layout,
+            l=self.l,
+            w=self.w,
+            cw=self.cw,
+            volt=self.volt,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             diode_dw2ps_instance.cell_index(),
@@ -451,7 +473,7 @@ class sc_diode(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         sc_instance = draw_sc_diode(
-            self.layout, l=self.l, w=self.w,cw= self.cw,m=self.m, pcmpgr=self.pcmpgr
+            self.layout, l=self.l, w=self.w, cw=self.cw, m=self.m, pcmpgr=self.pcmpgr
         )
         write_cells = pya.CellInstArray(
             sc_instance.cell_index(),

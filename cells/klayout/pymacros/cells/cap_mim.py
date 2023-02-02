@@ -93,7 +93,11 @@ class cap_mim(pya.PCellDeclarationHelper):
             if (self.mim_option) == "MIM-A":
                 raise TypeError(f"Current stack ({option}) doesn't allow this option")
         np_instance = draw_cap_mim(
-            self.layout, l=self.l, w=self.w, mim_option=self.mim_option, metal_level=self.metal_level
+            self.layout,
+            l=self.l,
+            w=self.w,
+            mim_option=self.mim_option,
+            metal_level=self.metal_level,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),

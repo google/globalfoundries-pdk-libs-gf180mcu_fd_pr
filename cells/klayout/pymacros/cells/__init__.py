@@ -53,7 +53,7 @@ class gf180mcu(pya.Library):
         self.layout().register_pcell(
             "npn_bjt", npn_bjt()
         )  # npn_10p00x10p00 , npn_05p00x05p00 , npn_00p54x16p00 ,
-           # npn_00p54x08p00 , npn_00p54x04p00 , npn_00p54x02p00
+        # npn_00p54x08p00 , npn_00p54x04p00 , npn_00p54x02p00
         self.layout().register_pcell(
             "pnp_bjt", pnp_bjt()
         )  # pnp_10p00x10p00 , pnp_05p00x05p00 , pnp_10p00x00p42 , pnp_05p00x00p42
@@ -77,9 +77,7 @@ class gf180mcu(pya.Library):
         self.layout().register_pcell("sc_diode", sc_diode())
 
         # MIM_CAP DEVICES
-        self.layout().register_pcell(
-            "cap_mim", cap_mim()
-        )
+        self.layout().register_pcell("cap_mim", cap_mim())
 
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")

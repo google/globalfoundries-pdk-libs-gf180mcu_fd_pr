@@ -5,7 +5,11 @@ from .layers_def import *
 
 
 def draw_cap_mim(
-    layout, mim_option: str = "A", metal_level: str = "M4", l: float = 2, w: float = 2,
+    layout,
+    mim_option: str = "A",
+    metal_level: str = "M4",
+    l: float = 2,
+    w: float = 2,
 ):
 
     """
@@ -56,7 +60,12 @@ def draw_cap_mim(
 
     # drawing cap identifier and bottom , upper layers
 
-    m_up = c.add_ref(gf.components.rectangle(size=(w, l), layer=upper_layer,))
+    m_up = c.add_ref(
+        gf.components.rectangle(
+            size=(w, l),
+            layer=upper_layer,
+        )
+    )
 
     fusetop = c.add_ref(
         gf.components.rectangle(size=(m_up.size[0], m_up.size[1]), layer=fusetop_layer)
