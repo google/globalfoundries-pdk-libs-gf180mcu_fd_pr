@@ -4,14 +4,14 @@ import os
 import pandas as pd
 import math
 
+from cells import gf180mcu
+
 # Set device name form env. variable
 device_pcell = device_in
 
 # === Load gf180mcu pcells ===
 technology_macros_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, technology_macros_path)
-
-from cells import gf180mcu
 
 # Instantiate and register the library
 gf180mcu()
