@@ -39,10 +39,14 @@ def cap_mos_inst(
 
     c_inst = gf.Component()
 
-    cmp = c_inst.add_ref(gf.components.rectangle(size=(cmp_w, w), layer=comp_layer))
+    cmp = c_inst.add_ref(
+        gf.components.rectangle(size=(cmp_w, w), layer=comp_layer)
+    )
 
     cap_mk = c_inst.add_ref(
-        gf.components.rectangle(size=(cmp.size[0], cmp.size[1]), layer=mos_cap_mk_layer)
+        gf.components.rectangle(
+            size=(cmp.size[0], cmp.size[1]), layer=mos_cap_mk_layer
+        )
     )
     cap_mk.xmin = cmp.xmin
     cap_mk.ymin = cmp.ymin
@@ -71,7 +75,9 @@ def cap_mos_inst(
     imp_rect.xmin = cmp.xmin - implant_enc[0]
     imp_rect.ymin = cmp.ymin - implant_enc[1]
 
-    poly = c_inst.add_ref(gf.components.rectangle(size=(l, pl_l), layer=poly2_layer))
+    poly = c_inst.add_ref(
+        gf.components.rectangle(size=(l, pl_l), layer=poly2_layer)
+    )
 
     poly.xmin = cmp.xmin + cmp_ext
     poly.ymin = cmp.ymin - pl_ext
@@ -89,7 +95,9 @@ def cap_mos_inst(
     )
 
     pl_m1 = c_inst.add_ref(
-        gf.components.rectangle(size=(pl_con.size[0], pl_con.size[1]), layer=m1_layer)
+        gf.components.rectangle(
+            size=(pl_con.size[0], pl_con.size[1]), layer=m1_layer
+        )
     )
     pl_m1.xmin = pl_con.xmin
     pl_m1.ymin = pl_con.ymin
@@ -140,6 +148,13 @@ def draw_cap_mos(
     comp_pp_enc: float = 0.16
     dnwell_enc_pcmp = 1.1
 
+    if volt == "3.3V":
+        nw_enc_ncmp = 0.12
+        nw_enc_pcmp = 0.43
+    else:
+        nw_enc_ncmp = 0.16
+        nw_enc_pcmp = 0.6
+
     # end_cap: float = 0.22
 
     cmp_ed_w = con_size + (2 * con_comp_enc)
@@ -148,7 +163,7 @@ def draw_cap_mos(
 
     pl_l = w + (2 * end_cap)
 
-    if type == "cap_nmos":
+    if "cap_nmos" in type:
         implant_layer = nplus_layer
     else:
         implant_layer = pplus_layer
@@ -175,7 +190,9 @@ def draw_cap_mos(
 
     # cmp_m1 = c.add_ref(gf.components.rectangle(size=(m1_w,w+m1_ext),layer=m1_layer))
     cmp_m1_v = c.add_array(
-        component=gf.components.rectangle(size=(m1_w, w + m1_ext), layer=m1_layer),
+        component=gf.components.rectangle(
+            size=(m1_w, w + m1_ext), layer=m1_layer
+        ),
         rows=1,
         columns=2,
         spacing=(m1_w + cmp_w - 2 * cmp_ed_w, 0),
@@ -203,6 +220,39 @@ def draw_cap_mos(
         )
         dg.xmin = c_inst.xmin - dg_enc_cmp
         dg.ymin = c_inst.ymin - dg_enc_poly
+
+    cmp_polys = c_inst.get_polygons(by_spec=comp_layer)
+    cmp_xmin = np.min(cmp_polys[0][:, 0])
+    cmp_ymin = np.min(cmp_polys[0][:, 1])
+    cmp_xmax = np.max(cmp_polys[0][:, 0])
+    cmp_ymax = np.max(cmp_polys[0][:, 1])
+
+    if "_b" in type:
+        if "cap_nmos" in type:
+            nwell = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        cmp_xmax - cmp_xmin + (2 * np_enc_cmp),
+                        cmp_ymax - cmp_ymin + (2 * np_enc_gate),
+                    ),
+                    layer=nwell_layer,
+                )
+            )
+            nwell.xmin = cmp_xmin - np_enc_cmp
+            nwell.ymin = cmp_ymin - np_enc_gate
+        else:
+            lvpwell = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        cmp_xmax - cmp_xmin + (2 * np_enc_cmp),
+                        cmp_ymax - cmp_ymin + (2 * np_enc_gate),
+                    ),
+                    layer=lvpwell_layer,
+                )
+            )
+
+            lvpwell.xmin = cmp_xmin - np_enc_cmp
+            lvpwell.ymin = cmp_ymin - np_enc_gate
 
     if deepnwell == 1:
 
@@ -271,7 +321,9 @@ def draw_cap_mos(
                     layer=comp_layer,
                 )
             )
-            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+            rect_pcmpgr_out.move(
+                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
+            )
             B = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -284,20 +336,27 @@ def draw_cap_mos(
             psdm_in = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * comp_pp_enc,
-                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin)
+                        - 2 * comp_pp_enc,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin)
+                        - 2 * comp_pp_enc,
                     ),
                     layer=pplus_layer,
                 )
             )
             psdm_in.move(
-                (rect_pcmpgr_in.xmin + comp_pp_enc, rect_pcmpgr_in.ymin + comp_pp_enc,)
+                (
+                    rect_pcmpgr_in.xmin + comp_pp_enc,
+                    rect_pcmpgr_in.ymin + comp_pp_enc,
+                )
             )
             psdm_out = c_temp_gr.add_ref(
                 gf.components.rectangle(
                     size=(
-                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * comp_pp_enc,
-                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * comp_pp_enc,
+                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin)
+                        + 2 * comp_pp_enc,
+                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin)
+                        + 2 * comp_pp_enc,
                     ),
                     layer=pplus_layer,
                 )
@@ -374,16 +433,10 @@ def draw_cap_mos(
 
             comp_m1_in = c_temp_gr.add_ref(
                 gf.components.rectangle(
-                    size=(
-                        rect_pcmpgr_in.size[0],
-                        rect_pcmpgr_in.size[1]
-                        # (l_d) + 2 * comp_spacing,
-                        # (c_inst.ymax - c_inst.ymin) + 2 * poly2_comp_spacing,
-                    ),
+                    size=(rect_pcmpgr_in.size[0], rect_pcmpgr_in.size[1]),
                     layer=m1_layer,
                 )
             )
-            # comp_m1_in.move((-comp_spacing, c_inst.ymin - poly2_comp_spacing))
 
             comp_m1_out = c_temp_gr.add_ref(
                 gf.components.rectangle(
@@ -394,7 +447,9 @@ def draw_cap_mos(
                     layer=m1_layer,
                 )
             )
-            comp_m1_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+            comp_m1_out.move(
+                (rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw)
+            )
             m1 = c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
