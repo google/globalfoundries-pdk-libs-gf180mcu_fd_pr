@@ -17,7 +17,7 @@
 ########################################################################################################################
 
 import pya
-from .draw_efuse import *
+from .draw_efuse import draw_efuse
 
 
 class efuse(pya.PCellDeclarationHelper):
