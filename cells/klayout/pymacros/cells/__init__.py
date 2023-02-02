@@ -79,5 +79,8 @@ class gf180mcu(pya.Library):
         # MIM_CAP DEVICES
         self.layout().register_pcell("cap_mim", cap_mim())
 
+        # RES DEVICES
+        self.layout().register_pcell("metal_resistor", metal_resistor())
+
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
