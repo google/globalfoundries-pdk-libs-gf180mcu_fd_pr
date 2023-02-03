@@ -160,6 +160,10 @@ class SubcircuitModelsReader < RBA::NetlistSpiceReaderDelegate
     end
   end
 
+  def wants_subcircuit(name)
+    name.start_with?("PFET") || name.start_with?("NFET")
+  end
+
   # implements the delegate interface:
   # take and translate the element
   def element(circuit, el, name, model, value, nets, params)
@@ -237,6 +241,31 @@ class SubcircuitModelsReader < RBA::NetlistSpiceReaderDelegate
       device.set_parameter("L", ((params["L"] || 0.0) * (params["S"] || 1.0)) * 1e6)
       device.set_parameter("R", (params["R"] * (params["S"] || 1.0) / (params["PAR"] || 1.0)))
 
+    elsif el == "X"
+      if nets.size != 4
+        error("Subcircuit #{model} needs four nodes")
+      end
+
+      # provide a device class
+      cls = circuit.netlist.device_class_by_name(model)
+      if ! cls
+        cls = RBA::DeviceClassMOS4Transistor::new
+        cls.name = model
+        circuit.netlist.add(cls)
+      end
+
+      # create a device
+      device = circuit.create_device(cls, name)
+
+      # and configure the device
+      [ "S", "G", "D", "B" ].each_with_index do |t,index|
+        device.connect_terminal(t, nets[index])
+      end
+
+      # parameters in the model are given in micrometer units, so
+      # we need to translate the parameter values from SI to um values:
+      device.set_parameter("W", (params["W"] || 0.0) * 1e6)
+      device.set_parameter("L", (params["L"] || 0.0) * 1e6)
     else
       return super
 
