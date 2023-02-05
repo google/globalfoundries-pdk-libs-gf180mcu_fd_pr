@@ -39,7 +39,7 @@ def alter_interdig(
 ) -> gf.Component:
     """Returns interdigitation polygons of gate with alterating poly contacts
 
-    Args : 
+    Args :
         sd_diff : source/drain diffusion rectangle
         pc1 : first poly contact array
         pc2 : second poly contact array
@@ -240,9 +240,9 @@ def interdigit(
     patt=[""],
     gate_con_pos="top",
 ) -> gf.Component:
-    """Returns interdigitation related polygons 
+    """Returns interdigitation related polygons
 
-    Args : 
+    Args :
         sd_diff : source/drain diffusion rectangle
         pc1 : first poly contact array
         pc2 : second poly contact array
@@ -411,9 +411,9 @@ def interdigit(
 def hv_gen(
     c_inst, volt: str = "3.3V", dg_encx: float = 0.1, dg_ency: float = 0.1
 ) -> gf.Component:
-    """Returns high volatge related polygons 
+    """Returns high volatge related polygons
 
-    Args : 
+    Args :
         c_inst : dualgate enclosed componenet
         volt : operating voltage
         dg_encx : dualgate enclosure in x_direction
@@ -454,9 +454,9 @@ def bulk_gr_gen(
     l_d: float = 0.1,
     implant_layer: LayerSpec = layer["pplus"],
 ) -> gf.Component():
-    """Returns guardring 
+    """Returns guardring
 
-    Args : 
+    Args :
         c_inst : componenet enclosed by guardring
         comp_spacing : spacing between comp polygons
         poly2_comp_spacing : spacing between comp and poly2 polygons
@@ -607,9 +607,9 @@ def bulk_gr_gen(
 def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
     """Return deepnwell guardring
 
-    Args : 
+    Args :
         dn_rect : deepnwell polygon
-        grw : guardring width 
+        grw : guardring width
     """
 
     c = gf.Component()
@@ -757,7 +757,7 @@ def nfet_deep_nwell(
 ) -> gf.Component:
     """Return nfet deepnwell
 
-    Args : 
+    Args :
         deepnwell : boolean of having deepnwell
         pcmpgr : boolean of having deepnwell guardring
         inst_size : deepnwell enclosed size
@@ -1208,10 +1208,10 @@ def pfet_deep_nwell(
 ) -> gf.Component:
     """Returns pfet well related polygons
 
-    Args : 
+    Args :
         deepnwell : boolaen of having deepnwell
         pcmpgr : boolean of having deepnwell guardring
-        enc_size : enclosed size 
+        enc_size : enclosed size
         enc_xmin : enclosed xmin
         enc_ymin : enclosed ymin
         nw_enc_pcmp : nwell enclosure of pcomp
