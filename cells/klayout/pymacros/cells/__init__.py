@@ -81,6 +81,7 @@ class gf180mcu(pya.Library):
 
         # RES DEVICES
         self.layout().register_pcell("metal_resistor", metal_resistor())
+        self.layout().register_pcell("nplus_s_resistor", nplus_s_resistor())
 
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
