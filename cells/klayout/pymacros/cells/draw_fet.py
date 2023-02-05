@@ -1944,7 +1944,6 @@ def draw_nfet_06v0_nvt(
                 )
             )
 
-
     # generating bulk
     if bulk == "None":
         nplus = c_inst.add_ref(
