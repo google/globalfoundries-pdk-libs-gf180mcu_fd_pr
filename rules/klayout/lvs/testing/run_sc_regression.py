@@ -14,15 +14,15 @@
 
 """Run GlobalFoundries 180nm MCU SC LVS Regression.
 
-Usage: 
+Usage:
     run_sc_regression.py (--help| -h)
     run_sc_regression.py (--path=<file_path>)... (--run_dir=<run_dir>) [--num_cores=<num>]
 
 Options:
     --help -h               Print this help message.
     --path=<file_path>      The input name of GDS/Netlist file path without extention.
-    --run_dir=<run_dir>     Selecting your output path.    
-    --num_cores=<num>       Number of cores to be used by LVS checker 
+    --run_dir=<run_dir>     Selecting your output path.
+    --num_cores=<num>       Number of cores to be used by LVS checker
 """
 
 from subprocess import check_call
@@ -91,7 +91,6 @@ def lvs_check(sc_input):
     ).read()
 
     # moving all reports to run dir
-    out_dir = arguments["--run_dir"]
     # check_call(f"cd {out_dir} && mkdir {sc_input_clean}")
     # check_call(f"mv -f sc_testcases/{sc_input}.lvsdb sc_testcases/*/{cdl_input_clean}_extracted.cir sc_testcases/*/{cdl_input_clean}_modified.cdl {out_dir}/{sc_input_clean}/")
 
@@ -110,8 +109,8 @@ def lvs_check(sc_input):
 def main():
 
     # Remove old reports
-    check_call(f"rm -rf sc_testcases/sc_report.csv", shell=True)
-    check_call(f"rm -rf ip_testcases/ip_report.csv", shell=True)
+    check_call("rm -rf sc_testcases/sc_report.csv", shell=True)
+    check_call("rm -rf ip_testcases/ip_report.csv", shell=True)
 
     cell_list = arguments["--path"]
     if isinstance(cell_list, str):
@@ -147,11 +146,11 @@ def main():
                 f"klayout -b -r sc_testcases/split_gds.rb -rd input={cell}.gds",
                 shell=True,
             )
-            check_call(f"rm -rf sc_testcases/split_gds.rb", shell=True)
+            check_call("rm -rf sc_testcases/split_gds.rb", shell=True)
 
             # Create cdl splitter script
             cdl = cell.split("/")[-1]
-            os.makedirs(f"sc_testcases/sc_split/sc_netlists/", exist_ok=False)
+            os.makedirs("sc_testcases/sc_split/sc_netlists/", exist_ok=False)
             with open(f"sc_testcases/{cdl}.cdl", "r") as cdl1:
                 for line in cdl1:
                     if ".SUBCKT" in line:
@@ -161,7 +160,7 @@ def main():
                         sc_result.append(line)
                     if ".ENDS" in line:
                         get_line = False
-                        name = re.findall(".SUBCKT (\w+)", sc_result[0])
+                        name = re.findall(".SUBCKT (/w+)", sc_result[0])
                         with open(
                             f"sc_testcases/sc_split/sc_netlists/{name[0]}.cdl", "w"
                         ) as out_cdl:
@@ -252,7 +251,7 @@ if __name__ == "__main__":
     # logs format
     logging.basicConfig(
         level=logging.DEBUG,
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
@@ -260,7 +259,7 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="SC LVS REGRESSION: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
 

@@ -1,21 +1,20 @@
 """
 Globalfoundries 180u PCells Generator.
 
-Usage: 
+Usage:
     generate_pcell.py (--help| -h)
     generate_pcell.py (--device=<device_name>) [--thr=<thr>]
-    
+
 Options:
     --help -h                   Print this help message.
     --device=<device_name>      Select your device name. Allowed devices are (bjt , diode, MIM-A, MIM-B_gfB, MIM-B_gfC , fet, cap_mos, res)
-    --thr=<thr>                 The number of threads used in run.  
+    --thr=<thr>                 The number of threads used in run.
 """
 
 from docopt import docopt
 import os
 import logging
 import pandas as pd
-import os
 import yaml
 import concurrent.futures
 import multiprocessing
@@ -143,7 +142,7 @@ if __name__ == "__main__":
     # logs format
     logging.basicConfig(
         level=logging.DEBUG,
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
@@ -152,7 +151,7 @@ if __name__ == "__main__":
 
     # No. of threads
     thrCount = (
-        os.cpu_count() * 2 if arguments["--thr"] == None else int(arguments["--thr"])
+        os.cpu_count() * 2 if arguments["--thr"] is None else int(arguments["--thr"])
     )
 
     # Calling main function

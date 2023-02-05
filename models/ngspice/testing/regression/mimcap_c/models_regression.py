@@ -48,7 +48,7 @@ def find_mimcap(filename):
     ----------
     filename : string or Path
         Path string to the location of the log output file.
-    
+
     Returns
     -------
     float
@@ -85,10 +85,7 @@ def ext_measured(dev_data_path, device):
 
     idf = df[["CV (fF)"]].copy()
     idf.rename(
-        columns={
-            "CV (fF)": "mimcap_measured",
-        },
-        inplace=True,
+        columns={"CV (fF)": "mimcap_measured"}, inplace=True,
     )
     idf["length"] = df["Unnamed: 2"].apply(
         lambda x: str(x).split("(")[1].split("x")[0].split("u")[0]
@@ -186,11 +183,7 @@ def run_sim(dirpath, device, length, width, corner, temp):
         with open(netlist_path, "w") as netlist:
             netlist.write(
                 tmpl.render(
-                    device=device,
-                    width=width,
-                    length=length,
-                    corner=corner,
-                    temp=temp,
+                    device=device, width=width, length=length, corner=corner, temp=temp,
                 )
             )
 
@@ -352,9 +345,7 @@ if __name__ == "__main__":
     )
     logging.basicConfig(
         level=logging.DEBUG,
-        handlers=[
-            logging.StreamHandler(),
-        ],
+        handlers=[logging.StreamHandler()],
         format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
