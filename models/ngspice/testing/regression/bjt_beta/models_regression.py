@@ -415,7 +415,7 @@ def run_sims(
     return df
 
 
-def main():
+def main():  # noqa: C901
     """Main function applies all regression steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()

@@ -69,7 +69,6 @@ def ext_simulated(device, processes, volts, temps):
                     else:
                         results.append(0)
                 df_measured = pd.read_csv(f"{device}/{device}_measured.csv", header=0)
-                df = df_measured
                 df_measured.drop(
                     df_measured.columns[len(df_measured.columns) - 1],
                     axis=1,
@@ -165,7 +164,7 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="comparator: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
 

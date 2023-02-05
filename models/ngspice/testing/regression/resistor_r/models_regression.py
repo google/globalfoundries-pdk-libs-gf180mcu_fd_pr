@@ -123,7 +123,7 @@ def ext_temp_corners(dev_data_path: str, device: str, corners: str) -> pd.DataFr
         all_dfs.append(idf)
 
     df = pd.concat(all_dfs)
-    df["width"] = df["info"].str.extract("w=([\d\.]+)").astype(float)
+    df["width"] = df["info"].str.extract("w=([/d/.]+)").astype(float)
     df["device"] = device
     df["voltage"] = DEFAULT_VOLTAGE
     df.dropna(axis=0, inplace=True)
@@ -401,9 +401,7 @@ if __name__ == "__main__":
     )
     logging.basicConfig(
         level=logging.DEBUG,
-        handlers=[
-            logging.StreamHandler(),
-        ],
+        handlers=[logging.StreamHandler()],
         format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )

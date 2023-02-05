@@ -83,7 +83,7 @@ def call_simulator(arg):
         return False
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # noqa: C901
 
     t0 = time.time()
     args = docopt(__doc__)

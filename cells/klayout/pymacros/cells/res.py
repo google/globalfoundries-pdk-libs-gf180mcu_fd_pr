@@ -91,6 +91,8 @@ class metal_resistor(pya.PCellDeclarationHelper):
 
         self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
         self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
+        self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
+        self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -111,10 +113,19 @@ class metal_resistor(pya.PCellDeclarationHelper):
             + ("%.3f" % self.w_res)
             + ")"
         )
+        return (
+            "metal_resistor(L="
+            + ("%.3f" % self.l_res)
+            + ",W="
+            + ("%.3f" % self.w_res)
+            + ")"
+        )
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
+        self.area = self.w_res * self.l_res
+        self.perim = 2 * (self.w_res + self.l_res)
         self.area = self.w_res * self.l_res
         self.perim = 2 * (self.w_res + self.l_res)
         # w,l must be larger or equal than min. values.
@@ -123,8 +134,16 @@ class metal_resistor(pya.PCellDeclarationHelper):
                 self.l_res = rm1_l
             if (self.w_res) < rm1_w:
                 self.w_res = rm1_w
+            if (self.l_res) < rm1_l:
+                self.l_res = rm1_l
+            if (self.w_res) < rm1_w:
+                self.w_res = rm1_w
 
         if (self.res_type) == "rm2" or (self.res_type) == "rm3":
+            if (self.l_res) < rm2_3_l:
+                self.l_res = rm2_3_l
+            if (self.w_res) < rm2_3_w:
+                self.w_res = rm2_3_w
             if (self.l_res) < rm2_3_l:
                 self.l_res = rm2_3_l
             if (self.w_res) < rm2_3_w:
@@ -165,7 +184,7 @@ class metal_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.layout.dbu
+        dbu_PERCISION = 1 / self.l_resayout.dbu
         option = os.environ["GF_PDK_OPTION"]
         if option == "A":
             if (
@@ -269,7 +288,7 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.layout.dbu
+        dbu_PERCISION = 1 / self.l_resayout.dbu
         np_instance = draw_nplus_s_res(
             layout=self.layout,
             l_res=self.l_res,

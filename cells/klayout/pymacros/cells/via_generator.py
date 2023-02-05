@@ -21,7 +21,7 @@
 from math import ceil, floor
 import gdsfactory as gf
 from gdsfactory.types import Float2, LayerSpec
-from .layers_def import *
+from .layers_def import layer
 
 
 @gf.cell
@@ -79,7 +79,7 @@ def via_generator(
 def via_stack(
     x_range: Float2 = (0, 1),
     y_range: Float2 = (0, 1),
-    base_layer: LayerSpec = comp_layer,
+    base_layer: LayerSpec = layer["comp"],
     slotted_licon: int = 0,
     metal_level: int = 1,
     li_enc_dir="V",
@@ -104,21 +104,6 @@ def via_stack(
     con_enc = 0.07
     m_enc = 0.06
 
-    # if base_layer == diff_layer or base_layer == tap_layer :
-    #     con_enc = (0.06,0.06)
-
-    # #elif  base_layer == tap_layer:
-    # #    con_enc = (0.1,0.06)
-
-    # elif base_layer == poly_layer :
-    #     con_enc = (0.05,0.08)
-    #     npc_enc = 0.01
-    #     npc = c.add_ref(gf.components.rectangle(size=(x_range[1]-x_range[0]+2*npc_enc, y_range[1]-y_range[0]+2*npc_enc),layer=npc_layer))
-    #     npc.move((x_range[0]-npc_enc, y_range[0]-npc_enc))
-
-    # else :
-    #     pass
-
     con_spacing = (0.28, 0.28)
 
     via_size = (0.22, 0.22)
@@ -131,7 +116,7 @@ def via_stack(
             y_range=y_range,
             via_size=con_size,
             via_enclosure=(con_enc, con_enc),
-            via_layer=contact_layer,
+            via_layer=layer["contact"],
             via_spacing=con_spacing,
         )
         con = c.add_ref(con_gen)
@@ -140,7 +125,7 @@ def via_stack(
 
         m1_y = con.size[1] + 2 * m_enc
 
-        m1 = c.add_ref(gf.components.rectangle(size=(m1_x, m1_y), layer=m1_layer))
+        m1 = c.add_ref(gf.components.rectangle(size=(m1_x, m1_y), layer=layer["metal1"]))
         m1.xmin = con.xmin - m_enc
         m1.ymin = con.ymin - m_enc
 
@@ -150,7 +135,7 @@ def via_stack(
             y_range=(m1.ymin, m1.ymax),
             via_size=via_size,
             via_enclosure=via_enc,
-            via_layer=via1_layer,
+            via_layer=layer["via1"],
             via_spacing=via_spacing,
         )
         via1 = c.add_ref(via1_gen)
@@ -174,7 +159,7 @@ def via_stack(
         m2_mx = (m2_x - (via1.xmax - via1.xmin)) / 2
         m2_my = (m2_y - (via1.ymax - via1.ymin)) / 2
 
-        m2 = c.add_ref(gf.components.rectangle(size=(m2_x, m2_y), layer=m2_layer))
+        m2 = c.add_ref(gf.components.rectangle(size=(m2_x, m2_y), layer=layer["metal2"]))
         m2.move((via1.xmin - m2_mx, via1.ymin - m2_my))
 
     return c

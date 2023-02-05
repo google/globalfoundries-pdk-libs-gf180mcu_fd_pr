@@ -36,7 +36,7 @@ def get_sizes(models_path):
             data = device_model.split(f".MODEL nfet_03v3.{i} NMOS")
             data = data[1].split("+ LEVEL=14")
             dimensions = re.findall(
-                "LMAX=([0-9e.-]+)[\w+\s=.{}-]+LMIN=([0-9e.-]+)[\w+\s=.{}-]+WMAX=([0-9e.-]+)[\w+\s=.{}-]+WMIN=([0-9e.-]+)[\w+\s=.{}-]+",
+                "LMAX=([0-9e.-]+)[/w+/s=.{}-]+LMIN=([0-9e.-]+)[/w+/s=.{}-]+WMAX=([0-9e.-]+)[/w+/s=.{}-]+WMIN=([0-9e.-]+)[/w+/s=.{}-]+",
                 data[0],
             )
             sizes.append(dimensions)
@@ -44,7 +44,7 @@ def get_sizes(models_path):
 
 
 def get_results(run_path, sizes, temp, corner):
-    netlist_tmp = f"./inv_xyce.spice"
+    netlist_tmp = "./inv_xyce.spice"
     width = float(sizes[0][3]) * 1000000
     width_p = width * 1.5
     length = float(sizes[0][1]) * 1000000
@@ -127,7 +127,7 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="smoke_test: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
 

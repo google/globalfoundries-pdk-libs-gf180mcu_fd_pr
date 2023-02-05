@@ -18,7 +18,7 @@
 
 import pya
 import os
-from .draw_cap_mim import *
+from .draw_cap_mim import draw_cap_mim
 
 mim_l = 0.28
 mim_w = 0.28
@@ -46,25 +46,25 @@ class cap_mim(pya.PCellDeclarationHelper):
         self.Type_handle2.add_choice("M5", "M5")
         self.Type_handle2.add_choice("M6", "M6")
 
-        self.param("l", self.TypeDouble, "Length", default=mim_l, unit="um")
-        self.param("w", self.TypeDouble, "Width", default=mim_w, unit="um")
+        self.param("lc", self.TypeDouble, "Length", default=mim_l, unit="um")
+        self.param("wc", self.TypeDouble, "Width", default=mim_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "cap_mim(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "cap_mim(L=" + ("%.3f" % self.lc) + ",W=" + ("%.3f" % self.wc) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.wc * self.lc
+        self.perim = 2 * (self.wc + self.lc)
         # w,l must be larger or equal than min. values.
-        if (self.l) < mim_l:
-            self.l = mim_l
-        if (self.w) < mim_w:
-            self.w = mim_w
+        if (self.lc) < mim_l:
+            self.lc = mim_l
+        if (self.wc) < mim_w:
+            self.wc = mim_w
         if (self.mim_option) == "MIM-A":
             self.metal_level = "M3"
 
@@ -76,8 +76,8 @@ class cap_mim(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.lcayout.dbu / 2
+        self.lc = self.lcayout.get_info(self.lcayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -93,7 +93,7 @@ class cap_mim(pya.PCellDeclarationHelper):
             if (self.mim_option) == "MIM-A":
                 raise TypeError(f"Current stack ({option}) doesn't allow this option")
         np_instance = draw_cap_mim(
-            self.layout, self.l, self.w, self.mim_option, self.metal_level
+            self.lcayout, self.lc, self.wc, self.mim_option, self.metal_level
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),

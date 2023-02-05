@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Convert the lyrdb klayout database file to GDSII file 
+Convert the lyrdb klayout database file to GDSII file
 
 Usage:
     convert_lyrdb_to_gds.py (--help| -h)
@@ -115,7 +115,7 @@ def parse_results_db(results_database: str):
         A set that contains all rules in the database with violations
     """
 
-    rule_info = []
+    # rule_info = []
     rule_lay_num = 10000
     path_width = 0.01
 
@@ -173,11 +173,11 @@ def parse_results_db(results_database: str):
             elem.clear()
             continue
 
-        if not rule_name in rule_data_type_map:
+        if rule_name not in rule_data_type_map:
             rule_data_type_map.append(rule_name)
 
         ## draw polygons here.
-        if not cell is None:
+        if cell is not None:
             for p in polygons:
                 polygons = darw_polygons(
                     p.text,
