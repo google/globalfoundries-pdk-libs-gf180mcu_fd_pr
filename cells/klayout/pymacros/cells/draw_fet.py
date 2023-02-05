@@ -37,6 +37,19 @@ def alter_interdig(
     nf=1,
     pat="",
 ) -> gf.Component:
+    """Returns interdigitation polygons of gate with alterating poly contacts
+
+    Args : 
+        sd_diff : source/drain diffusion rectangle
+        pc1 : first poly contact array
+        pc2 : second poly contact array
+        poly_con : componenet of poly contact
+        sd_diff_inter : inter source/drain diffusion rectangle
+        l_gate : gate length
+        inter_sd_l : inter diffusion length
+        nf : number of fingers
+        pat : string of the required pattern
+    """
 
     c_inst = gf.Component()
 
@@ -227,9 +240,21 @@ def interdigit(
     patt=[""],
     gate_con_pos="top",
 ) -> gf.Component:
-    c_inst = gf.Component()
+    """Returns interdigitation related polygons 
 
-    # con_comp_enc = 0.07
+    Args : 
+        sd_diff : source/drain diffusion rectangle
+        pc1 : first poly contact array
+        pc2 : second poly contact array
+        poly_con : componenet of poly contact
+        sd_diff_inter : inter source/drain diffusion rectangle
+        l_gate : gate length
+        inter_sd_l : inter diffusion length
+        nf : number of fingers
+        pat : string of the required pattern
+        gate_con_pos : position of gate contact
+    """
+    c_inst = gf.Component()
 
     if nf == len(patt):
         pat = list(patt)
@@ -386,6 +411,14 @@ def interdigit(
 def hv_gen(
     c_inst, volt: str = "3.3V", dg_encx: float = 0.1, dg_ency: float = 0.1
 ) -> gf.Component:
+    """Returns high volatge related polygons 
+
+    Args : 
+        c_inst : dualgate enclosed componenet
+        volt : operating voltage
+        dg_encx : dualgate enclosure in x_direction
+        dg_ency : dualgate enclosure in y_direction
+    """
 
     c = gf.Component()
 
@@ -421,6 +454,17 @@ def bulk_gr_gen(
     l_d: float = 0.1,
     implant_layer: LayerSpec = layer["pplus"],
 ) -> gf.Component():
+    """Returns guardring 
+
+    Args : 
+        c_inst : componenet enclosed by guardring
+        comp_spacing : spacing between comp polygons
+        poly2_comp_spacing : spacing between comp and poly2 polygons
+        volt : operating voltage
+        grw : guardring width
+        l_d : total diffusion length
+        implant_layer : layer of comp implant (nplus,pplus)
+    """
 
     c = gf.Component()
 
@@ -561,6 +605,12 @@ def bulk_gr_gen(
 
 @gf.cell
 def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
+    """Return deepnwell guardring
+
+    Args : 
+        dn_rect : deepnwell polygon
+        grw : guardring width 
+    """
 
     c = gf.Component()
 
@@ -705,6 +755,16 @@ def nfet_deep_nwell(
     inst_ymin: float = 0.1,
     grw: float = 0.36,
 ) -> gf.Component:
+    """Return nfet deepnwell
+
+    Args : 
+        deepnwell : boolean of having deepnwell
+        pcmpgr : boolean of having deepnwell guardring
+        inst_size : deepnwell enclosed size
+        inst_xmin : deepnwell enclosed xmin
+        inst_ymin : deepnwell enclosed ymin
+        grw : guardring width
+    """
 
     c = gf.Component()
 
@@ -1146,6 +1206,17 @@ def pfet_deep_nwell(
     nw_enc_pcmp: float = 0.1,
     grw: float = 0.36,
 ) -> gf.Component:
+    """Returns pfet well related polygons
+
+    Args : 
+        deepnwell : boolaen of having deepnwell
+        pcmpgr : boolean of having deepnwell guardring
+        enc_size : enclosed size 
+        enc_xmin : enclosed xmin
+        enc_ymin : enclosed ymin
+        nw_enc_pcmp : nwell enclosure of pcomp
+        grw : guardring width
+    """
 
     c = gf.Component()
 
@@ -1873,347 +1944,6 @@ def draw_nfet_06v0_nvt(
                 )
             )
 
-        #     if nf == len(patt):
-        #         pat = list(patt)
-        #         nt = (
-        #             []
-        #         )  # list to store the symbols of transistors and thier number nt(number of transistors)
-        #         [nt.append(x) for x in pat if x not in nt]
-        #         nl = int(len(nt))
-
-        #         m2_spacing = 0.28
-        #         via_size = (0.26, 0.26)
-        #         via_enc = (0.06, 0.06)
-        #         via_spacing = (0.26, 0.26)
-
-        #         m2_y = via_size[1] + 2 * via_enc[1]
-        #         m2 = gf.components.rectangle(
-        #             size=(sd_diff.xmax - sd_diff.xmin, m2_y), layer=layer["metal2"]
-        #         )
-
-        #         if gate_con_pos == "alternating":
-        #             pat_o = []
-        #             pat_e = []
-
-        #             for i in range(int(nf)):
-        #                 if i % 2 == 0:
-        #                     pat_e.append(pat[i])
-        #                 else:
-        #                     pat_o.append(pat[i])
-
-        #             nt_o = []
-        #             [nt_o.append(x) for x in pat_o if x not in nt_o]
-
-        #             nt_e = []
-        #             [nt_e.append(x) for x in pat_e if x not in nt_e]
-
-        #             nl_b = len(nt_e)
-        #             nl_u = len(nt_o)
-
-        #             m2_y = via_size[1] + 2 * via_enc[1]
-        #             m2 = gf.components.rectangle(
-        #                 size=(sd_diff.xmax - sd_diff.xmin, m2_y), layer=layer["metal2"],
-        #             )
-
-        #             m2_arrb = c_inst.add_array(
-        #                 component=m2,
-        #                 columns=1,
-        #                 rows=nl_b,
-        #                 spacing=(0, -m2_y - m2_spacing),
-        #             )
-        #             m2_arrb.movey(pc1.ymin - m2_spacing - m2_y)
-
-        #             m2_arru = c_inst.add_array(
-        #                 component=m2,
-        #                 columns=1,
-        #                 rows=nl_u,
-        #                 spacing=(0, m2_y + m2_spacing),
-        #             )
-        #             m2_arru.movey(pc2.ymax + m2_spacing)
-
-        #             for i in range(nl_u):
-        #                 for j in range(floor(nf / 2)):
-        #                     if pat_o[j] == nt_o[i]:
-        #                         m1 = c_inst.add_ref(
-        #                             gf.components.rectangle(
-        #                                 size=(
-        #                                     poly_con.xmax - poly_con.xmin,
-        #                                     (
-        #                                         (
-        #                                             pc2.ymax
-        #                                             + (i + 1) * (m2_spacing + m2_y)
-        #                                         )
-        #                                         - pc2.ymin
-        #                                     ),
-        #                                 ),
-        #                                 layer=layer["metal1"],
-        #                             )
-        #                         )
-        #                         m1.xmin = (
-        #                             sd_diff_intr.xmin
-        #                             + con_comp_enc / 2
-        #                             + (2 * j + 1) * (l_gate + inter_sd_l)
-        #                         )
-        #                         m1.ymin = pc2.ymin
-
-        #                         via1_dr = via_generator(
-        #                             x_range=(m1.xmin, m1.xmax),
-        #                             y_range=(
-        #                                 m2_arru.ymin + i * (m2_y + m2_spacing),
-        #                                 m2_arru.ymin + i * (m2_y + m2_spacing) + m2_y,
-        #                             ),
-        #                             via_enclosure=via_enc,
-        #                             via_layer=layer["via1"],
-        #                             via_size=via_size,
-        #                             via_spacing=via_spacing,
-        #                         )
-        #                         via1 = c_inst.add_ref(via1_dr)
-        #                         c_inst.add_label(
-        #                             f"{pat_o[j]}",
-        #                             position=(
-        #                                 (via1.xmax + via1.xmin) / 2,
-        #                                 (via1.ymax + via1.ymin) / 2,
-        #                             ),
-        #                             layer=layer["metal1_label"],
-        #                         )
-
-        #             for i in range(nl_b):
-        #                 for j in range(ceil(nf / 2)):
-        #                     if pat_e[j] == nt_e[i]:
-
-        #                         m1 = c_inst.add_ref(
-        #                             gf.components.rectangle(
-        #                                 size=(
-        #                                     poly_con.xmax - poly_con.xmin,
-        #                                     (
-        #                                         (
-        #                                             pc1.ymax
-        #                                             + (i + 1) * (m2_spacing + m2_y)
-        #                                         )
-        #                                         - pc1.ymin
-        #                                     ),
-        #                                 ),
-        #                                 layer=layer["metal1"],
-        #                             )
-        #                         )
-        #                         m1.xmin = (
-        #                             sd_diff_intr.xmin
-        #                             + con_comp_enc / 2
-        #                             + (2 * j) * (l_gate + inter_sd_l)
-        #                         )
-        #                         m1.ymin = -(m1.ymax - m1.ymin) + (pc1.ymax)
-
-        #                         via1_dr = via_generator(
-        #                             x_range=(m1.xmin, m1.xmax),
-        #                             y_range=(
-        #                                 m2_arrb.ymax - i * (m2_spacing + m2_y) - m2_y,
-        #                                 m2_arrb.ymax - i * (m2_spacing + m2_y),
-        #                             ),
-        #                             via_enclosure=via_enc,
-        #                             via_layer=layer["via1"],
-        #                             via_size=via_size,
-        #                             via_spacing=via_spacing,
-        #                         )
-        #                         via1 = c_inst.add_ref(via1_dr)
-        #                         c_inst.add_label(
-        #                             f"{pat_e[j]}",
-        #                             position=(
-        #                                 (via1.xmax + via1.xmin) / 2,
-        #                                 (via1.ymax + via1.ymin) / 2,
-        #                             ),
-        #                             layer=layer["metal1_label"],
-        #                         )
-
-        #             m3_x = via_size[0] + 2 * via_enc[0]
-        #             m3_spacing = m2_spacing
-
-        #             for i in range(nl_b):
-        #                 for j in range(nl_u):
-        #                     if nt_e[i] == nt_o[j]:
-
-        #                         m2_join_b = c_inst.add_ref(
-        #                             gf.components.rectangle(
-        #                                 size=(
-        #                                     m2_y + (i + 1) * (m3_spacing + m3_x),
-        #                                     m2_y,
-        #                                 ),
-        #                                 layer=layer["metal2"],
-        #                             ).move(
-        #                                 (
-        #                                     m2_arrb.xmin
-        #                                     - (m2_y + (i + 1) * (m3_spacing + m3_x)),
-        #                                     m2_arrb.ymax
-        #                                     - i * (m2_spacing + m2_y)
-        #                                     - m2_y,
-        #                                 )
-        #                             )
-        #                         )
-        #                         m2_join_u = c_inst.add_ref(
-        #                             gf.components.rectangle(
-        #                                 size=(
-        #                                     m2_y + (i + 1) * (m3_spacing + m3_x),
-        #                                     m2_y,
-        #                                 ),
-        #                                 layer=layer["metal2"],
-        #                             ).move(
-        #                                 (
-        #                                     m2_arru.xmin
-        #                                     - (m2_y + (i + 1) * (m3_spacing + m3_x)),
-        #                                     m2_arru.ymin + j * (m2_spacing + m2_y),
-        #                                 )
-        #                             )
-        #                         )
-        #                         m3 = c_inst.add_ref(
-        #                             gf.components.rectangle(
-        #                                 size=(m3_x, m2_join_u.ymax - m2_join_b.ymin,),
-        #                                 layer=layer["metal1"],
-        #                             )
-        #                         )
-        #                         m3.move((m2_join_b.xmin, m2_join_b.ymin))
-        #                         via2_dr = via_generator(
-        #                             x_range=(m3.xmin, m3.xmax),
-        #                             y_range=(m2_join_b.ymin, m2_join_b.ymax),
-        #                             via_enclosure=via_enc,
-        #                             via_size=via_size,
-        #                             via_layer=layer["via1"],
-        #                             via_spacing=via_spacing,
-        #                         )
-        #                         c_inst.add_array(
-        #                             component=via2_dr,
-        #                             columns=1,
-        #                             rows=2,
-        #                             spacing=(0, m2_join_u.ymin - m2_join_b.ymin,),
-        #                         )  # via2
-
-        #         elif gate_con_pos == "top":
-
-        #             m2_arr = c_inst.add_array(
-        #                 component=m2,
-        #                 columns=1,
-        #                 rows=nl,
-        #                 spacing=(0, m2.ymax - m2.ymin + m2_spacing),
-        #             )
-        #             m2_arr.movey(pc2.ymax + m2_spacing)
-
-        #             for i in range(nl):
-        #                 for j in range(int(nf)):
-        #                     if pat[j] == nt[i]:
-        #                         m1 = c_inst.add_ref(
-        #                             gf.components.rectangle(
-        #                                 size=(
-        #                                     poly_con.xmax - poly_con.xmin,
-        #                                     (
-        #                                         (
-        #                                             pc2.ymax
-        #                                             + (i + 1) * (m2_spacing + m2_y)
-        #                                         )
-        #                                         - ((1 - j % 2) * pc1.ymin)
-        #                                         - (j % 2) * pc2.ymin
-        #                                     ),
-        #                                 ),
-        #                                 layer=layer["metal1"],
-        #                             )
-        #                         )
-        #                         m1.move(
-        #                             (
-        #                                 (
-        #                                     sd_l
-        #                                     - (
-        #                                         (poly_con.xmax - poly_con.xmin - l_gate)
-        #                                         / 2
-        #                                     )
-        #                                     + j * (l_gate + inter_sd_l)
-        #                                 ),
-        #                                 (1 - j % 2) * (pc1.ymin + 0.06)
-        #                                 + (j % 2) * (pc2.ymin + 0.06),
-        #                             )
-        #                         )
-        #                         via1_dr = via_generator(
-        #                             x_range=(m1.xmin, m1.xmax),
-        #                             y_range=(
-        #                                 m2_arr.ymin + i * (m2_spacing + m2_y),
-        #                                 m2_arr.ymin + i * (m2_spacing + m2_y) + m2_y,
-        #                             ),
-        #                             via_enclosure=via_enc,
-        #                             via_layer=layer["via1"],
-        #                             via_size=via_size,
-        #                             via_spacing=via_spacing,
-        #                         )
-        #                         via1 = c_inst.add_ref(via1_dr)
-        #                         c_inst.add_label(
-        #                             f"{pat[j]}",
-        #                             position=(
-        #                                 (via1.xmax + via1.xmin) / 2,
-        #                                 (via1.ymax + via1.ymin) / 2,
-        #                             ),
-        #                             layer=layer["metal1_label"],
-        #                         )
-
-        #         elif gate_con_pos == "bottom":
-
-        #             m2_arr = c_inst.add_array(
-        #                 component=m2,
-        #                 columns=1,
-        #                 rows=nl,
-        #                 spacing=(0, -m2_y - m2_spacing),
-        #             )
-        #             m2_arr.movey(pc2.ymin - m2_spacing - m2_y)
-
-        #             for i in range(nl):
-        #                 for j in range(int(nf)):
-        #                     if pat[j] == nt[i]:
-
-        #                         m1 = c_inst.add_ref(
-        #                             gf.components.rectangle(
-        #                                 size=(
-        #                                     poly_con.xmax - poly_con.xmin,
-        #                                     (
-        #                                         (
-        #                                             pc1.ymax
-        #                                             + (i + 1) * (m2_spacing + m2_y)
-        #                                         )
-        #                                         - (j % 2) * pc1.ymin
-        #                                         - (1 - j % 2) * pc2.ymin
-        #                                     ),
-        #                                 ),
-        #                                 layer=layer["metal1"],
-        #                             )
-        #                         )
-        #                         m1.move(
-        #                             (
-        #                                 (
-        #                                     sd_l
-        #                                     - (
-        #                                         (poly_con.xmax - poly_con.xmin - l_gate)
-        #                                         / 2
-        #                                     )
-        #                                     + j * (l_gate + inter_sd_l)
-        #                                 ),
-        #                                 -(m1.ymax - m1.ymin)
-        #                                 + (1 - j % 2) * (pc1.ymax - 0.06)
-        #                                 + (j % 2) * (pc2.ymax - 0.06),
-        #                             )
-        #                         )
-        #                         via1_dr = via_generator(
-        #                             x_range=(m1.xmin, m1.xmax),
-        #                             y_range=(
-        #                                 m2_arr.ymax - i * (m2_spacing + m2_y) - m2_y,
-        #                                 m2_arr.ymax - i * (m2_spacing + m2_y),
-        #                             ),
-        #                             via_enclosure=via_enc,
-        #                             via_layer=layer["via1"],
-        #                             via_size=via_size,
-        #                             via_spacing=via_spacing,
-        #                         )
-        #                         via1 = c_inst.add_ref(via1_dr)
-        #                         c_inst.add_label(
-        #                             f"{pat[j]}",
-        #                             position=(
-        #                                 (via1.xmax + via1.xmin) / 2,
-        #                                 (via1.ymax + via1.ymin) / 2,
-        #                             ),
-        #                             layer=layer["metal1_label"],
-        #                         )
 
     # generating bulk
     if bulk == "None":
