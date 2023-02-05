@@ -35,7 +35,7 @@ def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
     return num_cont, free_spc
 
 
-def draw_cap_mim(layout, l, w, mim_option, metal_level):
+def draw_cap_mim(layout, lc, wc, mim_option, metal_level):
     """
     Usage:-
      used to draw 1.0fF/um2 MIM capacitor by specifying parameters
@@ -85,8 +85,8 @@ def draw_cap_mim(layout, l, w, mim_option, metal_level):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    topmet_w = w * dbu_PERCISION
-    topmet_l = l * dbu_PERCISION
+    topmet_w = wc * dbu_PERCISION
+    topmet_l = lc * dbu_PERCISION
     top_bot_enc = 0.6 * dbu_PERCISION
     mim_l_mk_width = 0.1 * dbu_PERCISION
     via_size = 0.26 * dbu_PERCISION

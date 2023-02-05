@@ -1,11 +1,15 @@
 import gdsfactory as gf
 
-from .via_generator import *
-from .layers_def import *
+from .via_generator import via_generator, via_stack
+from .layers_def import layer
 
 
 def draw_cap_mim(
-    layout, mim_option: str = "A", metal_level: str = "M4", l: float = 2, w: float = 2,
+    layout,
+    mim_option: str = "A",
+    metal_level: str = "M4",
+    lc: float = 2,
+    wc: float = 2,
 ):
 
     """
@@ -13,8 +17,8 @@ def draw_cap_mim(
 
     Args:
         layout : layout object
-        l : float of capm length
-        w : float of capm width
+        lc : float of cap length
+        wc : float of cap width
 
 
     """
@@ -25,27 +29,27 @@ def draw_cap_mim(
 
     # MIM Option selection
     if mim_option == "MIM-A":
-        upper_layer = m3_layer
-        bottom_layer = m2_layer
-        via_layer = via2_layer
+        upper_layer = layer["metal3"]
+        bottom_layer = layer["metal2"]
+        via_layer = layer["via2"]
 
     elif mim_option == "MIM-B":
         if metal_level == "M4":
-            upper_layer = m4_layer
-            bottom_layer = m3_layer
-            via_layer = via3_layer
+            upper_layer = layer["metal4"]
+            bottom_layer = layer["metal3"]
+            via_layer = layer["via3"]
         elif metal_level == "M5":
-            upper_layer = m5_layer
-            bottom_layer = m4_layer
-            via_layer = via4_layer
+            upper_layer = layer["metal5"]
+            bottom_layer = layer["metal4"]
+            via_layer = layer["via4"]
         elif metal_level == "M6":
-            upper_layer = metaltop_layer
-            bottom_layer = m5_layer
-            via_layer = via5_layer
+            upper_layer = layer["metaltop"]
+            bottom_layer = layer["metal5"]
+            via_layer = layer["via5"]
     else:
-        upper_layer = m3_layer
-        bottom_layer = m2_layer
-        via_layer = via2_layer
+        upper_layer = layer["metal3"]
+        bottom_layer = layer["metal2"]
+        via_layer = layer["via2"]
 
     via_size = (0.22, 0.22)
     via_spacing = (0.5, 0.5)
@@ -56,16 +60,18 @@ def draw_cap_mim(
 
     # drawing cap identifier and bottom , upper layers
 
-    m_up = c.add_ref(gf.components.rectangle(size=(w, l), layer=upper_layer,))
+    m_up = c.add_ref(gf.components.rectangle(size=(wc, lc), layer=upper_layer,))
 
     fusetop = c.add_ref(
-        gf.components.rectangle(size=(m_up.size[0], m_up.size[1]), layer=fusetop_layer)
+        gf.components.rectangle(
+            size=(m_up.size[0], m_up.size[1]), layer=layer["fusetop"]
+        )
     )
     fusetop.xmin = m_up.xmin
     fusetop.ymin = m_up.ymin
 
     mim_l_mk = c.add_ref(
-        gf.components.rectangle(size=(fusetop.size[0], l_mk_w), layer=mim_l_mk_layer)
+        gf.components.rectangle(size=(fusetop.size[0], l_mk_w), layer=layer["mim_l_mk"])
     )
     mim_l_mk.xmin = fusetop.xmin
     mim_l_mk.ymin = fusetop.ymin
@@ -80,7 +86,9 @@ def draw_cap_mim(
     m_dn.ymin = m_up.ymin - bot_enc_top
 
     cap_mk = c.add_ref(
-        gf.components.rectangle(size=(m_dn.size[0], m_dn.size[1]), layer=cap_mk_layer)
+        gf.components.rectangle(
+            size=(m_dn.size[0], m_dn.size[1]), layer=layer["cap_mk"]
+        )
     )
     cap_mk.xmin = m_dn.xmin
     cap_mk.ymin = m_dn.ymin

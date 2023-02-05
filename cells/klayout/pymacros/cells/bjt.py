@@ -17,7 +17,7 @@
 ########################################################################################################################
 
 import pya
-from .draw_bjt import *
+from .draw_bjt import draw_bjt
 
 
 class npn_bjt(pya.PCellDeclarationHelper):

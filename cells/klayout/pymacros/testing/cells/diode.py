@@ -17,7 +17,14 @@
 ########################################################################################################################
 
 import pya
-from .draw_diode import *
+from .draw_diode import (
+    draw_diode_nd2ps,
+    draw_diode_dw2ps,
+    draw_diode_nw2ps,
+    draw_diode_pd2nw,
+    draw_diode_pw2dw,
+    draw_sc_diode,
+)
 
 np_l = 0.36
 np_w = 0.22
@@ -55,25 +62,25 @@ class diode_nd2ps(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l", self.TypeDouble, "Length", default=np_l, unit="um")
-        self.param("w", self.TypeDouble, "Width", default=np_w, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=np_l, unit="um")
+        self.param("wa", self.TypeDouble, "Width", default=np_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "diode_nd2ps(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "diode_nd2ps(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.wa * self.la
+        self.perim = 2 * (self.wa + self.la)
         # w,l must be larger or equal than min. values.
-        if (self.l) < np_l:
-            self.l = np_l
-        if (self.w) < np_w:
-            self.w = np_l
+        if (self.la) < np_l:
+            self.la = np_l
+        if (self.wa) < np_w:
+            self.wa = np_l
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -83,8 +90,8 @@ class diode_nd2ps(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.laayout.dbu / 2
+        self.la = self.laayout.get_info(self.laayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -93,7 +100,7 @@ class diode_nd2ps(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         np_instance = draw_diode_nd2ps(
-            self.layout, self.l, self.w, self.volt, self.deepnwell, self.pcmpgr
+            self.laayout, self.la, self.wa, self.volt, self.deepnwell, self.pcmpgr
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -125,25 +132,25 @@ class diode_pd2nw(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l", self.TypeDouble, "Length", default=pn_l, unit="um")
-        self.param("w", self.TypeDouble, "Width", default=pn_w, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=pn_l, unit="um")
+        self.param("wa", self.TypeDouble, "Width", default=pn_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "diode_pd2nw(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "diode_pd2nw(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.wa * self.la
+        self.perim = 2 * (self.wa + self.la)
         # w,l must be larger or equal than min. values.
-        if (self.l) < pn_l:
-            self.l = pn_l
-        if (self.w) < pn_w:
-            self.w = pn_w
+        if (self.la) < pn_l:
+            self.la = pn_l
+        if (self.wa) < pn_w:
+            self.wa = pn_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -153,8 +160,8 @@ class diode_pd2nw(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.laayout.dbu / 2
+        self.la = self.laayout.get_info(self.laayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -163,7 +170,7 @@ class diode_pd2nw(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         np_instance = draw_diode_pd2nw(
-            self.layout, self.l, self.w, self.volt, self.deepnwell, self.pcmpgr
+            self.laayout, self.la, self.wa, self.volt, self.deepnwell, self.pcmpgr
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -193,25 +200,25 @@ class diode_nw2ps(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l", self.TypeDouble, "Length", default=nwp_l, unit="um")
-        self.param("w", self.TypeDouble, "Width", default=nwp_w, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=nwp_l, unit="um")
+        self.param("wa", self.TypeDouble, "Width", default=nwp_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "diode_nw2ps(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "diode_nw2ps(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.wa * self.la
+        self.perim = 2 * (self.wa + self.la)
         # w,l must be larger or equal than min. values.
-        if (self.l) < nwp_l:
-            self.l = nwp_l
-        if (self.w) < nwp_w:
-            self.w = nwp_w
+        if (self.la) < nwp_l:
+            self.la = nwp_l
+        if (self.wa) < nwp_w:
+            self.wa = nwp_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -221,8 +228,8 @@ class diode_nw2ps(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.laayout.dbu / 2
+        self.la = self.laayout.get_info(self.laayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -230,7 +237,7 @@ class diode_nw2ps(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        nwp_instance = draw_diode_nw2ps(self.layout, self.l, self.w, self.volt)
+        nwp_instance = draw_diode_nw2ps(self.laayout, self.la, self.wa, self.volt)
         write_cells = pya.CellInstArray(
             nwp_instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
@@ -259,25 +266,25 @@ class diode_pw2dw(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l", self.TypeDouble, "Length", default=diode_pw2dw_l, unit="um")
-        self.param("w", self.TypeDouble, "Width", default=diode_pw2dw_w, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=diode_pw2dw_l, unit="um")
+        self.param("wa", self.TypeDouble, "Width", default=diode_pw2dw_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "diode_pw2dw(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "diode_pw2dw(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.wa * self.la
+        self.perim = 2 * (self.wa + self.la)
         # w,l must be larger or equal than min. values.
-        if (self.l) < diode_pw2dw_l:
-            self.l = diode_pw2dw_l
-        if (self.w) < diode_pw2dw_w:
-            self.w = diode_pw2dw_w
+        if (self.la) < diode_pw2dw_l:
+            self.la = diode_pw2dw_l
+        if (self.wa) < diode_pw2dw_w:
+            self.wa = diode_pw2dw_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -287,8 +294,8 @@ class diode_pw2dw(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.laayout.dbu / 2
+        self.la = self.laayout.get_info(self.laayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -296,7 +303,9 @@ class diode_pw2dw(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        diode_pw2dw_instance = draw_diode_pw2dw(self.layout, self.l, self.w, self.volt)
+        diode_pw2dw_instance = draw_diode_pw2dw(
+            self.laayout, self.la, self.wa, self.volt
+        )
         write_cells = pya.CellInstArray(
             diode_pw2dw_instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
@@ -325,25 +334,25 @@ class diode_dw2ps(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l", self.TypeDouble, "Length", default=diode_dw2ps_l, unit="um")
-        self.param("w", self.TypeDouble, "Width", default=diode_dw2ps_w, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=diode_dw2ps_l, unit="um")
+        self.param("wa", self.TypeDouble, "Width", default=diode_dw2ps_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "diode_dw2ps(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "diode_dw2ps(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.wa * self.la
+        self.perim = 2 * (self.wa + self.la)
         # w,l must be larger or equal than min. values.
-        if (self.l) < diode_dw2ps_l:
-            self.l = diode_dw2ps_l
-        if (self.w) < diode_dw2ps_w:
-            self.w = diode_dw2ps_w
+        if (self.la) < diode_dw2ps_l:
+            self.la = diode_dw2ps_l
+        if (self.wa) < diode_dw2ps_w:
+            self.wa = diode_dw2ps_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -353,8 +362,8 @@ class diode_dw2ps(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.laayout.dbu / 2
+        self.la = self.laayout.get_info(self.laayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -362,7 +371,9 @@ class diode_dw2ps(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        diode_dw2ps_instance = draw_diode_dw2ps(self.layout, self.l, self.w, self.volt)
+        diode_dw2ps_instance = draw_diode_dw2ps(
+            self.laayout, self.la, self.wa, self.volt
+        )
         write_cells = pya.CellInstArray(
             diode_dw2ps_instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
@@ -388,9 +399,9 @@ class sc_diode(pya.PCellDeclarationHelper):
 
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l", self.TypeDouble, "Length", default=sc_l, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=sc_l, unit="um")
         self.param(
-            "w", self.TypeDouble, "Width", default=sc_w, unit="um", readonly=True
+            "wa", self.TypeDouble, "Width", default=sc_w, unit="um", readonly=True
         )
         self.param("m", self.TypeDouble, "no. of fingers", default=4)
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
@@ -398,18 +409,18 @@ class sc_diode(pya.PCellDeclarationHelper):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "sc_diode(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
+        return "sc_diode(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w * self.l
-        self.perim = 2 * (self.w + self.l)
+        self.area = self.wa * self.la
+        self.perim = 2 * (self.wa + self.la)
         # w,l must be larger or equal than min. values.
-        if (self.l) < sc_l:
-            self.l = sc_l
-        if (self.w) != sc_w:
-            self.w = sc_w
+        if (self.la) < sc_l:
+            self.la = sc_l
+        if (self.wa) != sc_w:
+            self.wa = sc_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -419,8 +430,8 @@ class sc_diode(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.layout.dbu / 2
-        self.l = self.layout.get_info(self.layer)
+        self.r = self.shape.bbox().width() * self.laayout.dbu / 2
+        self.la = self.laayout.get_info(self.laayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -428,7 +439,7 @@ class sc_diode(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        sc_instance = draw_sc_diode(self.layout, self.l, self.w, self.m, self.pcmpgr)
+        sc_instance = draw_sc_diode(self.laayout, self.la, self.wa, self.m, self.pcmpgr)
         write_cells = pya.CellInstArray(
             sc_instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),

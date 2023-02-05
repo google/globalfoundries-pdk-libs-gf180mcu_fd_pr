@@ -37,7 +37,7 @@ def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
     return num_cont, free_spc
 
 
-def draw_metal_res(layout, l, w, res_type):
+def draw_metal_res(layout, l_res, w_res, res_type):
     """
     Usage:-
      used to draw 2-terminal Metal resistor by specifying parameters
@@ -60,8 +60,8 @@ def draw_metal_res(layout, l, w, res_type):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    metal_res_w = w * dbu_PERCISION
-    metal_res_l = l * dbu_PERCISION
+    metal_res_w = w_res * dbu_PERCISION
+    metal_res_l = l_res * dbu_PERCISION
 
     if res_type == "rm1":
         metal_res = metal1_res
@@ -114,7 +114,7 @@ def draw_metal_res(layout, l, w, res_type):
     return rm_cell
 
 
-def draw_nplus_s_res(layout, l, w, sub, deepnwell, pcmpgr):
+def draw_nplus_s_res(layout, l_res, w_res, sub, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3-terminal salicided n+ diffusion resistor (Outside DNWELL) by specifying parameters
@@ -136,8 +136,8 @@ def draw_nplus_s_res(layout, l, w, sub, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    nplus_s_res_w = w * dbu_PERCISION
-    nplus_s_res_l = l * dbu_PERCISION
+    nplus_s_res_w = w_res * dbu_PERCISION
+    nplus_s_res_l = l_res * dbu_PERCISION
     cmp_res_enc = 0.29 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
     ncmp_pcmp_spc = 0.72 * dbu_PERCISION
@@ -242,7 +242,7 @@ def draw_nplus_s_res(layout, l, w, sub, deepnwell, pcmpgr):
     )
     nplus_s_res_cell.insert(ncmp_right_con_arr)
 
-    if deepnwell == True:
+    if deepnwell:
         sub = 1
         # Inserting lvpwell
         nplus_s_res_cell.shapes(lvpwell).insert(
@@ -268,7 +268,7 @@ def draw_nplus_s_res(layout, l, w, sub, deepnwell, pcmpgr):
         )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -cmp_res_enc
                 - ncmp_pcmp_spc
@@ -428,7 +428,7 @@ def draw_nplus_s_res(layout, l, w, sub, deepnwell, pcmpgr):
     return nplus_s_res_cell
 
 
-def draw_pplus_s_res(layout, l, w, deepnwell, pcmpgr):
+def draw_pplus_s_res(layout, l_res, w_res, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw3-terminal salicided P+ diffusion resistor (Outside DNWELL) by specifying parameters
@@ -450,8 +450,8 @@ def draw_pplus_s_res(layout, l, w, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    pplus_s_res_w = w * dbu_PERCISION
-    pplus_s_res_l = l * dbu_PERCISION
+    pplus_s_res_w = w_res * dbu_PERCISION
+    pplus_s_res_l = l_res * dbu_PERCISION
     cmp_res_enc = 0.29 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
     nwell_pcmp_enc = 0.8 * dbu_PERCISION
@@ -609,7 +609,7 @@ def draw_pplus_s_res(layout, l, w, deepnwell, pcmpgr):
     )
     pplus_s_res_cell.insert(ncmp_con_arr)
 
-    if deepnwell == True:
+    if deepnwell:
         # Inserting dnwell
         pplus_s_res_cell.shapes(dnwell).insert(
             pya.Box(
@@ -621,7 +621,7 @@ def draw_pplus_s_res(layout, l, w, deepnwell, pcmpgr):
         )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -cmp_res_enc
                 - ncmp_pcmp_spc
@@ -696,7 +696,7 @@ def draw_pplus_s_res(layout, l, w, deepnwell, pcmpgr):
     return pplus_s_res_cell
 
 
-def draw_nplus_u_res(layout, l, w, sub, deepnwell, pcmpgr):
+def draw_nplus_u_res(layout, l_res, w_res, sub, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3-terminal unsalicided n+ diffusion resistor (Outside DNWELL) by specifying parameters
@@ -719,8 +719,8 @@ def draw_nplus_u_res(layout, l, w, sub, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    nplus_u_res_w = w * dbu_PERCISION
-    nplus_u_res_l = l * dbu_PERCISION
+    nplus_u_res_w = w_res * dbu_PERCISION
+    nplus_u_res_l = l_res * dbu_PERCISION
     cmp_res_enc = 0.44 * dbu_PERCISION
     sab_res_enc = 0.23 * dbu_PERCISION
     implant_cmp_enc = 0.18 * dbu_PERCISION
@@ -835,7 +835,7 @@ def draw_nplus_u_res(layout, l, w, sub, deepnwell, pcmpgr):
     )
     nplus_u_res_cell.insert(ncmp_right_con_arr)
 
-    if deepnwell == True:
+    if deepnwell:
         sub = 1
         # Inserting lvpwell
         nplus_u_res_cell.shapes(lvpwell).insert(
@@ -861,7 +861,7 @@ def draw_nplus_u_res(layout, l, w, sub, deepnwell, pcmpgr):
         )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -cmp_res_enc
                 - ncmp_pcmp_spc
@@ -1021,7 +1021,7 @@ def draw_nplus_u_res(layout, l, w, sub, deepnwell, pcmpgr):
     return nplus_u_res_cell
 
 
-def draw_pplus_u_res(layout, l, w, deepnwell, pcmpgr):
+def draw_pplus_u_res(layout, l_res, w_res, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3-terminal unsalicided P+ diffusion resistor (Outsdie DNWELL) by specifying parameters
@@ -1044,8 +1044,8 @@ def draw_pplus_u_res(layout, l, w, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    pplus_u_res_w = w * dbu_PERCISION
-    pplus_u_res_l = l * dbu_PERCISION
+    pplus_u_res_w = w_res * dbu_PERCISION
+    pplus_u_res_l = l_res * dbu_PERCISION
     cmp_res_enc = 0.44 * dbu_PERCISION
     sab_res_enc = 0.23 * dbu_PERCISION
     implant_cmp_enc = 0.18 * dbu_PERCISION
@@ -1213,7 +1213,7 @@ def draw_pplus_u_res(layout, l, w, deepnwell, pcmpgr):
     )
     pplus_u_res_cell.insert(ncmp_con_arr)
 
-    if deepnwell == True:
+    if deepnwell:
         # Inserting dnwell
         pplus_u_res_cell.shapes(dnwell).insert(
             pya.Box(
@@ -1225,7 +1225,7 @@ def draw_pplus_u_res(layout, l, w, deepnwell, pcmpgr):
         )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -cmp_res_enc
                 - ncmp_pcmp_spc
@@ -1300,14 +1300,14 @@ def draw_pplus_u_res(layout, l, w, deepnwell, pcmpgr):
     return pplus_u_res_cell
 
 
-def draw_nwell_res(layout, l, w):
+def draw_nwell_res(layout, l_res, w_res):
     """
     Usage:-
      used to draw 3-terminal Nwell resistor under STI (Outside DNWELL) by specifying parameters
     Arguments:-
      layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
+     l_res      : Float of diff length
+     w_res      : Float of diff width
     """
 
     # Define layers
@@ -1321,20 +1321,17 @@ def draw_nwell_res(layout, l, w):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    nwell_res_w = w * dbu_PERCISION
-    nwell_res_l = l * dbu_PERCISION
+    nwell_res_w = w_res * dbu_PERCISION
+    nwell_res_l = l_res * dbu_PERCISION
     nwell_res_enc = 0.48 * dbu_PERCISION
     res_nwell_ext = 0.5 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
     nwell_cmp_enc = 0.12 * dbu_PERCISION
     ncmp_pcmp_spc = 0.84 * dbu_PERCISION
     cmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
     comp_cont_enc = 0.07 * dbu_PERCISION
     cont_size = 0.22 * dbu_PERCISION
     cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
 
     # Inserting nwell_res cell
     cell_index = layout.add_cell("nwell_resistor")
@@ -1494,7 +1491,7 @@ def draw_nwell_res(layout, l, w):
     return nwell_res_cell
 
 
-def draw_pwell_res(layout, l, w, pcmpgr):
+def draw_pwell_res(layout, l_res, w_res, pcmpgr):
     """
     Usage:-
      used to draw 3-terminal Pwell resistor under STI (Outside DNWELL) by specifying parameters
@@ -1516,8 +1513,8 @@ def draw_pwell_res(layout, l, w, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    pwell_res_w = w * dbu_PERCISION
-    pwell_res_l = l * dbu_PERCISION
+    pwell_res_w = w_res * dbu_PERCISION
+    pwell_res_l = l_res * dbu_PERCISION
     pwell_res_enc = 0.48 * dbu_PERCISION
     dnwell_lvpwell_enc = 2.5 * dbu_PERCISION
     res_pwell_ext = 0.5 * dbu_PERCISION
@@ -1561,7 +1558,7 @@ def draw_pwell_res(layout, l, w, pcmpgr):
     )
 
     # Inserting Guard Ring
-    if pcmpgr == True:
+    if pcmpgr:
         cmp_inner = pya.Box(
             -pwell_res_enc - dnwell_lvpwell_enc - pcmp_gr2dnw,
             -dnwell_lvpwell_enc - pcmp_gr2dnw,
@@ -1740,7 +1737,7 @@ def draw_pwell_res(layout, l, w, pcmpgr):
     return pwell_res_cell
 
 
-def draw_npolyf_s_res(layout, l, w, deepnwell, pcmpgr):
+def draw_npolyf_s_res(layout, l_res, w_res, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3-terminal salicided n+ poly resistor (Outside DNWELL) by specifying parameters
@@ -1762,8 +1759,8 @@ def draw_npolyf_s_res(layout, l, w, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    npolyf_s_res_w = w * dbu_PERCISION
-    npolyf_s_res_l = l * dbu_PERCISION
+    npolyf_s_res_w = w_res * dbu_PERCISION
+    npolyf_s_res_l = l_res * dbu_PERCISION
     poly_res_enc = 0.29 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
     implant_poly_enc = 0.3 * dbu_PERCISION
@@ -1916,7 +1913,7 @@ def draw_npolyf_s_res(layout, l, w, deepnwell, pcmpgr):
     )
     npolyf_s_res_cell.insert(pcmp_con_arr)
 
-    if deepnwell == True:
+    if deepnwell:
         # Inserting Ntap
         npolyf_s_res_cell.shapes(nplus).insert(
             pya.Box(
@@ -1938,7 +1935,7 @@ def draw_npolyf_s_res(layout, l, w, deepnwell, pcmpgr):
         )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -poly_res_enc
                 - npoly_pcmp_spc
@@ -2012,7 +2009,7 @@ def draw_npolyf_s_res(layout, l, w, deepnwell, pcmpgr):
     return npolyf_s_res_cell
 
 
-def draw_ppolyf_s_res(layout, l, w, deepnwell, pcmpgr):
+def draw_ppolyf_s_res(layout, l_res, w_res, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3-terminal salicided p+ poly resistor (Outside DNWELL) by specifying parameters
@@ -2034,8 +2031,8 @@ def draw_ppolyf_s_res(layout, l, w, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    ppolyf_s_res_w = w * dbu_PERCISION
-    ppolyf_s_res_l = l * dbu_PERCISION
+    ppolyf_s_res_w = w_res * dbu_PERCISION
+    ppolyf_s_res_l = l_res * dbu_PERCISION
     poly_res_enc = 0.29 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
     implant_poly_enc = 0.3 * dbu_PERCISION
@@ -2188,7 +2185,7 @@ def draw_ppolyf_s_res(layout, l, w, deepnwell, pcmpgr):
     )
     ppolyf_s_res_cell.insert(pcmp_con_arr)
 
-    if deepnwell == True:
+    if deepnwell:
         # Inserting Ntap
         ppolyf_s_res_cell.shapes(nplus).insert(
             pya.Box(
@@ -2210,7 +2207,7 @@ def draw_ppolyf_s_res(layout, l, w, deepnwell, pcmpgr):
         )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -poly_res_enc
                 - ppoly_pcmp_spc
@@ -2284,7 +2281,7 @@ def draw_ppolyf_s_res(layout, l, w, deepnwell, pcmpgr):
     return ppolyf_s_res_cell
 
 
-def draw_npolyf_u_res(layout, l, w, deepnwell, pcmpgr):
+def draw_npolyf_u_res(layout, l_res, w_res, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3-terminal unsalicided n+ poly resistor (Outside DNWELL) by specifying parameters
@@ -2307,8 +2304,8 @@ def draw_npolyf_u_res(layout, l, w, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    npolyf_u_res_w = w * dbu_PERCISION
-    npolyf_u_res_l = l * dbu_PERCISION
+    npolyf_u_res_w = w_res * dbu_PERCISION
+    npolyf_u_res_l = l_res * dbu_PERCISION
     poly_res_enc = 0.51 * dbu_PERCISION
     sab_res_enc = 0.28 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
@@ -2471,7 +2468,7 @@ def draw_npolyf_u_res(layout, l, w, deepnwell, pcmpgr):
     )
     npolyf_u_res_cell.insert(pcmp_con_arr)
 
-    if deepnwell == True:
+    if deepnwell:
         # Inserting Ntap
         npolyf_u_res_cell.shapes(nplus).insert(
             pya.Box(
@@ -2493,7 +2490,7 @@ def draw_npolyf_u_res(layout, l, w, deepnwell, pcmpgr):
         )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -poly_res_enc
                 - npoly_pcmp_spc
@@ -2567,7 +2564,7 @@ def draw_npolyf_u_res(layout, l, w, deepnwell, pcmpgr):
     return npolyf_u_res_cell
 
 
-def draw_ppolyf_u_res(layout, l, w, deepnwell, pcmpgr):
+def draw_ppolyf_u_res(layout, l_res, w_res, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw 3-terminal unsalicided p+ poly resistor (Outside DNWELL) by specifying parameters
@@ -2590,8 +2587,8 @@ def draw_ppolyf_u_res(layout, l, w, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    ppolyf_u_res_w = w * dbu_PERCISION
-    ppolyf_u_res_l = l * dbu_PERCISION
+    ppolyf_u_res_w = w_res * dbu_PERCISION
+    ppolyf_u_res_l = l_res * dbu_PERCISION
     poly_res_enc = 0.51 * dbu_PERCISION
     sab_res_enc = 0.28 * dbu_PERCISION
     implant_cmp_enc = 0.16 * dbu_PERCISION
@@ -2754,7 +2751,7 @@ def draw_ppolyf_u_res(layout, l, w, deepnwell, pcmpgr):
     )
     ppolyf_u_res_cell.insert(pcmp_con_arr)
 
-    if deepnwell == True:
+    if deepnwell:
         # Inserting Ntap
         ppolyf_u_res_cell.shapes(nplus).insert(
             pya.Box(
@@ -2776,7 +2773,7 @@ def draw_ppolyf_u_res(layout, l, w, deepnwell, pcmpgr):
         )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -poly_res_enc
                 - ppoly_pcmp_spc
@@ -2850,7 +2847,7 @@ def draw_ppolyf_u_res(layout, l, w, deepnwell, pcmpgr):
     return ppolyf_u_res_cell
 
 
-def draw_ppolyf_u_high_Rs_res(layout, l, w, volt, deepnwell, pcmpgr):
+def draw_ppolyf_u_high_Rs_res(layout, l_res, w_res, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw high-Rs p+ poly resistor (outside DNWELL) by specifying parameters
@@ -2875,8 +2872,8 @@ def draw_ppolyf_u_high_Rs_res(layout, l, w, volt, deepnwell, pcmpgr):
 
     # VARIABLES
     dbu_PERCISION = 1 / layout.dbu
-    ppolyf_u_high_Rs_res_w = w * dbu_PERCISION
-    ppolyf_u_high_Rs_res_l = l * dbu_PERCISION
+    ppolyf_u_high_Rs_res_w = w_res * dbu_PERCISION
+    ppolyf_u_high_Rs_res_l = l_res * dbu_PERCISION
     poly_res_enc = 0.64 * dbu_PERCISION
     sab_res_enc = 0.28 * dbu_PERCISION
     sab_res_ext = 0.1 * dbu_PERCISION
@@ -3073,7 +3070,7 @@ def draw_ppolyf_u_high_Rs_res(layout, l, w, volt, deepnwell, pcmpgr):
         )
     )
 
-    if deepnwell == True:
+    if deepnwell:
         # Inserting Ntap
         ppolyf_u_high_Rs_res_cell.shapes(nplus).insert(
             pya.Box(
@@ -3114,7 +3111,7 @@ def draw_ppolyf_u_high_Rs_res(layout, l, w, volt, deepnwell, pcmpgr):
             )
 
         # Inserting Guard Ring
-        if pcmpgr == True:
+        if pcmpgr:
             cmp_inner = pya.Box(
                 -poly_res_enc
                 - ppoly_pcmp_spc
