@@ -18,7 +18,7 @@
 
 import pya
 import os
-from .draw_res import draw_metal_res, draw_nplus_s_res
+from .draw_res import draw_metal_res, draw_nplus_res
 
 rm1_l = 0.23
 rm1_w = 0.23
@@ -144,10 +144,6 @@ class metal_resistor(pya.PCellDeclarationHelper):
                 self.l_res = rm2_3_l
             if (self.w_res) < rm2_3_w:
                 self.w_res = rm2_3_w
-            if (self.l_res) < rm2_3_l:
-                self.l_res = rm2_3_l
-            if (self.w_res) < rm2_3_w:
-                self.w_res = rm2_3_w
 
         if (self.res_type) == "tm6k":
             if (self.l_res) < tm6k_l:
@@ -257,7 +253,11 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return (
-            "nplus_s_resistor(L=" + ("%.3f" % self.l_res) + ",W=" + ("%.3f" % self.w_res) + ")"
+            "nplus_s_resistor(L="
+            + ("%.3f" % self.l_res)
+            + ",W="
+            + ("%.3f" % self.w_res)
+            + ")"
         )
 
     def coerce_parameters_impl(self):
@@ -288,11 +288,12 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_nplus_s_res(
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_nplus_res(
             layout=self.layout,
             l_res=self.l_res,
             w_res=self.w_res,
+            res_type="nplus_s",
             sub=self.sub,
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
@@ -387,82 +388,92 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
 #         self.cell.flatten(1)
 
 
-# class nplus_u_resistor(pya.PCellDeclarationHelper):
-#     """
-#     3-terminal unsalicided n+ diffusion resistor (Outside DNWELL) Generator for GF180MCU
-#     """
+class nplus_u_resistor(pya.PCellDeclarationHelper):
+    """
+    3-terminal unsalicided n+ diffusion resistor (Outside DNWELL) Generator for GF180MCU
+    """
 
-#     def __init__(self):
+    def __init__(self):
 
-#         # Initializing super class.
-#         super(nplus_u_resistor, self).__init__()
+        # Initializing super class.
+        super(nplus_u_resistor, self).__init__()
 
-#         # ===================== PARAMETERS DECLARATIONS =====================
-#         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
-#         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-#         self.param("l", self.TypeDouble, "Width", default=nplus_u_l, unit="um")
-#         self.param("w", self.TypeDouble, "Length", default=nplus_u_w, unit="um")
-#         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
-#         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
-#         self.param("array_x", self.TypeInt, "Repeat X", default=1)
-#         self.param("array_y", self.TypeInt, "Repeat Y", default=1)
-#         self.param(
-#             "x_spacing", self.TypeDouble, "spacing in x_direction", default=3, unit="um"
-#         )
-#         self.param(
-#             "y_spacing", self.TypeDouble, "spacing in y_direction", default=3, unit="um"
-#         )
-#         self.param("sub", self.TypeBoolean, "Substrate terminal", default=1)
+        # ===================== PARAMETERS DECLARATIONS =====================
+        self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
+        self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
+        self.param("w_res", self.TypeDouble, "Width", default=nplus_u_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=nplus_u_w, unit="um")
+        self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
+        self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
+        self.param("array_x", self.TypeInt, "Repeat X", default=1)
+        self.param("array_y", self.TypeInt, "Repeat Y", default=1)
+        self.param(
+            "x_spacing", self.TypeDouble, "spacing in x_direction", default=3, unit="um"
+        )
+        self.param(
+            "y_spacing", self.TypeDouble, "spacing in y_direction", default=3, unit="um"
+        )
+        self.param("sub", self.TypeBoolean, "Substrate terminal", default=1)
 
-#     def display_text_impl(self):
-#         # Provide a descriptive text for the cell
-#         return (
-#             "nplus_u_resistor(L=" + ("%.3f" % self.l) + ",W=" + ("%.3f" % self.w) + ")"
-#         )
+    def display_text_impl(self):
+        # Provide a descriptive text for the cell
+        return (
+            "nplus_u_resistor(L="
+            + ("%.3f" % self.l_res)
+            + ",W="
+            + ("%.3f" % self.w_res)
+            + ")"
+        )
 
-#     def coerce_parameters_impl(self):
-#         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
-#         #  We also update the numerical value or the shape, depending on which on has not changed.
-#         self.area = self.w * self.l
-#         self.perim = 2 * (self.w + self.l)
-#         # w,l must be larger or equal than min. values.
-#         if (self.l) < nplus_u_l:
-#             self.l = nplus_u_l
-#         if (self.w) < nplus_u_w:
-#             self.w = nplus_u_w
+    def coerce_parameters_impl(self):
+        # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
+        #  We also update the numerical value or the shape, depending on which on has not changed.
+        self.area = self.w_res * self.l_res
+        self.perim = 2 * (self.w_res + self.l_res)
+        # w,l must be larger or equal than min. values.
+        if (self.l_res) < nplus_u_l:
+            self.l_res = nplus_u_l
+        if (self.w_res) < nplus_u_w:
+            self.w_res = nplus_u_w
 
-#     def can_create_from_shape_impl(self):
-#         # Implement the "Create PCell from shape" protocol: we can use any shape which
-#         # has a finite bounding box
-#         return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
+    def can_create_from_shape_impl(self):
+        # Implement the "Create PCell from shape" protocol: we can use any shape which
+        # has a finite bounding box
+        return self.shape.is_box() or self.shape.is_polygon() or self.shape.is_path()
 
-#     def parameters_from_shape_impl(self):
-#         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
-#         # bounding box width and layer
-#         self.r = self.shape.bbox().width() * self.layout.dbu / 2
-#         self.l = self.layout.get_info(self.layer)
+    def parameters_from_shape_impl(self):
+        # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
+        # bounding box width and layer
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
-#     def transformation_from_shape_impl(self):
-#         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
-#         # bounding box to determine the transformation
-#         return pya.Trans(self.shape.bbox().center())
+    def transformation_from_shape_impl(self):
+        # Implement the "Create PCell from shape" protocol: we use the center of the shape's
+        # bounding box to determine the transformation
+        return pya.Trans(self.shape.bbox().center())
 
-#     def produce_impl(self):
-#         dbu_PERCISION = 1 / self.layout.dbu
-#         np_instance = draw_nplus_u_res(
-#             self.layout, self.l, self.w, self.sub, self.deepnwell, self.pcmpgr
-#         )
-#         write_cells = pya.CellInstArray(
-#             np_instance.cell_index(),
-#             pya.Trans(pya.Point(0, 0)),
-#             pya.Vector(self.x_spacing * dbu_PERCISION, 0),
-#             pya.Vector(0, self.y_spacing * dbu_PERCISION),
-#             self.array_x,
-#             self.array_y,
-#         )
+    def produce_impl(self):
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_nplus_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="nplus_u",
+            sub=self.sub,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
+        )
+        write_cells = pya.CellInstArray(
+            np_instance.cell_index(),
+            pya.Trans(pya.Point(0, 0)),
+            pya.Vector(self.x_spacing * dbu_PERCISION, 0),
+            pya.Vector(0, self.y_spacing * dbu_PERCISION),
+            self.array_x,
+            self.array_y,
+        )
 
-#         self.cell.insert(write_cells)
-#         self.cell.flatten(1)
+        self.cell.insert(write_cells)
+        self.cell.flatten(1)
 
 
 # class pplus_u_resistor(pya.PCellDeclarationHelper):
