@@ -7,7 +7,7 @@ import math
 from cells import gf180mcu
 
 # Set device name form env. variable
-device_pcell = device_in
+device_pcell = device_in  # noqa: F821
 
 # === Load gf180mcu pcells ===
 technology_macros_path = os.path.dirname(os.path.abspath(__file__))
@@ -76,7 +76,7 @@ def draw_pcell(device_name, device_space):
     #     layout.write(f"testcases/{device_name}_dn_pcells.gds", options)
 
 
-def get_var(device_name, row):
+def get_var(device_name, row):  # noqa: C901
 
     if device_name == "bjt":
         device = row["device_name"]

@@ -463,7 +463,7 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
     return None
 
 
-def main():
+def main():  # noqa: C901
     """Main function applies all regression steps"""
 
     # pandas setup

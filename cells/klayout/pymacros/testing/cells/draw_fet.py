@@ -21,7 +21,7 @@ import pya
 tol = 1.05
 
 
-def draw_nfet(layout, l_gate, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
+def draw_nfet(layout, l_gate, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):  # noqa: C901
     """
     Usage:-
      used to draw NFET transistor by specifying parameters
@@ -1397,7 +1397,7 @@ def draw_nfet(layout, l_gate, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
     return cell
 
 
-def draw_pfet(layout, l_gate, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):
+def draw_pfet(layout, l_gate, w, ld, nf, grw, bulk, volt, deepnwell, pcmpgr):  # noqa: C901
     """
     Usage:-
      used to draw PFET transistor by specifying parameters
