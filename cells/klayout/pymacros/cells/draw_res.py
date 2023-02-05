@@ -17,6 +17,7 @@
 ########################################################################################################################
 
 import gdsfactory as gf
+from gdsfactory.types import LayerSpec
 from .layers_def import layer
 from .via_generator import via_generator, via_stack
 
@@ -217,6 +218,8 @@ def plus_res_inst(
     sub: bool = 0,
     cmp_res_ext: float = 0.1,
     con_enc: float = 0.1,
+    cmp_imp_layer: LayerSpec = layer["nplus"],
+    sub_imp_layer: LayerSpec = layer["pplus"],
 ) -> gf.Component:
 
     c = gf.Component()
@@ -231,7 +234,7 @@ def plus_res_inst(
         gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
     )
 
-    if res_type == "nplus_u":
+    if "plus_u" in res_type:
         sab_rect = c.add_ref(
             gf.components.rectangle(
                 size=(res_mk.size[0], res_mk.size[1] + (2 * sab_res_ext)),
@@ -264,14 +267,14 @@ def plus_res_inst(
         spacing=(cmp_res_ext - con_enc + res_mk.size[0], 0),
     )  # comp contact array
 
-    nplus = c.add_ref(
+    cmp_imp = c.add_ref(
         gf.components.rectangle(
             size=(cmp.size[0] + (2 * np_enc_cmp), cmp.size[1] + (2 * np_enc_cmp)),
-            layer=layer["nplus"],
+            layer=cmp_imp_layer,
         )
     )
-    nplus.xmin = cmp.xmin - np_enc_cmp
-    nplus.ymin = cmp.ymin - np_enc_cmp
+    cmp_imp.xmin = cmp.xmin - np_enc_cmp
+    cmp_imp.ymin = cmp.ymin - np_enc_cmp
 
     if sub == 1:
 
@@ -291,17 +294,17 @@ def plus_res_inst(
             )
         )
 
-        pplus = c.add_ref(
+        sub_imp = c.add_ref(
             gf.components.rectangle(
                 size=(
                     sub_rect.size[0] + (2 * pp_enc_cmp),
                     cmp.size[1] + (2 * pp_enc_cmp),
                 ),
-                layer=layer["pplus"],
+                layer=sub_imp_layer,
             )
         )
-        pplus.xmin = sub_rect.xmin - pp_enc_cmp
-        pplus.ymin = sub_rect.ymin - pp_enc_cmp
+        sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
+        sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
 
     return c
 
@@ -338,6 +341,8 @@ def draw_nplus_res(
             sub=sub,
             cmp_res_ext=cmp_res_ext,
             con_enc=con_enc,
+            cmp_imp_layer=layer["nplus"],
+            sub_imp_layer=layer["pplus"],
         )
     )
 
@@ -365,6 +370,309 @@ def draw_nplus_res(
         )
         dn_rect.xmin = lvpwell.xmin - dn_enc_lvpwell
         dn_rect.ymin = lvpwell.ymin - dn_enc_lvpwell
+
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
+
+
+def draw_pplus_res(
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "pplus_s",
+    sub: bool = 0,
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    nw_enc_pcmp = 0.6
+    dn_enc_ncmp = 0.66
+    dn_enc_pcmp = 1.02
+    sub_w = 0.36
+
+    if res_type == "pplus_s":
+        cmp_res_ext = 0.29
+        con_enc = 0.07
+    else:
+        cmp_res_ext = 0.44
+        con_enc = 0.0
+
+    # adding res inst
+    r_inst = c.add_ref(
+        plus_res_inst(
+            l_res=l_res,
+            w_res=w_res,
+            res_type=res_type,
+            sub=1,
+            cmp_res_ext=cmp_res_ext,
+            con_enc=con_enc,
+            cmp_imp_layer=layer["pplus"],
+            sub_imp_layer=layer["nplus"],
+        )
+    )
+
+    if deepnwell == 1:
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (dn_enc_pcmp + dn_enc_ncmp),
+                    r_inst.size[1] + (2 * dn_enc_pcmp),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+        dn_rect.xmax = r_inst.xmax + dn_enc_pcmp
+        dn_rect.ymin = r_inst.ymin - dn_enc_pcmp
+
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    else:
+
+        nw_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (2 * nw_enc_pcmp),
+                    r_inst.size[1] + (2 * nw_enc_pcmp),
+                ),
+                layer=layer["nwell"],
+            )
+        )
+        nw_rect.xmin = r_inst.xmin - nw_enc_pcmp
+        nw_rect.ymin = r_inst.ymin - nw_enc_pcmp
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
+
+
+@gf.cell
+def polyf_res_inst(
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "npolyf_s",
+    pl_res_ext: float = 0.1,
+    con_enc: float = 0.1,
+    pl_imp_layer: LayerSpec = layer["nplus"],
+    sub_imp_layer: LayerSpec = layer["pplus"],
+) -> gf.Component:
+
+    c = gf.Component()
+
+    sub_w: float = 0.36
+    np_enc_poly2 = 0.3
+    pp_enc_cmp: float = 0.16
+    comp_spacing: float = 0.72
+    sab_res_ext = 0.28
+
+    res_mk = c.add_ref(
+        gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
+    )
+
+    if "polyf_u" in res_type:
+        sab_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(res_mk.size[0], res_mk.size[1] + (2 * sab_res_ext)),
+                layer=layer["sab"],
+            )
+        )
+        sab_rect.xmin = res_mk.xmin
+        sab_rect.ymin = res_mk.ymin - sab_res_ext
+
+    pl = c.add_ref(
+        gf.components.rectangle(
+            size=(res_mk.size[0] + (2 * pl_res_ext), res_mk.size[1]),
+            layer=layer["poly2"],
+        )
+    )
+    pl.xmin = res_mk.xmin - pl_res_ext
+    pl.ymin = res_mk.ymin
+
+    pl_con = via_stack(
+        x_range=(pl.xmin, res_mk.xmin + con_enc),
+        y_range=(pl.ymin, pl.ymax),
+        base_layer=layer["poly2"],
+        metal_level=1,
+    )
+
+    c.add_array(
+        component=pl_con,
+        rows=1,
+        columns=2,
+        spacing=(pl_res_ext - con_enc + res_mk.size[0], 0),
+    )  # comp contact array
+
+    pl_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(pl.size[0] + (2 * np_enc_poly2), pl.size[1] + (2 * np_enc_poly2)),
+            layer=pl_imp_layer,
+        )
+    )
+    pl_imp.xmin = pl.xmin - np_enc_poly2
+    pl_imp.ymin = pl.ymin - np_enc_poly2
+
+    sub_rect = c.add_ref(
+        gf.components.rectangle(size=(sub_w, w_res), layer=layer["comp"])
+    )
+    sub_rect.xmax = pl.xmin - comp_spacing
+    sub_rect.ymin = pl.ymin
+
+    # sub_rect contact
+    c.add_ref(
+        via_stack(
+            x_range=(sub_rect.xmin, sub_rect.xmax),
+            y_range=(sub_rect.ymin, sub_rect.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )
+
+    sub_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(sub_rect.size[0] + (2 * pp_enc_cmp), pl.size[1] + (2 * pp_enc_cmp),),
+            layer=sub_imp_layer,
+        )
+    )
+    sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
+    sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
+
+    return c
+
+
+def draw_npolyf_res(
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "npolyf_s",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    lvpwell_enc_cmp = 0.43
+    dn_enc_lvpwell = 2.5
+    sub_w = 0.36
+
+    if res_type == "npolyf_s":
+        pl_res_ext = 0.29
+        con_enc = 0.07
+    else:
+        pl_res_ext = 0.44
+        con_enc = 0.0
+
+    # adding res inst
+    r_inst = c.add_ref(
+        polyf_res_inst(
+            l_res=l_res,
+            w_res=w_res,
+            res_type=res_type,
+            pl_res_ext=pl_res_ext,
+            con_enc=con_enc,
+            pl_imp_layer=layer["nplus"],
+            sub_imp_layer=layer["pplus"],
+        )
+    )
+
+    if deepnwell == 1:
+        lvpwell = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (2 * lvpwell_enc_cmp),
+                    r_inst.size[1] + (2 * lvpwell_enc_cmp),
+                ),
+                layer=layer["lvpwell"],
+            )
+        )
+        lvpwell.xmin = r_inst.xmin - lvpwell_enc_cmp
+        lvpwell.ymin = r_inst.ymin - lvpwell_enc_cmp
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    lvpwell.size[0] + (2 * dn_enc_lvpwell),
+                    lvpwell.size[1] + (2 * dn_enc_lvpwell),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+        dn_rect.xmin = lvpwell.xmin - dn_enc_lvpwell
+        dn_rect.ymin = lvpwell.ymin - dn_enc_lvpwell
+
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
+
+
+def draw_ppolyf_res(
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "ppolyf_s",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    sub_w = 0.36
+    dn_enc_ncmp = 0.66
+    dn_enc_poly2 = 1.34
+
+    if res_type == "ppolyf_s":
+        pl_res_ext = 0.29
+        con_enc = 0.07
+    else:
+        pl_res_ext = 0.44
+        con_enc = 0.0
+
+    if deepnwell == 1:
+        sub_layer = layer["nplus"]
+    else:
+        sub_layer = layer["pplus"]
+
+    # adding res inst
+    r_inst = c.add_ref(
+        polyf_res_inst(
+            l_res=l_res,
+            w_res=w_res,
+            res_type=res_type,
+            pl_res_ext=pl_res_ext,
+            con_enc=con_enc,
+            pl_imp_layer=layer["pplus"],
+            sub_imp_layer=sub_layer,
+        )
+    )
+
+    if deepnwell == 1:
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (dn_enc_poly2 + dn_enc_ncmp),
+                    r_inst.size[1] + (2 * dn_enc_poly2),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+        dn_rect.xmax = r_inst.xmax + dn_enc_poly2
+        dn_rect.ymin = r_inst.ymin - dn_enc_poly2
 
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))

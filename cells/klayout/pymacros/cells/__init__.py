@@ -33,7 +33,13 @@ from .cap_mim import cap_mim
 from .res import (
     metal_resistor,
     nplus_s_resistor,
-    nplus_u_resistor
+    nplus_u_resistor,
+    pplus_s_resistor,
+    pplus_u_resistor,
+    npolyf_s_resistor,
+    npolyf_u_resistor,
+    ppolyf_s_resistor,
+    ppolyf_u_resistor,
 )
 from .efuse import efuse
 
@@ -94,6 +100,12 @@ class gf180mcu(pya.Library):
         self.layout().register_pcell("metal_resistor", metal_resistor())
         self.layout().register_pcell("nplus_s_resistor", nplus_s_resistor())
         self.layout().register_pcell("nplus_u_resistor", nplus_u_resistor())
+        self.layout().register_pcell("pplus_s_resistor", pplus_s_resistor())
+        self.layout().register_pcell("pplus_u_resistor", pplus_u_resistor())
+        self.layout().register_pcell("npolyf_s_resistor", npolyf_s_resistor())
+        self.layout().register_pcell("npolyf_u_resistor", npolyf_u_resistor())
+        self.layout().register_pcell("ppolyf_s_resistor", ppolyf_s_resistor())
+        self.layout().register_pcell("ppolyf_u_resistor", ppolyf_u_resistor())
 
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
