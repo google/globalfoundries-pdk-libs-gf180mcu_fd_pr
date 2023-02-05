@@ -98,5 +98,19 @@ class gf180mcu(pya.Library):
         # MIM_CAP DEVICES
         self.layout().register_pcell("cap_mim", cap_mim())
 
+        # cap_mos
+        self.layout().register_pcell(
+            "cap_nmos", cap_nmos()
+        )  # cap_nmos_03v3   , cap_nmos_06v0
+        self.layout().register_pcell(
+            "cap_pmos", cap_pmos()
+        )  # cap_pmos_03v3   , cap_pmos_06v0
+        self.layout().register_pcell(
+            "cap_nmos_b", cap_nmos_b()
+        )  # cap_nmos_03v3_b , cap_nmos_06v0_b
+        self.layout().register_pcell(
+            "cap_pmos_b", cap_pmos_b()
+        )  # cap_pmos_03v3_b , cap_pmos_06v0_b
+
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
