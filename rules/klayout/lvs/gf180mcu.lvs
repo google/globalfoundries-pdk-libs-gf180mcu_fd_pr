@@ -287,8 +287,21 @@ if $schematic
   schematic($schematic, reader)
   logger.info("Netlist file: #{$schematic}")
 else
-  puts "No schematic loaded , please add your netlist file"
-  logger.info("No schematic loaded , please add your netlist file")
+  exts = ["ngspice", "spice", "cdl"]
+  exts_found = exts.select{|ext| File.exist?("#{source.cell_name}.#{ext}")}
+  if exts_found.empty?
+    candidates = exts.map{|ext| "#{source.cell_name}.#{ext}"}
+    error("Netlist not found, tried: #{candidates}")
+  else
+    ext = exts_found[0]
+    netlist_sim = File.read("#{source.cell_name}.#{ext}")
+    # filter out parameters with spice equations
+    netlist_lvs = netlist_sim.gsub(/\w+='.+'/, "")
+    netlist_out = "#{source.cell_name}_lvs.#{ext}"
+    File.write(netlist_out, netlist_lvs)
+    schematic(netlist_out, reader)
+    logger.info("Netlist file: #{netlist_out}")
+  end
 end
 
 class BResistor < RBA::DeviceClassResistorWithBulk
