@@ -257,8 +257,11 @@ class SubcircuitModelsReader < RBA::NetlistSpiceReaderDelegate
       # create a device
       device = circuit.create_device(cls, name)
 
-      # and configure the device
-      [ "S", "G", "D", "B" ].each_with_index do |t,index|
+      # configure the device
+      # following ngspice model nets ordering
+      # .subckt pfet_03v3 d g s b w=1e-5 l=2.8e-7
+      # .subckt nfet_03v3 d g s b w=1e-5 l=2.8e-7
+      [ "D", "G", "S", "B" ].each_with_index do |t,index|
         device.connect_terminal(t, nets[index])
       end
 
