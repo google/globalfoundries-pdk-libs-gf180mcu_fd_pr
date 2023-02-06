@@ -26,6 +26,86 @@ from .layers_def import layer
 
 
 @gf.cell
+def fet_labels_gen(
+    gate_con,
+    source_con,
+    sub_con,
+    nf: int = 1,
+    lbl: bool = 0,
+    sd_lbl: list = [],
+    g_lbl: list = [],
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component()
+
+    def order_array(polys):
+
+        ordered = []
+        s = []
+
+        for i in range(len(polys)):
+            s.append((np.min(polys[i][:, 0]), i))
+
+        def takeSecond(elem):
+            return elem[0]
+
+        s.sort(key=takeSecond)
+
+        for i in range(len(s)):
+            ordered.append(polys[s[i][1]])
+
+        return ordered
+
+    gate_polys_ran = gate_con.get_polygons(by_spec=layer["metal1"])
+    gate_polys = order_array(gate_polys_ran)
+    source_polys_ran = source_con.get_polygons(by_spec=layer["metal1"])
+    source_polys = order_array(source_polys_ran)
+
+    if lbl == 1:
+        if nf == len(g_lbl):
+
+            print(len(gate_polys))
+            for i in range(len(gate_polys)):
+                g_xmin = np.min(gate_polys[i][:, 0])
+                g_ymin = np.min(gate_polys[i][:, 1])
+                g_xmax = np.max(gate_polys[i][:, 0])
+                g_ymax = np.max(gate_polys[i][:, 1])
+                c.add_label(
+                    g_lbl[i],
+                    position=((g_xmax + g_xmin) / 2, (g_ymax + g_ymin) / 2),
+                    layer=layer["metal1_label"],
+                )
+
+        if (nf + 1) == len(sd_lbl):
+
+            print(len(source_polys))
+            for i in range(len(source_polys)):
+                s_xmin = np.min(source_polys[i][:, 0])
+                s_ymin = np.min(source_polys[i][:, 1])
+                s_xmax = np.max(source_polys[i][:, 0])
+                s_ymax = np.max(source_polys[i][:, 1])
+                c.add_label(
+                    sd_lbl[i],
+                    position=((s_xmax + s_xmin) / 2, (s_ymax + s_ymin) / 2),
+                    layer=layer["comp_label"],
+                )
+
+            if sub_con[0] == 1:
+
+                sub_lbl_posx = (sub_con[1]["xmin"] + sub_con[1]["xmax"]) / 2
+                sub_lbl_posy = (sub_con[1]["ymin"] + sub_con[1]["ymax"]) / 2
+
+                c.add_label(
+                    sub_lbl,
+                    position=(sub_lbl_posx, sub_lbl_posy),
+                    layer=layer["metal1_label"],
+                )
+
+    return c
+
+
+@gf.cell
 def alter_interdig(
     sd_diff,
     pc1,
@@ -822,6 +902,10 @@ def draw_nfet(
     patt="",
     deepnwell: int = 0,
     pcmpgr: int = 0,
+    lbl: bool = 0,
+    sd_lbl: list = [],
+    g_lbl: str = [],
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     """
@@ -984,6 +1068,9 @@ def draw_nfet(
         )
         pc.move((poly.xmin - ((pc_x - l_gate) / 2), -pc_size[1] - end_cap + mv))
 
+        gate_con = pc
+        source_con = sd_con
+
     else:
 
         w_p1 = end_cap + w_gate + end_cap  # poly total width
@@ -1063,6 +1150,17 @@ def draw_nfet(
             )
         )
 
+        gate_con = gf.geometry.boolean(
+            A=pc1, B=pc2, operation="A+B", layer=layer["metal1"]
+        )
+
+        source_con = gf.geometry.boolean(
+            A=[sd_diff, sd_diff_intr],
+            B=[poly2, poly1],
+            operation="A-B",
+            layer=layer["metal1"],
+        )
+
         if interdig == 1:
             c.add_ref(
                 interdigit(
@@ -1090,6 +1188,8 @@ def draw_nfet(
         )
         nplus.xmin = sd_diff.xmin - comp_np_enc
         nplus.ymin = sd_diff_intr.ymin - gate_np_enc
+
+        sub_con = [0, 0]
 
     elif bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
@@ -1129,6 +1229,16 @@ def draw_nfet(
         )
         c_inst.add_ref(bulk_con)
 
+        sub_con = [
+            1,
+            {
+                "xmin": bulk_con.xmin,
+                "xmax": bulk_con.xmax,
+                "ymin": bulk_con.ymin,
+                "ymax": bulk_con.ymax,
+            },
+        ]
+
     if bulk == "Guard Ring":
 
         nsdm = c_inst.add_ref(
@@ -1164,6 +1274,16 @@ def draw_nfet(
         inst_xmin = psdm_xmin
         inst_ymin = psdm_ymin
 
+        sub_con = [
+            1,
+            {
+                "xmin": b_gr.xmin,
+                "xmax": b_gr.xmin + grw + (2 * comp_pp_enc),
+                "ymin": b_gr.ymin,
+                "ymax": b_gr.ymax,
+            },
+        ]
+
     # if bulk != "Guard Ring":
     else:
         c.add_ref(c_inst)
@@ -1184,6 +1304,20 @@ def draw_nfet(
             inst_xmin=inst_xmin,
             inst_ymin=inst_ymin,
             grw=grw,
+        )
+    )
+
+    #### adding labels
+    c.add_ref(
+        fet_labels_gen(
+            gate_con=gate_con,
+            source_con=source_con,
+            sub_con=sub_con,
+            nf=nf,
+            lbl=lbl,
+            sd_lbl=sd_lbl,
+            g_lbl=g_lbl,
+            sub_lbl=sub_lbl,
         )
     )
 
@@ -1274,6 +1408,10 @@ def draw_pfet(
     patt="",
     deepnwell: int = 0,
     pcmpgr: int = 0,
+    lbl: bool = 0,
+    sd_lbl: list = [],
+    g_lbl: str = [],
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     """
@@ -1438,6 +1576,9 @@ def draw_pfet(
         )
         pc.move((poly.xmin - ((pc_x - l_gate) / 2), -pc_size[1] - end_cap + mv))
 
+        gate_con = pc
+        source_con = sd_con
+
     else:
 
         w_p1 = end_cap + w_gate + end_cap  # poly total width
@@ -1517,6 +1658,17 @@ def draw_pfet(
             )
         )
 
+        gate_con = gf.geometry.boolean(
+            A=pc1, B=pc2, operation="A+B", layer=layer["metal1"]
+        )
+
+        source_con = gf.geometry.boolean(
+            A=[sd_diff, sd_diff_intr],
+            B=[poly2, poly1],
+            operation="A-B",
+            layer=layer["metal1"],
+        )
+
         if interdig == 1:
             c.add_ref(
                 interdigit(
@@ -1566,6 +1718,8 @@ def draw_pfet(
         c.add_ref(
             hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
         )
+
+        sub_con = [0, 0]
 
     elif bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
@@ -1626,6 +1780,16 @@ def draw_pfet(
             hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
         )
 
+        sub_con = [
+            1,
+            {
+                "xmin": bulk_con.xmin,
+                "xmax": bulk_con.xmax,
+                "ymin": bulk_con.ymin,
+                "ymax": bulk_con.ymax,
+            },
+        ]
+
     elif bulk == "Guard Ring":
 
         psdm = c_inst.add_ref(
@@ -1657,6 +1821,16 @@ def draw_pfet(
         B_xmax = np.max(B_polys[0][:, 0])
         B_ymax = np.max(B_polys[0][:, 1])
 
+        sub_con = [
+            1,
+            {
+                "xmin": b_gr.xmin,
+                "xmax": b_gr.xmin + grw + (2 * comp_pp_enc),
+                "ymin": b_gr.ymin,
+                "ymax": b_gr.ymax,
+            },
+        ]
+
         #   deep nwell generation
 
         c.add_ref(
@@ -1670,6 +1844,23 @@ def draw_pfet(
                 grw=grw,
             )
         )
+
+    else:
+        sub_con = [0, 0]
+
+    #### adding labels
+    c.add_ref(
+        fet_labels_gen(
+            gate_con=gate_con,
+            source_con=source_con,
+            sub_con=sub_con,
+            nf=nf,
+            lbl=lbl,
+            sd_lbl=sd_lbl,
+            g_lbl=g_lbl,
+            sub_lbl=sub_lbl,
+        )
+    )
 
     # creating layout and cell in klayout
     c.write_gds("pfet_temp.gds")
@@ -2178,5 +2369,4 @@ def draw_nfet_06v0_nvt(
 #     # return c
 
 if __name__ == "__main__":
-    c = draw_nfet(nf=3, con_bet_fin=0, bulk="Guard Ring")
-    c.show()
+    pass
