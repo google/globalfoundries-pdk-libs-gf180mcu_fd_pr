@@ -17,7 +17,7 @@
 ########################################################################################################################
 
 import gdsfactory as gf
-from gdsfactory.types import LayerSpec
+from gdsfactory.types import LayerSpec, Float2
 from .layers_def import layer
 from .via_generator import via_generator, via_stack
 
@@ -849,6 +849,150 @@ def draw_ppolyf_u_high_Rs_res(
 
             dg.xmin = resis_mk.xmin
             dg.ymin = resis_mk.ymin
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
+
+
+def draw_well_res(
+    layout,
+    l_res: float = 0.42,
+    w_res: float = 0.42,
+    res_type: str = "nwell",
+    pcmpgr: bool = 0,
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    nw_res_ext = 0.48
+    nw_res_enc = 0.5
+    nw_enc_cmp = 0.12
+
+    sub_w: float = 0.36
+    pp_enc_cmp: float = 0.16
+    nw_comp_spacing: float = 0.72
+    dn_enc_lvpwell = 2.5
+
+    if res_type == "pwell":
+        cmp_imp_layer = layer["pplus"]
+        sub_imp_layer = layer["nplus"]
+        well_layer = layer["lvpwell"]
+    else:
+        cmp_imp_layer = layer["nplus"]
+        sub_imp_layer = layer["pplus"]
+        well_layer = layer["nwell"]
+
+    res_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(l_res, w_res + (2 * nw_res_enc)), layer=layer["res_mk"]
+        )
+    )
+
+    well_rect = c.add_ref(
+        gf.components.rectangle(
+            size=(res_mk.size[0] + (2 * nw_res_ext), w_res), layer=well_layer
+        )
+    )
+    well_rect.xmin = res_mk.xmin - nw_res_ext
+    well_rect.ymin = res_mk.ymin + nw_res_enc
+
+    @gf.cell
+    def comp_related_gen(size: Float2 = (0.42, 0.42)) -> gf.Component:
+
+        c = gf.Component()
+
+        cmp = c.add_ref(gf.components.rectangle(size=size, layer=layer["comp"]))
+        cmp.xmin = well_rect.xmin + nw_enc_cmp
+        cmp.ymin = well_rect.ymin + nw_enc_cmp
+
+        c.add_ref(
+            via_stack(
+                x_range=(cmp.xmin, cmp.xmax),
+                y_range=(cmp.ymin, cmp.ymax),
+                base_layer=layer["comp"],
+                metal_level=1,
+            )
+        )  # contact
+
+        return c
+
+    con_polys = comp_related_gen(
+        size=(
+            res_mk.xmin - well_rect.xmin - nw_enc_cmp,
+            well_rect.size[1] - (2 * nw_enc_cmp),
+        )
+    )
+
+    c.add_array(
+        component=con_polys,
+        rows=1,
+        columns=2,
+        spacing=(well_rect.size[0] - (2 * nw_enc_cmp) - con_polys.size[0], 0),
+    )  # comp and its related contact array
+
+    nplus_rect = gf.components.rectangle(
+        size=(
+            con_polys.size[0] + (2 * pp_enc_cmp),
+            con_polys.size[1] + (2 * pp_enc_cmp),
+        ),
+        layer=cmp_imp_layer,
+    )
+    nplus_arr = c.add_array(
+        component=nplus_rect,
+        rows=1,
+        columns=2,
+        spacing=(well_rect.size[0] - (2 * nw_enc_cmp) - con_polys.size[0], 0),
+    )
+    nplus_arr.xmin = con_polys.xmin - pp_enc_cmp
+    nplus_arr.ymin = con_polys.ymin - pp_enc_cmp
+
+    sub_rect = c.add_ref(
+        gf.components.rectangle(size=(sub_w, well_rect.size[1]), layer=layer["comp"])
+    )
+    sub_rect.xmax = well_rect.xmin - nw_comp_spacing
+    sub_rect.ymin = well_rect.ymin
+
+    # sub_rect contact
+    c.add_ref(
+        via_stack(
+            x_range=(sub_rect.xmin, sub_rect.xmax),
+            y_range=(sub_rect.ymin, sub_rect.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )
+
+    sub_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                sub_rect.size[0] + (2 * pp_enc_cmp),
+                well_rect.size[1] + (2 * pp_enc_cmp),
+            ),
+            layer=sub_imp_layer,
+        )
+    )
+    sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
+    sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
+
+    if res_type == "pwell":
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    well_rect.size[0] + (2 * dn_enc_lvpwell),
+                    well_rect.size[1] + (2 * dn_enc_lvpwell),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+        dn_rect.xmin = well_rect.xmin - dn_enc_lvpwell
+        dn_rect.ymin = well_rect.ymin - dn_enc_lvpwell
+
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
 
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
