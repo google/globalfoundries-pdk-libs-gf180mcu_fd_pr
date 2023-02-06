@@ -821,6 +821,52 @@ def nfet_deep_nwell(
     return c
 
 
+def add_inter_sd_labels(
+    c, nf, sd_lbl, poly1, l_gate, inter_sd_l, sd_diff_intr, lbl, layer
+):
+    for i in range(nf - 1):
+        c.add_ref(
+            labels_gen(
+                lbl_str=sd_lbl[i + 1],
+                position=(
+                    poly1.xmin + l_gate + (inter_sd_l / 2) + i * (l_gate + inter_sd_l),
+                    sd_diff_intr.ymin + (sd_diff_intr.size[1] / 2),
+                ),
+                layer=layer["comp_label"],
+                lbl=lbl,
+            )
+        )
+
+
+def add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer):
+
+    for i in range(nc1):
+        c.add_ref(
+            labels_gen(
+                lbl_str=g_lbl[2 * i],
+                position=(
+                    pc1.xmin + (c_pc.size[0] / 2) + i * (pc_spacing),
+                    pc1.ymin + (c_pc.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+                lbl=lbl,
+            )
+        )
+
+    for i in range(nc2):
+        c.add_ref(
+            labels_gen(
+                lbl_str=g_lbl[2 * i + 1],
+                position=(
+                    pc2.xmin + (c_pc.size[0] / 2) + i * (pc_spacing),
+                    pc2.ymin + (c_pc.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+                lbl=lbl,
+            )
+        )
+
+
 # @gf.cell
 def draw_nfet(
     layout,
@@ -1112,47 +1158,11 @@ def draw_nfet(
             )
         )
 
-        for i in range(nf - 1):
-            c.add_ref(
-                labels_gen(
-                    lbl_str=sd_lbl[i + 1],
-                    position=(
-                        poly1.xmin
-                        + l_gate
-                        + (inter_sd_l / 2)
-                        + i * (l_gate + inter_sd_l),
-                        sd_diff_intr.ymin + (sd_diff_intr.size[1] / 2),
-                    ),
-                    layer=layer["comp_label"],
-                    lbl=lbl,
-                )
-            )
+        add_inter_sd_labels(
+            c, nf, sd_lbl, poly1, l_gate, inter_sd_l, sd_diff_intr, lbl, layer
+        )
 
-        for i in range(nc1):
-            c.add_ref(
-                labels_gen(
-                    lbl_str=g_lbl[2 * i],
-                    position=(
-                        pc1.xmin + (c_pc.size[0] / 2) + i * (pc_spacing),
-                        pc1.ymin + (c_pc.size[1] / 2),
-                    ),
-                    layer=layer["metal1_label"],
-                    lbl=lbl,
-                )
-            )
-
-        for i in range(nc2):
-            c.add_ref(
-                labels_gen(
-                    lbl_str=g_lbl[2 * i + 1],
-                    position=(
-                        pc2.xmin + (c_pc.size[0] / 2) + i * (pc_spacing),
-                        pc2.ymin + (c_pc.size[1] / 2),
-                    ),
-                    layer=layer["metal1_label"],
-                    lbl=lbl,
-                )
-            )
+        add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer)
 
         if interdig == 1:
             c.add_ref(
@@ -1266,6 +1276,18 @@ def draw_nfet(
         inst_size = (psdm_xmax - psdm_xmin, psdm_ymax - psdm_ymin)
         inst_xmin = psdm_xmin
         inst_ymin = psdm_ymin
+
+        c.add_ref(
+            labels_gen(
+                lbl_str=sub_lbl,
+                position=(
+                    b_gr.xmin + (grw + 2 * (comp_pp_enc)) / 2,
+                    b_gr.ymin + (b_gr.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+                lbl=lbl,
+            )
+        )
 
     # if bulk != "Guard Ring":
     else:
