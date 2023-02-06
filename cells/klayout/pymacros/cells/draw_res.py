@@ -682,3 +682,176 @@ def draw_ppolyf_res(
     cell_name = "res_dev"
 
     return layout.cell(cell_name)
+
+
+def draw_ppolyf_u_high_Rs_res(
+    layout,
+    l_res: float = 0.42,
+    w_res: float = 0.42,
+    volt: str = "3.3V",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    dn_enc_ncmp = 0.62
+    dn_enc_poly2 = 1.34
+
+    pl_res_ext = 0.64
+
+    sub_w: float = 0.42
+    pp_enc_poly2 = 0.18
+    pp_enc_cmp: float = 0.02
+    comp_spacing: float = 0.7
+    sab_res_ext = (0.1, 0.28)
+    con_size = 0.36
+    resis_enc = (1.04, 0.4)
+    dg_enc_dn = 0.5
+
+    res_mk = c.add_ref(
+        gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
+    )
+
+    resis_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                res_mk.size[0] + (2 * resis_enc[0]),
+                res_mk.size[1] + (2 * resis_enc[1]),
+            ),
+            layer=layer["resistor"],
+        )
+    )
+
+    resis_mk.xmin = res_mk.xmin - resis_enc[0]
+    resis_mk.ymin = res_mk.ymin - resis_enc[1]
+
+    # if volt == "5/6V" :
+    #     dg = c.add_ref(
+    #         gf.components.rectangle(size=(resis_mk.size[0],resis_mk.size[1]), layer=layer["dualgate"])
+    #     )
+
+    #     dg.xmin = resis_mk.xmin
+    #     dg.ymin = resis_mk.ymin
+
+    sab_rect = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                res_mk.size[0] + (2 * sab_res_ext[0]),
+                res_mk.size[1] + (2 * sab_res_ext[1]),
+            ),
+            layer=layer["sab"],
+        )
+    )
+    sab_rect.xmin = res_mk.xmin - sab_res_ext[0]
+    sab_rect.ymin = res_mk.ymin - sab_res_ext[1]
+
+    pl = c.add_ref(
+        gf.components.rectangle(
+            size=(res_mk.size[0] + (2 * pl_res_ext), res_mk.size[1]),
+            layer=layer["poly2"],
+        )
+    )
+    pl.xmin = res_mk.xmin - pl_res_ext
+    pl.ymin = res_mk.ymin
+
+    pl_con = via_stack(
+        x_range=(pl.xmin, pl.xmin + con_size),
+        y_range=(pl.ymin, pl.ymax),
+        base_layer=layer["poly2"],
+        metal_level=1,
+    )
+
+    c.add_array(
+        component=pl_con, rows=1, columns=2, spacing=(pl.size[0] - con_size, 0),
+    )  # comp contact array
+
+    pplus = gf.components.rectangle(
+        size=(pl_res_ext + pp_enc_poly2, pl.size[1] + (2 * pp_enc_poly2)),
+        layer=layer["pplus"],
+    )
+
+    pplus_arr = c.add_array(
+        component=pplus, rows=1, columns=2, spacing=(pplus.size[0] + res_mk.size[0], 0)
+    )
+
+    pplus_arr.xmin = pl.xmin - pp_enc_poly2
+    pplus_arr.ymin = pl.ymin - pp_enc_poly2
+
+    sub_rect = c.add_ref(
+        gf.components.rectangle(size=(sub_w, w_res), layer=layer["comp"])
+    )
+    sub_rect.xmax = pl.xmin - comp_spacing
+    sub_rect.ymin = pl.ymin
+
+    # sub_rect contact
+    c.add_ref(
+        via_stack(
+            x_range=(sub_rect.xmin, sub_rect.xmax),
+            y_range=(sub_rect.ymin, sub_rect.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )
+
+    if deepnwell == 1:
+        sub_layer = layer["nplus"]
+    else:
+        sub_layer = layer["pplus"]
+
+    sub_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(sub_rect.size[0] + (2 * pp_enc_cmp), pl.size[1] + (2 * pp_enc_cmp),),
+            layer=sub_layer,
+        )
+    )
+    sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
+    sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
+
+    if deepnwell == 1:
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (pl.xmax - sub_rect.xmin) + (dn_enc_poly2 + dn_enc_ncmp),
+                    pl.size[1] + (2 * dn_enc_poly2),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+        dn_rect.xmax = pl.xmax + dn_enc_poly2
+        dn_rect.ymin = pl.ymin - dn_enc_poly2
+
+        if volt == "5/6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        dn_rect.size[0] + (2 * dg_enc_dn),
+                        dn_rect.size[1] + (2 * dg_enc_dn),
+                    ),
+                    layer=layer["dualgate"],
+                )
+            )
+
+            dg.xmin = dn_rect.xmin - dg_enc_dn
+            dg.ymin = dn_rect.ymin - dg_enc_dn
+
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    else:
+        if volt == "5/6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(resis_mk.size[0], resis_mk.size[1]), layer=layer["dualgate"]
+                )
+            )
+
+            dg.xmin = resis_mk.xmin
+            dg.ymin = resis_mk.ymin
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)

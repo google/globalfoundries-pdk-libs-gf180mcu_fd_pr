@@ -40,6 +40,7 @@ from .res import (
     npolyf_u_resistor,
     ppolyf_s_resistor,
     ppolyf_u_resistor,
+    ppolyf_u_high_Rs_resistor
 )
 from .efuse import efuse
 
@@ -106,6 +107,7 @@ class gf180mcu(pya.Library):
         self.layout().register_pcell("npolyf_u_resistor", npolyf_u_resistor())
         self.layout().register_pcell("ppolyf_s_resistor", ppolyf_s_resistor())
         self.layout().register_pcell("ppolyf_u_resistor", ppolyf_u_resistor())
+        self.layout().register_pcell("ppolyf_u_high_Rs_resistor", ppolyf_u_high_Rs_resistor())
 
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
