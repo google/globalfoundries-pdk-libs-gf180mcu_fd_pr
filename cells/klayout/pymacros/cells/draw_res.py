@@ -1014,6 +1014,10 @@ def draw_well_res(
     w_res: float = 0.42,
     res_type: str = "nwell",
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component("res_dev")
@@ -1077,7 +1081,7 @@ def draw_well_res(
         )
     )
 
-    c.add_array(
+    con_polys_arr = c.add_array(
         component=con_polys,
         rows=1,
         columns=2,
@@ -1107,7 +1111,7 @@ def draw_well_res(
     sub_rect.ymin = well_rect.ymin
 
     # sub_rect contact
-    c.add_ref(
+    sub_con = c.add_ref(
         via_stack(
             x_range=(sub_rect.xmin, sub_rect.xmax),
             y_range=(sub_rect.ymin, sub_rect.ymax),
@@ -1144,6 +1148,34 @@ def draw_well_res(
 
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                con_polys_arr.xmin + (con_polys.size[0] / 2),
+                con_polys_arr.ymin + (con_polys.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                con_polys_arr.xmax - (con_polys.size[0] / 2),
+                con_polys_arr.ymin + (con_polys.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        c.add_label(
+            sub_lbl,
+            position=(
+                sub_con.xmin + (sub_con.size[0] / 2),
+                sub_con.ymin + (sub_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
