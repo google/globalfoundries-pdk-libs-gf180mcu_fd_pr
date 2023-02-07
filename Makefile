@@ -57,7 +57,11 @@ ngspice-regression: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) cd models/ngspice/testing/ && make all
 
 	
-
+################################################################################
+## pcells Regression 
+################################################################################
+test-LVS-pcells: | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) klayout -v
 
 
 
