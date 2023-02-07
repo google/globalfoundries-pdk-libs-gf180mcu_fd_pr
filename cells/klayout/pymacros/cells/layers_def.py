@@ -60,7 +60,7 @@ layer = {
     "poly2_label": (30, 10),
     "metal1_label": (34, 10),
     "metal2_label": (36, 10),
-    "metal3_label(6)": (42, 10),
+    "metal3_label": (42, 10),
     "metal4_label": (46, 10),
     "metal5_label": (81, 10),
     "metaltop_label": (53, 10),

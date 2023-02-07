@@ -88,6 +88,16 @@ class nfet(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param(
+            "sd_lbl", self.TypeList, "Pattern of Source/Drain Labels", default=[]
+        )
+
+        self.param("g_lbl", self.TypeList, "Pattern of Gate Labels", default=[])
+
+        self.param("sub_lbl", self.TypeString, "Substrate Label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return "nfet(L=" + ("%.3f" % self.l_gate) + ",W=" + ("%.3f" % self.w_gate) + ")"
@@ -140,7 +150,7 @@ class nfet(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         instance = draw_nfet(
-            self.layout,
+            layout=self.layout,
             l_gate=self.l_gate,
             w_gate=self.w_gate,
             sd_con_col=self.sd_con_col,
@@ -155,6 +165,10 @@ class nfet(pya.PCellDeclarationHelper):
             patt=self.patt,
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            sd_lbl=self.sd_lbl,
+            g_lbl=self.g_lbl,
+            sub_lbl=self.sub_lbl,
         )
         write_cells = pya.CellInstArray(
             instance.cell_index(),
@@ -216,6 +230,16 @@ class pfet(pya.PCellDeclarationHelper):
 
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
+
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param(
+            "sd_lbl", self.TypeList, "Pattern of Source/Drain Labels", default=[]
+        )
+
+        self.param("g_lbl", self.TypeList, "Pattern of Gate Labels", default=[])
+
+        self.param("sub_lbl", self.TypeString, "Substrate Label", default="")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -284,6 +308,10 @@ class pfet(pya.PCellDeclarationHelper):
             patt=self.patt,
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            sd_lbl=self.sd_lbl,
+            g_lbl=self.g_lbl,
+            sub_lbl=self.sub_lbl,
         )
         write_cells = pya.CellInstArray(
             instance.cell_index(),
@@ -340,9 +368,25 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param(
+            "sd_lbl", self.TypeList, "Pattern of Source/Drain Labels", default=[]
+        )
+
+        self.param("g_lbl", self.TypeList, "Pattern of Gate Labels", default=[])
+
+        self.param("sub_lbl", self.TypeString, "Substrate Label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "nfet_06v0_nvt(L=" + ("%.3f" % self.l_gate) + ",W=" + ("%.3f" % self.w_gate) + ")"
+        return (
+            "nfet_06v0_nvt(L="
+            + ("%.3f" % self.l_gate)
+            + ",W="
+            + ("%.3f" % self.w_gate)
+            + ")"
+        )
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the
@@ -394,6 +438,10 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
             gate_con_pos=self.gate_con_pos,
             interdig=self.interdig,
             patt=self.patt,
+            lbl=self.lbl,
+            sd_lbl=self.sd_lbl,
+            g_lbl=self.g_lbl,
+            sub_lbl=self.sub_lbl,
         )
 
         write_cells = pya.CellInstArray(
