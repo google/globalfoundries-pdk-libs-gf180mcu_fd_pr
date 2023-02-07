@@ -56,7 +56,6 @@ C {test_nwell.sym} 1550 -110 0 0 {name=x15}
 C {test_npolyf_u.sym} 1550 -210 0 0 {name=x16}
 C {test_ppolyf_u.sym} 1550 -160 0 0 {name=x17}
 C {test_cap_nmos_06v0.sym} 530 -110 0 0 {name=x18}
-C {test_cap_nmos_03v3.sym} 530 -260 0 0 {name=x19}
 C {test_cap_pmos_06v0.sym} 530 -160 0 0 {name=x20}
 C {test_diode_pw2dw.sym} 1210 -160 0 0 {name=x21}
 C {test_rm1.sym} 1550 -260 0 0 {name=x22}
