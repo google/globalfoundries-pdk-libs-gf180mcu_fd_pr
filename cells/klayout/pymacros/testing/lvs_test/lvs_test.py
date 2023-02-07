@@ -5,6 +5,6 @@ device_name = "npn_00p54x02p00"
 
 os.system(
     f"""
-python3 run_lvs.py --design=../testcases/{device_name}_pcells.gds --net={device_name}_pcells.cdl --gf180mcu="A"
+klayout -b -r gf180mcu.lvs -rd input=../testcases/{device_name}_pcells.gds -rd report={device_name}_pcells.lyrdb -rd schematic={device_name}_pcells.cdl -rd target_netlist=extracted_netlist_{device_name}_pcells.cir
 """
 )
