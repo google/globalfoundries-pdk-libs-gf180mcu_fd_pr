@@ -240,6 +240,12 @@ class diode_nw2ps(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("p_lbl", self.TypeString, "plus label", default="")
+
+        self.param("n_lbl", self.TypeString, "minus label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return "diode_nw2ps(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
@@ -275,7 +281,14 @@ class diode_nw2ps(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         nwp_instance = draw_diode_nw2ps(
-            self.layout, la=self.la, wa=self.wa, cw=self.cw, volt=self.volt
+            self.layout,
+            la=self.la,
+            wa=self.wa,
+            cw=self.cw,
+            volt=self.volt,
+            lbl=self.lbl,
+            p_lbl=self.p_lbl,
+            n_lbl=self.n_lbl,
         )
         write_cells = pya.CellInstArray(
             nwp_instance.cell_index(),
