@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint_python:
+  test_lvs:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 12
