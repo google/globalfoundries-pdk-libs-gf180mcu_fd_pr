@@ -32,6 +32,9 @@ def draw_diode_nd2ps(
     volt: str = "3.3V",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
 
     """
@@ -81,7 +84,7 @@ def draw_diode_nd2ps(
     diode_mk.xmin = ncmp.xmin
     diode_mk.ymin = ncmp.ymin
 
-    c.add_ref(
+    ncmp_con = c.add_ref(
         via_stack(
             x_range=(ncmp.xmin, ncmp.xmax),
             y_range=(ncmp.ymin, ncmp.ymax),
@@ -102,7 +105,7 @@ def draw_diode_nd2ps(
     pplus.xmin = pcmp.xmin - pp_enc_comp
     pplus.ymin = pcmp.ymin - pp_enc_comp
 
-    c.add_ref(
+    pcmp_con = c.add_ref(
         via_stack(
             x_range=(pcmp.xmin, pcmp.xmax),
             y_range=(pcmp.ymin, pcmp.ymax),
@@ -110,6 +113,29 @@ def draw_diode_nd2ps(
             metal_level=1,
         )
     )  # pcomp_con
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                ncmp_con.xmin + (ncmp_con.size[0] / 2),
+                ncmp_con.ymin + (ncmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                pcmp_con.xmin + (pcmp_con.size[0] / 2),
+                pcmp_con.ymin + (pcmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     if volt == "5/6V":
         dg = c.add_ref(
@@ -319,6 +345,9 @@ def draw_diode_pd2nw(
     volt: str = "3.3V",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -366,7 +395,7 @@ def draw_diode_pd2nw(
     diode_mk.xmin = pcmp.xmin
     diode_mk.ymin = pcmp.ymin
 
-    c.add_ref(
+    pcmp_con = c.add_ref(
         via_stack(
             x_range=(pcmp.xmin, pcmp.xmax),
             y_range=(pcmp.ymin, pcmp.ymax),
@@ -375,7 +404,7 @@ def draw_diode_pd2nw(
         )
     )  # pcomp_contact
 
-    # p generation
+    # n generation
     ncmp = c.add_ref(gf.components.rectangle(size=(cw, la), layer=layer["comp"]))
     ncmp.xmax = pcmp.xmin - comp_spacing
     nplus = c.add_ref(
@@ -387,7 +416,7 @@ def draw_diode_pd2nw(
     nplus.xmin = ncmp.xmin - np_enc_comp
     nplus.ymin = ncmp.ymin - np_enc_comp
 
-    c.add_ref(
+    ncmp_con = c.add_ref(
         via_stack(
             x_range=(ncmp.xmin, ncmp.xmax),
             y_range=(ncmp.ymin, ncmp.ymax),
@@ -395,6 +424,29 @@ def draw_diode_pd2nw(
             metal_level=1,
         )
     )  # ncomp contact
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                ncmp_con.xmin + (ncmp_con.size[0] / 2),
+                ncmp_con.ymin + (ncmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                pcmp_con.xmin + (pcmp_con.size[0] / 2),
+                pcmp_con.ymin + (pcmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     if volt == "5/6V":
         dg = c.add_ref(
@@ -599,7 +651,14 @@ def draw_diode_pd2nw(
 
 
 def draw_diode_nw2ps(
-    layout, la: float = 0.1, wa: float = 0.1, cw: float = 0.1, volt: str = "3.3V"
+    layout,
+    la: float = 0.1,
+    wa: float = 0.1,
+    cw: float = 0.1,
+    volt: str = "3.3V",
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -652,7 +711,7 @@ def draw_diode_nw2ps(
     nwell.xmin = ncmp.xmin - nwell_ncmp_enc
     nwell.ymin = ncmp.ymin - nwell_ncmp_enc
 
-    c.add_ref(
+    n_con = c.add_ref(
         via_stack(
             x_range=(ncmp.xmin, ncmp.xmax),
             y_range=(ncmp.ymin, ncmp.ymax),
@@ -673,7 +732,7 @@ def draw_diode_nw2ps(
     pplus.xmin = pcmp.xmin - pp_enc_comp
     pplus.ymin = pcmp.ymin - pp_enc_comp
 
-    c.add_ref(
+    p_con = c.add_ref(
         via_stack(
             x_range=(pcmp.xmin, pcmp.xmax),
             y_range=(pcmp.ymin, pcmp.ymax),
@@ -681,6 +740,29 @@ def draw_diode_nw2ps(
             metal_level=1,
         )
     )  # pcmop contact
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                n_con.xmin + (n_con.size[0] / 2),
+                n_con.ymin + (n_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                p_con.xmin + (p_con.size[0] / 2),
+                p_con.ymin + (p_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     if volt == "5/6V":
         dg = c.add_ref(
@@ -711,6 +793,9 @@ def draw_diode_pw2dw(
     cw: float = 0.1,
     volt: str = "3.3V",
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -770,7 +855,7 @@ def draw_diode_pw2dw(
     lvpwell.xmin = pcmp.xmin - lvpwell_enc_pcmp
     lvpwell.ymin = pcmp.ymin - lvpwell_enc_pcmp
 
-    c.add_ref(
+    p_con = c.add_ref(
         via_stack(
             x_range=(pcmp.xmin, pcmp.xmax),
             y_range=(pcmp.ymin, pcmp.ymax),
@@ -779,7 +864,7 @@ def draw_diode_pw2dw(
         )
     )  # pcomp_contact
 
-    # p generation
+    # n generation
     ncmp = c.add_ref(gf.components.rectangle(size=(cw, la), layer=layer["comp"]))
     ncmp.xmax = pcmp.xmin - comp_spacing
     nplus = c.add_ref(
@@ -791,7 +876,7 @@ def draw_diode_pw2dw(
     nplus.xmin = ncmp.xmin - np_enc_comp
     nplus.ymin = ncmp.ymin - np_enc_comp
 
-    c.add_ref(
+    n_con = c.add_ref(
         via_stack(
             x_range=(ncmp.xmin, ncmp.xmax),
             y_range=(ncmp.ymin, ncmp.ymax),
@@ -799,6 +884,29 @@ def draw_diode_pw2dw(
             metal_level=1,
         )
     )  # ncomp contact
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                n_con.xmin + (n_con.size[0] / 2),
+                n_con.ymin + (n_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                p_con.xmin + (p_con.size[0] / 2),
+                p_con.ymin + (p_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     dn_rect = c.add_ref(
         gf.components.rectangle(
@@ -987,6 +1095,9 @@ def draw_diode_dw2ps(
     cw: float = 0.1,
     volt: str = "3.3V",
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -1020,7 +1131,7 @@ def draw_diode_dw2ps(
     if (wa < ((2 * cw) + comp_spacing)) or (la < ((2 * cw) + comp_spacing)):
         ncmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
 
-        c.add_ref(
+        n_con = c.add_ref(
             via_stack(
                 x_range=(ncmp.xmin, ncmp.xmax),
                 y_range=(ncmp.ymin, ncmp.ymax),
@@ -1079,9 +1190,9 @@ def draw_diode_dw2ps(
         pplus_out.move((ncmp_out.xmin - pp_enc_comp, ncmp_out.ymin - pp_enc_comp,))
         c.add_ref(
             gf.geometry.boolean(
-                A=pplus_out, B=pplus_in, operation="A-B", layer=layer["pplus"]
+                A=pplus_out, B=pplus_in, operation="A-B", layer=layer["nplus"]
             )
-        )  # pplus
+        )  # nplus
 
         # generating contacts
 
@@ -1107,7 +1218,7 @@ def draw_diode_dw2ps(
             )
         )  # upper contact
 
-        c.add_ref(
+        n_con = c.add_ref(
             via_generator(
                 x_range=(ncmp_out.xmin, ncmp_in.xmin),
                 y_range=(ncmp_in.ymin + con_size, ncmp_in.ymax - con_size,),
@@ -1116,7 +1227,7 @@ def draw_diode_dw2ps(
                 via_size=(con_size, con_size),
                 via_spacing=(con_sp, con_sp),
             )
-        )  # right contact
+        )  # left contact
 
         c.add_ref(
             via_generator(
@@ -1127,7 +1238,7 @@ def draw_diode_dw2ps(
                 via_size=(con_size, con_size),
                 via_spacing=(con_sp, con_sp),
             )
-        )  # left contact
+        )  # right contact
 
         comp_m1_in = c_temp.add_ref(
             gf.components.rectangle(
@@ -1147,6 +1258,19 @@ def draw_diode_dw2ps(
                 A=ncmp_out, B=ncmp_in, operation="A-B", layer=layer["metal1"],
             )
         )  # guardring metal1
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                n_con.xmin + (n_con.size[0] / 2),
+                n_con.ymin + (n_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     # generate dnwell
 
@@ -1261,7 +1385,7 @@ def draw_diode_dw2ps(
             )
         )  # upper contact
 
-        c.add_ref(
+        p_con = c.add_ref(
             via_generator(
                 x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
                 y_range=(
@@ -1273,7 +1397,7 @@ def draw_diode_dw2ps(
                 via_size=(con_size, con_size),
                 via_spacing=(con_sp, con_sp),
             )
-        )  # right contact
+        )  # left contact
 
         c.add_ref(
             via_generator(
@@ -1287,7 +1411,20 @@ def draw_diode_dw2ps(
                 via_size=(con_size, con_size),
                 via_spacing=(con_sp, con_sp),
             )
-        )  # left contact
+        )  # right contact
+
+        # labels generation
+        if lbl == 1:
+
+            # n_label generation
+            c.add_label(
+                p_lbl,
+                position=(
+                    p_con.xmin + (p_con.size[0] / 2),
+                    p_con.ymin + (p_con.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
 
         comp_m1_in = c_temp_gr.add_ref(
             gf.components.rectangle(
@@ -1346,6 +1483,9 @@ def draw_sc_diode(
     cw: float = 0.1,
     m: int = 1,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -1466,6 +1606,17 @@ def draw_sc_diode(
     cath_m1_h.xmin = cath_m1_v.xmin
     cath_m1_h.ymax = cath_m1_v.ymin
 
+    # cathode label generation
+    if lbl == 1:
+        c.add_label(
+            n_lbl,
+            position=(
+                cath_m1_h.xmin + (cath_m1_h.size[0] / 2),
+                cath_m1_h.ymin + (cath_m1_h.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
     sc_anode = c.add_array(
         component=sc_an,
         rows=1,
@@ -1475,11 +1626,13 @@ def draw_sc_diode(
 
     sc_anode.xmin = sc_cathode.xmin + (cw + sc_comp_spacing)
 
+    an_m1_polys = sc_anode.get_polygons(by_spec=layer["metal1"])
+    an_m1_xmin = np.min(an_m1_polys[0][:, 0])
+    an_m1_ymin = np.min(an_m1_polys[0][:, 1])
+    an_m1_xmax = np.max(an_m1_polys[0][:, 0])
+    an_m1_ymax = np.max(an_m1_polys[0][:, 1])
+
     if m > 1:
-        an_m1_polys = sc_anode.get_polygons(by_spec=layer["metal1"])
-        an_m1_xmin = np.min(an_m1_polys[0][:, 0])
-        an_m1_xmax = np.max(an_m1_polys[0][:, 0])
-        an_m1_ymax = np.max(an_m1_polys[0][:, 1])
 
         an_m1_v = c.add_array(
             component=gf.components.rectangle(
@@ -1499,6 +1652,30 @@ def draw_sc_diode(
         )
         an_m1_h.xmin = an_m1_v.xmin
         an_m1_h.ymin = an_m1_v.ymax
+
+        # anode label generation
+        if lbl == 1:
+            c.add_label(
+                p_lbl,
+                position=(
+                    an_m1_h.xmin + (an_m1_h.size[0] / 2),
+                    an_m1_h.ymin + (an_m1_h.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
+
+    else:
+
+        # anode label generation
+        if lbl == 1:
+            c.add_label(
+                p_lbl,
+                position=(
+                    an_m1_xmin + ((an_m1_xmax - an_m1_xmin) / 2),
+                    an_m1_ymin + ((an_m1_ymax - an_m1_ymin) / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
 
     # diode_mk
     diode_mk = c.add_ref(
