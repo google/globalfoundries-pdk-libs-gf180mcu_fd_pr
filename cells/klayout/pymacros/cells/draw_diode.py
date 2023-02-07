@@ -1095,6 +1095,9 @@ def draw_diode_dw2ps(
     cw: float = 0.1,
     volt: str = "3.3V",
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -1124,11 +1127,11 @@ def draw_diode_dw2ps(
     dg_enc_dn = 0.5
 
     pcmpgr_enc_dn = 2.5
-
+    
     if (wa < ((2 * cw) + comp_spacing)) or (la < ((2 * cw) + comp_spacing)):
         ncmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
 
-        c.add_ref(
+        n_con = c.add_ref(
             via_stack(
                 x_range=(ncmp.xmin, ncmp.xmax),
                 y_range=(ncmp.ymin, ncmp.ymax),
@@ -1187,9 +1190,9 @@ def draw_diode_dw2ps(
         pplus_out.move((ncmp_out.xmin - pp_enc_comp, ncmp_out.ymin - pp_enc_comp,))
         c.add_ref(
             gf.geometry.boolean(
-                A=pplus_out, B=pplus_in, operation="A-B", layer=layer["pplus"]
+                A=pplus_out, B=pplus_in, operation="A-B", layer=layer["nplus"]
             )
-        )  # pplus
+        )  # nplus
 
         # generating contacts
 
@@ -1215,7 +1218,7 @@ def draw_diode_dw2ps(
             )
         )  # upper contact
 
-        c.add_ref(
+        n_con = c.add_ref(
             via_generator(
                 x_range=(ncmp_out.xmin, ncmp_in.xmin),
                 y_range=(ncmp_in.ymin + con_size, ncmp_in.ymax - con_size,),
@@ -1224,7 +1227,7 @@ def draw_diode_dw2ps(
                 via_size=(con_size, con_size),
                 via_spacing=(con_sp, con_sp),
             )
-        )  # right contact
+        )  # left contact
 
         c.add_ref(
             via_generator(
@@ -1235,7 +1238,7 @@ def draw_diode_dw2ps(
                 via_size=(con_size, con_size),
                 via_spacing=(con_sp, con_sp),
             )
-        )  # left contact
+        )  # right contact
 
         comp_m1_in = c_temp.add_ref(
             gf.components.rectangle(
@@ -1255,6 +1258,19 @@ def draw_diode_dw2ps(
                 A=ncmp_out, B=ncmp_in, operation="A-B", layer=layer["metal1"],
             )
         )  # guardring metal1
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                n_con.xmin + (n_con.size[0] / 2),
+                n_con.ymin + (n_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     # generate dnwell
 
@@ -1369,7 +1385,7 @@ def draw_diode_dw2ps(
             )
         )  # upper contact
 
-        c.add_ref(
+        p_con = c.add_ref(
             via_generator(
                 x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
                 y_range=(
@@ -1381,7 +1397,7 @@ def draw_diode_dw2ps(
                 via_size=(con_size, con_size),
                 via_spacing=(con_sp, con_sp),
             )
-        )  # right contact
+        )  # left contact
 
         c.add_ref(
             via_generator(
@@ -1395,7 +1411,20 @@ def draw_diode_dw2ps(
                 via_size=(con_size, con_size),
                 via_spacing=(con_sp, con_sp),
             )
-        )  # left contact
+        )  # right contact
+
+        # labels generation
+        if lbl == 1:
+
+            # n_label generation
+            c.add_label(
+                p_lbl,
+                position=(
+                    p_con.xmin + (p_con.size[0] / 2),
+                    p_con.ymin + (p_con.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
 
         comp_m1_in = c_temp_gr.add_ref(
             gf.components.rectangle(
