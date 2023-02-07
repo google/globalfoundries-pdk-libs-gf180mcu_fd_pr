@@ -368,6 +368,16 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param(
+            "sd_lbl", self.TypeList, "Pattern of Source/Drain Labels", default=[]
+        )
+
+        self.param("g_lbl", self.TypeList, "Pattern of Gate Labels", default=[])
+
+        self.param("sub_lbl", self.TypeString, "Substrate Label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return (
@@ -428,6 +438,10 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
             gate_con_pos=self.gate_con_pos,
             interdig=self.interdig,
             patt=self.patt,
+            lbl=self.lbl,
+            sd_lbl=self.sd_lbl,
+            g_lbl=self.g_lbl,
+            sub_lbl=self.sub_lbl,
         )
 
         write_cells = pya.CellInstArray(
