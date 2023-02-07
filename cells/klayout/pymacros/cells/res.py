@@ -225,7 +225,7 @@ class metal_resistor(pya.PCellDeclarationHelper):
             res_type=self.res_type,
             lbl=self.lbl,
             r0_lbl=self.r0_lbl,
-            r1_lbl=self.r1_lbl
+            r1_lbl=self.r1_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -266,6 +266,14 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
             "y_spacing", self.TypeDouble, "spacing in y_direction", default=3, unit="um"
         )
         self.param("sub", self.TypeBoolean, "Substrate terminal", default=1)
+
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("r0_lbl", self.TypeString, "R0 label", default="")
+
+        self.param("r1_lbl", self.TypeString, "R1 label", default="")
+
+        self.param("sub_lbl", self.TypeString, "Substrate label", default="")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -314,6 +322,10 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
             sub=self.sub,
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            r0_lbl=self.r0_lbl,
+            r1_lbl=self.r1_lbl,
+            sub_lbl=self.sub_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -353,6 +365,14 @@ class pplus_s_resistor(pya.PCellDeclarationHelper):
         self.param(
             "y_spacing", self.TypeDouble, "spacing in y_direction", default=3, unit="um"
         )
+
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("r0_lbl", self.TypeString, "R0 label", default="")
+
+        self.param("r1_lbl", self.TypeString, "R1 label", default="")
+
+        self.param("sub_lbl", self.TypeString, "Substrate label", default="")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -400,6 +420,10 @@ class pplus_s_resistor(pya.PCellDeclarationHelper):
             res_type="pplus_s",
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            r0_lbl=self.r0_lbl,
+            r1_lbl=self.r1_lbl,
+            sub_lbl=self.sub_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -440,6 +464,14 @@ class nplus_u_resistor(pya.PCellDeclarationHelper):
             "y_spacing", self.TypeDouble, "spacing in y_direction", default=3, unit="um"
         )
         self.param("sub", self.TypeBoolean, "Substrate terminal", default=1)
+
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("r0_lbl", self.TypeString, "R0 label", default="")
+
+        self.param("r1_lbl", self.TypeString, "R1 label", default="")
+
+        self.param("sub_lbl", self.TypeString, "Substrate label", default="")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -488,6 +520,10 @@ class nplus_u_resistor(pya.PCellDeclarationHelper):
             sub=self.sub,
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            r0_lbl=self.r0_lbl,
+            r1_lbl=self.r1_lbl,
+            sub_lbl=self.sub_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -527,6 +563,14 @@ class pplus_u_resistor(pya.PCellDeclarationHelper):
         self.param(
             "y_spacing", self.TypeDouble, "spacing in y_direction", default=3, unit="um"
         )
+
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("r0_lbl", self.TypeString, "R0 label", default="")
+
+        self.param("r1_lbl", self.TypeString, "R1 label", default="")
+
+        self.param("sub_lbl", self.TypeString, "Substrate label", default="")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -574,6 +618,10 @@ class pplus_u_resistor(pya.PCellDeclarationHelper):
             res_type="pplus_u",
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            r0_lbl=self.r0_lbl,
+            r1_lbl=self.r1_lbl,
+            sub_lbl=self.sub_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
