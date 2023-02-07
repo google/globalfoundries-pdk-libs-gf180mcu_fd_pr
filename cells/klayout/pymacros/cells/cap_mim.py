@@ -51,6 +51,12 @@ class cap_mim(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("top_lbl", self.TypeString, "Top plate label", default="")
+
+        self.param("bot_lbl", self.TypeString, "Bottom plate label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return "cap_mim(L=" + ("%.3f" % self.lc) + ",W=" + ("%.3f" % self.wc) + ")"
@@ -98,6 +104,9 @@ class cap_mim(pya.PCellDeclarationHelper):
             wc=self.wc,
             mim_option=self.mim_option,
             metal_level=self.metal_level,
+            lbl=self.lbl,
+            top_lbl=self.top_lbl,
+            bot_lbl=self.bot_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),

@@ -36,6 +36,8 @@ def cap_mos_inst(
     pl_ext: float = 0.1,
     implant_layer: LayerSpec = layer["nplus"],
     implant_enc: Float2 = (0.1, 0.1),
+    lbl: bool = 0,
+    g_lbl: str = "",
 ) -> gf.Component:
     """Returns mos cap simple instance
 
@@ -56,7 +58,9 @@ def cap_mos_inst(
     cmp = c_inst.add_ref(gf.components.rectangle(size=(cmp_w, wc), layer=layer["comp"]))
 
     cap_mk = c_inst.add_ref(
-        gf.components.rectangle(size=(cmp.size[0], cmp.size[1]), layer=layer["mos_cap_mk"])
+        gf.components.rectangle(
+            size=(cmp.size[0], cmp.size[1]), layer=layer["mos_cap_mk"]
+        )
     )
     cap_mk.xmin = cmp.xmin
     cap_mk.ymin = cmp.ymin
@@ -85,25 +89,40 @@ def cap_mos_inst(
     imp_rect.xmin = cmp.xmin - implant_enc[0]
     imp_rect.ymin = cmp.ymin - implant_enc[1]
 
-    poly = c_inst.add_ref(gf.components.rectangle(size=(lc, pl_l), layer=layer["poly2"]))
+    poly = c_inst.add_ref(
+        gf.components.rectangle(size=(lc, pl_l), layer=layer["poly2"])
+    )
 
     poly.xmin = cmp.xmin + cmp_ext
     poly.ymin = cmp.ymin - pl_ext
 
-    pl_con = c_inst.add_array(
-        component=via_stack(
-            x_range=(poly.xmin, poly.xmax),
-            y_range=(poly.ymin, poly.ymin + con_w),
-            base_layer=layer["poly2"],
-            metal_level=1,
-        ),
-        rows=2,
-        columns=1,
-        spacing=(0, pl_l - con_w),
+    pl_con_el = via_stack(
+        x_range=(poly.xmin, poly.xmax),
+        y_range=(poly.ymin, poly.ymin + con_w),
+        base_layer=layer["poly2"],
+        metal_level=1,
     )
 
+    pl_con = c_inst.add_array(
+        component=pl_con_el, rows=2, columns=1, spacing=(0, pl_l - con_w),
+    )
+
+    # Gate labels_generation
+
+    if lbl == 1:
+        c_inst.add_label(
+            g_lbl,
+            position=(
+                pl_con.xmin + (pl_con.size[0] / 2),
+                pl_con.ymin + (pl_con_el.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
     pl_m1 = c_inst.add_ref(
-        gf.components.rectangle(size=(pl_con.size[0], pl_con.size[1]), layer=layer["metal1"])
+        gf.components.rectangle(
+            size=(pl_con.size[0], pl_con.size[1]), layer=layer["metal1"]
+        )
     )
     pl_m1.xmin = pl_con.xmin
     pl_m1.ymin = pl_con.ymin
@@ -119,6 +138,9 @@ def draw_cap_mos(
     volt: str = "3.3V",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    g_lbl: str = "",
+    sd_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -178,6 +200,8 @@ def draw_cap_mos(
             pl_ext=end_cap,
             implant_layer=implant_layer,
             implant_enc=(np_enc_cmp, np_enc_gate),
+            lbl=lbl,
+            g_lbl=g_lbl,
         )
     )
 
@@ -188,7 +212,9 @@ def draw_cap_mos(
 
     # cmp_m1 = c.add_ref(gf.components.rectangle(size=(m1_w,w+m1_ext),layer=layer["metal1"]))
     cmp_m1_v = c.add_array(
-        component=gf.components.rectangle(size=(m1_w, wc + m1_ext), layer=layer["metal1"]),
+        component=gf.components.rectangle(
+            size=(m1_w, wc + m1_ext), layer=layer["metal1"]
+        ),
         rows=1,
         columns=2,
         spacing=(m1_w + cmp_w - 2 * cmp_ed_w, 0),
@@ -201,6 +227,17 @@ def draw_cap_mos(
     )
     cmp_m1_h.xmin = cmp_m1_v.xmin
     cmp_m1_h.ymax = cmp_m1_v.ymin
+
+    # sd labels generation
+    if lbl == 1:
+        c.add_label(
+            sd_lbl,
+            position=(
+                cmp_m1_h.xmin + (cmp_m1_h.size[0] / 2),
+                cmp_m1_h.ymin + (cmp_m1_h.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     # dualgate
 
