@@ -162,7 +162,7 @@ end #METAL_TOP
 if $metal_level
     METAL_LEVEL = $metal_level
 else
-    METAL_LEVEL = "6LM"
+    METAL_LEVEL = "5LM"
 end
 
 logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
