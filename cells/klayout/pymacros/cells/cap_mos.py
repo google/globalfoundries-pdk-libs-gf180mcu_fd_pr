@@ -56,6 +56,12 @@ class cap_nmos(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("g_lbl", self.TypeString, "Gate terminal label", default="")
+
+        self.param("sd_lbl", self.TypeString, "Source/Drain terminal label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return "cap_nmos(LC=" + ("%.3f" % self.lc) + ",WC=" + ("%.3f" % self.wc) + ")"
@@ -96,6 +102,9 @@ class cap_nmos(pya.PCellDeclarationHelper):
             volt=self.volt,
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            g_lbl=self.g_lbl,
+            sd_lbl=self.sd_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -131,6 +140,12 @@ class cap_pmos(pya.PCellDeclarationHelper):
         self.param("wc", self.TypeDouble, "Width", default=cap_pmos_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
+
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("g_lbl", self.TypeString, "Gate terminal label", default="")
+
+        self.param("sd_lbl", self.TypeString, "Source/Drain terminal label", default="")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -172,6 +187,9 @@ class cap_pmos(pya.PCellDeclarationHelper):
             volt=self.volt,
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            g_lbl=self.g_lbl,
+            sd_lbl=self.sd_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -205,6 +223,12 @@ class cap_nmos_b(pya.PCellDeclarationHelper):
         self.param("wc", self.TypeDouble, "Width", default=cap_nmos_b_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
+
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("g_lbl", self.TypeString, "Gate terminal label", default="")
+
+        self.param("sd_lbl", self.TypeString, "Source/Drain terminal label", default="")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -246,6 +270,9 @@ class cap_nmos_b(pya.PCellDeclarationHelper):
             volt=self.volt,
             deepnwell=0,  # self.deepnwell,
             pcmpgr=0,  # self.pcmpgr,
+            lbl=self.lbl,
+            g_lbl=self.g_lbl,
+            sd_lbl=self.sd_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -279,6 +306,12 @@ class cap_pmos_b(pya.PCellDeclarationHelper):
         self.param("wc", self.TypeDouble, "Width", default=cap_pmos_b_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
+
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("g_lbl", self.TypeString, "Gate terminal label", default="")
+
+        self.param("sd_lbl", self.TypeString, "Source/Drain terminal label", default="")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -320,6 +353,9 @@ class cap_pmos_b(pya.PCellDeclarationHelper):
             volt=self.volt,
             deepnwell=0,  # self.deepnwell,
             pcmpgr=0,  # self.pcmpgr,
+            lbl=self.lbl,
+            g_lbl=self.g_lbl,
+            sd_lbl=self.sd_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
