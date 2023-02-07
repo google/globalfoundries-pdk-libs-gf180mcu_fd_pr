@@ -23,7 +23,13 @@ from .via_generator import via_generator, via_stack
 
 
 def draw_metal_res(
-    layout, l_res: float = 0.1, w_res: float = 0.1, res_type: str = "rm1"
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "rm1",
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -41,15 +47,19 @@ def draw_metal_res(
     if res_type == "rm1":
         m_layer = layer["metal1"]
         res_layer = layer["metal1_res"]
+        m_lbl_layer = layer["metal1_label"]
     elif res_type == "rm2":
         m_layer = layer["metal2"]
         res_layer = layer["metal2_res"]
+        m_lbl_layer = layer["metal2_label"]
     elif res_type == "rm3":
         m_layer = layer["metal3"]
         res_layer = layer["metal3_res"]
+        m_lbl_layer = layer["metal3_label"]
     else:
         m_layer = layer["metaltop"]
         res_layer = layer["metal6_res"]
+        m_lbl_layer = layer["metaltop_label"]
 
     res_mk = c.add_ref(gf.components.rectangle(size=(l_res, w_res), layer=res_layer))
 
@@ -58,6 +68,24 @@ def draw_metal_res(
     )
     m_rect.xmin = res_mk.xmin - m_ext
     m_rect.ymin = res_mk.ymin
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                res_mk.xmin + (res_mk.size[0]/2), res_mk.ymin + (res_mk.size[1] / 2)
+            ),
+            layer=m_lbl_layer,
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                m_rect.xmin + (res_mk.xmin - m_rect.xmin) / 2,
+                m_rect.ymin + (m_rect.size[1] / 2),
+            ),
+            layer=m_lbl_layer,
+        )
 
     # creating layout and cell in klayout
     c.write_gds("res_temp.gds")
