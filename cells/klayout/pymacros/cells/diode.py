@@ -496,6 +496,12 @@ class sc_diode(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("p_lbl", self.TypeString, "plus label", default="")
+
+        self.param("n_lbl", self.TypeString, "minus label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return "sc_diode(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
@@ -535,6 +541,9 @@ class sc_diode(pya.PCellDeclarationHelper):
             cw=self.cw,
             m=self.m,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            p_lbl=self.p_lbl,
+            n_lbl=self.n_lbl,
         )
         write_cells = pya.CellInstArray(
             sc_instance.cell_index(),

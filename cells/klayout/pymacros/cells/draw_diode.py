@@ -1127,7 +1127,7 @@ def draw_diode_dw2ps(
     dg_enc_dn = 0.5
 
     pcmpgr_enc_dn = 2.5
-    
+
     if (wa < ((2 * cw) + comp_spacing)) or (la < ((2 * cw) + comp_spacing)):
         ncmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
 
@@ -1483,6 +1483,9 @@ def draw_sc_diode(
     cw: float = 0.1,
     m: int = 1,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -1603,6 +1606,17 @@ def draw_sc_diode(
     cath_m1_h.xmin = cath_m1_v.xmin
     cath_m1_h.ymax = cath_m1_v.ymin
 
+    # cathode label generation
+    if lbl == 1:
+        c.add_label(
+            n_lbl,
+            position=(
+                cath_m1_h.xmin + (cath_m1_h.size[0] / 2),
+                cath_m1_h.ymin + (cath_m1_h.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
     sc_anode = c.add_array(
         component=sc_an,
         rows=1,
@@ -1612,11 +1626,13 @@ def draw_sc_diode(
 
     sc_anode.xmin = sc_cathode.xmin + (cw + sc_comp_spacing)
 
+    an_m1_polys = sc_anode.get_polygons(by_spec=layer["metal1"])
+    an_m1_xmin = np.min(an_m1_polys[0][:, 0])
+    an_m1_ymin = np.min(an_m1_polys[0][:, 1])
+    an_m1_xmax = np.max(an_m1_polys[0][:, 0])
+    an_m1_ymax = np.max(an_m1_polys[0][:, 1])
+
     if m > 1:
-        an_m1_polys = sc_anode.get_polygons(by_spec=layer["metal1"])
-        an_m1_xmin = np.min(an_m1_polys[0][:, 0])
-        an_m1_xmax = np.max(an_m1_polys[0][:, 0])
-        an_m1_ymax = np.max(an_m1_polys[0][:, 1])
 
         an_m1_v = c.add_array(
             component=gf.components.rectangle(
@@ -1636,6 +1652,30 @@ def draw_sc_diode(
         )
         an_m1_h.xmin = an_m1_v.xmin
         an_m1_h.ymin = an_m1_v.ymax
+
+        # anode label generation
+        if lbl == 1:
+            c.add_label(
+                p_lbl,
+                position=(
+                    an_m1_h.xmin + (an_m1_h.size[0] / 2),
+                    an_m1_h.ymin + (an_m1_h.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
+
+    else:
+
+        # anode label generation
+        if lbl == 1:
+            c.add_label(
+                p_lbl,
+                position=(
+                    an_m1_xmin + ((an_m1_xmax - an_m1_xmin) / 2),
+                    an_m1_ymin + ((an_m1_ymax - an_m1_ymin) / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
 
     # diode_mk
     diode_mk = c.add_ref(
