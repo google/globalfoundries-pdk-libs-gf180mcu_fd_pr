@@ -68,6 +68,12 @@ class diode_nd2ps(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("p_lbl", self.TypeString, "plus label", default="")
+
+        self.param("n_lbl", self.TypeString, "minus label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return "diode_nd2ps(L=" + ("%.3f" % self.la) + ",W=" + ("%.3f" % self.wa) + ")"
@@ -110,6 +116,9 @@ class diode_nd2ps(pya.PCellDeclarationHelper):
             volt=self.volt,
             deepnwell=self.deepnwell,
             pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            p_lbl=self.p_lbl,
+            n_lbl=self.n_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -480,7 +489,12 @@ class sc_diode(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         sc_instance = draw_sc_diode(
-            self.layout, la=self.la, wa=self.wa, cw=self.cw, m=self.m, pcmpgr=self.pcmpgr
+            self.layout,
+            la=self.la,
+            wa=self.wa,
+            cw=self.cw,
+            m=self.m,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             sc_instance.cell_index(),

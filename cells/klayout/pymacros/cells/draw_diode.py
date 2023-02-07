@@ -32,6 +32,9 @@ def draw_diode_nd2ps(
     volt: str = "3.3V",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
 ) -> gf.Component:
 
     """
@@ -81,7 +84,7 @@ def draw_diode_nd2ps(
     diode_mk.xmin = ncmp.xmin
     diode_mk.ymin = ncmp.ymin
 
-    c.add_ref(
+    ncmp_con = c.add_ref(
         via_stack(
             x_range=(ncmp.xmin, ncmp.xmax),
             y_range=(ncmp.ymin, ncmp.ymax),
@@ -102,7 +105,7 @@ def draw_diode_nd2ps(
     pplus.xmin = pcmp.xmin - pp_enc_comp
     pplus.ymin = pcmp.ymin - pp_enc_comp
 
-    c.add_ref(
+    pcmp_con = c.add_ref(
         via_stack(
             x_range=(pcmp.xmin, pcmp.xmax),
             y_range=(pcmp.ymin, pcmp.ymax),
@@ -110,6 +113,29 @@ def draw_diode_nd2ps(
             metal_level=1,
         )
     )  # pcomp_con
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                ncmp_con.xmin + (ncmp_con.size[0] / 2),
+                ncmp_con.ymin + (ncmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                pcmp_con.xmin + (pcmp_con.size[0] / 2),
+                pcmp_con.ymin + (pcmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     if volt == "5/6V":
         dg = c.add_ref(
