@@ -32,8 +32,6 @@ from .cap_mos import cap_nmos, cap_nmos_b, cap_pmos, cap_pmos_b
 from .cap_mim import cap_mim
 from .res import (
     metal_resistor,
-    nwell_resistor,
-    pwell_resistor,
     nplus_s_resistor,
     nplus_u_resistor,
     pplus_s_resistor,
@@ -42,6 +40,9 @@ from .res import (
     npolyf_u_resistor,
     ppolyf_s_resistor,
     ppolyf_u_resistor,
+    ppolyf_u_high_Rs_resistor,
+    nwell_resistor,
+    pwell_resistor,
 )
 from .efuse import efuse
 
@@ -111,6 +112,22 @@ class gf180mcu(pya.Library):
         self.layout().register_pcell(
             "cap_pmos_b", cap_pmos_b()
         )  # cap_pmos_03v3_b , cap_pmos_06v0_b
+
+        # RES
+        self.layout().register_pcell("metal_resistor", metal_resistor())
+        self.layout().register_pcell("nplus_s_resistor", nplus_s_resistor())
+        self.layout().register_pcell("pplus_s_resistor", pplus_s_resistor())
+        self.layout().register_pcell("nplus_u_resistor", nplus_u_resistor())
+        self.layout().register_pcell("pplus_u_resistor", pplus_u_resistor())
+        self.layout().register_pcell("nwell_resistor", nwell_resistor())
+        self.layout().register_pcell("pwell_resistor", pwell_resistor())
+        self.layout().register_pcell("npolyf_s_resistor", npolyf_s_resistor())
+        self.layout().register_pcell("ppolyf_s_resistor", ppolyf_s_resistor())
+        self.layout().register_pcell("npolyf_u_resistor", npolyf_u_resistor())
+        self.layout().register_pcell("ppolyf_u_resistor", ppolyf_u_resistor())
+        self.layout().register_pcell(
+            "ppolyf_u_high_Rs_resistor", ppolyf_u_high_Rs_resistor()
+        )
 
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
