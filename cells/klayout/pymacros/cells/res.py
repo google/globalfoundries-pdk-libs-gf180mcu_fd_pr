@@ -20,17 +20,12 @@ import pya
 import os
 from .draw_res import (
     draw_metal_res,
-    draw_nplus_s_res,
-    draw_nplus_u_res,
-    draw_npolyf_s_res,
-    draw_npolyf_u_res,
-    draw_nwell_res,
-    draw_pplus_s_res,
-    draw_pplus_u_res,
-    draw_ppolyf_s_res,
+    draw_nplus_res,
+    draw_pplus_res,
+    draw_npolyf_res,
+    draw_ppolyf_res,
     draw_ppolyf_u_high_Rs_res,
-    draw_ppolyf_u_res,
-    draw_pwell_res,
+    draw_well_res,
 )
 
 rm1_l = 0.23
@@ -104,6 +99,8 @@ class metal_resistor(pya.PCellDeclarationHelper):
 
         self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
         self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
+        self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
+        self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -124,14 +121,27 @@ class metal_resistor(pya.PCellDeclarationHelper):
             + ("%.3f" % self.w_res)
             + ")"
         )
+        return (
+            "metal_resistor(L="
+            + ("%.3f" % self.l_res)
+            + ",W="
+            + ("%.3f" % self.w_res)
+            + ")"
+        )
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
         self.area = self.w_res * self.l_res
         self.perim = 2 * (self.w_res + self.l_res)
+        self.area = self.w_res * self.l_res
+        self.perim = 2 * (self.w_res + self.l_res)
         # w,l must be larger or equal than min. values.
         if (self.res_type) == "rm1":
+            if (self.l_res) < rm1_l:
+                self.l_res = rm1_l
+            if (self.w_res) < rm1_w:
+                self.w_res = rm1_w
             if (self.l_res) < rm1_l:
                 self.l_res = rm1_l
             if (self.w_res) < rm1_w:
@@ -169,8 +179,8 @@ class metal_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -203,7 +213,10 @@ class metal_resistor(pya.PCellDeclarationHelper):
             ):
                 raise TypeError(f"Current stack ({option}) doesn't allow this option")
         np_instance = draw_metal_res(
-            self.l_resayout, self.l_res, self.w_res, self.res_type
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type=self.res_type,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -231,8 +244,8 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=nplus_s_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=nplus_s_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=nplus_s_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=nplus_s_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -274,8 +287,8 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -283,14 +296,15 @@ class nplus_s_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_nplus_s_res(
-            self.l_resayout,
-            self.l_res,
-            self.w_res,
-            self.sub,
-            self.deepnwell,
-            self.pcmpgr,
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_nplus_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="nplus_s",
+            sub=self.sub,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -318,8 +332,8 @@ class pplus_s_resistor(pya.PCellDeclarationHelper):
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=pplus_s_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=pplus_s_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=pplus_s_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=pplus_s_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -360,8 +374,8 @@ class pplus_s_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -369,9 +383,14 @@ class pplus_s_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_pplus_s_res(
-            self.l_resayout, self.l_res, self.w_res, self.deepnwell, self.pcmpgr
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_pplus_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="pplus_s",
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -399,8 +418,8 @@ class nplus_u_resistor(pya.PCellDeclarationHelper):
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=nplus_u_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=nplus_u_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=nplus_u_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=nplus_u_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -442,8 +461,8 @@ class nplus_u_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -451,14 +470,15 @@ class nplus_u_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_nplus_u_res(
-            self.l_resayout,
-            self.l_res,
-            self.w_res,
-            self.sub,
-            self.deepnwell,
-            self.pcmpgr,
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_nplus_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="nplus_u",
+            sub=self.sub,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -486,8 +506,8 @@ class pplus_u_resistor(pya.PCellDeclarationHelper):
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=pplus_u_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=pplus_u_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=pplus_u_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=pplus_u_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -528,8 +548,8 @@ class pplus_u_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -537,9 +557,14 @@ class pplus_u_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_pplus_u_res(
-            self.l_resayout, self.l_res, self.w_res, self.deepnwell, self.pcmpgr
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_pplus_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="pplus_u",
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -565,8 +590,8 @@ class nwell_resistor(pya.PCellDeclarationHelper):
         super(nwell_resistor, self).__init__()
 
         # ===================== PARAMETERS DECLARATIONS =====================
-        self.param("l_res", self.TypeDouble, "Width", default=nwell_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=nwell_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=nwell_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=nwell_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -607,8 +632,8 @@ class nwell_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -616,8 +641,14 @@ class nwell_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_nwell_res(self.l_resayout, self.l_res, self.w_res)
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_well_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="nwell",
+            pcmpgr=0,
+        )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
@@ -643,8 +674,8 @@ class pwell_resistor(pya.PCellDeclarationHelper):
 
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=pwell_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=pwell_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=pwell_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=pwell_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -685,8 +716,8 @@ class pwell_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -694,9 +725,13 @@ class pwell_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_pwell_res(
-            self.l_resayout, self.l_res, self.w_res, self.pcmpgr
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_well_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="pwell",
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -724,8 +759,8 @@ class npolyf_s_resistor(pya.PCellDeclarationHelper):
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=npolyf_s_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=npolyf_s_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=npolyf_s_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=npolyf_s_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -766,8 +801,8 @@ class npolyf_s_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -775,9 +810,14 @@ class npolyf_s_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_npolyf_s_res(
-            self.l_resayout, self.l_res, self.w_res, self.deepnwell, self.pcmpgr
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_npolyf_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="npolyf_s",
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -805,8 +845,8 @@ class ppolyf_s_resistor(pya.PCellDeclarationHelper):
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=ppolyf_s_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=ppolyf_s_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=ppolyf_s_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=ppolyf_s_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -847,8 +887,8 @@ class ppolyf_s_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -856,9 +896,14 @@ class ppolyf_s_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_ppolyf_s_res(
-            self.l_resayout, self.l_res, self.w_res, self.deepnwell, self.pcmpgr
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_ppolyf_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="ppolyf_s",
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -886,8 +931,8 @@ class npolyf_u_resistor(pya.PCellDeclarationHelper):
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=npolyf_u_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=npolyf_u_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=npolyf_u_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=npolyf_u_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -928,8 +973,8 @@ class npolyf_u_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -937,9 +982,14 @@ class npolyf_u_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_npolyf_u_res(
-            self.l_resayout, self.l_res, self.w_res, self.deepnwell, self.pcmpgr
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_npolyf_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="npolyf_u",
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -967,8 +1017,8 @@ class ppolyf_u_resistor(pya.PCellDeclarationHelper):
         # ===================== PARAMETERS DECLARATIONS =====================
         self.param("deepnwell", self.TypeBoolean, "Deep NWELL", default=0)
         self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
-        self.param("l_res", self.TypeDouble, "Width", default=ppolyf_u_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=ppolyf_u_w, unit="um")
+        self.param("w_res", self.TypeDouble, "Width", default=ppolyf_u_l, unit="um")
+        self.param("l_res", self.TypeDouble, "Length", default=ppolyf_u_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -1009,8 +1059,8 @@ class ppolyf_u_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         #     # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         #     # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -1018,9 +1068,14 @@ class ppolyf_u_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
-        np_instance = draw_ppolyf_u_res(
-            self.l_resayout, self.l_res, self.w_res, self.deepnwell, self.pcmpgr
+        dbu_PERCISION = 1 / self.layout.dbu
+        np_instance = draw_ppolyf_res(
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            res_type="ppolyf_u",
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -1053,10 +1108,10 @@ class ppolyf_u_high_Rs_resistor(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("5/6V", "5/6V")
 
         self.param(
-            "l_res", self.TypeDouble, "Width", default=ppolyf_u_h_res_l, unit="um"
+            "w_res", self.TypeDouble, "Width", default=ppolyf_u_h_res_l, unit="um"
         )
         self.param(
-            "w_res", self.TypeDouble, "Length", default=ppolyf_u_h_res_w, unit="um"
+            "l_res", self.TypeDouble, "Length", default=ppolyf_u_h_res_w, unit="um"
         )
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
@@ -1098,8 +1153,8 @@ class ppolyf_u_high_Rs_resistor(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_resayout.dbu / 2
-        self.l_res = self.l_resayout.get_info(self.l_resayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.l_res = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -1107,14 +1162,14 @@ class ppolyf_u_high_Rs_resistor(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        dbu_PERCISION = 1 / self.l_resayout.dbu
+        dbu_PERCISION = 1 / self.layout.dbu
         np_instance = draw_ppolyf_u_high_Rs_res(
-            self.l_resayout,
-            self.l_res,
-            self.w_res,
-            self.volt,
-            self.deepnwell,
-            self.pcmpgr,
+            layout=self.layout,
+            l_res=self.l_res,
+            w_res=self.w_res,
+            volt=self.volt,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
