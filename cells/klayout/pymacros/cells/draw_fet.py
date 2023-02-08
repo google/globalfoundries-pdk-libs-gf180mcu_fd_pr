@@ -33,7 +33,7 @@ def labels_gen(
     lbl: bool = 0,
     lbl_lst: list = [],
     lbl_valid_len: int = 1,
-    index : int = 0
+    index: int = 0,
 ) -> gf.Component:
     """Returns labels at given position when lbl is enabled
 
@@ -50,9 +50,9 @@ def labels_gen(
 
     if lbl == 1:
         if len(lbl_lst) == lbl_valid_len:
-            if lbl_str == "None" :
+            if lbl_str == "None":
                 c.add_label(lbl_lst[index], position=position, layer=layer)
-            else : 
+            else:
                 c.add_label(lbl_str, position=position, layer=layer)
 
     return c
@@ -867,7 +867,7 @@ def add_inter_sd_labels(
                 lbl=lbl,
                 lbl_lst=sd_lbl,
                 lbl_valid_len=nf + 1,
-                index = i+1
+                index=i + 1,
             )
         )
 
@@ -901,7 +901,7 @@ def add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, 
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
-                index = 2*i
+                index=2 * i,
             )
         )
 
@@ -917,7 +917,7 @@ def add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, 
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
-                index = (2*i)+1
+                index=(2 * i) + 1,
             )
         )
 
@@ -1064,7 +1064,7 @@ def draw_nfet(
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
-            index = 0
+            index=0,
         )
     )
 
@@ -1076,7 +1076,7 @@ def draw_nfet(
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
-            index = nf
+            index=nf,
         )
     )
 
@@ -1139,7 +1139,7 @@ def draw_nfet(
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
-                index = 0
+                index=0,
             )
         )
 
@@ -1594,7 +1594,7 @@ def draw_pfet(
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
-            index = 0
+            index=0,
         )
     )
 
@@ -1606,7 +1606,7 @@ def draw_pfet(
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
-            index = nf
+            index=nf,
         )
     )
 
@@ -1669,7 +1669,7 @@ def draw_pfet(
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
-                index = 0
+                index=0,
             )
         )
 
@@ -2080,7 +2080,7 @@ def draw_nfet_06v0_nvt(
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
-            index = 0
+            index=0,
         )
     )
 
@@ -2092,7 +2092,7 @@ def draw_nfet_06v0_nvt(
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
-            index = nf
+            index=nf,
         )
     )
 
@@ -2155,7 +2155,7 @@ def draw_nfet_06v0_nvt(
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
-                index = 0
+                index=0,
             )
         )
 

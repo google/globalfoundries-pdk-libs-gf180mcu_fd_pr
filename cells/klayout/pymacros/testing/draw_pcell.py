@@ -11,7 +11,7 @@ device_pcell = device_in  # noqa: F821
 technology_macros_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, technology_macros_path)
 
-from cells import gf180mcu
+from cells import gf180mcu  # noqa: E402
 
 # Instantiate and register the library
 gf180mcu()
@@ -58,7 +58,7 @@ def draw_pcell(device_name, device_space):
         else:
             y_shift = 0 if i == 0 else y_shift + device_space * db_precession
 
-        device, param = get_var(device_name, row,i)
+        device, param = get_var(device_name, row, i)
 
         pcell_id = lib.layout().pcell_id(device)
 
@@ -76,7 +76,7 @@ def draw_pcell(device_name, device_space):
     #     layout.write(f"testcases/{device_name}_dn_pcells.gds", options)
 
 
-def get_var(device_name, row,n):  # noqa: C901
+def get_var(device_name, row, n):  # noqa: C901
 
     if device_name == "bjt":
         device = row["device_name"]
@@ -227,31 +227,33 @@ def get_var(device_name, row,n):  # noqa: C901
         g_lbl = []
         sd_lbl = []
         sub_lbl = "sub"
-        if interdig == 0 and int(num_fingers == len(patt)):
-            
-            for i in range(int(num_fingers)) :
+        if interdig == 0:
+
+            for i in range(int(num_fingers)):
                 g_lbl.append(f"g{n}")
-        
-        elif int(num_fingers) > 1 : 
 
-            pat = list(patt)
-            nt = [] # list to store the symbols of transistors and thier number nt(number of transistors)
+        elif int(num_fingers) > 1:
+
+            pat = list(patt[i])
+            nt = (
+                []
+            )  # list to store the symbols of transistors and thier number nt(number of transistors)
             [nt.append(x) for x in pat if x not in nt]
-            nl = len(nt) 
-            u=0
-            for i in range(nl):
-                for j in range(len(patt)):
-                    if patt[j] == nt[i]:
-                        u+=1
-                    g_lbl.append(f"g{nt[u]}{n}")
-                
+            nl = len(nt)
+            u = 0
+            for k in range(nl):
+                for j in range(len(patt[i])):
+                    if patt[i][j] == nt[k]:
+                        u += 1
+                        g_lbl.append(f"g{nt[k]}{i}")
 
-        for i in range(int(num_fingers+1)):
-            if i%2 == 0 :
+                u = 0
+
+        for i in range(int(num_fingers + 1)):
+            if i % 2 == 0:
                 sd_lbl.append(f"s{n}")
-            else : 
+            else:
                 sd_lbl.append(f"d{n}")
-
 
         param = {
             "volt": volt_area,
@@ -260,15 +262,15 @@ def get_var(device_name, row,n):  # noqa: C901
             "l_gate": length,
             "ld": diff_length,
             "nf": num_fingers,
-            "gate_con_pos" : gate_con_pos,
-            "sd_con_col" : sd_con_col,
-            "cont_bet_fin" : cont_bet_fin,
-            "interdig" : interdig,
-            "patt" : patt,
-            "lbl":lbl,
-            "g_lbl" : g_lbl,
-            "sd_lbl" : sd_lbl,
-            "sub_lbl" : sub_lbl
+            "gate_con_pos": gate_con_pos,
+            "sd_con_col": sd_con_col,
+            "cont_bet_fin": cont_bet_fin,
+            "interdig": interdig,
+            "patt": patt,
+            "lbl": lbl,
+            "g_lbl": g_lbl,
+            "sd_lbl": sd_lbl,
+            "sub_lbl": sub_lbl,
         }
 
     elif (
