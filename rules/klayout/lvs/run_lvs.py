@@ -178,7 +178,6 @@ if __name__ == "__main__":
     workers_count = os.cpu_count() * 2 if args["--thr"] is None else int(args["--thr"])
 
     run_lvs_full_path = os.path.dirname(os.path.abspath(__file__))
-    print(run_lvs_full_path)
 
     # ========= Checking Klayout version =========
     klayout_v_ = os.popen("klayout -v").read()
