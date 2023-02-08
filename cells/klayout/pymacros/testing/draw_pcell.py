@@ -4,14 +4,14 @@ import os
 import pandas as pd
 import math
 
-from cells import gf180mcu
-
 # Set device name form env. variable
 device_pcell = device_in  # noqa: F821
 
 # === Load gf180mcu pcells ===
 technology_macros_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, technology_macros_path)
+
+from cells import gf180mcu
 
 # Instantiate and register the library
 gf180mcu()
@@ -218,13 +218,23 @@ def get_var(device_name, row):  # noqa: C901
         diff_length = row["l_diff"]
         num_fingers = row["num_fing"]
         bulk = row["bulk"]
+        gate_con_pos = row["gate_con_pos"]
+        sd_con_col = row["sd_con_col"]
+        cont_bet_fin = row["cont_bet_fin"]
+        interdig = row["interdig"]
+        patt = row["patt"]
         param = {
             "volt": volt_area,
             "bulk": bulk,
-            "w": width,
-            "l": length,
+            "w_gate": width,
+            "l_gate": length,
             "ld": diff_length,
             "nf": num_fingers,
+            "gate_con_pos" : gate_con_pos,
+            "sd_con_col" : sd_con_col,
+            "cont_bet_fin" : cont_bet_fin,
+            "interdig" : interdig,
+            "patt" : patt
         }
 
     elif (
