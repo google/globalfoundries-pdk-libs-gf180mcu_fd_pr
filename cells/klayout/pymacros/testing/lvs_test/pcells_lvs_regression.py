@@ -2,8 +2,8 @@
 Globalfoundries 180u lvs test.
 
 Usage:
-    lvs_test.py (--help| -h)
-    lvs_test.py (--device=<device_name>) [--thr=<thr>]
+    pcells_lvs_regression.py (--help| -h)
+    pcells_lvs_regression.py (--device=<device_name>) [--thr=<thr>]
 
 Options:
     --help -h                   Print this help message.
@@ -13,6 +13,9 @@ Options:
 from docopt import docopt
 import os
 import sys
+from subprocess import check_call
+import logging
+import glob
 
 # arguments
 arguments = docopt(__doc__, version="PCELLS Gen.: 0.1")
@@ -21,7 +24,8 @@ arguments = docopt(__doc__, version="PCELLS Gen.: 0.1")
 thrCount = os.cpu_count() * 2 if arguments["--thr"] is None else int(arguments["--thr"])
 
 device = arguments["--device"]
-test_dir = "../testcases"
+run_lvs_full_path = "../../../../../rules/klayout/lvs"
+test_dir = f"{run_lvs_full_path}/testing/testcases"
 
 if "npn" in device:
     devices = ["npn_00p54x02p00"]
@@ -32,14 +36,21 @@ res_data = []
 
 for device_name in devices:
     print(f"running lvs for {device_name}_pcells")
-    os.system(
-        f"""
-    klayout -b -r gf180mcu.lvs -rd input={test_dir}/{device_name}_pcells.gds -rd report={device_name}_pcells.lyrdb -rd schematic={device_name}_pcells.cdl -rd target_netlist=extracted_netlist_{device_name}_pcells.cir > {test_dir}/{device_name}_pcells.log
-    """
-    )
-    print(f"reading {device_name}_pcells log")
 
-    f = open(f"{test_dir}/{device_name}_pcells.log")
+    call_str = f"""
+    python3 {run_lvs_full_path}/run_lvs.py --design={test_dir}/{device_name}.gds --net={device_name}.cdl --gf180mcu="A" > {test_dir}/{device_name}.log
+    """
+    try:
+        check_call(call_str, shell=True)
+    except Exception as e:
+        pattern_results = glob.glob(os.path.join(test_dir, f"{device_name}.lyrdb"))
+        if len(pattern_results) < 1:
+            logging.error("generated an exception")
+            raise Exception("Failed LVS run.")
+    
+    print(f"reading {device_name} log")
+
+    f = open(f"{run_lvs_full_path}/testing/testcases/{device_name}.log")
     log_data = f.readlines()
     f.close()
     print(log_data[-2])
