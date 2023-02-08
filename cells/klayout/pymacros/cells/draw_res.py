@@ -23,7 +23,13 @@ from .via_generator import via_generator, via_stack
 
 
 def draw_metal_res(
-    layout, l_res: float = 0.1, w_res: float = 0.1, res_type: str = "rm1"
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "rm1",
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
 ) -> gf.Component:
     """
     Usage:-
@@ -41,15 +47,19 @@ def draw_metal_res(
     if res_type == "rm1":
         m_layer = layer["metal1"]
         res_layer = layer["metal1_res"]
+        m_lbl_layer = layer["metal1_label"]
     elif res_type == "rm2":
         m_layer = layer["metal2"]
         res_layer = layer["metal2_res"]
+        m_lbl_layer = layer["metal2_label"]
     elif res_type == "rm3":
         m_layer = layer["metal3"]
         res_layer = layer["metal3_res"]
+        m_lbl_layer = layer["metal3_label"]
     else:
         m_layer = layer["metaltop"]
         res_layer = layer["metal6_res"]
+        m_lbl_layer = layer["metaltop_label"]
 
     res_mk = c.add_ref(gf.components.rectangle(size=(l_res, w_res), layer=res_layer))
 
@@ -58,6 +68,25 @@ def draw_metal_res(
     )
     m_rect.xmin = res_mk.xmin - m_ext
     m_rect.ymin = res_mk.ymin
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                res_mk.xmin + (res_mk.size[0] / 2),
+                res_mk.ymin + (res_mk.size[1] / 2),
+            ),
+            layer=m_lbl_layer,
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                m_rect.xmin + (res_mk.xmin - m_rect.xmin) / 2,
+                m_rect.ymin + (m_rect.size[1] / 2),
+            ),
+            layer=m_lbl_layer,
+        )
 
     # creating layout and cell in klayout
     c.write_gds("res_temp.gds")
@@ -220,6 +249,10 @@ def plus_res_inst(
     con_enc: float = 0.1,
     cmp_imp_layer: LayerSpec = layer["nplus"],
     sub_imp_layer: LayerSpec = layer["pplus"],
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component()
@@ -260,12 +293,31 @@ def plus_res_inst(
         metal_level=1,
     )
 
-    c.add_array(
+    cmp_con_arr = c.add_array(
         component=cmp_con,
         rows=1,
         columns=2,
         spacing=(cmp_res_ext - con_enc + res_mk.size[0], 0),
     )  # comp contact array
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                cmp_con_arr.xmin + (cmp_con.size[0] / 2),
+                cmp_con_arr.ymin + (cmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                cmp_con_arr.xmax - (cmp_con.size[0] / 2),
+                cmp_con_arr.ymin + (cmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     cmp_imp = c.add_ref(
         gf.components.rectangle(
@@ -285,7 +337,7 @@ def plus_res_inst(
         sub_rect.ymin = cmp.ymin
 
         # sub_rect contact
-        c.add_ref(
+        sub_con = c.add_ref(
             via_stack(
                 x_range=(sub_rect.xmin, sub_rect.xmax),
                 y_range=(sub_rect.ymin, sub_rect.ymax),
@@ -306,6 +358,17 @@ def plus_res_inst(
         sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
         sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
 
+        # label generation
+        if lbl == 1:
+            c.add_label(
+                sub_lbl,
+                position=(
+                    sub_con.xmin + (sub_con.size[0] / 2),
+                    sub_con.ymin + (sub_con.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
+
     return c
 
 
@@ -317,6 +380,10 @@ def draw_nplus_res(
     sub: bool = 0,
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component("res_dev")
@@ -343,6 +410,10 @@ def draw_nplus_res(
             con_enc=con_enc,
             cmp_imp_layer=layer["nplus"],
             sub_imp_layer=layer["pplus"],
+            lbl=lbl,
+            r0_lbl=r0_lbl,
+            r1_lbl=r1_lbl,
+            sub_lbl=sub_lbl,
         )
     )
 
@@ -389,6 +460,10 @@ def draw_pplus_res(
     sub: bool = 0,
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component("res_dev")
@@ -416,6 +491,10 @@ def draw_pplus_res(
             con_enc=con_enc,
             cmp_imp_layer=layer["pplus"],
             sub_imp_layer=layer["nplus"],
+            lbl=lbl,
+            r0_lbl=r0_lbl,
+            r1_lbl=r1_lbl,
+            sub_lbl=sub_lbl,
         )
     )
 
@@ -466,6 +545,10 @@ def polyf_res_inst(
     con_enc: float = 0.1,
     pl_imp_layer: LayerSpec = layer["nplus"],
     sub_imp_layer: LayerSpec = layer["pplus"],
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component()
@@ -506,7 +589,7 @@ def polyf_res_inst(
         metal_level=1,
     )
 
-    c.add_array(
+    pl_con_arr = c.add_array(
         component=pl_con,
         rows=1,
         columns=2,
@@ -529,7 +612,7 @@ def polyf_res_inst(
     sub_rect.ymin = pl.ymin
 
     # sub_rect contact
-    c.add_ref(
+    sub_con = c.add_ref(
         via_stack(
             x_range=(sub_rect.xmin, sub_rect.xmax),
             y_range=(sub_rect.ymin, sub_rect.ymax),
@@ -547,6 +630,34 @@ def polyf_res_inst(
     sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
     sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
 
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                pl_con_arr.xmin + (pl_con.size[0] / 2),
+                pl_con_arr.ymin + (pl_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                pl_con_arr.xmax - (pl_con.size[0] / 2),
+                pl_con_arr.ymin + (pl_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        c.add_label(
+            sub_lbl,
+            position=(
+                sub_con.xmin + (sub_con.size[0] / 2),
+                sub_con.ymin + (sub_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
     return c
 
 
@@ -557,6 +668,10 @@ def draw_npolyf_res(
     res_type: str = "npolyf_s",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component("res_dev")
@@ -582,6 +697,10 @@ def draw_npolyf_res(
             con_enc=con_enc,
             pl_imp_layer=layer["nplus"],
             sub_imp_layer=layer["pplus"],
+            lbl=lbl,
+            r0_lbl=r0_lbl,
+            r1_lbl=r1_lbl,
+            sub_lbl=sub_lbl,
         )
     )
 
@@ -627,6 +746,10 @@ def draw_ppolyf_res(
     res_type: str = "ppolyf_s",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component("res_dev")
@@ -657,6 +780,10 @@ def draw_ppolyf_res(
             con_enc=con_enc,
             pl_imp_layer=layer["pplus"],
             sub_imp_layer=sub_layer,
+            lbl=lbl,
+            r0_lbl=r0_lbl,
+            r1_lbl=r1_lbl,
+            sub_lbl=sub_lbl,
         )
     )
 
@@ -691,6 +818,10 @@ def draw_ppolyf_u_high_Rs_res(
     volt: str = "3.3V",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component("res_dev")
@@ -726,14 +857,6 @@ def draw_ppolyf_u_high_Rs_res(
     resis_mk.xmin = res_mk.xmin - resis_enc[0]
     resis_mk.ymin = res_mk.ymin - resis_enc[1]
 
-    # if volt == "5/6V" :
-    #     dg = c.add_ref(
-    #         gf.components.rectangle(size=(resis_mk.size[0],resis_mk.size[1]), layer=layer["dualgate"])
-    #     )
-
-    #     dg.xmin = resis_mk.xmin
-    #     dg.ymin = resis_mk.ymin
-
     sab_rect = c.add_ref(
         gf.components.rectangle(
             size=(
@@ -762,7 +885,7 @@ def draw_ppolyf_u_high_Rs_res(
         metal_level=1,
     )
 
-    c.add_array(
+    pl_con_arr = c.add_array(
         component=pl_con, rows=1, columns=2, spacing=(pl.size[0] - con_size, 0),
     )  # comp contact array
 
@@ -785,7 +908,7 @@ def draw_ppolyf_u_high_Rs_res(
     sub_rect.ymin = pl.ymin
 
     # sub_rect contact
-    c.add_ref(
+    sub_con = c.add_ref(
         via_stack(
             x_range=(sub_rect.xmin, sub_rect.xmax),
             y_range=(sub_rect.ymin, sub_rect.ymax),
@@ -793,6 +916,34 @@ def draw_ppolyf_u_high_Rs_res(
             metal_level=1,
         )
     )
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                pl_con_arr.xmin + (pl_con.size[0] / 2),
+                pl_con_arr.ymin + (pl_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                pl_con_arr.xmax - (pl_con.size[0] / 2),
+                pl_con_arr.ymin + (pl_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        c.add_label(
+            sub_lbl,
+            position=(
+                sub_con.xmin + (sub_con.size[0] / 2),
+                sub_con.ymin + (sub_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     if deepnwell == 1:
         sub_layer = layer["nplus"]
@@ -863,6 +1014,10 @@ def draw_well_res(
     w_res: float = 0.42,
     res_type: str = "nwell",
     pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
 ) -> gf.Component:
 
     c = gf.Component("res_dev")
@@ -926,7 +1081,7 @@ def draw_well_res(
         )
     )
 
-    c.add_array(
+    con_polys_arr = c.add_array(
         component=con_polys,
         rows=1,
         columns=2,
@@ -956,7 +1111,7 @@ def draw_well_res(
     sub_rect.ymin = well_rect.ymin
 
     # sub_rect contact
-    c.add_ref(
+    sub_con = c.add_ref(
         via_stack(
             x_range=(sub_rect.xmin, sub_rect.xmax),
             y_range=(sub_rect.ymin, sub_rect.ymax),
@@ -993,6 +1148,34 @@ def draw_well_res(
 
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                con_polys_arr.xmin + (con_polys.size[0] / 2),
+                con_polys_arr.ymin + (con_polys.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                con_polys_arr.xmax - (con_polys.size[0] / 2),
+                con_polys_arr.ymin + (con_polys.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        c.add_label(
+            sub_lbl,
+            position=(
+                sub_con.xmin + (sub_con.size[0] / 2),
+                sub_con.ymin + (sub_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
