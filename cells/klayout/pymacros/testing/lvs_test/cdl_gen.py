@@ -43,13 +43,36 @@ def cdl_gen(df,device_name) :
     l = df["length"]
     w = df["width"]*df["num_fing"]
     dev = device_name
-
-
-
+    interdig = df["interdig"]
+    num_fingers = df["num_fing"]
+    patt = df["patt"]
+    
     for i in range(len(df)):
-        cdl_f.write(
+
+        if interdig[i] == 0:
+            
+            cdl_f.write(
             f"M{i}_{dev} s{i} g{i} d{i} Sub  {dev} W= {w[i]}u L= {l[i]}u \n   "
         )
+              
+        elif int(num_fingers[i]) > 1 : 
+
+            pat = list(patt[i])
+            nt = [] # list to store the symbols of transistors and thier number nt(number of transistors)
+            [nt.append(x) for x in pat if x not in nt]
+            nl = len(nt) 
+            u=0
+            for k in range(nl):
+                for j in range(len(patt[i])):
+                    if patt[i][j] == nt[k]:
+                        u+=1
+                        g_lbl = f"g{nt[k]}{i}"
+    
+                cdl_f.write(
+                    f"M{i}_{nt[k]}_{dev} s{i} {g_lbl} d{i} Sub  {dev} W= {round(w[i]*u,2)}u L= {l[i]}u \n   "
+                )
+                u = 0
+
 
     cdl_f.write("\n .ENDS")
 

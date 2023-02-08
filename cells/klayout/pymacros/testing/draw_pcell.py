@@ -58,7 +58,7 @@ def draw_pcell(device_name, device_space):
         else:
             y_shift = 0 if i == 0 else y_shift + device_space * db_precession
 
-        device, param = get_var(device_name, row)
+        device, param = get_var(device_name, row,i)
 
         pcell_id = lib.layout().pcell_id(device)
 
@@ -76,7 +76,7 @@ def draw_pcell(device_name, device_space):
     #     layout.write(f"testcases/{device_name}_dn_pcells.gds", options)
 
 
-def get_var(device_name, row):  # noqa: C901
+def get_var(device_name, row,n):  # noqa: C901
 
     if device_name == "bjt":
         device = row["device_name"]
@@ -223,6 +223,36 @@ def get_var(device_name, row):  # noqa: C901
         cont_bet_fin = row["cont_bet_fin"]
         interdig = row["interdig"]
         patt = row["patt"]
+        lbl = 1
+        g_lbl = []
+        sd_lbl = []
+        sub_lbl = "sub"
+        if interdig == 0 and int(num_fingers == len(patt)):
+            
+            for i in range(int(num_fingers)) :
+                g_lbl.append(f"g{n}")
+        
+        elif int(num_fingers) > 1 : 
+
+            pat = list(patt)
+            nt = [] # list to store the symbols of transistors and thier number nt(number of transistors)
+            [nt.append(x) for x in pat if x not in nt]
+            nl = len(nt) 
+            u=0
+            for i in range(nl):
+                for j in range(len(patt)):
+                    if patt[j] == nt[i]:
+                        u+=1
+                    g_lbl.append(f"g{nt[u]}{n}")
+                
+
+        for i in range(int(num_fingers+1)):
+            if i%2 == 0 :
+                sd_lbl.append(f"s{n}")
+            else : 
+                sd_lbl.append(f"d{n}")
+
+
         param = {
             "volt": volt_area,
             "bulk": bulk,
@@ -234,7 +264,11 @@ def get_var(device_name, row):  # noqa: C901
             "sd_con_col" : sd_con_col,
             "cont_bet_fin" : cont_bet_fin,
             "interdig" : interdig,
-            "patt" : patt
+            "patt" : patt,
+            "lbl":lbl,
+            "g_lbl" : g_lbl,
+            "sd_lbl" : sd_lbl,
+            "sub_lbl" : sub_lbl
         }
 
     elif (
