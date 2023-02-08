@@ -24,7 +24,7 @@ device = arguments["--device"]
 test_dir = "../testcases"
 
 if "npn" in device:
-    devices = ["npn_00p54x02p00", "rm1"]
+    devices = ["npn_00p54x02p00"]
 else:
     devices = [device]
 
