@@ -58,8 +58,8 @@ def parse_results_log(results_log):
         Path string to the results file
     Returns
     -------
-    tuple
-        A tuple that contains exit code and device_name
+    int
+        An int that contains exit code
     """
 
     f = open(results_log)
@@ -90,8 +90,8 @@ def run_device(lvs_dir, device_name, test_dir, output_path):
         Path to the location where all runsets exist.
     Returns
     -------
-    dict
-        A dict with all rule counts
+    tuple
+        A tuple with device_name and its exit_code
     """
 
     print(f"running lvs for {device_name}_pcells")
@@ -126,6 +126,10 @@ def run_all_test_cases(device, lvs_dir, test_dir, output_path, num_workers):
         list that holds all the devices related to device .
     lvs_dir : string or Path
         Path string to the location of the LVS runsets.
+    test_dir : String
+        Path to the location where all runsets exist.
+    output_path : String
+        Path to the location where all runsets exist.
     num_workers : int
         Number of workers to use for running the regression.
     Returns
@@ -162,8 +166,12 @@ def run_regression(device, lvs_dir, test_dir, output_path, cpu_count):
     This function runs the full regression on all test cases.
     Parameters
     ----------
+    device : list
+        list that holds all the devices related to device .
     lvs_dir : string
         Path string to the LVS directory where LVS_run files are located.
+    test_dir : String
+        Path to the location where all runsets exist.
     output_path : str
         Path string to the location of the output results of the run.
     cpu_count : int
@@ -175,7 +183,7 @@ def run_regression(device, lvs_dir, test_dir, output_path, cpu_count):
     """
 
     if "npn" in device:
-        devices = ["npn_00p54x02p00", "rm1"]
+        devices = ["npn_00p54x02p00"]
     else:
         devices = [device]
 
@@ -209,12 +217,12 @@ def main(lvs_dir: str, output_path: str, test_dir: str):
     This function is the main execution procedure
     Parameters
     ----------
-    drc_dir : str
-        Path string to the DRC directory where all the DRC files are located.
+    lvs_dir : string
+        Path string to the LVS directory where LVS_run files are located.
+    test_dir : String
+        Path to the location where all runsets exist.
     output_path : str
         Path string to the location of the output results of the run.
-    target_table : str or None
-        Name of table that we want to run regression for. If None, run all found.
     Returns
     -------
     bool
