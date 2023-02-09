@@ -269,7 +269,7 @@ if __name__ == "__main__":
 
     # Paths of regression dirs
     run_lvs_full_path = "../../../../../rules/klayout/lvs"
-    test_dir = f"{run_lvs_full_path}/testing/testcases"
+    test_dir = f"../testing/testcases"
     output_path = os.path.join(test_dir, f"{device}_logs")
 
     # Creating output dir
