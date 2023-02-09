@@ -291,41 +291,4 @@ if __name__ == "__main__":
         lvs_dir=run_lvs_full_path, output_path=output_path, test_dir=test_dir
     )
 
-    # run_regression(device=device,lvs_dir=run_lvs_full_path,test_dir=test_dir,output_path=output_path,cpu_count=thrCount)
-
-    # if "npn" in device:
-    #     devices = ["npn_00p54x02p00","rm1"]
-    # else:
-    #     devices = [device]
-
-    # run_all_test_cases(device=devices,lvs_dir=run_lvs_full_path,test_dir=test_dir,output_path=output_path,num_workers=thrCount)
-
-    # res_data = []
-
-    # for device_name in devices:
-    #     res_data.append(run_device(lvs_dir=run_lvs_full_path,device_name=device_name,test_dir=test_dir,output_path=output_path))
-    # print(f"running lvs for {device_name}_pcells")
-
-    # call_str = f"""
-    # python3 {run_lvs_full_path}/run_lvs.py --design={test_dir}/{device_name}.gds --net={device_name}.cdl --gf180mcu="A" > {output_path}/{device_name}.log
-    # """
-    # try:
-    #     check_call(call_str, shell=True)
-    # except Exception :
-    #     pattern_results = glob.glob(os.path.join(test_dir, f"{device_name}.lyrdb"))
-    #     if len(pattern_results) < 1:
-    #         logging.error("generated an exception")
-    #         raise Exception("Failed LVS run.")
-
-    # print(f"reading {device_name} log")
-
-    # res_data.append(parse_results_log(f"{output_path}/{device_name}.log"))
-
-    # not_matched = []
-    # for dev_res in res_data:
-    #     if dev_res[0] == 1:
-    #         not_matched.append(f"{dev_res[1]}_pcells")
-
-    # if len(not_matched) > 0:
-    #     print(f"not matched pcells : {not_matched}")
-    #     exit(1)
+    

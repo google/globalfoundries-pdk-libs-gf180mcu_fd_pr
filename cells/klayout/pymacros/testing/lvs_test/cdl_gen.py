@@ -14,6 +14,7 @@ Options:
 import pandas as pd
 from docopt import docopt
 import os
+from pathlib import Path
 
 
 def cdl_gen(df, device_name):
@@ -84,14 +85,23 @@ if __name__ == "__main__":
     # arguments
     arguments = docopt(__doc__, version="PCELLS Gen.: 0.1")
 
-    device_name = arguments["--device"]
+    device = arguments["--device"]
+
+    if "fet" in device : 
+        devices = ["nfet_03v3"]
+    else :
+        devices = device
 
     # No. of threads
     thrCount = (
         os.cpu_count() * 2 if arguments["--thr"] is None else int(arguments["--thr"])
     )
 
-    df = pd.read_csv(f"../patterns/{device_name}_patterns.csv")
+    cdl_gen_path = os.path.dirname(os.path.abspath(__file__))
+    patt_path = Path(cdl_gen_path).resolve().parents[0]
 
-    # Calling cdl generation function
-    cdl_gen(df=df, device_name=device_name)
+    for device_name in devices :
+        df = pd.read_csv(f"{patt_path}/patterns/{device_name}_patterns.csv")
+
+        # Calling cdl generation function
+        cdl_gen(df=df, device_name=device_name)
