@@ -288,7 +288,7 @@ def get_var(device_name, row, n):  # noqa: C901
     ):
         print("##############################")
         device = "nfet"
-        # device = device_name.replace("_dn", "")
+        device = device_name.replace("_dn", "")
         deepnwell = 1
         pcmpgr = row["pcmpgr"]
         volt_area = row["volt"]
@@ -576,16 +576,6 @@ def get_var(device_name, row, n):  # noqa: C901
             "g_lbl": g_lbl,
             "sd_lbl": sd_lbl,
             "sub_lbl": sub_lbl,
-        }
-        param = {
-            "volt": volt_area,
-            "bulk": bulk,
-            "w": width,
-            "l": length,
-            "ld": diff_length,
-            "nf": num_fingers,
-            "deepnwell": deepnwell,
-            "pcmpgr": pcmpgr,
         }
 
     elif "10v0_asym" in device_name:
