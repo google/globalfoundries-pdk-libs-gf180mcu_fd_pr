@@ -15,11 +15,6 @@ from docopt import docopt
 import os
 import logging
 import pandas as pd
-import yaml
-import concurrent.futures
-import multiprocessing
-from allpairspy import AllPairs
-import csv
 import numpy as np
 
 
