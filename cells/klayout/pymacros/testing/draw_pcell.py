@@ -286,7 +286,7 @@ def get_var(device_name, row, n):  # noqa: C901
         and "nvt" not in device_name
         and "_dn" in device_name
     ):
-        print ("##############################")
+        print("##############################")
         device = "nfet"
         # device = device_name.replace("_dn", "")
         deepnwell = 1
