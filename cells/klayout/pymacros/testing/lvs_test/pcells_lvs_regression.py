@@ -61,7 +61,7 @@ def parse_results_log(results_log):
     int
         An int that contains exit code
     """
-
+    print(results_log)
     f = open(results_log)
     log_data = f.readlines()
     f.close()
@@ -108,7 +108,6 @@ def run_device(lvs_dir, device_name, test_dir, output_path):
         if len(pattern_results) < 1:
             logging.error("generated an exception")
             raise Exception("Failed LVS run.")
-            exit(1)
 
     print(f"reading {device_name} log")
 
@@ -189,17 +188,21 @@ def run_regression(device, lvs_dir, test_dir, output_path, cpu_count):
         devices = [device]
 
     ## Run all devices
-    resrults = run_all_test_cases(
+    results = run_all_test_cases(
         device=devices,
         lvs_dir=lvs_dir,
         test_dir=test_dir,
         output_path=output_path,
         num_workers=cpu_count,
     )
-    print(resrults)
+    print(results)
+
+    if len(results) < 1 : 
+        logging.error("## No results .....")
+        return False
 
     failing_results = []
-    for result in resrults:
+    for result in results:
         if result[0] == 1:
             failing_results.append(f"{result[1]}_pcells")
 
