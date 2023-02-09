@@ -232,6 +232,12 @@ def get_var(device_name, row, n):  # noqa: C901
             for i in range(int(num_fingers)):
                 g_lbl.append(f"g{n}")
 
+            for i in range(int(num_fingers + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
+
         elif int(num_fingers) > 1:
 
             pat = list(patt)
@@ -249,11 +255,11 @@ def get_var(device_name, row, n):  # noqa: C901
 
                 u = 0
 
-        for i in range(int(num_fingers + 1)):
-            if i % 2 == 0:
-                sd_lbl.append(f"s{n}")
-            else:
-                sd_lbl.append(f"d{n}")
+            for i in range(int(len(patt) + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
 
         param = {
             "volt": volt_area,
@@ -280,16 +286,60 @@ def get_var(device_name, row, n):  # noqa: C901
         and "nvt" not in device_name
         and "_dn" in device_name
     ):
+        print ("##############################")
         device = "nfet"
-        device = device_name.replace("_dn", "")
+        # device = device_name.replace("_dn", "")
         deepnwell = 1
-        pcmpgr = 1
+        pcmpgr = row["pcmpgr"]
         volt_area = row["volt"]
         width = row["width"]
         length = row["length"]
         diff_length = row["l_diff"]
         num_fingers = row["num_fing"]
         bulk = row["bulk"]
+        gate_con_pos = row["gate_con_pos"]
+        sd_con_col = row["sd_con_col"]
+        cont_bet_fin = row["cont_bet_fin"]
+        interdig = row["interdig"]
+        patt = row["patt"]
+        lbl = 1
+        g_lbl = []
+        sd_lbl = []
+        sub_lbl = "sub"
+        if interdig == 0:
+
+            for i in range(int(num_fingers)):
+                g_lbl.append(f"g{n}")
+
+            for i in range(int(num_fingers + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
+
+        elif int(num_fingers) > 1:
+
+            pat = list(patt)
+            nt = (
+                []
+            )  # list to store the symbols of transistors and thier number nt(number of transistors)
+            [nt.append(x) for x in pat if x not in nt]
+            nl = len(nt)
+            u = 0
+            for k in range(nl):
+                for j in range(len(patt)):
+                    if patt[j] == nt[k]:
+                        u += 1
+                        g_lbl.append(f"g{nt[k]}{n}")
+
+                u = 0
+
+            for i in range(int(len(patt) + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
+
         param = {
             "deepnwell": deepnwell,
             "bulk": bulk,
@@ -299,6 +349,15 @@ def get_var(device_name, row, n):  # noqa: C901
             "ld": diff_length,
             "nf": num_fingers,
             "pcmpgr": pcmpgr,
+            "gate_con_pos": gate_con_pos,
+            "sd_con_col": sd_con_col,
+            "cont_bet_fin": cont_bet_fin,
+            "interdig": interdig,
+            "patt": patt,
+            "lbl": lbl,
+            "g_lbl": g_lbl,
+            "sd_lbl": sd_lbl,
+            "sub_lbl": sub_lbl,
         }
 
     elif "nvt" in device_name:
@@ -308,12 +367,63 @@ def get_var(device_name, row, n):  # noqa: C901
         diff_length = row["l_diff"]
         num_fingers = row["num_fing"]
         bulk = row["bulk"]
+        gate_con_pos = row["gate_con_pos"]
+        sd_con_col = row["sd_con_col"]
+        cont_bet_fin = row["cont_bet_fin"]
+        interdig = row["interdig"]
+        patt = row["patt"]
+        lbl = 1
+        g_lbl = []
+        sd_lbl = []
+        sub_lbl = "sub"
+        if interdig == 0:
+
+            for i in range(int(num_fingers)):
+                g_lbl.append(f"g{n}")
+
+            for i in range(int(num_fingers + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
+
+        elif int(num_fingers) > 1:
+
+            pat = list(patt)
+            nt = (
+                []
+            )  # list to store the symbols of transistors and thier number nt(number of transistors)
+            [nt.append(x) for x in pat if x not in nt]
+            nl = len(nt)
+            u = 0
+            for k in range(nl):
+                for j in range(len(patt)):
+                    if patt[j] == nt[k]:
+                        u += 1
+                        g_lbl.append(f"g{nt[k]}{n}")
+
+                u = 0
+
+            for i in range(int(len(patt) + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
         param = {
             "w": width,
             "l": length,
             "ld": diff_length,
             "nf": num_fingers,
             "bulk": bulk,
+            "gate_con_pos": gate_con_pos,
+            "sd_con_col": sd_con_col,
+            "cont_bet_fin": cont_bet_fin,
+            "interdig": interdig,
+            "patt": patt,
+            "lbl": lbl,
+            "g_lbl": g_lbl,
+            "sd_lbl": sd_lbl,
+            "sub_lbl": sub_lbl,
         }
 
     elif (
@@ -330,13 +440,63 @@ def get_var(device_name, row, n):  # noqa: C901
         diff_length = row["l_diff"]
         num_fingers = row["num_fing"]
         bulk = row["bulk"]
+        gate_con_pos = row["gate_con_pos"]
+        sd_con_col = row["sd_con_col"]
+        cont_bet_fin = row["cont_bet_fin"]
+        interdig = row["interdig"]
+        patt = row["patt"]
+        lbl = 1
+        g_lbl = []
+        sd_lbl = []
+        sub_lbl = "sub"
+        if interdig == 0:
+
+            for i in range(int(num_fingers)):
+                g_lbl.append(f"g{n}")
+
+            for i in range(int(num_fingers + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
+
+        elif int(num_fingers) > 1:
+
+            pat = list(patt)
+            nt = (
+                []
+            )  # list to store the symbols of transistors and thier number nt(number of transistors)
+            [nt.append(x) for x in pat if x not in nt]
+            nl = len(nt)
+            u = 0
+            for k in range(nl):
+                for j in range(len(patt)):
+                    if patt[j] == nt[k]:
+                        u += 1
+                        g_lbl.append(f"g{nt[k]}{n}")
+
+                u = 0
+
+            for i in range(int(len(patt) + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
         param = {
-            "volt": volt_area,
-            "bulk": bulk,
             "w": width,
             "l": length,
             "ld": diff_length,
             "nf": num_fingers,
+            "bulk": bulk,
+            "gate_con_pos": gate_con_pos,
+            "sd_con_col": sd_con_col,
+            "cont_bet_fin": cont_bet_fin,
+            "interdig": interdig,
+            "patt": patt,
+            "lbl": lbl,
+            "g_lbl": g_lbl,
+            "sd_lbl": sd_lbl,
+            "sub_lbl": sub_lbl,
         }
 
     elif (
@@ -348,13 +508,75 @@ def get_var(device_name, row, n):  # noqa: C901
         device = "pfet"
         # device      = device_name.replace("_dn","")
         deepnwell = 1
-        pcmpgr = 1
+        pcmpgr = row["pcmpgr"]
         volt_area = row["volt"]
         width = row["width"]
         length = row["length"]
         diff_length = row["l_diff"]
         num_fingers = row["num_fing"]
         bulk = row["bulk"]
+        gate_con_pos = row["gate_con_pos"]
+        sd_con_col = row["sd_con_col"]
+        cont_bet_fin = row["cont_bet_fin"]
+        interdig = row["interdig"]
+        patt = row["patt"]
+        lbl = 1
+        g_lbl = []
+        sd_lbl = []
+        sub_lbl = "sub"
+        if interdig == 0:
+
+            for i in range(int(num_fingers)):
+                g_lbl.append(f"g{n}")
+
+            for i in range(int(num_fingers + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
+
+        elif int(num_fingers) > 1:
+
+            pat = list(patt)
+            nt = (
+                []
+            )  # list to store the symbols of transistors and thier number nt(number of transistors)
+            [nt.append(x) for x in pat if x not in nt]
+            nl = len(nt)
+            u = 0
+            for k in range(nl):
+                for j in range(len(patt)):
+                    if patt[j] == nt[k]:
+                        u += 1
+                        g_lbl.append(f"g{nt[k]}{n}")
+
+                u = 0
+
+            for i in range(int(len(patt) + 1)):
+                if i % 2 == 0:
+                    sd_lbl.append(f"s{n}")
+                else:
+                    sd_lbl.append(f"d{n}")
+
+        param = {
+            "deepnwell": deepnwell,
+            "bulk": bulk,
+            "volt": volt_area,
+            "w": width,
+            "l": length,
+            "ld": diff_length,
+            "nf": num_fingers,
+            "pcmpgr": pcmpgr,
+            "gate_con_pos": gate_con_pos,
+            "sd_con_col": sd_con_col,
+            "cont_bet_fin": cont_bet_fin,
+            "interdig": interdig,
+            "patt": patt,
+            "lbl": lbl,
+            "g_lbl": g_lbl,
+            "sd_lbl": sd_lbl,
+            "sub_lbl": sub_lbl,
+        }
         param = {
             "volt": volt_area,
             "bulk": bulk,

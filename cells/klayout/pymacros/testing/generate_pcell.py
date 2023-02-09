@@ -62,8 +62,8 @@ def main():
 
     elif "fet" in device_name and "cap_" not in device_name:
         fet_devices = [
-            "nfet_03v3",
-            # "nfet_03v3_dn",
+            # "nfet_03v3",
+            "nfet_03v3_dn",
             # "nfet_05v0",
             # "nfet_05v0_dn",
             # "nfet_06v0",

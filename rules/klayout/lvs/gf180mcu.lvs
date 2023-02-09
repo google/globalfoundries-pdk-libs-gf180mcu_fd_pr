@@ -1918,6 +1918,8 @@ end
 max_res(1e7)
 min_caps(1e-16)
 
+schematic.combine_devices()
+
 
 compare
 

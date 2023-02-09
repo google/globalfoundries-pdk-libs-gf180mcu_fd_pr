@@ -197,7 +197,7 @@ def run_regression(device, lvs_dir, test_dir, output_path, cpu_count):
     )
     print(results)
 
-    if len(results) < 1 : 
+    if len(results) < 1:
         logging.error("## No results .....")
         return False
 
@@ -273,7 +273,7 @@ if __name__ == "__main__":
 
     # Paths of regression dirs
     run_lvs_full_path = "../../../../../rules/klayout/lvs"
-    test_dir = f"../../testing/testcases"
+    test_dir = "../../testing/testcases"
     output_path = os.path.join(test_dir, f"{device}_logs")
 
     # Creating output dir
@@ -294,5 +294,3 @@ if __name__ == "__main__":
     run_status = main(
         lvs_dir=run_lvs_full_path, output_path=output_path, test_dir=test_dir
     )
-
-    
