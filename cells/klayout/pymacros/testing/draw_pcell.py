@@ -11,7 +11,7 @@ device_pcell = device_in  # noqa: F821
 technology_macros_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, technology_macros_path)
 
-from cells import gf180mcu  # noqa: E402
+from cells_gf import gf180mcu  # noqa: E402
 
 # Instantiate and register the library
 gf180mcu()
@@ -234,7 +234,7 @@ def get_var(device_name, row, n):  # noqa: C901
 
         elif int(num_fingers) > 1:
 
-            pat = list(patt[i])
+            pat = list(patt)
             nt = (
                 []
             )  # list to store the symbols of transistors and thier number nt(number of transistors)
@@ -242,10 +242,10 @@ def get_var(device_name, row, n):  # noqa: C901
             nl = len(nt)
             u = 0
             for k in range(nl):
-                for j in range(len(patt[i])):
-                    if patt[i][j] == nt[k]:
+                for j in range(len(patt)):
+                    if patt[j] == nt[k]:
                         u += 1
-                        g_lbl.append(f"g{nt[k]}{i}")
+                        g_lbl.append(f"g{nt[k]}{n}")
 
                 u = 0
 
