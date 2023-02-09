@@ -18,7 +18,7 @@
 
 import pya
 
-from .fet import nfet, pfet, nfet_06v0_nvt, nfet_10v0_asym, pfet_10v0_asym
+from .fet import nfet, pfet, nfet_06v0_nvt
 from .diode import (
     diode_dw2ps,
     diode_nd2ps,
@@ -32,8 +32,6 @@ from .cap_mos import cap_nmos, cap_nmos_b, cap_pmos, cap_pmos_b
 from .cap_mim import cap_mim
 from .res import (
     metal_resistor,
-    nwell_resistor,
-    pwell_resistor,
     nplus_s_resistor,
     nplus_u_resistor,
     pplus_s_resistor,
@@ -43,6 +41,8 @@ from .res import (
     ppolyf_s_resistor,
     ppolyf_u_resistor,
     ppolyf_u_high_Rs_resistor,
+    nwell_resistor,
+    pwell_resistor,
 )
 from .efuse import efuse
 
@@ -66,13 +66,14 @@ class gf180mcu(pya.Library):
             "pfet", pfet()
         )  # pfet_03v3 , pfet_05v0 , pfet_06v0
         self.layout().register_pcell("nfet_06v0_nvt", nfet_06v0_nvt())
-        self.layout().register_pcell("nfet_10v0_asym", nfet_10v0_asym())
-        self.layout().register_pcell("pfet_10v0_asym", pfet_10v0_asym())
+        # self.layout().register_pcell("nfet_10v0_asym", nfet_10v0_asym())
+        # self.layout().register_pcell("pfet_10v0_asym", pfet_10v0_asym())
 
         # BJT
         self.layout().register_pcell(
             "npn_bjt", npn_bjt()
-        )  # npn_10p00x10p00 , npn_05p00x05p00 , npn_00p54x16p00 , npn_00p54x08p00 , npn_00p54x04p00 , npn_00p54x02p00
+        )  # npn_10p00x10p00 , npn_05p00x05p00 , npn_00p54x16p00 ,
+        # npn_00p54x08p00 , npn_00p54x04p00 , npn_00p54x02p00
         self.layout().register_pcell(
             "pnp_bjt", pnp_bjt()
         )  # pnp_10p00x10p00 , pnp_05p00x05p00 , pnp_10p00x00p42 , pnp_05p00x00p42
@@ -95,6 +96,9 @@ class gf180mcu(pya.Library):
         )  # diode_dw2ps_03v3 , diode_dw2ps_06v0
         self.layout().register_pcell("sc_diode", sc_diode())
 
+        # MIM_CAP DEVICES
+        self.layout().register_pcell("cap_mim", cap_mim())
+
         # cap_mos
         self.layout().register_pcell(
             "cap_nmos", cap_nmos()
@@ -109,35 +113,21 @@ class gf180mcu(pya.Library):
             "cap_pmos_b", cap_pmos_b()
         )  # cap_pmos_03v3_b , cap_pmos_06v0_b
 
-        # cap_mim
-        self.layout().register_pcell(
-            "cap_mim", cap_mim()
-        )  # cap_mim (Option-A) , cap_mim_tm (Option-B)
-
         # RES
         self.layout().register_pcell("metal_resistor", metal_resistor())
-
         self.layout().register_pcell("nplus_s_resistor", nplus_s_resistor())
         self.layout().register_pcell("pplus_s_resistor", pplus_s_resistor())
-
         self.layout().register_pcell("nplus_u_resistor", nplus_u_resistor())
         self.layout().register_pcell("pplus_u_resistor", pplus_u_resistor())
-
         self.layout().register_pcell("nwell_resistor", nwell_resistor())
         self.layout().register_pcell("pwell_resistor", pwell_resistor())
-
         self.layout().register_pcell("npolyf_s_resistor", npolyf_s_resistor())
         self.layout().register_pcell("ppolyf_s_resistor", ppolyf_s_resistor())
-
         self.layout().register_pcell("npolyf_u_resistor", npolyf_u_resistor())
         self.layout().register_pcell("ppolyf_u_resistor", ppolyf_u_resistor())
-
         self.layout().register_pcell(
             "ppolyf_u_high_Rs_resistor", ppolyf_u_high_Rs_resistor()
         )
-
-        # eFuse
-        # self.layout().register_pcell("efuse"  , efuse())
 
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")

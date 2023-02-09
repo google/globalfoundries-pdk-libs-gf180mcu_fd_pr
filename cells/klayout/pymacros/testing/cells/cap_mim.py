@@ -20,8 +20,8 @@ import pya
 import os
 from .draw_cap_mim import draw_cap_mim
 
-mim_l = 0.28
-mim_w = 0.28
+mim_l = 1.02
+mim_w = 1.02
 
 
 class cap_mim(pya.PCellDeclarationHelper):
@@ -51,6 +51,12 @@ class cap_mim(pya.PCellDeclarationHelper):
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("top_lbl", self.TypeString, "Top plate label", default="")
+
+        self.param("bot_lbl", self.TypeString, "Bottom plate label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
         return "cap_mim(L=" + ("%.3f" % self.lc) + ",W=" + ("%.3f" % self.wc) + ")"
@@ -76,8 +82,8 @@ class cap_mim(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.lcayout.dbu / 2
-        self.lc = self.lcayout.get_info(self.lcayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.lc = self.layout.get_info(self.layer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -93,7 +99,14 @@ class cap_mim(pya.PCellDeclarationHelper):
             if (self.mim_option) == "MIM-A":
                 raise TypeError(f"Current stack ({option}) doesn't allow this option")
         np_instance = draw_cap_mim(
-            self.lcayout, self.lc, self.wc, self.mim_option, self.metal_level
+            self.layout,
+            lc=self.lc,
+            wc=self.wc,
+            mim_option=self.mim_option,
+            metal_level=self.metal_level,
+            lbl=self.lbl,
+            top_lbl=self.top_lbl,
+            bot_lbl=self.bot_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
