@@ -28,6 +28,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
+      -name: fet gds generation
+        run: |
+          make fet_test-gds-pcells
+      -name: fet cdl generation
+        run: |
+          make fet_test-cdl-pcells
       - name: fet lvs testing
         run: |
           make fet_test-LVS-pcells
+      
