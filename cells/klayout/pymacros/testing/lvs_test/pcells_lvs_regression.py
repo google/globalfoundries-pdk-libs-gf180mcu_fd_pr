@@ -108,6 +108,7 @@ def run_device(lvs_dir, device_name, test_dir, output_path):
         if len(pattern_results) < 1:
             logging.error("generated an exception")
             raise Exception("Failed LVS run.")
+            exit(1)
 
     print(f"reading {device_name} log")
 
