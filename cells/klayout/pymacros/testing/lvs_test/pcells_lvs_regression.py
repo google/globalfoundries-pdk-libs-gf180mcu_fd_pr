@@ -99,7 +99,7 @@ def run_device(lvs_dir, device_name, test_dir, output_path):
     pattern_log = f"{output_path}/{device_name}.log"
 
     call_str = f"""
-    python3 {lvs_dir}/run_lvs.py --design={test_dir}/{device_name}.gds --net={device_name}.cdl --gf180mcu="A" > {pattern_log}
+    python3 {lvs_dir}/run_lvs.py --design={test_dir}/{device_name}_pcells.gds --net={device_name}_pcells.cdl --gf180mcu="A" > {pattern_log}
     """
     try:
         check_call(call_str, shell=True)
@@ -182,8 +182,8 @@ def run_regression(device, lvs_dir, test_dir, output_path, cpu_count):
         If all regression passed, it returns true. If any of the rules failed it returns false.
     """
 
-    if "npn" in device:
-        devices = ["npn_00p54x02p00"]
+    if "fet" in device:
+        devices = ["nfet_03v3"]
     else:
         devices = [device]
 
