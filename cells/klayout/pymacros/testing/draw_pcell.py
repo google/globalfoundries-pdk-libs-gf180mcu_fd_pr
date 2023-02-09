@@ -64,10 +64,12 @@ def draw_pcell(device_name, device_space):
 
         pc = layout.add_pcell_variant(lib, pcell_id, param)
         top.insert(pya.CellInstArray(pc, pya.Trans(x_shift, y_shift)))
+        top.flatten(1)
 
         options = pya.SaveLayoutOptions()
         options.write_context_info = False
         layout.write(f"testcases/{device_name}_pcells.gds", options)
+        
 
     # # draw dnwell for dw devices
     # if "_dn" in device:
