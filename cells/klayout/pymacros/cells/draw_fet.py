@@ -33,6 +33,7 @@ def labels_gen(
     lbl: bool = 0,
     lbl_lst: list = [],
     lbl_valid_len: int = 1,
+    index: int = 0,
 ) -> gf.Component:
     """Returns labels at given position when lbl is enabled
 
@@ -49,7 +50,10 @@ def labels_gen(
 
     if lbl == 1:
         if len(lbl_lst) == lbl_valid_len:
-            c.add_label(lbl_str, position=position, layer=layer)
+            if lbl_str == "None":
+                c.add_label(lbl_lst[index], position=position, layer=layer)
+            else:
+                c.add_label(lbl_str, position=position, layer=layer)
 
     return c
 
@@ -438,7 +442,7 @@ def interdigit(
 
 @gf.cell
 def hv_gen(
-    c_inst, volt: str = "3.3V", dg_encx: float = 0.1, dg_ency: float = 0.1
+    c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1
 ) -> gf.Component:
     """Returns high volatge related polygons
 
@@ -851,10 +855,10 @@ def add_inter_sd_labels(
         layer : layer of label
     """
 
-    for i in range(nf - 1):
+    for i in range(int(nf - 1)):
         c.add_ref(
             labels_gen(
-                lbl_str=sd_lbl[i + 1],
+                lbl_str="None",
                 position=(
                     poly1.xmin + l_gate + (inter_sd_l / 2) + i * (l_gate + inter_sd_l),
                     sd_diff_intr.ymin + (sd_diff_intr.size[1] / 2),
@@ -863,6 +867,7 @@ def add_inter_sd_labels(
                 lbl=lbl,
                 lbl_lst=sd_lbl,
                 lbl_valid_len=nf + 1,
+                index=i + 1,
             )
         )
 
@@ -887,7 +892,7 @@ def add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, 
     for i in range(nc1):
         c.add_ref(
             labels_gen(
-                lbl_str=g_lbl[2 * i],
+                lbl_str="None",
                 position=(
                     pc1.xmin + (c_pc.size[0] / 2) + i * (pc_spacing),
                     pc1.ymin + (c_pc.size[1] / 2),
@@ -896,13 +901,14 @@ def add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, 
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
+                index=2 * i,
             )
         )
 
     for i in range(nc2):
         c.add_ref(
             labels_gen(
-                lbl_str=g_lbl[2 * i + 1],
+                lbl_str="None",
                 position=(
                     pc2.xmin + (c_pc.size[0] / 2) + i * (pc_spacing),
                     pc2.ymin + (c_pc.size[1] / 2),
@@ -911,6 +917,7 @@ def add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, 
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
+                index=(2 * i) + 1,
             )
         )
 
@@ -1051,23 +1058,25 @@ def draw_nfet(
     ### adding source/drain labels
     c.add_ref(
         labels_gen(
-            lbl_str=sd_lbl[0],
+            lbl_str="None",
             position=(sd_diff.xmin + (sd_l / 2), sd_diff.ymin + (sd_diff.size[1] / 2)),
             layer=layer["comp_label"],
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
+            index=0,
         )
     )
 
     c.add_ref(
         labels_gen(
-            lbl_str=sd_lbl[nf],
+            lbl_str="None",
             position=(sd_diff.xmax - (sd_l / 2), sd_diff.ymin + (sd_diff.size[1] / 2)),
             layer=layer["comp_label"],
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
+            index=nf,
         )
     )
 
@@ -1124,12 +1133,13 @@ def draw_nfet(
         # gate_lablel
         c.add_ref(
             labels_gen(
-                lbl_str=g_lbl[0],
+                lbl_str="None",
                 position=(pc.xmin + c_pc.size[0] / 2, pc.ymin + c_pc.size[1] / 2),
                 layer=layer["metal1_label"],
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
+                index=0,
             )
         )
 
@@ -1578,23 +1588,25 @@ def draw_pfet(
     ### adding source/drain labels
     c.add_ref(
         labels_gen(
-            lbl_str=sd_lbl[0],
+            lbl_str="None",
             position=(sd_diff.xmin + (sd_l / 2), sd_diff.ymin + (sd_diff.size[1] / 2)),
             layer=layer["comp_label"],
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
+            index=0,
         )
     )
 
     c.add_ref(
         labels_gen(
-            lbl_str=sd_lbl[nf],
+            lbl_str="None",
             position=(sd_diff.xmax - (sd_l / 2), sd_diff.ymin + (sd_diff.size[1] / 2)),
             layer=layer["comp_label"],
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
+            index=nf,
         )
     )
 
@@ -1651,12 +1663,13 @@ def draw_pfet(
         # gate_lablel
         c.add_ref(
             labels_gen(
-                lbl_str=g_lbl[0],
+                lbl_str="None",
                 position=(pc.xmin + c_pc.size[0] / 2, pc.ymin + c_pc.size[1] / 2),
                 layer=layer["metal1_label"],
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
+                index=0,
             )
         )
 
@@ -2061,23 +2074,25 @@ def draw_nfet_06v0_nvt(
     ### adding source/drain labels
     c.add_ref(
         labels_gen(
-            lbl_str=sd_lbl[0],
+            lbl_str="None",
             position=(sd_diff.xmin + (sd_l / 2), sd_diff.ymin + (sd_diff.size[1] / 2)),
             layer=layer["comp_label"],
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
+            index=0,
         )
     )
 
     c.add_ref(
         labels_gen(
-            lbl_str=sd_lbl[nf],
+            lbl_str="None",
             position=(sd_diff.xmax - (sd_l / 2), sd_diff.ymin + (sd_diff.size[1] / 2)),
             layer=layer["comp_label"],
             lbl=lbl,
             lbl_lst=sd_lbl,
             lbl_valid_len=nf + 1,
+            index=nf,
         )
     )
 
@@ -2134,12 +2149,13 @@ def draw_nfet_06v0_nvt(
         # gate_lablel
         c.add_ref(
             labels_gen(
-                lbl_str=g_lbl[0],
+                lbl_str="None",
                 position=(pc.xmin + c_pc.size[0] / 2, pc.ymin + c_pc.size[1] / 2),
                 layer=layer["metal1_label"],
                 lbl=lbl,
                 lbl_lst=g_lbl,
                 lbl_valid_len=nf,
+                index=0,
             )
         )
 
