@@ -286,7 +286,6 @@ def get_var(device_name, row, n):  # noqa: C901
         and "nvt" not in device_name
         and "_dn" in device_name
     ):
-        print("##############################")
         device = "nfet"
         device = device_name.replace("_dn", "")
         deepnwell = 1
@@ -488,6 +487,7 @@ def get_var(device_name, row, n):  # noqa: C901
             "ld": diff_length,
             "nf": num_fingers,
             "bulk": bulk,
+            "volt" : volt_area,
             "gate_con_pos": gate_con_pos,
             "sd_con_col": sd_con_col,
             "cont_bet_fin": cont_bet_fin,
