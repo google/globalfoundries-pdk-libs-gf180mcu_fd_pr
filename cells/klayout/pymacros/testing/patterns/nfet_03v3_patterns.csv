@@ -1,522 +1,248 @@
 volt,bulk,length,width,l_diff,num_fing,gate_con_pos,sd_con_col,cont_bet_fin,interdig,patt
-3.3V,None,9.91,8.8,8.01,1.0,top,2.0,0,0,ABA
-3.3V,Bulk Tie,7.61,4.01,6.79,6.0,bottom,10.0,1,1,ABCDDCBA
-3.3V,Guard Ring,7.17,9.47,0.77,1.0,alternating,7.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,Guard Ring,3.41,2.59,4.19,7.0,bottom,6.0,0,1,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,1.01,4.14,7.92,4.0,top,6.0,0,0,ABBAABBAABBA
-3.3V,None,1.12,7.8,4.16,5.0,alternating,6.0,1,1,AAABCDDCBAAA
-3.3V,None,3.15,8.41,2.03,10.0,bottom,6.0,1,0,ABBA
-3.3V,Bulk Tie,9.01,6.87,7.14,5.0,alternating,9.0,0,1,AAABAAAABAAA
-3.3V,Guard Ring,4.01,0.55,3.31,3.0,top,9.0,1,1,DAABAAACAEACAAABAAD
-3.3V,Guard Ring,3.86,1.12,6.7,2.0,top,6.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,6.41,5.25,2.66,8.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD
-3.3V,None,4.3,8.57,7.99,4.0,bottom,3.0,1,1,AABCCDCCBAA
-3.3V,None,9.09,2.99,6.13,10.0,bottom,8.0,1,1,ABBAABBAABBA
-3.3V,Bulk Tie,2.35,2.51,7.13,10.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Guard Ring,2.81,5.17,7.89,8.0,top,4.0,0,0,AAABCDDCBAAA
-3.3V,Guard Ring,4.1,7.49,5.04,4.0,top,7.0,0,1,ABBA
-3.3V,Bulk Tie,5.95,7.38,2.57,4.0,alternating,1.0,1,1,ABA
-3.3V,None,5.71,7.01,2.47,10.0,bottom,7.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,0.43,5.6,2.89,5.0,bottom,8.0,1,0,AAABAAAABAAA
-3.3V,Bulk Tie,8.31,1.24,1.62,9.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Guard Ring,8.31,5.6,2.47,10.0,top,3.0,0,1,AAABAAAABAAA
-3.3V,Bulk Tie,0.43,7.01,6.13,4.0,top,6.0,0,1,AAAABBBCCDCCBBBAAAA
-3.3V,Guard Ring,5.71,2.99,7.99,10.0,alternating,10.0,0,0,ABA
-3.3V,None,5.95,2.51,2.66,5.0,bottom,6.0,1,1,AAABCDDCBAAA
-3.3V,None,2.35,5.25,7.14,4.0,bottom,5.0,1,1,ABA
-3.3V,Bulk Tie,4.1,5.17,6.7,3.0,alternating,2.0,1,1,ABBA
-3.3V,Guard Ring,9.09,8.57,2.03,5.0,top,8.0,0,0,ABCDDCBA
-3.3V,None,6.41,6.87,7.92,6.0,top,1.0,1,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,2.81,1.12,3.31,7.0,alternating,7.0,1,1,AABCCDCCBAA
-3.3V,Guard Ring,4.3,8.41,4.16,1.0,alternating,8.0,0,0,ABBAABBAABBA
-3.3V,None,9.01,4.14,6.79,9.0,bottom,7.0,1,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,3.86,0.55,4.19,1.0,bottom,4.0,1,1,ABA
-3.3V,Guard Ring,3.15,7.8,8.01,5.0,top,5.0,0,1,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,1.12,8.8,2.89,10.0,alternating,6.0,1,1,DAABAAACAEACAAABAAD
-3.3V,None,4.01,2.59,0.77,4.0,bottom,6.0,1,0,ABCDDCBA
-3.3V,Guard Ring,1.01,4.01,1.62,4.0,top,5.0,1,1,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,9.91,9.47,5.04,8.0,bottom,6.0,1,1,DAABAAACAEACAAABAAD
-3.3V,Guard Ring,7.61,1.24,2.57,10.0,top,9.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,3.41,7.38,7.13,8.0,top,7.0,1,1,ABCDDCBA
-3.3V,Bulk Tie,7.17,7.49,7.89,2.0,bottom,9.0,1,1,ABCDDCBA
-3.3V,None,4.1,0.55,2.57,7.0,bottom,5.0,0,0,ABCDDCBA
-3.3V,Guard Ring,1.12,7.38,7.92,4.0,bottom,2.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,5.71,5.6,8.01,4.0,alternating,9.0,1,1,AAABCDDCBAAA
-3.3V,Guard Ring,5.95,7.01,6.79,8.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD
-3.3V,None,7.17,4.01,3.31,10.0,bottom,1.0,0,0,AAABCDDCBAAA
-3.3V,None,7.61,1.12,4.19,3.0,alternating,8.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,3.41,8.41,0.77,10.0,alternating,7.0,0,0,AAABCDDCBAAA
-3.3V,Guard Ring,6.41,4.14,7.14,10.0,top,8.0,1,1,AAABCDDCBAAA
-3.3V,None,1.01,9.47,7.89,4.0,alternating,3.0,0,0,ABBA
-3.3V,Guard Ring,9.91,2.51,2.89,9.0,top,7.0,0,1,ABBA
-3.3V,Bulk Tie,4.01,7.8,2.47,1.0,alternating,6.0,1,1,DCCBBCCAACCBBCCD
-3.3V,None,8.31,7.49,6.7,1.0,bottom,9.0,1,0,AAABCDDCBAAA
-3.3V,Bulk Tie,3.15,2.59,4.16,10.0,top,7.0,0,1,AAABAAAABAAA
-3.3V,Guard Ring,9.01,5.25,6.13,6.0,top,6.0,0,0,AAABCDDCBAAA
-3.3V,None,3.86,1.24,5.04,5.0,alternating,9.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Guard Ring,2.35,8.8,2.66,8.0,top,10.0,0,0,ABBA
-3.3V,Bulk Tie,4.3,2.99,2.03,5.0,alternating,6.0,0,1,DCCBBCCAACCBBCCD
-3.3V,Guard Ring,0.43,6.87,7.13,4.0,alternating,4.0,0,0,DAABAAACAEACAAABAAD
-3.3V,None,2.81,5.17,1.62,2.0,bottom,5.0,0,0,ABA
-3.3V,Bulk Tie,9.09,8.57,7.99,1.0,top,5.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Guard Ring,9.09,1.24,0.77,2.0,alternating,6.0,0,1,AAABAAAABAAA
-3.3V,Guard Ring,3.15,7.01,7.92,5.0,alternating,5.0,1,1,AABCCDCCBAA
-3.3V,Bulk Tie,4.01,1.12,7.13,5.0,bottom,8.0,0,0,ABA
-3.3V,None,1.01,8.41,7.14,8.0,bottom,6.0,0,0,ABCDDCBA
-3.3V,Guard Ring,2.81,7.8,6.79,4.0,bottom,7.0,0,0,ABBA
-3.3V,Guard Ring,4.3,6.87,6.13,10.0,top,6.0,0,1,ABCDDCBA
-3.3V,Guard Ring,9.91,8.57,4.19,8.0,alternating,6.0,0,0,AAABAAAABAAA
-3.3V,None,6.41,7.49,1.62,3.0,bottom,10.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,7.17,5.6,4.16,7.0,top,8.0,0,1,DAABAAACAEACAAABAAD
-3.3V,Guard Ring,5.95,0.55,8.01,6.0,alternating,8.0,0,0,AAABAAAABAAA
-3.3V,Guard Ring,5.71,2.59,2.03,1.0,alternating,1.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,1.12,4.14,6.7,4.0,alternating,5.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,4.1,4.01,7.89,10.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,0.43,9.47,2.66,9.0,top,9.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,2.35,2.99,2.47,5.0,top,2.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,3.86,8.8,3.31,4.0,bottom,3.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,9.01,7.38,2.89,4.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,8.31,2.51,5.04,5.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,3.41,5.25,2.57,10.0,alternating,6.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,7.61,5.17,7.99,1.0,bottom,7.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,4.1,5.6,0.77,10.0,top,7.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,1.12,8.41,6.13,5.0,top,7.0,0,1,ABA
-3.3V,Bulk Tie,5.71,6.87,6.79,8.0,top,8.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,5.95,1.12,1.62,4.0,alternating,5.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,2.81,1.24,4.16,8.0,bottom,7.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,1.01,7.49,4.19,5.0,alternating,2.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,4.01,7.01,8.01,4.0,bottom,7.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,3.15,8.57,2.89,10.0,alternating,10.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,9.09,5.25,6.7,10.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,7.61,8.8,5.04,7.0,alternating,6.0,0,0,ABA
-3.3V,Bulk Tie,3.41,2.51,7.89,4.0,alternating,1.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,8.31,9.47,7.92,5.0,alternating,6.0,0,0,ABA
-3.3V,Bulk Tie,9.01,0.55,2.03,4.0,alternating,6.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,3.86,7.8,7.13,10.0,alternating,5.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,2.35,4.01,2.57,3.0,alternating,6.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,0.43,2.59,7.14,2.0,alternating,3.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,7.17,4.14,2.47,6.0,alternating,9.0,0,0,ABA
-3.3V,Bulk Tie,6.41,7.38,3.31,1.0,alternating,8.0,0,0,ABBA
-3.3V,Bulk Tie,9.91,2.99,2.66,10.0,alternating,9.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,4.3,5.17,4.19,9.0,top,6.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,9.09,5.6,1.62,8.0,alternating,7.0,0,0,ABA
-3.3V,Bulk Tie,3.15,1.12,7.99,6.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,8.8,6.13,10.0,alternating,4.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,1.01,6.87,2.57,5.0,bottom,7.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,2.81,7.01,6.7,9.0,alternating,8.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,5.95,8.57,5.04,1.0,top,6.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,4.1,5.25,7.13,2.0,alternating,9.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,4.3,2.59,2.47,1.0,alternating,7.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,9.91,4.14,3.31,5.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,1.24,7.89,5.0,alternating,6.0,0,0,ABA
-3.3V,Bulk Tie,7.17,7.8,2.03,10.0,alternating,7.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,0.43,0.55,7.92,8.0,alternating,10.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,2.35,8.41,6.79,10.0,alternating,3.0,0,0,ABA
-3.3V,Bulk Tie,3.86,7.38,8.01,7.0,alternating,6.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,9.01,7.49,0.77,4.0,alternating,1.0,0,0,ABA
-3.3V,Bulk Tie,8.31,2.99,4.16,3.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,4.01,7.14,4.0,alternating,5.0,0,0,ABA
-3.3V,Bulk Tie,7.61,9.47,2.89,10.0,alternating,2.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,5.71,2.51,1.62,5.0,alternating,6.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,1.12,5.17,2.66,4.0,alternating,8.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,8.31,1.12,2.66,4.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,2.35,5.6,7.99,9.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,4.3,7.01,5.04,6.0,alternating,2.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,4.1,8.8,7.14,10.0,alternating,5.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,2.81,8.41,8.01,1.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,1.01,8.57,2.47,9.0,alternating,9.0,0,0,ABA
-3.3V,Bulk Tie,4.01,7.38,1.62,10.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,3.15,2.51,6.7,10.0,alternating,7.0,0,0,ABA
-3.3V,Bulk Tie,9.09,4.14,4.19,4.0,alternating,1.0,0,0,ABBA
-3.3V,Bulk Tie,1.12,9.47,2.57,6.0,alternating,5.0,0,0,ABBA
-3.3V,Bulk Tie,5.71,7.49,7.13,7.0,alternating,3.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,7.61,0.55,4.16,5.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,3.41,7.8,6.13,8.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,9.01,2.99,3.31,2.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,3.86,2.59,7.92,5.0,alternating,8.0,0,0,ABBA
-3.3V,Bulk Tie,0.43,4.01,0.77,1.0,alternating,9.0,0,0,ABBA
-3.3V,Bulk Tie,7.17,5.25,2.89,3.0,alternating,5.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,6.41,5.17,6.79,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,1.24,2.03,4.0,alternating,6.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,5.95,6.87,7.89,10.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,9.09,6.87,2.66,7.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,3.15,5.6,7.14,8.0,alternating,4.0,0,0,ABBA
-3.3V,Bulk Tie,4.01,9.47,7.99,4.0,alternating,6.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,1.01,2.99,6.79,5.0,alternating,8.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,2.81,8.8,7.13,3.0,alternating,6.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,4.1,7.38,2.47,8.0,alternating,5.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,4.3,7.8,7.89,4.0,alternating,6.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,2.35,1.12,5.04,10.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,7.01,0.77,10.0,alternating,10.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,5.95,8.41,2.89,5.0,alternating,7.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,9.91,2.59,1.62,10.0,alternating,9.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,6.41,8.57,8.01,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,0.55,6.7,4.0,alternating,5.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,0.43,2.51,2.57,1.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,5.25,4.16,9.0,alternating,10.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,9.01,4.01,4.19,10.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,1.24,7.92,1.0,alternating,7.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,7.61,7.49,3.31,8.0,alternating,6.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,5.71,4.14,6.13,5.0,alternating,5.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,1.12,1.12,2.03,10.0,alternating,7.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,1.01,5.17,7.13,6.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,3.15,6.87,5.04,2.0,alternating,8.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,1.12,7.01,7.99,2.0,alternating,1.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,7.61,5.6,2.66,5.0,alternating,5.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,3.86,8.57,7.14,4.0,alternating,6.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,6.41,7.8,2.57,5.0,alternating,4.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,9.91,8.41,7.92,7.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,8.31,4.01,2.89,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,7.38,7.89,1.0,alternating,7.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,4.3,9.47,8.01,10.0,alternating,5.0,0,0,ABBA
-3.3V,Bulk Tie,4.1,2.59,6.79,4.0,alternating,9.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,2.81,2.99,7.14,1.0,alternating,6.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,4.01,5.25,4.19,8.0,alternating,7.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,9.09,8.8,2.47,5.0,alternating,1.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,5.71,0.55,0.77,9.0,alternating,6.0,0,0,ABBA
-3.3V,Bulk Tie,3.41,7.49,4.16,6.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,9.01,1.24,7.13,10.0,alternating,6.0,0,0,ABBA
-3.3V,Bulk Tie,0.43,4.14,1.62,7.0,alternating,1.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,7.17,2.51,6.13,4.0,alternating,10.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,5.95,5.17,2.03,1.0,alternating,3.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,9.09,7.8,3.31,4.0,alternating,9.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,4.01,5.6,6.7,5.0,alternating,1.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,2.81,8.57,2.66,10.0,alternating,6.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,4.1,7.01,1.62,1.0,alternating,3.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,2.35,4.14,2.89,2.0,alternating,4.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,8.31,6.87,7.99,8.0,alternating,9.0,0,0,ABBA
-3.3V,Bulk Tie,7.61,2.59,8.01,8.0,alternating,7.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,3.15,7.38,6.13,3.0,alternating,9.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,1.01,1.12,0.77,10.0,alternating,4.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,5.95,9.47,7.14,3.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,7.17,8.8,6.79,5.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,0.43,2.99,7.89,10.0,alternating,5.0,0,0,ABBA
-3.3V,Bulk Tie,4.3,4.01,7.92,8.0,alternating,9.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,9.91,5.25,2.47,4.0,alternating,8.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,6.41,8.41,5.04,9.0,alternating,5.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,3.86,5.6,2.57,4.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,1.12,8.57,3.31,5.0,alternating,5.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,9.01,7.01,4.16,5.0,alternating,9.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,3.41,0.55,7.99,10.0,alternating,2.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,5.71,1.24,6.7,6.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.81,2.51,4.19,10.0,alternating,5.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,1.12,7.49,2.47,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,5.17,0.77,8.0,alternating,9.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,6.41,9.47,7.13,1.0,alternating,8.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,4.3,4.14,2.66,10.0,alternating,7.0,0,0,ABA
-3.3V,Bulk Tie,0.43,7.38,2.03,5.0,alternating,6.0,0,0,ABA
-3.3V,Bulk Tie,5.95,7.8,7.92,2.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,5.25,3.31,4.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,3.15,4.01,7.13,1.0,alternating,7.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,7.61,6.87,1.62,4.0,alternating,5.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,8.31,2.59,6.13,7.0,alternating,7.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,2.35,2.59,3.31,6.0,alternating,6.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,4.1,1.12,4.16,1.0,alternating,6.0,0,0,ABA
-3.3V,Bulk Tie,4.01,1.24,6.79,7.0,alternating,9.0,0,0,ABBA
-3.3V,Bulk Tie,9.09,7.01,7.89,3.0,alternating,7.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,3.41,5.6,5.04,4.0,alternating,6.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,9.91,7.49,7.14,5.0,alternating,1.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,7.17,2.99,2.57,4.0,alternating,6.0,0,0,ABBA
-3.3V,Bulk Tie,5.71,8.41,4.19,10.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,9.01,8.8,1.62,8.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,9.09,0.55,2.89,1.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,7.61,7.38,6.7,5.0,alternating,3.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,3.15,4.14,7.89,10.0,alternating,7.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,1.01,2.51,8.01,10.0,alternating,9.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,6.41,1.12,2.47,2.0,alternating,7.0,0,0,ABBA
-3.3V,Bulk Tie,3.86,9.47,6.79,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.81,7.49,2.03,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,5.17,6.13,4.0,alternating,5.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,3.41,8.57,6.79,3.0,alternating,4.0,0,0,ABBA
-3.3V,Bulk Tie,4.01,6.87,4.16,4.0,alternating,7.0,0,0,ABBA
-3.3V,Bulk Tie,4.1,7.8,7.99,9.0,alternating,8.0,0,0,ABA
-3.3V,Bulk Tie,2.35,1.24,8.01,5.0,alternating,5.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,8.31,5.25,7.89,5.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,2.59,7.99,10.0,alternating,4.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,0.43,8.8,6.7,10.0,alternating,9.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,4.3,1.12,2.57,8.0,alternating,6.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,1.12,2.99,0.77,8.0,alternating,3.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,9.01,8.41,2.66,3.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,4.01,5.04,4.0,alternating,7.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,7.17,7.01,7.14,10.0,alternating,6.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,9.09,5.17,7.92,10.0,alternating,9.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,6.41,5.6,4.19,4.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,0.55,1.62,4.0,alternating,8.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,7.61,4.14,2.03,9.0,alternating,5.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,5.71,7.38,4.16,2.0,alternating,6.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,1.12,2.51,6.79,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,1.24,2.89,4.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,7.49,8.01,10.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,5.95,5.25,0.77,5.0,alternating,6.0,0,0,ABBA
-3.3V,Bulk Tie,8.31,8.57,7.13,4.0,alternating,6.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,2.35,7.01,4.19,4.0,alternating,7.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,4.1,6.87,2.89,6.0,alternating,6.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,4.01,8.41,2.57,5.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,9.47,3.31,10.0,alternating,8.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,9.91,4.01,7.99,5.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,2.81,0.55,6.13,5.0,alternating,3.0,0,0,ABBA
-3.3V,Bulk Tie,3.86,6.87,2.47,3.0,alternating,7.0,0,0,ABA
-3.3V,Bulk Tie,1.01,7.8,2.89,8.0,alternating,1.0,0,0,ABA
-3.3V,Bulk Tie,7.17,5.17,5.04,5.0,alternating,8.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,9.01,2.59,7.89,5.0,alternating,10.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,9.09,1.12,8.01,9.0,alternating,6.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,3.15,8.8,0.77,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,2.99,6.7,7.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,1.01,5.6,2.03,2.0,alternating,8.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,3.86,4.14,7.99,8.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,2.81,7.38,0.77,6.0,alternating,9.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,9.91,7.01,2.57,10.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,5.17,2.47,4.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,2.51,7.92,1.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,8.31,0.55,7.14,10.0,alternating,8.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,0.43,1.24,3.31,8.0,alternating,2.0,0,0,ABA
-3.3V,Bulk Tie,4.3,2.51,0.77,7.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,1.12,5.6,7.13,1.0,alternating,10.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,5.71,8.57,7.92,10.0,alternating,5.0,0,0,ABA
-3.3V,Bulk Tie,7.61,7.8,7.14,1.0,alternating,9.0,0,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,9.01,9.47,6.7,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,8.41,1.62,4.0,alternating,2.0,0,0,ABBA
-3.3V,Bulk Tie,4.1,2.99,4.19,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,7.49,6.13,4.0,alternating,6.0,0,0,ABBA
-3.3V,Bulk Tie,5.95,8.8,4.16,4.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,2.59,5.04,4.0,alternating,5.0,0,0,ABA
-3.3V,Bulk Tie,5.71,1.12,2.89,5.0,alternating,6.0,0,0,ABBA
-3.3V,Bulk Tie,4.01,4.01,2.66,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,2.51,2.03,6.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,6.41,7.01,2.03,8.0,alternating,6.0,0,0,ABBA
-3.3V,Bulk Tie,3.15,5.25,6.79,1.0,alternating,1.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,2.35,9.47,1.62,5.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,8.57,2.57,8.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,8.41,2.47,4.0,alternating,6.0,0,0,ABBA
-3.3V,Bulk Tie,0.43,1.12,6.79,4.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,8.31,4.14,8.01,1.0,alternating,6.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,3.41,6.87,8.01,9.0,alternating,3.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,9.91,7.38,6.79,10.0,alternating,7.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,2.81,4.01,2.47,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,1.24,2.66,4.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,7.49,2.57,1.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,1.24,4.19,10.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,2.51,3.31,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,2.59,7.13,9.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,0.55,5.04,8.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,5.6,3.31,4.0,alternating,5.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,3.15,5.17,3.31,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,8.8,7.99,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,2.99,2.89,10.0,alternating,7.0,0,0,ABBA
-3.3V,Bulk Tie,5.71,5.25,7.89,1.0,alternating,6.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,9.09,9.47,4.16,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,6.87,4.19,1.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,0.55,2.66,2.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.81,4.14,5.04,10.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,8.8,2.03,1.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,7.8,4.19,6.0,alternating,5.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,9.01,2.51,7.99,4.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,8.57,6.7,7.0,alternating,8.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,3.86,4.01,6.13,5.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,7.49,6.79,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,5.25,8.01,10.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,8.41,6.7,8.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,2.99,7.13,4.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,5.6,7.89,6.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,7.38,4.19,10.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,7.01,7.13,4.0,alternating,6.0,0,0,ABA
-3.3V,Bulk Tie,2.81,6.87,7.92,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,2.59,6.7,3.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,5.17,7.14,10.0,alternating,2.0,0,0,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,4.01,4.14,0.77,5.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,2.51,4.16,8.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,4.01,8.01,8.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,1.24,6.13,10.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,0.55,7.13,8.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,1.12,7.92,10.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,9.47,2.47,7.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,8.57,7.89,6.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,2.99,7.92,4.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,7.49,2.66,8.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,8.41,7.89,4.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,7.8,0.77,10.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,5.17,8.01,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,5.25,5.04,5.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,1.12,1.62,5.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,7.38,7.14,6.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,0.55,2.89,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,8.8,6.13,1.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,8.8,2.57,2.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,6.87,6.7,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,1.24,7.14,3.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,8.57,1.62,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,7.38,2.66,5.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,7.8,2.66,4.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.81,5.6,2.89,4.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,5.6,7.92,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,5.17,4.16,4.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,7.01,2.89,1.0,alternating,5.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,5.95,4.14,6.7,1.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,2.51,0.77,3.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,2.99,1.62,6.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,4.14,2.03,8.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,8.8,6.7,10.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,1.24,7.99,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,7.38,7.99,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,7.49,2.03,9.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,7.8,2.03,4.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,4.14,2.89,5.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,8.41,7.99,3.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,2.51,2.47,8.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,7.49,2.66,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,5.25,2.03,7.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,4.01,3.31,9.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,9.47,2.57,8.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,2.59,6.13,10.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,2.59,1.62,5.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,1.12,7.14,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,9.47,8.01,2.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,2.99,5.04,1.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,0.55,6.79,5.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,7.8,5.04,10.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.81,9.47,2.03,10.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,8.41,7.13,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,6.87,2.03,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,7.49,2.89,1.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,8.57,6.13,2.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,5.17,7.14,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,7.38,8.01,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,7.01,2.66,6.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,8.41,3.31,6.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,4.01,0.77,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.8,4.19,5.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,5.6,6.13,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,1.24,2.47,10.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,7.01,4.16,7.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,5.25,1.62,10.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,7.8,0.77,3.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,4.01,4.16,4.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,5.17,2.57,10.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,4.14,3.31,3.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,4.14,2.57,4.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,2.59,2.66,10.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.81,2.59,2.57,5.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,8.57,0.77,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,1.12,7.89,8.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,4.01,2.03,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,9.47,4.19,8.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,2.51,7.89,10.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,6.87,7.92,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,6.87,7.89,9.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,5.17,6.79,8.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,2.99,8.01,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,1.12,2.47,1.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,2.51,7.14,4.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,9.47,2.57,4.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,9.47,6.13,4.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,2.59,2.89,4.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,7.8,6.7,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,5.6,6.79,2.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,8.57,4.16,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.8,7.92,9.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,5.25,7.99,4.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,0.55,2.47,4.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,9.47,7.14,5.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,2.59,2.03,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,4.14,2.66,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,1.12,1.62,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,1.12,6.13,8.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,4.01,6.7,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,7.01,3.31,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,1.24,2.47,4.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,8.41,1.62,5.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,0.55,7.89,7.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,7.49,7.99,5.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,9.47,5.04,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,4.14,4.16,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,2.51,2.66,5.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,8.41,1.62,2.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,1.24,6.79,1.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,7.01,2.03,5.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,8.8,7.89,6.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,5.6,1.62,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,7.8,1.62,10.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,5.17,2.89,7.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,6.87,0.77,4.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,2.99,2.47,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,2.99,6.7,8.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,7.38,5.04,4.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,9.47,4.19,5.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,9.47,2.03,4.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,2.51,0.77,2.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,2.59,4.19,2.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.81,5.25,7.99,10.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,2.99,2.89,8.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,7.8,6.13,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,5.6,7.14,8.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,1.24,2.57,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.41,2.57,4.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,4.01,2.57,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,4.01,8.01,10.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,5.25,7.92,8.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,7.49,7.92,3.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,8.57,4.19,8.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,8.57,8.01,3.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,8.57,4.16,10.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,8.57,3.31,1.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,8.57,7.13,5.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,8.57,2.03,3.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,8.57,5.04,3.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,8.57,1.62,6.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,4.01,1.62,2.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,2.59,2.57,9.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,4.14,7.13,5.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,5.6,0.77,3.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,7.8,7.14,7.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,2.99,7.92,9.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,1.12,6.13,9.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,6.87,3.31,5.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,5.17,3.31,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,7.01,3.31,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,7.38,3.31,10.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,7.38,6.7,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,0.55,6.7,10.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,8.57,6.7,4.0,alternating,2.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.91,8.57,7.13,2.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,8.57,7.99,7.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,8.57,1.62,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,8.57,1.62,6.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,8.57,1.62,1.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.86,8.57,1.62,4.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,8.57,1.62,1.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.57,1.62,6.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.35,8.57,1.62,6.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.01,9.47,1.62,7.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.01,4.14,1.62,2.0,alternating,8.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,2.59,1.62,8.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,4.01,2.03,7.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,0.43,1.12,6.7,6.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,1.12,2.57,6.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,1.12,0.77,6.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.1,1.12,6.13,8.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.41,1.12,7.14,5.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.61,2.99,7.14,8.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,7.17,7.8,7.14,9.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,4.3,7.8,8.01,6.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,5.6,8.01,10.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,6.41,2.51,2.89,6.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,7.38,2.89,9.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,7.01,4.19,4.0,alternating,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,5.17,7.89,6.0,alternating,1.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,8.41,7.89,6.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,9.09,1.24,2.66,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,7.49,2.66,4.0,alternating,10.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,5.25,2.66,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.12,8.8,5.04,4.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.95,8.57,5.04,7.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,3.15,8.57,4.16,9.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,8.57,6.79,6.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,8.57,1.62,6.0,alternating,3.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,8.31,8.57,1.62,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.01,8.57,1.62,1.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,2.81,8.57,1.62,4.0,alternating,6.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.57,1.62,4.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.57,1.62,8.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.57,1.62,5.0,alternating,5.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.57,1.62,5.0,alternating,7.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,5.71,8.57,1.62,10.0,alternating,5.0,0,0,ABCDDCBA
+3.3V,None,9.97,7.74,3.89,5.0,top,2.0,0,0,ABA
+3.3V,Bulk Tie,4.55,4.17,9.42,4.0,bottom,2.0,1,1,ABCDDCBA
+3.3V,Guard Ring,3.1,7.64,6.47,3.0,alternating,6.0,1,0,AAAABBBCCDCCBBBAAAA
+3.3V,Guard Ring,2.9,5.99,4.58,3.0,bottom,4.0,0,1,DCCBBCCAACCBBCCD
+3.3V,Bulk Tie,3.6,0.39,7.08,2.0,top,5.0,0,0,ABBAABBAABBA
+3.3V,None,5.37,8.46,5.39,3.0,alternating,5.0,1,1,AAABCDDCBAAA
+3.3V,None,3.37,0.42,4.2,5.0,bottom,7.0,1,0,ABBA
+3.3V,Bulk Tie,1.97,0.84,4.13,2.0,alternating,3.0,0,1,AAABAAAABAAA
+3.3V,Guard Ring,9.51,1.53,3.26,2.0,top,3.0,1,1,DAABAAACAEACAAABAAD
+3.3V,Guard Ring,9.68,1.6,1.87,1.0,top,4.0,0,0,AABCCDCCBAA
+3.3V,Bulk Tie,9.68,0.42,5.39,4.0,alternating,4.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,9.51,5.99,6.47,3.0,bottom,4.0,1,1,ABBAABBAABBA
+3.3V,None,2.9,7.64,1.87,1.0,top,3.0,1,1,ABA
+3.3V,Bulk Tie,3.1,1.6,3.26,3.0,bottom,5.0,0,0,AAABCDDCBAAA
+3.3V,Guard Ring,3.37,8.46,3.89,2.0,alternating,5.0,0,1,ABCDDCBA
+3.3V,None,1.97,0.39,9.42,5.0,top,6.0,1,1,AABCCDCCBAA
+3.3V,Guard Ring,3.6,4.17,4.13,3.0,top,7.0,1,0,DCCBBCCAACCBBCCD
+3.3V,Bulk Tie,5.37,7.74,4.2,2.0,bottom,3.0,0,1,AAAABBBCCDCCBBBAAAA
+3.3V,Guard Ring,9.97,0.84,7.08,3.0,bottom,2.0,1,1,ABBA
+3.3V,None,4.55,1.53,4.58,3.0,alternating,2.0,0,0,ABBA
+3.3V,Bulk Tie,9.51,8.46,4.58,3.0,top,7.0,0,0,AAABAAAABAAA
+3.3V,None,3.6,1.6,9.42,3.0,alternating,3.0,0,1,DCCBBCCAACCBBCCD
+3.3V,Bulk Tie,9.97,5.99,1.87,2.0,alternating,6.0,1,0,AAABAAAABAAA
+3.3V,Guard Ring,4.55,0.42,4.2,3.0,top,5.0,0,0,AAABAAAABAAA
+3.3V,None,9.68,0.84,3.26,2.0,bottom,5.0,1,1,AAABAAAABAAA
+3.3V,Bulk Tie,2.9,1.53,6.47,3.0,alternating,2.0,0,0,AABCCDCCBAA
+3.3V,Guard Ring,5.37,0.39,3.89,5.0,top,2.0,0,0,AAABCDDCBAAA
+3.3V,None,3.1,4.17,7.08,2.0,top,4.0,1,0,ABCDDCBA
+3.3V,Guard Ring,1.97,7.74,5.39,4.0,bottom,3.0,0,0,ABBAABBAABBA
+3.3V,Bulk Tie,3.37,7.64,4.13,3.0,bottom,3.0,0,0,AABCCDCCBAA
+3.3V,Bulk Tie,3.6,0.84,3.89,3.0,bottom,6.0,1,0,DAABAAACAEACAAABAAD
+3.3V,Bulk Tie,3.37,4.17,5.39,1.0,alternating,4.0,0,1,ABA
+3.3V,None,1.97,0.42,4.58,2.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,Guard Ring,3.1,7.74,9.42,1.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,5.37,1.53,4.13,4.0,bottom,6.0,0,1,ABA
+3.3V,Bulk Tie,4.55,0.39,1.87,3.0,alternating,7.0,1,0,ABBAABBAABBA
+3.3V,Guard Ring,9.97,1.6,6.47,2.0,top,4.0,1,0,ABA
+3.3V,Bulk Tie,9.51,7.64,7.08,5.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,2.9,8.46,3.26,1.0,bottom,2.0,1,0,DAABAAACAEACAAABAAD
+3.3V,Guard Ring,9.68,5.99,4.2,5.0,alternating,3.0,1,1,ABCDDCBA
+3.3V,Bulk Tie,9.97,0.39,3.26,3.0,bottom,3.0,0,0,ABBA
+3.3V,Guard Ring,4.55,0.84,5.39,3.0,top,3.0,1,1,AAAABBBCCDCCBBBAAAA
+3.3V,None,5.37,0.42,1.87,3.0,bottom,5.0,0,1,DAABAAACAEACAAABAAD
+3.3V,None,3.1,5.99,4.13,4.0,top,2.0,0,1,ABBA
+3.3V,Guard Ring,1.97,4.17,3.89,2.0,alternating,5.0,0,0,ABBA
+3.3V,Guard Ring,3.37,7.74,4.58,4.0,top,5.0,1,0,AABCCDCCBAA
+3.3V,None,3.6,1.53,4.2,2.0,top,4.0,0,0,AAABCDDCBAAA
+3.3V,Bulk Tie,9.68,8.46,6.47,5.0,alternating,3.0,0,1,ABBA
+3.3V,Bulk Tie,2.9,1.6,7.08,3.0,bottom,7.0,0,1,AAAABBBCCDCCBBBAAAA
+3.3V,None,9.51,0.42,9.42,3.0,alternating,2.0,0,0,ABA
+3.3V,Guard Ring,9.97,7.64,9.42,3.0,top,5.0,0,1,AAABCDDCBAAA
+3.3V,Guard Ring,3.6,7.64,3.26,2.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,3.37,0.39,6.47,3.0,alternating,2.0,0,0,DCCBBCCAACCBBCCD
+3.3V,Bulk Tie,1.97,5.99,7.08,1.0,bottom,3.0,0,0,AAABCDDCBAAA
+3.3V,Bulk Tie,5.37,0.84,4.58,5.0,bottom,4.0,0,0,AAABCDDCBAAA
+3.3V,None,4.55,1.6,3.89,3.0,alternating,3.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,9.51,4.17,1.87,2.0,alternating,2.0,0,0,AAABCDDCBAAA
+3.3V,Guard Ring,2.9,7.74,4.13,5.0,bottom,5.0,0,0,AAABCDDCBAAA
+3.3V,None,9.68,1.53,3.89,3.0,top,5.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,Guard Ring,3.1,8.46,4.2,3.0,top,2.0,0,0,DCCBBCCAACCBBCCD
+3.3V,Bulk Tie,9.97,0.42,4.13,2.0,bottom,2.0,0,0,ABBAABBAABBA
+3.3V,None,5.37,4.17,3.26,2.0,bottom,7.0,0,0,AABCCDCCBAA
+3.3V,None,3.1,0.39,5.39,3.0,alternating,4.0,0,0,AAABAAAABAAA
+3.3V,None,9.51,0.84,4.2,1.0,alternating,5.0,0,0,AABCCDCCBAA
+3.3V,None,4.55,7.64,5.39,5.0,alternating,4.0,0,0,AABCCDCCBAA
+3.3V,None,1.97,8.46,1.87,3.0,top,4.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,3.37,1.6,4.58,2.0,alternating,6.0,0,0,ABBAABBAABBA
+3.3V,None,3.6,5.99,5.39,5.0,alternating,2.0,0,0,ABA
+3.3V,None,9.68,7.74,7.08,3.0,alternating,6.0,0,0,AAABCDDCBAAA
+3.3V,None,2.9,0.42,3.89,2.0,bottom,3.0,0,0,ABBAABBAABBA
+3.3V,None,9.97,1.53,5.39,2.0,alternating,7.0,0,0,ABCDDCBA
+3.3V,None,3.37,0.84,9.42,3.0,alternating,4.0,0,0,ABBAABBAABBA
+3.3V,None,1.97,7.64,4.2,3.0,alternating,2.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,4.55,7.74,6.47,1.0,alternating,2.0,0,0,AAABAAAABAAA
+3.3V,None,5.37,5.99,9.42,3.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,3.6,0.42,6.47,4.0,alternating,3.0,0,0,AAABCDDCBAAA
+3.3V,None,9.51,0.39,4.13,5.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,3.1,1.53,1.87,3.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,2.9,4.17,4.2,4.0,alternating,4.0,0,0,ABBAABBAABBA
+3.3V,None,9.68,4.17,4.58,3.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,5.37,1.6,7.08,2.0,alternating,2.0,0,0,AAABAAAABAAA
+3.3V,None,4.55,8.46,7.08,2.0,alternating,4.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,3.37,5.99,3.26,2.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,9.97,8.46,9.42,3.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,9.68,7.64,3.89,4.0,alternating,7.0,0,0,AAABAAAABAAA
+3.3V,None,3.1,0.84,1.87,5.0,alternating,2.0,0,0,ABA
+3.3V,None,3.6,7.74,1.87,3.0,alternating,4.0,0,0,ABCDDCBA
+3.3V,None,1.97,1.6,3.26,5.0,alternating,5.0,0,0,ABCDDCBA
+3.3V,None,2.9,0.39,4.58,3.0,alternating,5.0,0,0,ABCDDCBA
+3.3V,None,9.51,1.6,5.39,1.0,alternating,2.0,0,0,ABBA
+3.3V,None,9.68,0.39,4.13,1.0,alternating,2.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,9.97,4.17,6.47,3.0,alternating,3.0,0,0,AAABAAAABAAA
+3.3V,None,3.37,1.53,7.08,3.0,alternating,3.0,0,0,AAABAAAABAAA
+3.3V,None,4.55,5.99,3.26,4.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,5.37,7.64,6.47,2.0,alternating,3.0,0,0,ABCDDCBA
+3.3V,None,3.1,0.42,3.89,1.0,alternating,3.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,2.9,0.84,5.39,3.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,1.97,1.53,6.47,5.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,3.6,8.46,4.58,1.0,alternating,3.0,0,0,AABCCDCCBAA
+3.3V,None,9.97,0.42,3.26,5.0,alternating,4.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,9.51,7.74,3.89,3.0,alternating,2.0,0,0,AABCCDCCBAA
+3.3V,None,9.68,0.42,9.42,2.0,alternating,2.0,0,0,AAABAAAABAAA
+3.3V,None,9.97,7.74,4.58,2.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,2.9,8.46,4.13,3.0,alternating,6.0,0,0,ABCDDCBA
+3.3V,None,3.1,0.84,4.58,2.0,alternating,3.0,0,0,ABA
+3.3V,None,5.37,7.64,4.58,1.0,alternating,4.0,0,0,ABBA
+3.3V,None,4.55,0.42,7.08,5.0,alternating,5.0,0,0,AABCCDCCBAA
+3.3V,None,3.37,0.84,1.87,2.0,alternating,5.0,0,0,AAABCDDCBAAA
+3.3V,None,9.51,1.53,9.42,5.0,alternating,3.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,3.6,5.99,3.89,3.0,alternating,4.0,0,0,ABBA
+3.3V,None,1.97,4.17,4.2,3.0,alternating,2.0,0,0,ABA
+3.3V,None,4.55,0.39,4.13,2.0,alternating,5.0,0,0,ABA
+3.3V,None,2.9,4.17,9.42,2.0,alternating,6.0,0,0,ABBA
+3.3V,None,9.68,7.74,3.26,3.0,alternating,4.0,0,0,ABA
+3.3V,None,3.6,1.6,4.2,4.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,9.51,0.84,6.47,4.0,alternating,5.0,0,0,ABCDDCBA
+3.3V,None,3.37,0.39,4.2,2.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,5.37,5.99,1.87,3.0,alternating,7.0,0,0,ABBA
+3.3V,None,3.1,1.53,7.08,2.0,alternating,2.0,0,0,ABBAABBAABBA
+3.3V,None,5.37,7.64,5.39,3.0,alternating,2.0,0,0,ABBAABBAABBA
+3.3V,None,3.6,8.46,7.08,4.0,alternating,7.0,0,0,ABA
+3.3V,None,9.68,0.42,4.13,3.0,alternating,5.0,0,0,ABBAABBAABBA
+3.3V,None,9.97,7.64,4.2,3.0,alternating,4.0,0,0,AABCCDCCBAA
+3.3V,None,1.97,4.17,5.39,3.0,alternating,3.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,3.6,1.6,4.13,3.0,alternating,4.0,0,0,ABA
+3.3V,None,1.97,0.42,1.87,3.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,3.1,8.46,6.47,5.0,alternating,2.0,0,0,ABBAABBAABBA
+3.3V,None,3.37,1.53,3.26,1.0,alternating,4.0,0,0,ABBAABBAABBA
+3.3V,None,9.51,5.99,3.89,3.0,alternating,4.0,0,0,AAABAAAABAAA
+3.3V,None,2.9,0.39,6.47,3.0,alternating,3.0,0,0,ABCDDCBA
+3.3V,None,2.9,7.74,1.87,2.0,alternating,3.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,4.55,7.74,5.39,2.0,alternating,5.0,0,0,ABA
+3.3V,None,2.9,5.99,7.08,5.0,alternating,4.0,0,0,AAABAAAABAAA
+3.3V,None,3.6,7.64,4.58,2.0,alternating,2.0,0,0,AAABAAAABAAA
+3.3V,None,4.55,0.84,9.42,2.0,alternating,4.0,0,0,AAABCDDCBAAA
+3.3V,None,9.51,0.84,7.08,4.0,alternating,6.0,0,0,ABA
+3.3V,None,3.37,1.6,5.39,3.0,alternating,2.0,0,0,ABCDDCBA
+3.3V,None,3.1,0.84,6.47,1.0,alternating,5.0,0,0,AAABAAAABAAA
+3.3V,None,3.1,0.42,9.42,3.0,alternating,5.0,0,0,ABCDDCBA
+3.3V,None,1.97,7.64,3.89,4.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,9.68,5.99,3.26,3.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,5.37,7.74,3.26,3.0,alternating,7.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,3.1,1.6,4.13,3.0,alternating,5.0,0,0,AABCCDCCBAA
+3.3V,None,1.97,0.39,4.2,3.0,alternating,5.0,0,0,ABA
+3.3V,None,9.97,1.53,3.26,4.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,1.97,8.46,5.39,2.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,3.6,8.46,7.08,1.0,alternating,7.0,0,0,AAABCDDCBAAA
+3.3V,None,2.9,8.46,4.2,5.0,alternating,5.0,0,0,AAABAAAABAAA
+3.3V,None,9.97,4.17,4.2,1.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,5.37,8.46,4.13,3.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,9.68,8.46,3.89,2.0,alternating,7.0,0,0,ABCDDCBA
+3.3V,None,3.37,0.84,9.42,2.0,alternating,7.0,0,0,ABCDDCBA
+3.3V,None,3.37,7.74,4.58,5.0,alternating,7.0,0,0,ABBA
+3.3V,None,9.51,5.99,1.87,2.0,alternating,5.0,0,0,ABBA
+3.3V,None,4.55,7.64,4.2,3.0,alternating,6.0,0,0,ABA
+3.3V,None,3.37,4.17,7.08,3.0,alternating,3.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,2.9,4.17,5.39,2.0,alternating,6.0,0,0,ABBA
+3.3V,None,3.6,4.17,3.26,5.0,alternating,6.0,0,0,ABBA
+3.3V,None,3.1,1.53,1.87,4.0,alternating,2.0,0,0,AAABAAAABAAA
+3.3V,None,4.55,1.53,4.58,3.0,alternating,7.0,0,0,ABA
+3.3V,None,9.51,1.53,9.42,1.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,9.51,0.39,3.89,3.0,alternating,2.0,0,0,AAABAAAABAAA
+3.3V,None,9.51,1.6,4.13,2.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,9.68,1.6,6.47,2.0,alternating,4.0,0,0,ABA
+3.3V,None,5.37,8.46,3.26,3.0,alternating,6.0,0,0,ABBA
+3.3V,None,5.37,1.53,7.08,3.0,alternating,5.0,0,0,AAABAAAABAAA
+3.3V,None,9.97,4.17,4.2,3.0,alternating,2.0,0,0,ABA
+3.3V,None,9.51,1.6,4.2,2.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,5.37,7.64,4.2,5.0,alternating,3.0,0,0,AAAABBBCCDCCBBBAAAA
+3.3V,None,3.1,7.64,6.47,2.0,alternating,3.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,3.6,5.99,4.13,5.0,alternating,2.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,2.9,5.99,3.89,3.0,alternating,4.0,0,0,AAABCDDCBAAA
+3.3V,None,3.37,5.99,9.42,5.0,alternating,2.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,9.97,5.99,4.58,5.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,9.68,5.99,1.87,3.0,alternating,4.0,0,0,AABCCDCCBAA
+3.3V,None,9.68,7.74,4.2,3.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,4.55,0.42,4.2,2.0,alternating,2.0,0,0,ABA
+3.3V,None,4.55,0.39,7.08,3.0,alternating,2.0,0,0,ABBA
+3.3V,None,1.97,0.39,7.08,1.0,alternating,6.0,0,0,ABCDDCBA
+3.3V,None,9.51,8.46,7.08,3.0,alternating,3.0,0,0,AAABCDDCBAAA
+3.3V,None,4.55,8.46,3.26,2.0,alternating,7.0,0,0,AAABCDDCBAAA
+3.3V,None,9.68,7.64,3.26,3.0,alternating,3.0,0,0,ABBAABBAABBA
+3.3V,None,9.68,4.17,1.87,5.0,alternating,4.0,0,0,AAABAAAABAAA
+3.3V,None,3.37,1.53,4.58,4.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,2.9,1.53,9.42,2.0,alternating,2.0,0,0,AABCCDCCBAA
+3.3V,None,2.9,0.39,3.89,2.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,2.9,0.42,4.13,2.0,alternating,3.0,0,0,AABCCDCCBAA
+3.3V,None,2.9,7.74,6.47,2.0,alternating,3.0,0,0,DAABAAACAEACAAABAAD
+3.3V,None,3.6,1.6,5.39,3.0,alternating,7.0,0,0,ABBA
+3.3V,None,3.1,1.6,4.2,5.0,alternating,3.0,0,0,ABBAABBAABBA
+3.3V,None,5.37,0.84,4.2,3.0,alternating,2.0,0,0,AAABCDDCBAAA
+3.3V,None,5.37,0.84,7.08,1.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,1.97,0.84,7.08,3.0,alternating,3.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,9.97,0.84,3.26,3.0,alternating,2.0,0,0,AAABCDDCBAAA
+3.3V,None,2.9,0.84,3.26,4.0,alternating,4.0,0,0,AABCCDCCBAA
+3.3V,None,5.37,0.84,3.26,3.0,alternating,3.0,0,0,AABCCDCCBAA
+3.3V,None,5.37,0.84,5.39,2.0,alternating,2.0,0,0,ABA
+3.3V,None,9.68,0.84,6.47,3.0,alternating,3.0,0,0,ABBAABBAABBA
+3.3V,None,9.51,0.84,6.47,3.0,alternating,3.0,0,0,ABCDDCBA
+3.3V,None,3.1,0.84,4.13,3.0,alternating,3.0,0,0,ABA
+3.3V,None,3.6,8.46,4.13,2.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD
+3.3V,None,3.6,5.99,4.13,1.0,alternating,3.0,0,0,ABBAABBAABBA
+3.3V,None,3.6,1.53,3.89,3.0,alternating,4.0,0,0,ABBAABBAABBA
+3.3V,None,3.37,1.6,3.89,5.0,alternating,3.0,0,0,ABCDDCBA
+3.3V,None,3.37,4.17,9.42,3.0,alternating,2.0,0,0,ABA
+3.3V,None,3.37,7.64,4.58,3.0,alternating,2.0,0,0,ABA
+3.3V,None,3.37,7.74,1.87,3.0,alternating,2.0,0,0,AABCCDCCBAA
+3.3V,None,4.55,0.42,1.87,1.0,alternating,4.0,0,0,ABCDDCBA
+3.3V,None,9.97,0.39,1.87,4.0,alternating,3.0,0,0,AAABCDDCBAAA
+3.3V,None,1.97,0.84,1.87,4.0,alternating,3.0,0,0,ABA
+3.3V,None,1.97,0.84,4.2,2.0,alternating,4.0,0,0,AABCCDCCBAA
+3.3V,None,1.97,0.84,3.26,3.0,alternating,2.0,0,0,ABA
+3.3V,None,1.97,5.99,3.26,2.0,alternating,2.0,0,0,AABCCDCCBAA
+3.3V,None,1.97,8.46,3.26,2.0,alternating,2.0,0,0,ABA
+3.3V,None,1.97,8.46,3.26,3.0,alternating,2.0,0,0,ABA
+3.3V,None,3.37,8.46,3.26,4.0,alternating,2.0,0,0,ABA
+3.3V,None,3.37,1.53,3.26,3.0,alternating,2.0,0,0,ABA
+3.3V,None,3.37,7.64,7.08,2.0,alternating,2.0,0,0,ABBA
+3.3V,None,3.37,4.17,1.87,3.0,alternating,2.0,0,0,ABCDDCBA
+3.3V,None,3.37,1.6,1.87,4.0,alternating,3.0,0,0,ABBA
+3.3V,None,3.37,0.39,1.87,4.0,alternating,2.0,0,0,ABA
+3.3V,None,3.37,0.42,1.87,3.0,alternating,2.0,0,0,ABBAABBAABBA
+3.3V,None,3.37,7.74,1.87,3.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,1.87,5.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,4.13,3.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,3.89,1.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,6.47,3.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,4.58,3.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,9.42,4.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,5.39,5.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,3.26,3.0,alternating,2.0,0,0,ABA
+3.3V,None,3.6,0.84,3.26,5.0,alternating,2.0,0,0,ABA
+3.3V,None,3.6,8.46,3.26,3.0,alternating,2.0,0,0,ABA
+3.3V,None,3.6,5.99,3.26,2.0,alternating,2.0,0,0,ABA
+3.3V,None,5.37,1.53,3.26,4.0,alternating,2.0,0,0,ABA
+3.3V,None,9.51,1.53,3.26,3.0,alternating,2.0,0,0,ABA
+3.3V,None,9.68,1.53,3.26,2.0,alternating,2.0,0,0,ABA
+3.3V,None,4.55,1.53,3.26,5.0,alternating,2.0,0,0,ABA
+3.3V,None,3.1,1.6,3.26,3.0,alternating,2.0,0,0,ABA
+3.3V,None,3.1,4.17,3.26,5.0,alternating,6.0,0,0,ABBAABBAABBA
+3.3V,None,3.1,7.64,3.26,2.0,alternating,2.0,0,0,ABA
+3.3V,None,9.97,7.64,3.26,5.0,alternating,2.0,0,0,ABA
+3.3V,None,9.97,7.74,3.26,1.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,7.74,3.26,5.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.42,3.26,3.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.39,3.26,2.0,alternating,2.0,0,0,ABA
+3.3V,None,2.9,0.84,3.26,2.0,alternating,2.0,0,0,ABBAABBAABBA
