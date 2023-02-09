@@ -60,6 +60,12 @@ ngspice-regression: | $(CONDA_ENV_PYTHON)
 ################################################################################
 ## pcells Regression 
 ################################################################################
+fet_test-gds-pcells: | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing && make fet_gds_gen
+
+fet_test-cdl-pcells: | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/lvs_test && make fet_cdl_gen
+
 fet_test-LVS-pcells: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/lvs_test && make fet_lvs_test
 

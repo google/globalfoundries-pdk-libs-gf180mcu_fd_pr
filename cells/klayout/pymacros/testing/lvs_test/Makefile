@@ -5,7 +5,8 @@ lvs_test : fet_gds_gen fet_cdl_gen fet_lvs_test
 
 .ONESHELL:
 fet_gds_gen:
-	@python3 ../generate_pcells --device=fet
+	@cd ..
+	@python3 generate_pcell.py --device=fet
 
 .ONESHELL:
 fet_cdl_gen:
@@ -13,4 +14,4 @@ fet_cdl_gen:
 
 .ONESHELL:
 fet_lvs_test:
-	@python3 pcells_lvs_regression.py --device="npn_00p54x02p00"
+	@python3 pcells_lvs_regression.py --device=fet
