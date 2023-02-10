@@ -17,7 +17,7 @@
 ########################################################################################################################
 
 import pya
-from .draw_cap_mos import draw_cap_nmos, draw_cap_nmos_b, draw_cap_pmos, draw_cap_pmos_b
+from .draw_cap_mos import draw_cap_mos
 
 cap_nmos_w = 1.88
 cap_nmos_l = 1
@@ -30,6 +30,8 @@ cap_nmos_b_l = 1
 
 cap_pmos_b_w = 1.88
 cap_pmos_b_l = 1
+
+poly_spacing = 0.24
 
 
 class cap_nmos(pya.PCellDeclarationHelper):
@@ -49,31 +51,31 @@ class cap_nmos(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l_gate", self.TypeDouble, "Length", default=cap_nmos_l, unit="um")
-        self.param("w_gate", self.TypeDouble, "Width", default=cap_nmos_w, unit="um")
+        self.param("lc", self.TypeDouble, "Length", default=cap_nmos_l, unit="um")
+        self.param("wc", self.TypeDouble, "Width", default=cap_nmos_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("g_lbl", self.TypeString, "Gate terminal label", default="")
+
+        self.param("sd_lbl", self.TypeString, "Source/Drain terminal label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return (
-            "cap_nmos(L="
-            + ("%.3f" % self.l_gate)
-            + ",W="
-            + ("%.3f" % self.w_gate)
-            + ")"
-        )
+        return "cap_nmos(LC=" + ("%.3f" % self.lc) + ",WC=" + ("%.3f" % self.wc) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w_gate * self.l_gate
-        self.perim = 2 * (self.w_gate + self.l_gate)
+        self.area = self.wc * self.lc
+        self.perim = 2 * (self.wc + self.lc)
         # w,l must be larger or equal than min. values.
-        if (self.l_gate) < cap_nmos_l:
-            self.l_gate = cap_nmos_l
-        if (self.w_gate) < cap_nmos_w:
-            self.w_gate = cap_nmos_w
+        if (self.lc) < cap_nmos_l:
+            self.lc = cap_nmos_l
+        if (self.wc) < cap_nmos_w:
+            self.wc = cap_nmos_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -83,8 +85,8 @@ class cap_nmos(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_gateayout.dbu / 2
-        self.l_gate = self.l_gateayout.get_info(self.l_gateayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.lc = self.layout.get_info(self.lcayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -92,13 +94,17 @@ class cap_nmos(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_cap_nmos(
-            self.l_gateayout,
-            self.l_gate,
-            self.w_gate,
-            self.volt,
-            self.deepnwell,
-            self.pcmpgr,
+        np_instance = draw_cap_mos(
+            self.layout,
+            type="cap_nmos",
+            lc=self.lc,
+            wc=self.wc,
+            volt=self.volt,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            g_lbl=self.g_lbl,
+            sd_lbl=self.sd_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -130,31 +136,31 @@ class cap_pmos(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l_gate", self.TypeDouble, "Length", default=cap_pmos_l, unit="um")
-        self.param("w_gate", self.TypeDouble, "Width", default=cap_pmos_w, unit="um")
+        self.param("lc", self.TypeDouble, "Length", default=cap_pmos_l, unit="um")
+        self.param("wc", self.TypeDouble, "Width", default=cap_pmos_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("g_lbl", self.TypeString, "Gate terminal label", default="")
+
+        self.param("sd_lbl", self.TypeString, "Source/Drain terminal label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return (
-            "cap_pmos(L="
-            + ("%.3f" % self.l_gate)
-            + ",W="
-            + ("%.3f" % self.w_gate)
-            + ")"
-        )
+        return "cap_pmos(LC=" + ("%.3f" % self.lc) + ",WC=" + ("%.3f" % self.wc) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w_gate * self.l_gate
-        self.perim = 2 * (self.w_gate + self.l_gate)
+        self.area = self.wc * self.lc
+        self.perim = 2 * (self.wc + self.lc)
         # w,l must be larger or equal than min. values.
-        if (self.l_gate) < cap_pmos_l:
-            self.l_gate = cap_pmos_l
-        if (self.w_gate) < cap_pmos_w:
-            self.w_gate = cap_pmos_w
+        if (self.lc) < cap_pmos_l:
+            self.lc = cap_pmos_l
+        if (self.wc) < cap_pmos_w:
+            self.wc = cap_pmos_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -164,8 +170,8 @@ class cap_pmos(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_gateayout.dbu / 2
-        self.l_gate = self.l_gateayout.get_info(self.l_gateayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.lc = self.layout.get_info(self.lcayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -173,13 +179,17 @@ class cap_pmos(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_cap_pmos(
-            self.l_gateayout,
-            self.l_gate,
-            self.w_gate,
-            self.volt,
-            self.deepnwell,
-            self.pcmpgr,
+        np_instance = draw_cap_mos(
+            self.layout,
+            type="cap_pmos",
+            lc=self.lc,
+            wc=self.wc,
+            volt=self.volt,
+            deepnwell=self.deepnwell,
+            pcmpgr=self.pcmpgr,
+            lbl=self.lbl,
+            g_lbl=self.g_lbl,
+            sd_lbl=self.sd_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -209,31 +219,31 @@ class cap_nmos_b(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l_gate", self.TypeDouble, "Length", default=cap_nmos_b_l, unit="um")
-        self.param("w_gate", self.TypeDouble, "Width", default=cap_nmos_b_w, unit="um")
+        self.param("lc", self.TypeDouble, "Length", default=cap_nmos_b_l, unit="um")
+        self.param("wc", self.TypeDouble, "Width", default=cap_nmos_b_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("g_lbl", self.TypeString, "Gate terminal label", default="")
+
+        self.param("sd_lbl", self.TypeString, "Source/Drain terminal label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return (
-            "cap_nmos_b(L="
-            + ("%.3f" % self.l_gate)
-            + ",W="
-            + ("%.3f" % self.w_gate)
-            + ")"
-        )
+        return "cap_nmos_b(LC=" + ("%.3f" % self.lc) + ",WC=" + ("%.3f" % self.wc) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w_gate * self.l_gate
-        self.perim = 2 * (self.w_gate + self.l_gate)
+        self.area = self.wc * self.lc
+        self.perim = 2 * (self.wc + self.lc)
         # w,l must be larger or equal than min. values.
-        if (self.l_gate) < cap_nmos_b_l:
-            self.l_gate = cap_nmos_b_l
-        if (self.w_gate) < cap_nmos_b_w:
-            self.w_gate = cap_nmos_b_w
+        if (self.lc) < cap_nmos_b_l:
+            self.lc = cap_nmos_b_l
+        if (self.wc) < cap_nmos_b_w:
+            self.wc = cap_nmos_b_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -243,8 +253,8 @@ class cap_nmos_b(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_gateayout.dbu / 2
-        self.l_gate = self.l_gateayout.get_info(self.l_gateayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.lc = self.layout.get_info(self.lcayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -252,8 +262,17 @@ class cap_nmos_b(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_cap_nmos_b(
-            self.l_gateayout, self.l_gate, self.w_gate, self.volt
+        np_instance = draw_cap_mos(
+            self.layout,
+            type="cap_nmos_b",
+            lc=self.lc,
+            wc=self.wc,
+            volt=self.volt,
+            deepnwell=0,  # self.deepnwell,
+            pcmpgr=0,  # self.pcmpgr,
+            lbl=self.lbl,
+            g_lbl=self.g_lbl,
+            sd_lbl=self.sd_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
@@ -283,31 +302,31 @@ class cap_pmos_b(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("l_gate", self.TypeDouble, "Length", default=cap_pmos_b_l, unit="um")
-        self.param("w_gate", self.TypeDouble, "Width", default=cap_pmos_b_w, unit="um")
+        self.param("lc", self.TypeDouble, "Length", default=cap_pmos_b_l, unit="um")
+        self.param("wc", self.TypeDouble, "Width", default=cap_pmos_b_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
+        self.param("lbl", self.TypeBoolean, "Labels", default=0)
+
+        self.param("g_lbl", self.TypeString, "Gate terminal label", default="")
+
+        self.param("sd_lbl", self.TypeString, "Source/Drain terminal label", default="")
+
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return (
-            "cap_pmos_b(L="
-            + ("%.3f" % self.l_gate)
-            + ",W="
-            + ("%.3f" % self.w_gate)
-            + ")"
-        )
+        return "cap_pmos_b(LC=" + ("%.3f" % self.lc) + ",WC=" + ("%.3f" % self.wc) + ")"
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
-        self.area = self.w_gate * self.l_gate
-        self.perim = 2 * (self.w_gate + self.l_gate)
+        self.area = self.wc * self.lc
+        self.perim = 2 * (self.wc + self.lc)
         # w,l must be larger or equal than min. values.
-        if (self.l_gate) < cap_pmos_b_l:
-            self.l_gate = cap_pmos_b_l
-        if (self.w_gate) < cap_pmos_b_w:
-            self.w_gate = cap_pmos_b_w
+        if (self.lc) < cap_pmos_b_l:
+            self.lc = cap_pmos_b_l
+        if (self.wc) < cap_pmos_b_w:
+            self.wc = cap_pmos_b_w
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -317,8 +336,8 @@ class cap_pmos_b(pya.PCellDeclarationHelper):
     def parameters_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we set r and l from the shape's
         # bounding box width and layer
-        self.r = self.shape.bbox().width() * self.l_gateayout.dbu / 2
-        self.l_gate = self.l_gateayout.get_info(self.l_gateayer)
+        self.r = self.shape.bbox().width() * self.layout.dbu / 2
+        self.lc = self.layout.get_info(self.lcayer)
 
     def transformation_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we use the center of the shape's
@@ -326,8 +345,17 @@ class cap_pmos_b(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_cap_pmos_b(
-            self.l_gateayout, self.l_gate, self.w_gate, self.volt
+        np_instance = draw_cap_mos(
+            self.layout,
+            type="cap_pmos_b",
+            lc=self.lc,
+            wc=self.wc,
+            volt=self.volt,
+            deepnwell=0,  # self.deepnwell,
+            pcmpgr=0,  # self.pcmpgr,
+            lbl=self.lbl,
+            g_lbl=self.g_lbl,
+            sd_lbl=self.sd_lbl,
         )
         write_cells = pya.CellInstArray(
             np_instance.cell_index(),
