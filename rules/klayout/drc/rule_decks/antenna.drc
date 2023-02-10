@@ -47,7 +47,7 @@ if $report
     logger.info("GF180MCU Klayout antenna checks DRC runset output at: %s" % [$report])
     report("GF180 ANTENNA DRC runset", $report)
 else
-    logger.info("GF180MCU Klayout antenna checks DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180mcu_antenna.lyrdb").path])
+    logger.info("GF180MCU Klayout antenna checks DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180mcu_antenna.lyrdb")])
     report("GF180 DRC runset", File.join(File.dirname(RBA::CellView::active.filename), "gf180mcu_antenna.lyrdb"))
 end
 
@@ -162,7 +162,7 @@ end #METAL_TOP
 if $metal_level
     METAL_LEVEL = $metal_level
 else
-    METAL_LEVEL = "6LM"
+    METAL_LEVEL = "5LM"
 end
 
 logger.info("METAL_STACK Selected is %s" % [METAL_LEVEL])
