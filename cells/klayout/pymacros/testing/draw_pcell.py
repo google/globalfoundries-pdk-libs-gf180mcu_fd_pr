@@ -2,8 +2,8 @@
 Globalfoundries 180u PCells Generator.
 
 Usage:
-    generate_pcell.py (--help| -h)
-    generate_pcell.py (--device=<device_name>)
+    draw_pcell.py (--help| -h)
+    draw_pcell.py (--device=<device_name>)
 
 Options:
     --help -h                   Print this help message.
