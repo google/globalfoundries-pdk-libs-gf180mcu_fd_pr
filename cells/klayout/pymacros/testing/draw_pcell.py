@@ -3,6 +3,7 @@ import sys
 import os
 import pandas as pd
 import math
+import gdsfactory as gf
 
 # Set device name form env. variable
 device_pcell = device_in  # noqa: F821
@@ -69,13 +70,13 @@ def draw_pcell(device_name, device_space):
         options = pya.SaveLayoutOptions()
         options.write_context_info = False
         layout.write(f"testcases/{device_name}_pcells.gds", options)
-        
 
-    # # draw dnwell for dw devices
-    # if "_dn" in device:
+    # draw dnwell for dw devices
+    # if "pfet" in device and "_dn" not in device_name:
+    #     nwell_layer = (21, 0)
     #     bbox = str(layout.top_cell().dbbox()).replace("(","").replace(")","").replace(";",",").split(",")
-    #     top.shapes(dnwell).insert(pya.Box(float(bbox[0])*db_precession, float(bbox[1])*db_precession , float(bbox[2])*db_precession, float(bbox[2])*db_precession))
-    #     layout.write(f"testcases/{device_name}_dn_pcells.gds", options)
+    #     top.shapes(nwell_layer).insert(pya.Box(float(bbox[0])*db_precession, float(bbox[1])*db_precession , float(bbox[2])*db_precession, float(bbox[3])*db_precession))
+    #     layout.write(f"testcases/{device_name}_pcells.gds", options)
 
 
 def get_var(device_name, row, n):  # noqa: C901
@@ -229,7 +230,7 @@ def get_var(device_name, row, n):  # noqa: C901
         g_lbl = []
         sd_lbl = []
         sub_lbl = "sub"
-        if interdig == 0:
+        if interdig == 0 or num_fingers == 1:
 
             for i in range(int(num_fingers)):
                 g_lbl.append(f"g{n}")
@@ -250,12 +251,13 @@ def get_var(device_name, row, n):  # noqa: C901
             nl = len(nt)
             u = 0
             for k in range(nl):
-                for j in range(len(patt)):
-                    if patt[j] == nt[k]:
-                        u += 1
-                        g_lbl.append(f"g{nt[k]}{n}")
+                g_lbl.append(f"g{nt[k]}{n}")
+                # for j in range(len(patt)):
+                #     if patt[j] == nt[k]:
+                #         u += 1
+                #         g_lbl.append(f"g{nt[k]}{n}")
 
-                u = 0
+                # u = 0
 
             for i in range(int(len(patt) + 1)):
                 if i % 2 == 0:
@@ -450,7 +452,8 @@ def get_var(device_name, row, n):  # noqa: C901
         g_lbl = []
         sd_lbl = []
         sub_lbl = "sub"
-        if interdig == 0:
+
+        if interdig == 0 or num_fingers == 1:
 
             for i in range(int(num_fingers)):
                 g_lbl.append(f"g{n}")
@@ -471,10 +474,7 @@ def get_var(device_name, row, n):  # noqa: C901
             nl = len(nt)
             u = 0
             for k in range(nl):
-                for j in range(len(patt)):
-                    if patt[j] == nt[k]:
-                        u += 1
-                        g_lbl.append(f"g{nt[k]}{n}")
+                g_lbl.append(f"g{nt[k]}{n}")
 
                 u = 0
 
@@ -484,12 +484,12 @@ def get_var(device_name, row, n):  # noqa: C901
                 else:
                     sd_lbl.append(f"d{n}")
         param = {
-            "w": width,
-            "l": length,
+            "w_gate": width,
+            "l_gate": length,
             "ld": diff_length,
             "nf": num_fingers,
             "bulk": bulk,
-            "volt" : volt_area,
+            "volt": volt_area,
             "gate_con_pos": gate_con_pos,
             "sd_con_col": sd_con_col,
             "cont_bet_fin": cont_bet_fin,
@@ -619,8 +619,41 @@ if "MIM" in device_pcell:
 if "fet" in device_pcell and "cap_" not in device_pcell:
     if "10v0_asym" in device_pcell or "nvt" in device_pcell:
         draw_pcell(device_pcell, 450)
+    elif "pfet" in device_pcell and "_dn" not in device_pcell:
+        draw_pcell(device_pcell, 450)
+        c = gf.Component(f"{device_pcell}_pcells")
+        c1 = gf.read.from_gdspaths([f"testcases/{device_pcell}_pcells.gds"])
+        # gf.read.from_gdspaths()
+        c1_ref = c.add_ref(c1)
+        nwell_layer = (21, 0)
+        nw = c.add_ref(
+            gf.components.rectangle(
+                size=(c1_ref.size[0] + (2 * 10), c1_ref.size[1] + (2 * 10)),
+                layer=nwell_layer,
+            )
+        )
+        nw.xmin = c1_ref.xmin - 10
+        nw.ymin = c1_ref.ymin - 10
+        c.flatten()
+        
+        c.write_gds(f"testcases/{device_pcell}_pcells.gds")
+        # layout.read(f"testcases/{device_pcell}_pcells.gds")
+        # cell_name = f"{device_pcell}_pcells"
+        # inst = layout.cell(cell_name)
+        # write_cells = pya.CellInstArray(
+        #     inst.cell_index(),
+        #     pya.Trans(pya.Point(0, 0)),
+        #     pya.Vector(0, 0),
+        #     pya.Vector(0, 0),
+        #     1,
+        #     1,
+        # )
+        
+        # inst.insert(write_cells)
+        # inst.flatten(2)
+
     else:
-        draw_pcell(device_pcell, 250)
+        draw_pcell(device_pcell, 450)
 
 # ======== cap_mos Gen. ========
 

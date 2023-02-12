@@ -67,6 +67,7 @@ def alter_interdig(
     sd_diff_intr,
     l_gate=0.15,
     inter_sd_l=0.15,
+    sd_l=0.36,
     nf=1,
     pat="",
     pc_x=0.1,
@@ -105,14 +106,30 @@ def alter_interdig(
         else:
             pat_o.append(pat[i])
 
+    nt = []
+    [nt.append(x) for x in pat if x not in nt]
+
     nt_o = []
     [nt_o.append(x) for x in pat_o if x not in nt_o]
 
     nt_e = []
     [nt_e.append(x) for x in pat_e if x not in nt_e]
 
+    nl = len(nt)
     nl_b = len(nt_e)
     nl_u = len(nt_o)
+
+    g_lbl_e = []
+    for i in range(nl_b):
+        for j in range(nl):
+            if nt[j] == nt_e[i]:
+                g_lbl_e.append(g_lbl[j])
+
+    g_lbl_o = []
+    for i in range(nl_u):
+        for j in range(nl):
+            if nt[j] == nt_o[i]:
+                g_lbl_o.append(g_lbl[j])
 
     m2_y = via_size[1] + 2 * via_enc[1]
     m2 = gf.components.rectangle(
@@ -176,8 +193,8 @@ def alter_interdig(
                         ),
                         layer=layer["metal1_label"],
                         lbl=lbl,
-                        lbl_lst=g_lbl,
-                        lbl_valid_len=nl,
+                        lbl_lst=g_lbl_o,
+                        lbl_valid_len=nl_u,
                         index=i,
                     )
                 )
@@ -230,8 +247,8 @@ def alter_interdig(
                         ),
                         layer=layer["metal1_label"],
                         lbl=lbl,
-                        lbl_lst=g_lbl,
-                        lbl_valid_len=nl,
+                        lbl_lst=g_lbl_e,
+                        lbl_valid_len=nl_b,
                         index=i,
                     )
                 )
@@ -245,22 +262,25 @@ def alter_interdig(
 
                 m2_join_b = c_inst.add_ref(
                     gf.components.rectangle(
-                        size=(m2_y + (i + 1) * (m3_spacing + m3_x), m2_y,),
+                        size=(m2_y + sd_l + (i + 1) * (m3_spacing + m3_x), m2_y,),
+                        # size = (m2_arrb.xmin - sd_diff.xmin , m2_y),
                         layer=layer["metal2"],
                     ).move(
                         (
-                            m2_arrb.xmin - (m2_y + (i + 1) * (m3_spacing + m3_x)),
+                            m2_arrb.xmin
+                            - (m2_y + sd_l + (i + 1) * (m3_spacing + m3_x)),
                             m2_arrb.ymax - i * (m2_spacing + m2_y) - m2_y,
                         )
                     )
                 )
                 m2_join_u = c_inst.add_ref(
                     gf.components.rectangle(
-                        size=(m2_y + (i + 1) * (m3_spacing + m3_x), m2_y,),
+                        size=(m2_y + sd_l + (i + 1) * (m3_spacing + m3_x), m2_y,),
                         layer=layer["metal2"],
                     ).move(
                         (
-                            m2_arru.xmin - (m2_y + (i + 1) * (m3_spacing + m3_x)),
+                            m2_arru.xmin
+                            - (m2_y + sd_l + (i + 1) * (m3_spacing + m3_x)),
                             m2_arru.ymin + j * (m2_spacing + m2_y),
                         )
                     )
@@ -351,6 +371,7 @@ def interdigit(
                     sd_diff_intr=sd_diff_intr,
                     l_gate=l_gate,
                     inter_sd_l=inter_sd_l,
+                    sd_l=sd_l,
                     nf=nf,
                     pat=pat,
                     pc_x=pc_x,
@@ -1298,7 +1319,7 @@ def draw_nfet(
         # add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, nf)
 
         if interdig == 1:
-            c.add_ref(
+            c_inst.add_ref(
                 interdigit(
                     sd_diff=sd_diff,
                     pc1=pc1,
@@ -1845,7 +1866,7 @@ def draw_pfet(
         add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, nf)
 
         if interdig == 1:
-            c.add_ref(
+            c_inst.add_ref(
                 interdigit(
                     sd_diff=sd_diff,
                     pc1=pc1,
@@ -2344,7 +2365,7 @@ def draw_nfet_06v0_nvt(
         add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, nf)
 
         if interdig == 1:
-            c.add_ref(
+            c_inst.add_ref(
                 interdigit(
                     sd_diff=sd_diff,
                     pc1=pc1,
