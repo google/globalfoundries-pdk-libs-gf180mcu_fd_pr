@@ -1479,32 +1479,6 @@ def draw_nfet(
             deepnwell=deepnwell,
             pcmpgr=pcmpgr,
         )
-        # )
-
-        # psdm_polys = b_gr.get_polygons(by_spec=layer["pplus"])
-
-        # psdm_xmin = np.min(psdm_polys[0][:, 0])
-        # psdm_ymin = np.min(psdm_polys[0][:, 1])
-        # psdm_xmax = np.max(psdm_polys[0][:, 0])
-        # psdm_ymax = np.max(psdm_polys[0][:, 1])
-
-        # inst_size = (psdm_xmax - psdm_xmin, psdm_ymax - psdm_ymin)
-        # inst_xmin = psdm_xmin
-        # inst_ymin = psdm_ymin
-
-        # c.add_ref(
-        #     labels_gen(
-        #         lbl_str=sub_lbl,
-        #         position=(
-        #             b_gr.xmin + (grw + 2 * (comp_pp_enc)) / 2,
-        #             b_gr.ymin + (b_gr.size[1] / 2),
-        #         ),
-        #         layer=layer["metal1_label"],
-        #         lbl=lbl,
-        #         lbl_lst=[sub_lbl],
-        #         lbl_valid_len=1,
-        #     )
-        # )
 
     # if bulk != "Guard Ring":
     else:
