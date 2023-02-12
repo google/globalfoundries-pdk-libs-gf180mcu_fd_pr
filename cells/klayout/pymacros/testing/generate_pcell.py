@@ -12,6 +12,7 @@ Options:
 """
 
 from docopt import docopt
+from subprocess import check_call
 import os
 import logging
 import pandas as pd
@@ -20,7 +21,7 @@ import numpy as np
 
 def draw_pcell(device_name):
     # draw pcells
-    os.system(f"klayout -b -r draw_pcell.py -rd device_in={device_name}")
+    check_call(f"klayout -b -r draw_pcell.py -rd device_in={device_name}", shell=True)
 
 
 def main():
@@ -29,12 +30,12 @@ def main():
     device_name = arguments["--device"]
 
     # Create output dir
-    os.system("mkdir -p testcases")
+    os.makedirs("testcases", exist_ok=True)
 
     # Remove old output file
     file_path = f"testcases/{device_name}"
     if os.path.exists(file_path):
-        os.system(f"rm -rf {file_path}")
+        os.remove(f"{file_path}")
 
     # gen csv patterns
     if device_name == "diode":

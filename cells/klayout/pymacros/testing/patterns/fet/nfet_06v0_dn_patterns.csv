@@ -1,4 +1,4 @@
-volt,bulk,length,width,l_diff,num_fing,gate_con_pos,sd_con_col,cont_bet_fin,interdig,patt,pcmpgr
+volt,bulk,l,w,ld,nf,gate_con_pos,sd_con_col,cont_bet_fin,interdig,patt,pcmpgr
 6V,Bulk Tie,4.81,7.0,4.62,5.0,top,3.0,0,0,ABA,0
 6V,Guard Ring,4.57,1.17,8.62,2.0,bottom,8.0,1,1,ABCDDCBA,1
 6V,Guard Ring,6.93,6.57,9.43,1.0,alternating,5.0,0,1,AAAABBBCCDCCBBBAAAA,0

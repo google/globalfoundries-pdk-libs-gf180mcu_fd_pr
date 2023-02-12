@@ -1,4 +1,4 @@
-volt,bulk,length,width,l_diff,num_fing,gate_con_pos,sd_con_col,cont_bet_fin,interdig,patt
+volt,bulk,l,w,ld,num_fing,gate_con_pos,sd_con_col,cont_bet_fin,interdig,patt
 5V,None,9.32,3.21,9.89,5.0,top,4.0,0,0,ABA
 5V,Bulk Tie,1.23,0.73,8.67,6.0,bottom,6.0,1,1,ABCDDCBA
 5V,Guard Ring,2.17,5.18,7.53,1.0,alternating,7.0,1,0,AAAABBBCCDCCBBBAAAA
