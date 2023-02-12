@@ -436,10 +436,10 @@ def interdigit(
     return c_inst
 
 
-@gf.cell
+# @gf.cell
 def hv_gen(
-    c_inst, volt: str = "3.3V", dg_encx: float = 0.1, dg_ency: float = 0.1
-) -> gf.Component:
+    c,c_inst, volt, dg_encx, dg_ency
+) :
     """Returns high volatge related polygons
 
     Args :
@@ -448,8 +448,6 @@ def hv_gen(
         dg_encx : dualgate enclosure in x_direction
         dg_ency : dualgate enclosure in y_direction
     """
-
-    c = gf.Component()
 
     if volt == "5V" or volt == "6V":
         dg = c.add_ref(
@@ -470,7 +468,6 @@ def hv_gen(
             v5x.xmin = dg.xmin
             v5x.ymin = dg.ymin
 
-    return c
 
 
 @gf.cell
@@ -627,7 +624,28 @@ def bulk_gr_gen(
         )
     )  # metal1_gaurdring
 
-    c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
+    # c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
+    # hv_gen(c,B, volt,dg_enc_cmp, dg_enc_cmp)
+    dg_encx = dg_enc_cmp
+    dg_ency = dg_enc_cmp
+    if volt == "5V" or volt == "6V":
+        dg = c.add_ref(
+            gf.components.rectangle(
+                size=(c_inst.size[0] + (2 * dg_encx), c_inst.size[1] + (2 * dg_ency),),
+                layer=layer["dualgate"],
+            )
+        )
+        dg.xmin = c_inst.xmin - dg_encx
+        dg.ymin = c_inst.ymin - dg_ency
+
+        if volt == "5V":
+            v5x = c.add_ref(
+                gf.components.rectangle(
+                    size=(dg.size[0], dg.size[1]), layer=layer["v5_xtor"]
+                )
+            )
+            v5x.xmin = dg.xmin
+            v5x.ymin = dg.ymin
 
     return c
 
@@ -1355,9 +1373,30 @@ def draw_nfet(
         inst_xmin = c_inst.xmin
         inst_ymin = c_inst.ymin
 
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        # hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        dg_encx = dg_enc_cmp
+        dg_ency = dg_enc_poly
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(c_inst.size[0] + (2 * dg_encx), c_inst.size[1] + (2 * dg_ency),),
+                    layer=layer["dualgate"],
+                )
+            )
+            dg.xmin = c_inst.xmin - dg_encx
+            dg.ymin = c_inst.ymin - dg_ency
+
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=layer["v5_xtor"]
+                    )
+                )
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
 
     c.add_ref(
         nfet_deep_nwell(
@@ -1791,9 +1830,30 @@ def draw_pfet(
 
         # dualgate generation
 
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        # hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        dg_encx = dg_enc_cmp
+        dg_ency = dg_enc_poly
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(c_inst.size[0] + (2 * dg_encx), c_inst.size[1] + (2 * dg_ency),),
+                    layer=layer["dualgate"],
+                )
+            )
+            dg.xmin = c_inst.xmin - dg_encx
+            dg.ymin = c_inst.ymin - dg_ency
+
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=layer["v5_xtor"]
+                    )
+                )
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
 
     elif bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
@@ -1864,9 +1924,30 @@ def draw_pfet(
         )
 
         # dualgate generation
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        # hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        dg_encx = dg_enc_cmp
+        dg_ency = dg_enc_poly
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(c_inst.size[0] + (2 * dg_encx), c_inst.size[1] + (2 * dg_ency),),
+                    layer=layer["dualgate"],
+                )
+            )
+            dg.xmin = c_inst.xmin - dg_encx
+            dg.ymin = c_inst.ymin - dg_ency
+
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=layer["v5_xtor"]
+                    )
+                )
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
 
     elif bulk == "Guard Ring":
 

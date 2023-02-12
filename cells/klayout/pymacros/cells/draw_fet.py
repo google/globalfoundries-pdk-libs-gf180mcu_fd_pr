@@ -517,8 +517,8 @@ def interdigit(
     return c_inst
 
 
-@gf.cell
-def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Component:
+# @gf.cell
+def hv_gen(c,c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1):
     """Returns high volatge related polygons
 
     Args :
@@ -527,8 +527,8 @@ def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Compo
         dg_encx : dualgate enclosure in x_direction
         dg_ency : dualgate enclosure in y_direction
     """
-
-    c = gf.Component()
+    print(volt)
+    # c = gf.Component()
 
     if volt == "5V" or volt == "6V":
         dg = c.add_ref(
@@ -549,11 +549,14 @@ def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Compo
             v5x.xmin = dg.xmin
             v5x.ymin = dg.ymin
 
-    return c
+            
+
+    # return c
 
 
-@gf.cell
+# @gf.cell
 def bulk_gr_gen(
+    c,
     c_inst,
     comp_spacing: float = 0.1,
     poly2_comp_spacing: float = 0.1,
@@ -561,7 +564,10 @@ def bulk_gr_gen(
     grw: float = 0.36,
     l_d: float = 0.1,
     implant_layer: LayerSpec = layer["pplus"],
-) -> gf.Component():
+    lbl:bool = 0,
+    sub_lbl : str = "",
+
+) :
     """Returns guardring
 
     Args :
@@ -706,9 +712,24 @@ def bulk_gr_gen(
         )
     )  # metal1_gaurdring
 
-    c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
+    # c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
+    hv_gen(c,c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp)
 
-    return c
+    c.add_ref(
+            labels_gen(
+                lbl_str=sub_lbl,
+                position=(
+                    B.xmin + (grw + 2 * (comp_pp_enc)) / 2,
+                    B.ymin + (B.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+                lbl=lbl,
+                lbl_lst=[sub_lbl],
+                lbl_valid_len=1,
+            )
+    )
+
+    # return c
 
 
 @gf.cell
@@ -1418,42 +1439,45 @@ def draw_nfet(
         nsdm.ymin = sd_diff_intr.ymin - gate_np_enc
         c.add_ref(c_inst)
 
-        b_gr = c.add_ref(
-            bulk_gr_gen(
-                c_inst=c_inst,
-                comp_spacing=comp_spacing,
-                poly2_comp_spacing=comp_spacing,
-                volt=volt,
-                grw=grw,
-                l_d=l_d,
-                implant_layer=layer["pplus"],
-            )
+        # b_gr = c.add_ref(
+        bulk_gr_gen(
+            c,
+            c_inst=c_inst,
+            comp_spacing=comp_spacing,
+            poly2_comp_spacing=comp_spacing,
+            volt=volt,
+            grw=grw,
+            l_d=l_d,
+            implant_layer=layer["pplus"],
+            lbl=lbl,
+            sub_lbl=sub_lbl,
         )
+        # )
 
-        psdm_polys = b_gr.get_polygons(by_spec=layer["pplus"])
+        # psdm_polys = b_gr.get_polygons(by_spec=layer["pplus"])
 
-        psdm_xmin = np.min(psdm_polys[0][:, 0])
-        psdm_ymin = np.min(psdm_polys[0][:, 1])
-        psdm_xmax = np.max(psdm_polys[0][:, 0])
-        psdm_ymax = np.max(psdm_polys[0][:, 1])
+        # psdm_xmin = np.min(psdm_polys[0][:, 0])
+        # psdm_ymin = np.min(psdm_polys[0][:, 1])
+        # psdm_xmax = np.max(psdm_polys[0][:, 0])
+        # psdm_ymax = np.max(psdm_polys[0][:, 1])
 
-        inst_size = (psdm_xmax - psdm_xmin, psdm_ymax - psdm_ymin)
-        inst_xmin = psdm_xmin
-        inst_ymin = psdm_ymin
+        # inst_size = (psdm_xmax - psdm_xmin, psdm_ymax - psdm_ymin)
+        # inst_xmin = psdm_xmin
+        # inst_ymin = psdm_ymin
 
-        c.add_ref(
-            labels_gen(
-                lbl_str=sub_lbl,
-                position=(
-                    b_gr.xmin + (grw + 2 * (comp_pp_enc)) / 2,
-                    b_gr.ymin + (b_gr.size[1] / 2),
-                ),
-                layer=layer["metal1_label"],
-                lbl=lbl,
-                lbl_lst=[sub_lbl],
-                lbl_valid_len=1,
-            )
-        )
+        # c.add_ref(
+        #     labels_gen(
+        #         lbl_str=sub_lbl,
+        #         position=(
+        #             b_gr.xmin + (grw + 2 * (comp_pp_enc)) / 2,
+        #             b_gr.ymin + (b_gr.size[1] / 2),
+        #         ),
+        #         layer=layer["metal1_label"],
+        #         lbl=lbl,
+        #         lbl_lst=[sub_lbl],
+        #         lbl_valid_len=1,
+        #     )
+        # )
 
     # if bulk != "Guard Ring":
     else:
@@ -1463,9 +1487,10 @@ def draw_nfet(
         inst_xmin = c_inst.xmin
         inst_ymin = c_inst.ymin
 
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     c.add_ref(
         nfet_deep_nwell(
@@ -1915,9 +1940,10 @@ def draw_pfet(
 
         # dualgate generation
 
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     elif bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
@@ -1988,9 +2014,10 @@ def draw_pfet(
         )
 
         # dualgate generation
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     elif bulk == "Guard Ring":
 
@@ -2004,17 +2031,20 @@ def draw_pfet(
         psdm.ymin = sd_diff_intr.ymin - gate_pp_enc
         c.add_ref(c_inst)
 
-        b_gr = c.add_ref(
-            bulk_gr_gen(
-                c_inst=c_inst,
-                comp_spacing=comp_spacing,
-                poly2_comp_spacing=comp_spacing,
-                volt=volt,
-                grw=grw,
-                l_d=l_d,
-                implant_layer=layer["nplus"],
-            )
-        )  # bulk guardring
+        # b_gr = c.add_ref(
+        bulk_gr_gen(
+            c,
+            c_inst=c_inst,
+            comp_spacing=comp_spacing,
+            poly2_comp_spacing=comp_spacing,
+            volt=volt,
+            grw=grw,
+            l_d=l_d,
+            implant_layer=layer["nplus"],
+            lbl=lbl,
+            sub_lbl=sub_lbl
+        )
+        # )  # bulk guardring
 
         B_polys = b_gr.get_polygons(by_spec=layer["comp"])
 

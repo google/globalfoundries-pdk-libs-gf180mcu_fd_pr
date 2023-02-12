@@ -21,10 +21,10 @@ def cdl_gen(df, device_name):
 
     cdl_f = open(f"../testcases/{device_name}_pcells.cdl", "w")
 
-    if "pfet" in device_name and "_dn" not in device_name:
-        top_cell = f"{device_name}_pcells"
-    else:
-        top_cell = "TOP"
+    # if "pfet" in device_name and "_dn" not in device_name:
+    #     top_cell = f"{device_name}_pcells"
+    # else:
+    top_cell = "TOP"
 
     cdl_f.write(
         f"""
@@ -95,13 +95,13 @@ if __name__ == "__main__":
 
     if "fet" in device:
         devices = [
-            "nfet_03v3",
-            # "nfet_03v3_dn",
+            # "nfet_03v3",
+            "nfet_03v3_dn",
             # "nfet_05v0",
-            # "nfet_05v0_dn",
+            "nfet_05v0_dn",
             # "nfet_06v0",
-            # "nfet_06v0_dn",
-            "pfet_03v3",
+            "nfet_06v0_dn",
+            # "pfet_03v3",
             # "pfet_03v3_dn",
             # "pfet_05v0",
             # "pfet_05v0_dn",

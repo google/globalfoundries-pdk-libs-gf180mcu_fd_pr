@@ -173,7 +173,7 @@ def alter_interdig(
                     via_size=via_size,
                     via_spacing=via_spacing,
                 )
-                c_inst.add_ref(via1_dr)
+                via1 = c_inst.add_ref(via1_dr)
                 # c_inst.add_label(
                 #     f"{pat_o[j]}",
                 #     position=(
@@ -227,7 +227,7 @@ def alter_interdig(
                     via_size=via_size,
                     via_spacing=via_spacing,
                 )
-                c_inst.add_ref(via1_dr)
+                via1 = c_inst.add_ref(via1_dr)
                 # c_inst.add_label(
                 #     f"{pat_e[j]}",
                 #     position=(
@@ -423,7 +423,7 @@ def interdigit(
                             via_size=via_size,
                             via_spacing=via_spacing,
                         )
-                        c_inst.add_ref(via1_dr)
+                        via1 = c_inst.add_ref(via1_dr)
                         # c_inst.add_label(
                         #     f"{pat[j]}",
                         #     position=(
@@ -488,7 +488,7 @@ def interdigit(
                             via_size=via_size,
                             via_spacing=via_spacing,
                         )
-                        c_inst.add_ref(via1_dr)
+                        via1 = c_inst.add_ref(via1_dr)
                         # c_inst.add_label(
                         #     f"{pat[j]}",
                         #     position=(
@@ -517,8 +517,8 @@ def interdigit(
     return c_inst
 
 
-@gf.cell
-def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Component:
+# @gf.cell
+def hv_gen(c,c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1):
     """Returns high volatge related polygons
 
     Args :
@@ -527,8 +527,8 @@ def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Compo
         dg_encx : dualgate enclosure in x_direction
         dg_ency : dualgate enclosure in y_direction
     """
-
-    c = gf.Component()
+    print(volt)
+    # c = gf.Component()
 
     if volt == "5V" or volt == "6V":
         dg = c.add_ref(
@@ -549,7 +549,7 @@ def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Compo
             v5x.xmin = dg.xmin
             v5x.ymin = dg.ymin
 
-    return c
+    # return c
 
 
 @gf.cell
@@ -706,7 +706,8 @@ def bulk_gr_gen(
         )
     )  # metal1_gaurdring
 
-    c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
+    # c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
+    hv_gen(c,c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp)
 
     return c
 
@@ -1463,20 +1464,21 @@ def draw_nfet(
         inst_xmin = c_inst.xmin
         inst_ymin = c_inst.ymin
 
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
-    c.add_ref(
-        nfet_deep_nwell(
-            deepnwell=deepnwell,
-            pcmpgr=pcmpgr,
-            inst_size=inst_size,
-            inst_xmin=inst_xmin,
-            inst_ymin=inst_ymin,
-            grw=grw,
+        c.add_ref(
+            nfet_deep_nwell(
+                deepnwell=deepnwell,
+                pcmpgr=pcmpgr,
+                inst_size=inst_size,
+                inst_xmin=inst_xmin,
+                inst_ymin=inst_ymin,
+                grw=grw,
+            )
         )
-    )
 
     # creating layout and cell in klayout
     c.write_gds("nfet_temp.gds")
@@ -1915,9 +1917,10 @@ def draw_pfet(
 
         # dualgate generation
 
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     elif bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
@@ -1988,9 +1991,10 @@ def draw_pfet(
         )
 
         # dualgate generation
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c,c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     elif bulk == "Guard Ring":
 

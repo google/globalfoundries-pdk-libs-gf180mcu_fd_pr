@@ -309,7 +309,7 @@ def get_var(device_name, row, n):  # noqa: C901
         g_lbl = []
         sd_lbl = []
         sub_lbl = "sub"
-        if interdig == 0:
+        if interdig == 0 or num_fingers == 1:
 
             for i in range(int(num_fingers)):
                 g_lbl.append(f"g{n}")
@@ -330,12 +330,13 @@ def get_var(device_name, row, n):  # noqa: C901
             nl = len(nt)
             u = 0
             for k in range(nl):
-                for j in range(len(patt)):
-                    if patt[j] == nt[k]:
-                        u += 1
-                        g_lbl.append(f"g{nt[k]}{n}")
+                g_lbl.append(f"g{nt[k]}{n}")
+                # for j in range(len(patt)):
+                #     if patt[j] == nt[k]:
+                #         u += 1
+                #         g_lbl.append(f"g{nt[k]}{n}")
 
-                u = 0
+                # u = 0
 
             for i in range(int(len(patt) + 1)):
                 if i % 2 == 0:
@@ -347,8 +348,8 @@ def get_var(device_name, row, n):  # noqa: C901
             "deepnwell": deepnwell,
             "bulk": bulk,
             "volt": volt_area,
-            "w": width,
-            "l": length,
+            "w_gate": width,
+            "l_gate": length,
             "ld": diff_length,
             "nf": num_fingers,
             "pcmpgr": pcmpgr,
@@ -379,7 +380,7 @@ def get_var(device_name, row, n):  # noqa: C901
         g_lbl = []
         sd_lbl = []
         sub_lbl = "sub"
-        if interdig == 0:
+        if interdig == 0 or num_fingers == 1:
 
             for i in range(int(num_fingers)):
                 g_lbl.append(f"g{n}")
@@ -400,12 +401,13 @@ def get_var(device_name, row, n):  # noqa: C901
             nl = len(nt)
             u = 0
             for k in range(nl):
-                for j in range(len(patt)):
-                    if patt[j] == nt[k]:
-                        u += 1
-                        g_lbl.append(f"g{nt[k]}{n}")
+                g_lbl.append(f"g{nt[k]}{n}")
+                # for j in range(len(patt)):
+                #     if patt[j] == nt[k]:
+                #         u += 1
+                #         g_lbl.append(f"g{nt[k]}{n}")
 
-                u = 0
+                # u = 0
 
             for i in range(int(len(patt) + 1)):
                 if i % 2 == 0:
@@ -413,8 +415,8 @@ def get_var(device_name, row, n):  # noqa: C901
                 else:
                     sd_lbl.append(f"d{n}")
         param = {
-            "w": width,
-            "l": length,
+            "w_gate": width,
+            "l_gate": length,
             "ld": diff_length,
             "nf": num_fingers,
             "bulk": bulk,
@@ -564,8 +566,8 @@ def get_var(device_name, row, n):  # noqa: C901
             "deepnwell": deepnwell,
             "bulk": bulk,
             "volt": volt_area,
-            "w": width,
-            "l": length,
+            "w_gate": width,
+            "l_gate": length,
             "ld": diff_length,
             "nf": num_fingers,
             "pcmpgr": pcmpgr,
@@ -634,8 +636,9 @@ if "fet" in device_pcell and "cap_" not in device_pcell:
         )
         nw.xmin = c1_ref.xmin - 10
         nw.ymin = c1_ref.ymin - 10
-        c.flatten()
-        
+        c = c.flatten()
+        c.name = "TOP"
+
         c.write_gds(f"testcases/{device_pcell}_pcells.gds")
         # layout.read(f"testcases/{device_pcell}_pcells.gds")
         # cell_name = f"{device_pcell}_pcells"
