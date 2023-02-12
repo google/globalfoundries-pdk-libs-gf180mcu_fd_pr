@@ -67,6 +67,7 @@ def alter_interdig(
     sd_diff_intr,
     l_gate=0.15,
     inter_sd_l=0.15,
+    sd_l=0.36,
     nf=1,
     pat="",
     pc_x=0.1,
@@ -105,14 +106,30 @@ def alter_interdig(
         else:
             pat_o.append(pat[i])
 
+    nt = []
+    [nt.append(x) for x in pat if x not in nt]
+
     nt_o = []
     [nt_o.append(x) for x in pat_o if x not in nt_o]
 
     nt_e = []
     [nt_e.append(x) for x in pat_e if x not in nt_e]
 
+    nl = len(nt)
     nl_b = len(nt_e)
     nl_u = len(nt_o)
+
+    g_lbl_e = []
+    for i in range(nl_b):
+        for j in range(nl):
+            if nt[j] == nt_e[i]:
+                g_lbl_e.append(g_lbl[j])
+
+    g_lbl_o = []
+    for i in range(nl_u):
+        for j in range(nl):
+            if nt[j] == nt_o[i]:
+                g_lbl_o.append(g_lbl[j])
 
     m2_y = via_size[1] + 2 * via_enc[1]
     m2 = gf.components.rectangle(
@@ -176,8 +193,8 @@ def alter_interdig(
                         ),
                         layer=layer["metal1_label"],
                         lbl=lbl,
-                        lbl_lst=g_lbl,
-                        lbl_valid_len=nl,
+                        lbl_lst=g_lbl_o,
+                        lbl_valid_len=nl_u,
                         index=i,
                     )
                 )
@@ -230,8 +247,8 @@ def alter_interdig(
                         ),
                         layer=layer["metal1_label"],
                         lbl=lbl,
-                        lbl_lst=g_lbl,
-                        lbl_valid_len=nl,
+                        lbl_lst=g_lbl_e,
+                        lbl_valid_len=nl_b,
                         index=i,
                     )
                 )
@@ -245,22 +262,25 @@ def alter_interdig(
 
                 m2_join_b = c_inst.add_ref(
                     gf.components.rectangle(
-                        size=(m2_y + (i + 1) * (m3_spacing + m3_x), m2_y,),
+                        size=(m2_y + sd_l + (i + 1) * (m3_spacing + m3_x), m2_y,),
+                        # size = (m2_arrb.xmin - sd_diff.xmin , m2_y),
                         layer=layer["metal2"],
                     ).move(
                         (
-                            m2_arrb.xmin - (m2_y + (i + 1) * (m3_spacing + m3_x)),
+                            m2_arrb.xmin
+                            - (m2_y + sd_l + (i + 1) * (m3_spacing + m3_x)),
                             m2_arrb.ymax - i * (m2_spacing + m2_y) - m2_y,
                         )
                     )
                 )
                 m2_join_u = c_inst.add_ref(
                     gf.components.rectangle(
-                        size=(m2_y + (i + 1) * (m3_spacing + m3_x), m2_y,),
+                        size=(m2_y + sd_l + (i + 1) * (m3_spacing + m3_x), m2_y,),
                         layer=layer["metal2"],
                     ).move(
                         (
-                            m2_arru.xmin - (m2_y + (i + 1) * (m3_spacing + m3_x)),
+                            m2_arru.xmin
+                            - (m2_y + sd_l + (i + 1) * (m3_spacing + m3_x)),
                             m2_arru.ymin + j * (m2_spacing + m2_y),
                         )
                     )
@@ -351,6 +371,7 @@ def interdigit(
                     sd_diff_intr=sd_diff_intr,
                     l_gate=l_gate,
                     inter_sd_l=inter_sd_l,
+                    sd_l=sd_l,
                     nf=nf,
                     pat=pat,
                     pc_x=pc_x,
@@ -496,8 +517,8 @@ def interdigit(
     return c_inst
 
 
-@gf.cell
-def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Component:
+# @gf.cell
+def hv_gen(c, c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1):
     """Returns high volatge related polygons
 
     Args :
@@ -506,8 +527,8 @@ def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Compo
         dg_encx : dualgate enclosure in x_direction
         dg_ency : dualgate enclosure in y_direction
     """
-
-    c = gf.Component()
+    print(volt)
+    # c = gf.Component()
 
     if volt == "5V" or volt == "6V":
         dg = c.add_ref(
@@ -528,11 +549,12 @@ def hv_gen(c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1) -> gf.Compo
             v5x.xmin = dg.xmin
             v5x.ymin = dg.ymin
 
-    return c
+    # return c
 
 
-@gf.cell
+# @gf.cell
 def bulk_gr_gen(
+    c,
     c_inst,
     comp_spacing: float = 0.1,
     poly2_comp_spacing: float = 0.1,
@@ -540,7 +562,12 @@ def bulk_gr_gen(
     grw: float = 0.36,
     l_d: float = 0.1,
     implant_layer: LayerSpec = layer["pplus"],
-) -> gf.Component():
+    lbl: bool = 0,
+    sub_lbl: str = "",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+    nw_enc_pcmp: float = 0.1,
+):
     """Returns guardring
 
     Args :
@@ -553,7 +580,7 @@ def bulk_gr_gen(
         implant_layer : layer of comp implant (nplus,pplus)
     """
 
-    c = gf.Component()
+    # c = gf.Component()
 
     comp_pp_enc: float = 0.16
 
@@ -685,9 +712,48 @@ def bulk_gr_gen(
         )
     )  # metal1_gaurdring
 
-    c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
+    # c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
+    hv_gen(c, c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp)
 
-    return c
+    c.add_ref(
+        labels_gen(
+            lbl_str=sub_lbl,
+            position=(
+                B.xmin + (grw + 2 * (comp_pp_enc)) / 2,
+                B.ymin + (B.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+            lbl=lbl,
+            lbl_lst=[sub_lbl],
+            lbl_valid_len=1,
+        )
+    )
+
+    if implant_layer == layer["pplus"]:
+        c.add_ref(
+            nfet_deep_nwell(
+                deepnwell=deepnwell,
+                pcmpgr=pcmpgr,
+                inst_size=(B.size[0], B.size[1]),
+                inst_xmin=B.xmin,
+                inst_ymin=B.ymin,
+                grw=grw,
+            )
+        )
+    else:
+        c.add_ref(
+            pfet_deep_nwell(
+                deepnwell=deepnwell,
+                pcmpgr=pcmpgr,
+                enc_size=(B.size[0], B.size[1]),
+                enc_xmin=B.xmin,
+                enc_ymin=B.ymin,
+                nw_enc_pcmp=nw_enc_pcmp,
+                grw=grw,
+            )
+        )
+
+    # return c
 
 
 @gf.cell
@@ -857,6 +923,7 @@ def nfet_deep_nwell(
 
     dn_enc_lvpwell = 2.5
     lvpwell_enc_ncmp = 0.43
+    print(deepnwell)
 
     if deepnwell == 1:
 
@@ -1298,7 +1365,7 @@ def draw_nfet(
         # add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, nf)
 
         if interdig == 1:
-            c.add_ref(
+            c_inst.add_ref(
                 interdigit(
                     sd_diff=sd_diff,
                     pc1=pc1,
@@ -1397,41 +1464,20 @@ def draw_nfet(
         nsdm.ymin = sd_diff_intr.ymin - gate_np_enc
         c.add_ref(c_inst)
 
-        b_gr = c.add_ref(
-            bulk_gr_gen(
-                c_inst=c_inst,
-                comp_spacing=comp_spacing,
-                poly2_comp_spacing=comp_spacing,
-                volt=volt,
-                grw=grw,
-                l_d=l_d,
-                implant_layer=layer["pplus"],
-            )
-        )
-
-        psdm_polys = b_gr.get_polygons(by_spec=layer["pplus"])
-
-        psdm_xmin = np.min(psdm_polys[0][:, 0])
-        psdm_ymin = np.min(psdm_polys[0][:, 1])
-        psdm_xmax = np.max(psdm_polys[0][:, 0])
-        psdm_ymax = np.max(psdm_polys[0][:, 1])
-
-        inst_size = (psdm_xmax - psdm_xmin, psdm_ymax - psdm_ymin)
-        inst_xmin = psdm_xmin
-        inst_ymin = psdm_ymin
-
-        c.add_ref(
-            labels_gen(
-                lbl_str=sub_lbl,
-                position=(
-                    b_gr.xmin + (grw + 2 * (comp_pp_enc)) / 2,
-                    b_gr.ymin + (b_gr.size[1] / 2),
-                ),
-                layer=layer["metal1_label"],
-                lbl=lbl,
-                lbl_lst=[sub_lbl],
-                lbl_valid_len=1,
-            )
+        # b_gr = c.add_ref(
+        bulk_gr_gen(
+            c,
+            c_inst=c_inst,
+            comp_spacing=comp_spacing,
+            poly2_comp_spacing=comp_spacing,
+            volt=volt,
+            grw=grw,
+            l_d=l_d,
+            implant_layer=layer["pplus"],
+            lbl=lbl,
+            sub_lbl=sub_lbl,
+            deepnwell=deepnwell,
+            pcmpgr=pcmpgr,
         )
 
     # if bulk != "Guard Ring":
@@ -1442,20 +1488,21 @@ def draw_nfet(
         inst_xmin = c_inst.xmin
         inst_ymin = c_inst.ymin
 
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
-    c.add_ref(
-        nfet_deep_nwell(
-            deepnwell=deepnwell,
-            pcmpgr=pcmpgr,
-            inst_size=inst_size,
-            inst_xmin=inst_xmin,
-            inst_ymin=inst_ymin,
-            grw=grw,
+        c.add_ref(
+            nfet_deep_nwell(
+                deepnwell=deepnwell,
+                pcmpgr=pcmpgr,
+                inst_size=inst_size,
+                inst_xmin=inst_xmin,
+                inst_ymin=inst_ymin,
+                grw=grw,
+            )
         )
-    )
 
     # creating layout and cell in klayout
     c.write_gds("nfet_temp.gds")
@@ -1845,7 +1892,7 @@ def draw_pfet(
         add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, nf)
 
         if interdig == 1:
-            c.add_ref(
+            c_inst.add_ref(
                 interdigit(
                     sd_diff=sd_diff,
                     pc1=pc1,
@@ -1894,9 +1941,10 @@ def draw_pfet(
 
         # dualgate generation
 
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     elif bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
@@ -1967,9 +2015,10 @@ def draw_pfet(
         )
 
         # dualgate generation
-        c.add_ref(
-            hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        )
+        # c.add_ref(
+        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # )
+        hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     elif bulk == "Guard Ring":
 
@@ -1983,52 +2032,22 @@ def draw_pfet(
         psdm.ymin = sd_diff_intr.ymin - gate_pp_enc
         c.add_ref(c_inst)
 
-        b_gr = c.add_ref(
-            bulk_gr_gen(
-                c_inst=c_inst,
-                comp_spacing=comp_spacing,
-                poly2_comp_spacing=comp_spacing,
-                volt=volt,
-                grw=grw,
-                l_d=l_d,
-                implant_layer=layer["nplus"],
-            )
-        )  # bulk guardring
-
-        B_polys = b_gr.get_polygons(by_spec=layer["comp"])
-
-        B_xmin = np.min(B_polys[0][:, 0])
-        B_ymin = np.min(B_polys[0][:, 1])
-        B_xmax = np.max(B_polys[0][:, 0])
-        B_ymax = np.max(B_polys[0][:, 1])
-
-        c.add_ref(
-            labels_gen(
-                lbl_str=sub_lbl,
-                position=(
-                    b_gr.xmin + (grw + 2 * (comp_pp_enc)) / 2,
-                    b_gr.ymin + (b_gr.size[1] / 2),
-                ),
-                layer=layer["metal1_label"],
-                lbl=lbl,
-                lbl_lst=[sub_lbl],
-                lbl_valid_len=1,
-            )
+        bulk_gr_gen(
+            c,
+            c_inst=c_inst,
+            comp_spacing=comp_spacing,
+            poly2_comp_spacing=comp_spacing,
+            volt=volt,
+            grw=grw,
+            l_d=l_d,
+            implant_layer=layer["nplus"],
+            lbl=lbl,
+            sub_lbl=sub_lbl,
+            deepnwell=deepnwell,
+            pcmpgr=pcmpgr,
+            nw_enc_pcmp=nw_enc_pcmp,
         )
-
-        #   deep nwell generation
-
-        c.add_ref(
-            pfet_deep_nwell(
-                deepnwell=deepnwell,
-                pcmpgr=pcmpgr,
-                enc_size=(B_xmax - B_xmin, B_ymax - B_ymin),
-                enc_xmin=B_xmin,
-                enc_ymin=B_ymin,
-                nw_enc_pcmp=nw_enc_pcmp,
-                grw=grw,
-            )
-        )
+        # bulk guardring
 
     # creating layout and cell in klayout
     c.write_gds("pfet_temp.gds")
@@ -2344,7 +2363,7 @@ def draw_nfet_06v0_nvt(
         add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, nf)
 
         if interdig == 1:
-            c.add_ref(
+            c_inst.add_ref(
                 interdigit(
                     sd_diff=sd_diff,
                     pc1=pc1,
