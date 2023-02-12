@@ -1,146 +1,143 @@
-# Copyright 2022 GlobalFoundries PDK Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+import gdsfactory as gf
 
-########################################################################################################################
-## MIM Capacitor Pcells Generators for Klayout of GF180MCU
-########################################################################################################################
-
-import pya
+from .via_generator import via_generator, via_stack
+from .layers_def import layer
 
 
-def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
-    """Calculate number of cantacts in a given dimensions and the free space for symmetry.
-    By getting the min enclosure,the width of the box,the width ans spacing of the contacts.
-    Parameters
-    ----------
-    box_width    (double) : length you place the via or cont. in
-    min_enc      (double) : spacing between the edge of the box and the first contact.
-    cont_spacing (double) : spacing between different contacts
-    cont_width   (double) : contacts in the same direction
+def draw_cap_mim(
+    layout,
+    mim_option: str = "A",
+    metal_level: str = "M4",
+    lc: float = 2,
+    wc: float = 2,
+    lbl: bool = 0,
+    top_lbl: str = "",
+    bot_lbl: str = "",
+):
+
     """
-    spc_cont = box_width - 2 * min_enc
-    num_cont = int((spc_cont + cont_spacing) / (cont_width + cont_spacing))
-    free_spc = box_width - (num_cont * cont_width + (num_cont - 1) * cont_spacing)
-    return num_cont, free_spc
+    Retern mim cap
+
+    Args:
+        layout : layout object
+        lc : float of cap length
+        wc : float of cap width
 
 
-def draw_cap_mim(layout, lc, wc, mim_option, metal_level):
-    """
-    Usage:-
-     used to draw 1.0fF/um2 MIM capacitor by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
     """
 
-    # Define layers
-    metal2 = layout.layer(36, 0)
-    metal3 = layout.layer(42, 0)
-    metal4 = layout.layer(46, 0)
-    metal5 = layout.layer(81, 0)
-    metaltop = layout.layer(53, 0)
-    via2 = layout.layer(38, 0)
-    via3 = layout.layer(40, 0)
-    via4 = layout.layer(41, 0)
-    via5 = layout.layer(82, 0)
-    fusetop = layout.layer(75, 0)
-    cap_mk = layout.layer(117, 5)
-    mim_l_mk = layout.layer(117, 10)
+    c = gf.Component("mim_cap_dev")
+
+    # used dimensions and layers
 
     # MIM Option selection
     if mim_option == "MIM-A":
-        topmet = metal3
-        botmet = metal2
-        topvia = via2
+        upper_layer = layer["metal3"]
+        bottom_layer = layer["metal2"]
+        via_layer = layer["via2"]
+        up_lbl_layer = layer["metal3_label"]
+        bot_lbl_layer = layer["metal2_label"]
 
     elif mim_option == "MIM-B":
         if metal_level == "M4":
-            topmet = metal4
-            botmet = metal3
-            topvia = via3
+            upper_layer = layer["metal4"]
+            bottom_layer = layer["metal3"]
+            via_layer = layer["via3"]
+            up_lbl_layer = layer["metal4_label"]
+            bot_lbl_layer = layer["metal3_label"]
         elif metal_level == "M5":
-            topmet = metal5
-            botmet = metal4
-            topvia = via4
+            upper_layer = layer["metal5"]
+            bottom_layer = layer["metal4"]
+            via_layer = layer["via4"]
+            up_lbl_layer = layer["metal5_label"]
+            bot_lbl_layer = layer["metal4_label"]
         elif metal_level == "M6":
-            topmet = metaltop
-            botmet = metal5
-            topvia = via5
+            upper_layer = layer["metaltop"]
+            bottom_layer = layer["metal5"]
+            via_layer = layer["via5"]
+            up_lbl_layer = layer["metaltop_label"]
+            bot_lbl_layer = layer["metal5_label"]
     else:
-        topmet = metal3
-        botmet = metal2
-        topvia = via2
+        upper_layer = layer["metal3"]
+        bottom_layer = layer["metal2"]
+        via_layer = layer["via2"]
+        up_lbl_layer = layer["metal3_label"]
+        bot_lbl_layer = layer["metal2_label"]
 
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    topmet_w = wc * dbu_PERCISION
-    topmet_l = lc * dbu_PERCISION
-    top_bot_enc = 0.6 * dbu_PERCISION
-    mim_l_mk_width = 0.1 * dbu_PERCISION
-    via_size = 0.26 * dbu_PERCISION
-    via_min_spc = 0.5 * dbu_PERCISION
-    met_via_enc = 0.4 * dbu_PERCISION
+    via_size = (0.22, 0.22)
+    via_spacing = (0.5, 0.5)
+    via_enc = (0.4, 0.4)
 
-    # Inserting cap_nmos cell
-    cell_index = layout.add_cell("cap_mim")
-    cap_mim_cell = layout.cell(cell_index)
+    bot_enc_top = 0.6
+    l_mk_w = 0.1
 
-    # Inserting a via cell
-    cont_cell_index = layout.add_cell("topvia")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(topvia).insert(pya.Box.new(0, 0, via_size, via_size))
+    # drawing cap identifier and bottom , upper layers
 
-    # Inserting top_metal
-    cap_mim_cell.shapes(topmet).insert(pya.Box(0, 0, topmet_w, topmet_l))
+    m_up = c.add_ref(gf.components.rectangle(size=(wc, lc), layer=upper_layer,))
 
-    # Inserting fusetop
-    cap_mim_cell.shapes(fusetop).insert(pya.Box(0, 0, topmet_w, topmet_l))
-
-    # Inserting bot_metal
-    cap_mim_cell.shapes(botmet).insert(
-        pya.Box(
-            -top_bot_enc, -top_bot_enc, topmet_w + top_bot_enc, topmet_l + top_bot_enc
+    fusetop = c.add_ref(
+        gf.components.rectangle(
+            size=(m_up.size[0], m_up.size[1]), layer=layer["fusetop"]
         )
     )
+    fusetop.xmin = m_up.xmin
+    fusetop.ymin = m_up.ymin
 
-    # Inserting bottom metal vias
-    num_left_con_1, left_con_free_spc_1 = number_spc_contacts(
-        topmet_w, met_via_enc, via_min_spc, via_size
+    mim_l_mk = c.add_ref(
+        gf.components.rectangle(size=(fusetop.size[0], l_mk_w), layer=layer["mim_l_mk"])
     )
-    num_left_con_2, left_con_free_spc_2 = number_spc_contacts(
-        topmet_l, met_via_enc, via_min_spc, via_size
-    )
-    left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(pya.Point(left_con_free_spc_1 / 2, left_con_free_spc_2 / 2)),
-        pya.Vector(via_min_spc + via_size, 0),
-        pya.Vector(0, via_min_spc + via_size),
-        num_left_con_1,
-        num_left_con_2,
-    )
-    cap_mim_cell.insert(left_con_arr)
+    mim_l_mk.xmin = fusetop.xmin
+    mim_l_mk.ymin = fusetop.ymin
 
-    # Inserting mim_l_mk
-    cap_mim_cell.shapes(mim_l_mk).insert(pya.Box(0, 0, topmet_w, mim_l_mk_width))
-
-    # Inserting marker
-    cap_mim_cell.shapes(cap_mk).insert(
-        pya.Box(
-            -top_bot_enc, -top_bot_enc, topmet_w + top_bot_enc, topmet_l + top_bot_enc
+    m_dn = c.add_ref(
+        gf.components.rectangle(
+            size=(m_up.size[0] + (2 * bot_enc_top), m_up.size[1] + (2 * bot_enc_top)),
+            layer=bottom_layer,
         )
     )
+    m_dn.xmin = m_up.xmin - bot_enc_top
+    m_dn.ymin = m_up.ymin - bot_enc_top
 
-    cap_mim_cell.flatten(True)
-    return cap_mim_cell
+    cap_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(m_dn.size[0], m_dn.size[1]), layer=layer["cap_mk"]
+        )
+    )
+    cap_mk.xmin = m_dn.xmin
+    cap_mk.ymin = m_dn.ymin
+
+    # generating labels
+    if lbl == 1:
+
+        c.add_label(
+            top_lbl,
+            position=(m_up.xmin + (m_up.size[0] / 2), m_dn.xmin + (m_dn.size[1] / 2)),
+            layer=up_lbl_layer,
+        )
+
+        c.add_label(
+            bot_lbl,
+            position=(
+                m_dn.xmin + (m_dn.size[0] / 2),
+                m_dn.ymin + (m_up.ymin - m_dn.ymin) / 2,
+            ),
+            layer=bot_lbl_layer,
+        )
+
+    # generating vias
+
+    via = via_generator(
+        x_range=(m_up.xmin, m_up.xmax),
+        y_range=(m_up.ymin, m_up.ymax),
+        via_enclosure=via_enc,
+        via_layer=via_layer,
+        via_size=via_size,
+        via_spacing=via_spacing,
+    )
+    c.add_ref(via)
+
+    c.write_gds("mim_cap_temp.gds")
+    layout.read("mim_cap_temp.gds")
+    cell_name = "mim_cap_dev"
+
+    return layout.cell(cell_name)
