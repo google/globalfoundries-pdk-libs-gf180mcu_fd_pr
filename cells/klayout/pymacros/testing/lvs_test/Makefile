@@ -6,7 +6,7 @@ lvs_test : fet_gds_gen fet_cdl_gen fet_lvs_test
 .ONESHELL:
 fet_gds_gen:
 	@cd ..
-	@python3 generate_pcell.py --device=fet
+	@python3 draw_pcell.py --device=fet
 
 .ONESHELL:
 fet_cdl_gen:

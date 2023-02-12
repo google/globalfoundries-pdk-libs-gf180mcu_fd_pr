@@ -3,33 +3,37 @@ Globalfoundries 180u PCells Generator.
 
 Usage:
     generate_pcell.py (--help| -h)
-    generate_pcell.py (--device=<device_name>) [--thr=<thr>]
+    generate_pcell.py (--device=<device_name>)
 
 Options:
     --help -h                   Print this help message.
     --device=<device_name>      Select your device name. Allowed devices are (bjt , diode, MIM-A, MIM-B_gfB, MIM-B_gfC , fet, cap_mos, res)
-    --thr=<thr>                 The number of threads used in run.
 """
 
 import os
 import sys
-import docopt
-
+from docopt import docopt
+import logging
 pcell_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, pcell_path)
 
 import klayout.db as k
 import pandas as pd
 import math
+import glob
 
 from cells import gf180mcu
 
-def draw_pcell(device_name, device_space):
+DEV_SPACES = dict()
+DEV_SPACES["fet"] = 250
+DB_PERC = 1000
+
+def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
     # dnwell layer
     # dnwell         = layout.layer(12 , 0 )
 
     # Read csv file for bjt patterns
-    df = pd.read_csv(f"patterns/{device_name}_patterns.csv")
+    df = pd.read_csv(patt_file)
 
     # Count num. of patterns [instances]
     patterns_no = df.shape[0]
@@ -44,75 +48,44 @@ def draw_pcell(device_name, device_space):
 
         # Get isntance location
         if (i % pcell_row_no) == 0:
-            x_shift = 0 if i == 0 else x_shift + device_space * db_precession
+            x_shift = 0 if i == 0 else x_shift + device_space * DB_PERC
 
         if (i % pcell_row_no) == 0:
             y_shift = 0
         else:
-            y_shift = 0 if i == 0 else y_shift + device_space * db_precession
+            y_shift = 0 if i == 0 else y_shift + device_space * DB_PERC
         
         param = row.to_dict()
         try:
+            logging.info(f"Generating pcell for {device_name} with params : {param}")
             pcell_id = lib.layout().pcell_id(device_name)
             pc = layout.add_pcell_variant(lib, pcell_id, param)
             top.insert(k.CellInstArray(pc, k.Trans(x_shift, y_shift)))
         except Exception as e:
-            print(f"Exception happened: {str(e)} for pattern {device_name} {param}")
+            logging.error(f"Exception happened: {str(e)} for pattern {device_name} {param}")
 
-    options = k.SaveLayoutOptions()
-    options.write_context_info = False
-    layout.write(f"testcases/{device_name}_pcells.gds", options)
+def run_generation(target_device):
 
-def run_regression():
-    # Set device name form env. variable
-    device_pcell = "fet"  # noqa: F821
-
-    # Instantiate and register the library
-    gf180mcu()
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    out_file = os.path.join(file_path, "testcases", f"{target_device}.gds")
 
     # Create new layout
     layout = k.Layout()
 
-    # Used db unit in gds file
-    db_precession = 1000
-
     # Create top cell
-    top = layout.create_cell("TOP")
+    top = layout.create_cell(f"{target_device}_pcells")
 
     # === Read gf180mcu pcells ===
     lib = k.Library.library_by_name("gf180mcu")
 
-    # ======== BJT Gen. ========
-    if device_pcell == "bjt":
-        draw_pcell("bjt", 100)
+    list_patt_files = glob.glob(os.path.join(file_path, "patterns", target_device, "*.csv"))
+    for p in list_patt_files:
+        draw_pcell(layout, top, lib, p, target_device, DEV_SPACES[target_device])
 
-    # ======== Diode Gen. ========
-    if "diode" in device_pcell:
-        if "pw2dw" in device_pcell or "dw2ps" in device_pcell:
-            draw_pcell(device_pcell, 140)
-        elif "_sc" in device_pcell:
-            draw_pcell(device_pcell, 200)
-        else:
-            draw_pcell(device_pcell, 30)
-
-    # ======== cap_mim Gen. ========
-    if "MIM" in device_pcell:
-        draw_pcell(device_pcell, 50)
-
-    # ======== FET Gen. ========
-    if "fet" in device_pcell and "cap_" not in device_pcell:
-        if "10v0_asym" in device_pcell or "nvt" in device_pcell:
-            draw_pcell(device_pcell, 450)
-        else:
-            draw_pcell(device_pcell, 250)
-
-    # ======== cap_mos Gen. ========
-    if "mos" in device_pcell and "cap_" in device_pcell:
-        draw_pcell(device_pcell, 150)
-
-    # ======== RES Gen. ========
-    if "resistor" in device_pcell:
-        draw_pcell(device_pcell, 50)
+    # Save the file
+    options = k.SaveLayoutOptions()
+    options.write_context_info = False
+    layout.write(out_file, options)
 
 
 if __name__ == "__main__":
@@ -126,13 +99,12 @@ if __name__ == "__main__":
 
     # arguments
     arguments = docopt(__doc__, version="PCELLS Gen.: 0.1")
+    target_device = arguments["--device"]
 
-    # No. of threads
-    thrCount = (
-        os.cpu_count() * 2 if arguments["--thr"] is None else int(arguments["--thr"])
-    )
+    # Instantiate and register the library
+    gf180mcu()
 
     # Calling main function
-    main()
+    run_generation(target_device)
 
     
