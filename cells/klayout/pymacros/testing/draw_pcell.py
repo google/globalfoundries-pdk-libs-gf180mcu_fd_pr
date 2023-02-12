@@ -1,6 +1,10 @@
-import pya
-import sys
 import os
+import sys
+
+pcell_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, pcell_path)
+
+import klayout.db as k
 import pandas as pd
 import math
 
@@ -9,15 +13,11 @@ from cells import gf180mcu
 # Set device name form env. variable
 device_pcell = device_in  # noqa: F821
 
-# === Load gf180mcu pcells ===
-technology_macros_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, technology_macros_path)
-
 # Instantiate and register the library
 gf180mcu()
 
 # Create new layout
-layout = pya.Layout()
+layout = k.Layout()
 
 # Used db unit in gds file
 db_precession = 1000
@@ -26,7 +26,7 @@ db_precession = 1000
 top = layout.create_cell("TOP")
 
 # === Read gf180mcu pcells ===
-lib = pya.Library.library_by_name("gf180mcu")
+lib = k.Library.library_by_name("gf180mcu")
 
 # ===== Draw function
 
@@ -63,9 +63,9 @@ def draw_pcell(device_name, device_space):
         pcell_id = lib.layout().pcell_id(device)
 
         pc = layout.add_pcell_variant(lib, pcell_id, param)
-        top.insert(pya.CellInstArray(pc, pya.Trans(x_shift, y_shift)))
+        top.insert(k.CellInstArray(pc, k.Trans(x_shift, y_shift)))
 
-        options = pya.SaveLayoutOptions()
+        options = k.SaveLayoutOptions()
         options.write_context_info = False
         layout.write(f"testcases/{device_name}_pcells.gds", options)
 
