@@ -6,4 +6,3 @@ jinja2
 openpyxl
 sympy
 klayout
-gdsfactory
