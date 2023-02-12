@@ -75,6 +75,7 @@ def alter_interdig(
     lbl: bool = 0,
     g_lbl: list = [],
     nl: int = 1,
+    patt_lbl: bool = 0,
 ) -> gf.Component:
     """Returns interdigitation polygons of gate with alterating poly contacts
 
@@ -174,13 +175,27 @@ def alter_interdig(
                     via_spacing=via_spacing,
                 )
                 via1 = c_inst.add_ref(via1_dr)
-                c_inst.add_label(
-                    f"{pat_o[j]}",
-                    position=(
-                        (via1.xmax + via1.xmin) / 2,
-                        (via1.ymax + via1.ymin) / 2,
-                    ),
-                    layer=layer["metal2_label"],
+                # c_inst.add_label(
+                #     f"{pat_o[j]}",
+                #     position=(
+                #         (via1.xmax + via1.xmin) / 2,
+                #         (via1.ymax + via1.ymin) / 2,
+                #     ),
+                #     layer=layer["metal2_label"],
+                # )
+                c_inst.add_ref(
+                    labels_gen(
+                        lbl_str="None",
+                        position=(
+                            (via1.xmax + via1.xmin) / 2,
+                            (via1.ymax + via1.ymin) / 2,
+                        ),
+                        layer=layer["metal2_label"],
+                        lbl=patt_lbl,
+                        lbl_lst=pat_o,
+                        lbl_valid_len=len(pat_o),
+                        index=j,
+                    )
                 )
 
                 # adding gate_label
@@ -228,13 +243,28 @@ def alter_interdig(
                     via_spacing=via_spacing,
                 )
                 via1 = c_inst.add_ref(via1_dr)
-                c_inst.add_label(
-                    f"{pat_e[j]}",
-                    position=(
-                        (via1.xmax + via1.xmin) / 2,
-                        (via1.ymax + via1.ymin) / 2,
-                    ),
-                    layer=layer["metal2_label"],
+                # c_inst.add_label(
+                #     f"{pat_e[j]}",
+                #     position=(
+                #         (via1.xmax + via1.xmin) / 2,
+                #         (via1.ymax + via1.ymin) / 2,
+                #     ),
+                #     layer=layer["metal2_label"],
+                # )
+
+                c_inst.add_ref(
+                    labels_gen(
+                        lbl_str="None",
+                        position=(
+                            (via1.xmax + via1.xmin) / 2,
+                            (via1.ymax + via1.ymin) / 2,
+                        ),
+                        layer=layer["metal2_label"],
+                        lbl=patt_lbl,
+                        lbl_lst=pat_e,
+                        lbl_valid_len=len(pat_e),
+                        index=j,
+                    )
                 )
 
                 # adding gate_label
@@ -326,6 +356,7 @@ def interdigit(
     pc_spacing=0.1,
     lbl: bool = 0,
     g_lbl: list = [],
+    patt_lbl: bool = 0,
 ) -> gf.Component:
     """Returns interdigitation related polygons
 
@@ -379,6 +410,7 @@ def interdigit(
                     lbl=lbl,
                     g_lbl=g_lbl,
                     nl=nl,
+                    patt_lbl=patt_lbl,
                 )
             )
 
@@ -424,13 +456,28 @@ def interdigit(
                             via_spacing=via_spacing,
                         )
                         via1 = c_inst.add_ref(via1_dr)
-                        c_inst.add_label(
-                            f"{pat[j]}",
-                            position=(
-                                (via1.xmax + via1.xmin) / 2,
-                                (via1.ymax + via1.ymin) / 2,
-                            ),
-                            layer=layer["metal2_label"],
+                        # c_inst.add_label(
+                        #     f"{pat[j]}",
+                        #     position=(
+                        #         (via1.xmax + via1.xmin) / 2,
+                        #         (via1.ymax + via1.ymin) / 2,
+                        #     ),
+                        #     layer=layer["metal2_label"],
+                        # )
+
+                        c_inst.add_ref(
+                            labels_gen(
+                                lbl_str="None",
+                                position=(
+                                    (via1.xmax + via1.xmin) / 2,
+                                    (via1.ymax + via1.ymin) / 2,
+                                ),
+                                layer=layer["metal2_label"],
+                                lbl=patt_lbl,
+                                lbl_lst=pat,
+                                lbl_valid_len=nl,
+                                index=j,
+                            )
                         )
 
                         # adding gate_label
@@ -489,13 +536,28 @@ def interdigit(
                             via_spacing=via_spacing,
                         )
                         via1 = c_inst.add_ref(via1_dr)
-                        c_inst.add_label(
-                            f"{pat[j]}",
-                            position=(
-                                (via1.xmax + via1.xmin) / 2,
-                                (via1.ymax + via1.ymin) / 2,
-                            ),
-                            layer=layer["metal2_label"],
+                        # c_inst.add_label(
+                        #     f"{pat[j]}",
+                        #     position=(
+                        #         (via1.xmax + via1.xmin) / 2,
+                        #         (via1.ymax + via1.ymin) / 2,
+                        #     ),
+                        #     layer=layer["metal2_label"],
+                        # )
+
+                        c_inst.add_ref(
+                            labels_gen(
+                                lbl_str="None",
+                                position=(
+                                    (via1.xmax + via1.xmin) / 2,
+                                    (via1.ymax + via1.ymin) / 2,
+                                ),
+                                layer=layer["metal2_label"],
+                                lbl=patt_lbl,
+                                lbl_lst=pat,
+                                lbl_valid_len=nl,
+                                index=j,
+                            )
                         )
 
                         # adding gate_label
@@ -1070,6 +1132,7 @@ def draw_nfet(
     sd_lbl: list = [],
     g_lbl: str = [],
     sub_lbl: str = "",
+    patt_lbl: bool = 0,
 ) -> gf.Component:
 
     """
@@ -1382,6 +1445,7 @@ def draw_nfet(
                     pc_spacing=pc_spacing,
                     lbl=lbl,
                     g_lbl=g_lbl,
+                    patt_lbl=patt_lbl,
                 )
             )
         else:
@@ -1595,6 +1659,7 @@ def draw_pfet(
     sd_lbl: list = [],
     g_lbl: str = [],
     sub_lbl: str = "",
+    patt_lbl: bool = 0,
 ) -> gf.Component:
 
     """
@@ -1909,6 +1974,7 @@ def draw_pfet(
                     pc_spacing=pc_spacing,
                     lbl=lbl,
                     g_lbl=g_lbl,
+                    patt_lbl=patt_lbl,
                 )
             )
 
@@ -2074,6 +2140,7 @@ def draw_nfet_06v0_nvt(
     sd_lbl: list = [],
     g_lbl: str = [],
     sub_lbl: str = "",
+    patt_lbl: bool = 0,
 ) -> gf.Component:
 
     """
@@ -2380,6 +2447,7 @@ def draw_nfet_06v0_nvt(
                     pc_spacing=pc_spacing,
                     lbl=lbl,
                     g_lbl=g_lbl,
+                    patt_lbl=patt_lbl,
                 )
             )
 

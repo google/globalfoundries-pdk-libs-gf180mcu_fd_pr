@@ -84,6 +84,9 @@ class nfet(pya.PCellDeclarationHelper):
         self.param(
             "patt", self.TypeString, "Pattern in case of Interdigitation", default=""
         )
+        self.param(
+            "patt_lbl", self.TypeBoolean, "Interdigitation pattern label", default=0
+        )
 
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
@@ -169,6 +172,7 @@ class nfet(pya.PCellDeclarationHelper):
             sd_lbl=self.sd_lbl,
             g_lbl=self.g_lbl,
             sub_lbl=self.sub_lbl,
+            patt_lbl=self.patt_lbl,
         )
         write_cells = pya.CellInstArray(
             instance.cell_index(),
@@ -226,6 +230,9 @@ class pfet(pya.PCellDeclarationHelper):
         self.param("interdig", self.TypeBoolean, "Interdigitation", default=0)
         self.param(
             "patt", self.TypeString, "Pattern in case of Interdigitation", default=""
+        )
+        self.param(
+            "patt_lbl", self.TypeBoolean, "Interdigitation pattern label", default=0
         )
 
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
@@ -312,6 +319,7 @@ class pfet(pya.PCellDeclarationHelper):
             sd_lbl=self.sd_lbl,
             g_lbl=self.g_lbl,
             sub_lbl=self.sub_lbl,
+            patt_lbl=self.patt_lbl,
         )
         write_cells = pya.CellInstArray(
             instance.cell_index(),
@@ -363,6 +371,9 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
         self.param("interdig", self.TypeBoolean, "Interdigitation", default=0)
         self.param(
             "patt", self.TypeString, "Pattern in case of Interdigitation", default=""
+        )
+        self.param(
+            "patt_lbl", self.TypeBoolean, "Interdigitation pattern label", default=0
         )
 
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
@@ -442,6 +453,7 @@ class nfet_06v0_nvt(pya.PCellDeclarationHelper):
             sd_lbl=self.sd_lbl,
             g_lbl=self.g_lbl,
             sub_lbl=self.sub_lbl,
+            patt_lbl=self.patt_lbl,
         )
 
         write_cells = pya.CellInstArray(
