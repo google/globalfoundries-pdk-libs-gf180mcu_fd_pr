@@ -79,7 +79,7 @@ def check_klayout_version():
             )
             exit(1)
     elif len(klayout_v_list) == 3:
-        if klayout_v_list[1] < 28 :
+        if klayout_v_list[1] < 28:
             logging.warning("Prerequisites at a minimum: KLayout 0.28.0")
             logging.error(
                 "Using this klayout version has not been assesed in this development. Limits are unknown"
@@ -100,7 +100,7 @@ def get_switches(yaml_file, rule_name):
     """
 
     # load yaml config data
-    with open(yaml_file, 'r') as stream:
+    with open(yaml_file, "r") as stream:
         try:
             yaml_dic = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -188,7 +188,9 @@ def run_test_case(
     fail_patterns_count = 0
 
     # Get switches used for each run
-    sw_file = os.path.join(Path(layout_path.parent.parent).absolute(), f"{test_rule}.{SUPPORTED_SW_EXT}")
+    sw_file = os.path.join(
+        Path(layout_path.parent.parent).absolute(), f"{test_rule}.{SUPPORTED_SW_EXT}"
+    )
 
     if os.path.exists(sw_file):
         switches = " ".join(get_switches(sw_file, test_rule))
@@ -237,15 +239,35 @@ def run_test_case(
             check_call(call_str, shell=True)
 
             if os.path.exists(final_report):
-                pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count = parse_results_db(test_rule, final_report)
+                (
+                    pass_patterns_count,
+                    fail_patterns_count,
+                    falsePos_count,
+                    falseNeg_count,
+                ) = parse_results_db(test_rule, final_report)
 
-                return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
+                return (
+                    pass_patterns_count,
+                    fail_patterns_count,
+                    falsePos_count,
+                    falseNeg_count,
+                )
             else:
 
-                return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
+                return (
+                    pass_patterns_count,
+                    fail_patterns_count,
+                    falsePos_count,
+                    falseNeg_count,
+                )
         else:
 
-            return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
+            return (
+                pass_patterns_count,
+                fail_patterns_count,
+                falsePos_count,
+                falseNeg_count,
+            )
 
     else:
         return pass_patterns_count, fail_patterns_count, falsePos_count, falseNeg_count
@@ -291,7 +313,12 @@ def run_all_test_cases(tc_df, run_dir, thrCount):
         for future in concurrent.futures.as_completed(future_to_run_id):
             run_id = future_to_run_id[future]
             try:
-                pass_patterns, fail_patterns, false_positive, false_negative = future.result()
+                (
+                    pass_patterns,
+                    fail_patterns,
+                    false_positive,
+                    false_negative,
+                ) = future.result()
                 if pass_patterns + fail_patterns > 0:
                     if false_positive + false_negative == 0:
                         status_string = "Passed_rule"
@@ -413,7 +440,9 @@ def generate_merged_testcase(orignal_testcase, marker_testcase):
     # Getting flattened top cells
     top_cell_org = lib_org.top_level()[0].flatten(apply_repetitions=True)
     top_cell_marker = lib_marker.top_level()[0].flatten(apply_repetitions=True)
-    marker_polygons = top_cell_marker.get_polygons(apply_repetitions=True, include_paths=True, depth=None)
+    marker_polygons = top_cell_marker.get_polygons(
+        apply_repetitions=True, include_paths=True, depth=None
+    )
 
     # Merging all polygons of markers with original testcase
     for marker_polygon in marker_polygons:
@@ -452,8 +481,8 @@ def darw_polygons(polygon_data, cell, lay_num, lay_dt, path_width):
     """
 
     # Cleaning data points
-    polygon_data = re.sub(r'\s+', '', polygon_data)
-    polygon_data = re.sub(r'[()]', '', polygon_data)
+    polygon_data = re.sub(r"\s+", "", polygon_data)
+    polygon_data = re.sub(r"[()]", "", polygon_data)
 
     print("## POLYGON DATA : ", polygon_data)
     tag_split = polygon_data.split(":")
@@ -467,20 +496,29 @@ def darw_polygons(polygon_data, cell, lay_num, lay_dt, path_width):
     # Select shape type to be drawn
     if tag == "polygon":
         for poly in polygons:
-            points = [(float(p.split(",")[0]), float(p.split(",")[1])) for p in poly.split(";")]
-            print("           All points : " , points)
+            points = [
+                (float(p.split(",")[0]), float(p.split(",")[1]))
+                for p in poly.split(";")
+            ]
+            print("           All points : ", points)
             cell.add(gdstk.Polygon(points, lay_num, lay_dt))
 
     elif tag == "edge-pair":
         for poly in polygons:
-            points = [(float(p.split(",")[0]), float(p.split(",")[1])) for p in poly.split(";")]
-            print("           All points : " , points)
+            points = [
+                (float(p.split(",")[0]), float(p.split(",")[1]))
+                for p in poly.split(";")
+            ]
+            print("           All points : ", points)
             cell.add(gdstk.FlexPath(points, path_width, layer=lay_num, datatype=lay_dt))
 
     elif tag == "edge":
         for poly in polygons:
-            points = [(float(p.split(",")[0]), float(p.split(",")[1])) for p in poly.split(";")]
-            print("           All points : " , points)
+            points = [
+                (float(p.split(",")[0]), float(p.split(",")[1]))
+                for p in poly.split(";")
+            ]
+            print("           All points : ", points)
             cell.add(gdstk.FlexPath(points, path_width, layer=lay_num, datatype=lay_dt))
     else:
         logging.error(f"## Unknown type: {tag} ignored")
@@ -522,7 +560,7 @@ def convert_results_db_to_gds(results_database: str):
     rule_data_type_map = list()
     analysis_rules = []
 
-    for ev, elem in tqdm(ET.iterparse(results_database, events=('start', 'end'))):
+    for ev, elem in tqdm(ET.iterparse(results_database, events=("start", "end"))):
 
         if elem.tag != "item" and not in_item:
             elem.clear()
@@ -573,7 +611,9 @@ def convert_results_db_to_gds(results_database: str):
         rule_lay_dt = rule_data_type_map.index(rule_name) + 1
         if cell is not None:
             for p in polygons:
-                polygons = darw_polygons(p.text, cell, rule_lay_num, rule_lay_dt, path_width)
+                polygons = darw_polygons(
+                    p.text, cell, rule_lay_num, rule_lay_dt, path_width
+                )
                 break
 
         ## Clearing memeory
@@ -587,27 +627,27 @@ def convert_results_db_to_gds(results_database: str):
         # Writing analysis rule deck
         output_runset_path = f'{results_database.replace(".lyrdb", "")}_analysis.drc'
 
-        runset_analysis_setup = f'''
+        runset_analysis_setup = f"""
         source($input)
         report("DRC analysis run report at", $report)
         pass_marker = {pass_marker}
         fail_marker = {fail_marker}
         fail_marker2 = {fail_marker2}
         text_marker = {text_marker}
-        '''
+        """
 
-        pass_patterns_rule = f'''
+        pass_patterns_rule = f"""
         pass_marker.interacting( text_marker.texts("{rule_name}") ).output("{rule_name}_pass_patterns", "{rule_name}_pass_patterns polygons")
-        '''
-        fail_patterns_rule = f'''
+        """
+        fail_patterns_rule = f"""
         fail_marker2.interacting(fail_marker.interacting(text_marker.texts("{rule_name}")) ).or( fail_marker.interacting(text_marker.texts("{rule_name}")).not_interacting(fail_marker2) ).output("{rule_name}_fail_patterns", "{rule_name}_fail_patterns polygons")
-        '''
-        false_pos_rule = f'''
+        """
+        false_pos_rule = f"""
         pass_marker.interacting(text_marker.texts("{rule_name}")).interacting(input({rule_lay_num}, {rule_lay_dt})).output("{rule_name}_false_positive", "{rule_name}_false_positive occurred")
-        '''
-        false_neg_rule = f'''
+        """
+        false_neg_rule = f"""
         ((fail_marker2.interacting(fail_marker.interacting(text_marker.texts("{rule_name}")))).or((fail_marker.interacting(input(11, 222).texts("{rule_name}")).not_interacting(fail_marker2)))).not_interacting(input({rule_lay_num}, {rule_lay_dt})).output("{rule_name}_false_negative", "{rule_name}_false_negative occurred")
-        '''
+        """
 
         # Adding list of analysis rules
         if not any(rule_name in rule_txt for rule_txt in analysis_rules):
@@ -653,7 +693,9 @@ def get_unit_tests_dataframe(gds_files):
         for cell in top_cells:
             flatten_cell = cell.flatten()
             # Get all text labels for each cell
-            labels = flatten_cell.get_labels(apply_repetitions=True, depth=None, layer=lay_num, texttype=lay_dt)
+            labels = flatten_cell.get_labels(
+                apply_repetitions=True, depth=None, layer=lay_num, texttype=lay_dt
+            )
             # Get label value
             for label in labels:
                 rule = label.text
@@ -662,9 +704,7 @@ def get_unit_tests_dataframe(gds_files):
                     test_paths.append(gds_file)
 
     tc_df = pd.DataFrame({"test_path": test_paths, "rule_name": rules})
-    tc_df["table_name"] = tc_df["test_path"].apply(
-        lambda x: x.name.replace(".gds", "")
-    )
+    tc_df["table_name"] = tc_df["test_path"].apply(lambda x: x.name.replace(".gds", ""))
     return tc_df
 
 
@@ -736,7 +776,9 @@ def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
 
     ## Parse Existing Rules
     rules_df = parse_existing_rules(drc_dir, output_path)
-    logging.info("## Total number of rules found in rule decks: {}".format(len(rules_df)))
+    logging.info(
+        "## Total number of rules found in rule decks: {}".format(len(rules_df))
+    )
     print(rules_df)
 
     ## Get all test cases available in the repo.
@@ -781,7 +823,9 @@ def run_regression(drc_dir, output_path, target_table, target_rule, cpu_count):
         return True
 
 
-def main(drc_dir: str, rules_dir: str, output_path: str, target_table: str, target_rule: str):
+def main(
+    drc_dir: str, rules_dir: str, output_path: str, target_table: str, target_rule: str
+):
     """
     Main Procedure.
 
@@ -873,13 +917,11 @@ if __name__ == "__main__":
         level=logging.DEBUG,
         handlers=[
             logging.FileHandler(os.path.join(output_path, "{}.log".format(run_name))),
-            logging.StreamHandler()
+            logging.StreamHandler(),
         ],
         format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
     # Calling main function
-    run_status = main(
-        drc_dir, rules_dir, output_path, target_table, target_rule
-    )
+    run_status = main(drc_dir, rules_dir, output_path, target_table, target_rule)

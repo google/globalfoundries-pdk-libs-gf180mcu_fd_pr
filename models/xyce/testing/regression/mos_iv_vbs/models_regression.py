@@ -385,11 +385,21 @@ def error_cal(
         result_data["measured_vbs5"] = result_data["measured_vbs5"].clip(
             lower=lowest_curr
         )
-        result_data["simulated_vbs1"] = result_data["simulated_vbs1"].clip(lower=lowest_curr)
-        result_data["simulated_vbs2"] = result_data["simulated_vbs2"].clip(lower=lowest_curr)
-        result_data["simulated_vbs3"] = result_data["simulated_vbs3"].clip(lower=lowest_curr)
-        result_data["simulated_vbs4"] = result_data["simulated_vbs4"].clip(lower=lowest_curr)
-        result_data["simulated_vbs5"] = result_data["simulated_vbs5"].clip(lower=lowest_curr)
+        result_data["simulated_vbs1"] = result_data["simulated_vbs1"].clip(
+            lower=lowest_curr
+        )
+        result_data["simulated_vbs2"] = result_data["simulated_vbs2"].clip(
+            lower=lowest_curr
+        )
+        result_data["simulated_vbs3"] = result_data["simulated_vbs3"].clip(
+            lower=lowest_curr
+        )
+        result_data["simulated_vbs4"] = result_data["simulated_vbs4"].clip(
+            lower=lowest_curr
+        )
+        result_data["simulated_vbs5"] = result_data["simulated_vbs5"].clip(
+            lower=lowest_curr
+        )
 
         result_data["step1_error"] = (
             np.abs(result_data["measured_vbs1"] - result_data["simulated_vbs1"])

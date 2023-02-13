@@ -16,1912 +16,1842 @@
 ## Diode Pcells Generators for Klayout of GF180MCU
 ########################################################################################################################
 
-import pya
+import gdsfactory as gf
+from .layers_def import layer
+from gdsfactory.types import Float2
+from .via_generator import via_generator, via_stack
+
+import numpy as np
 
 
-def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
-    """ Calculate number of cantacts in a given dimensions and the free space for symmetry.
-        By getting the min enclosure,the width of the box,the width ans spacing of the contacts.
-        Parameters
-        -----
-        box_width    (double) : length you place the via or cont. in
-        min_enc      (double) : spacing between the edge of the box and the first contact.
-        cont_spacing (double) : spacing between different contacts
-        cont_width   (double) : contacts in the same direction
-    """
-    spc_cont = box_width - 2 * min_enc
-    num_cont = int((spc_cont + cont_spacing) / (cont_width + cont_spacing))
-    free_spc = box_width - (num_cont * cont_width + (num_cont - 1) * cont_spacing)
-    return num_cont, free_spc
+def draw_diode_nd2ps(
+    layout,
+    la: float = 0.1,
+    wa: float = 0.1,
+    cw: float = 0.1,
+    volt: str = "3.3V",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
+) -> gf.Component:
 
-
-def draw_diode_nd2ps(layout, l, w, volt, deepnwell, pcmpgr):
     """
     Usage:-
      used to draw N+/LVPWELL diode (Outside DNWELL) by specifying parameters
     Arguments:-
      layout     : Object of layout
-     l          : Float of diff length
-     w          : Float of diff width
+     la         : Float of diff length (anode)
+     wa         : Float of diff width (anode)
+     cw         : Float of cathode width
      volt       : String of operating voltage of the diode [3.3V, 5V/6V]
      deepnwell  : Boolean of using Deep NWELL device
      pcmpgr     : Boolean of using P+ Guard Ring for Deep NWELL devices only
     """
 
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    lvpwell = layout.layer(204, 0)
-    comp = layout.layer(22, 0)
-    nplus = layout.layer(32, 0)
-    pplus = layout.layer(31, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    dualgate = layout.layer(55, 0)
-    diode_mk = layout.layer(115, 5)
+    c = gf.Component("diode_nd2ps_dev")
 
-    # Define variables
-    dbu_PERCISION = 1 / layout.dbu
-    pcmp2ncmp_spc = 0.48 * dbu_PERCISION
-    ncmp_w = 0.36 * dbu_PERCISION
-    pcmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
-    implant_comp_enc = 0.16 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.28 * dbu_PERCISION
-    dualgate_cmp_enc = 0.24 * dbu_PERCISION
-    dg_enc_dnwell = 0.5 * dbu_PERCISION
-    dnwell_enc_lvpwell = 2.5 * dbu_PERCISION
-    lvpwell_enc_ncmp = 0.6 * dbu_PERCISION
-    lvpwell_enc_pcmp = 0.16 * dbu_PERCISION
-    min_cmp_area = 0.2025 * dbu_PERCISION * dbu_PERCISION
-    tie_violat = 0 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
+    comp_spacing: float = 0.48
+    np_enc_comp: float = 0.16
+    pp_enc_comp: float = 0.16
 
-    # Inserting np cell
-    cell_index = layout.add_cell("diode_np")
-    diode_np_cell = layout.cell(cell_index)
+    con_size = 0.22
+    con_sp = 0.28
+    con_comp_enc = 0.07
 
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
+    dg_enc_cmp = 0.24
+    dn_enc_lvpwell = 2.5
+    lvpwell_enc_ncmp = 0.6
+    lvpwell_enc_pcmp = 0.16
+    pcmpgr_enc_dn = 2.5
 
-    # Inserting diffusion
-    if (cmp_l * ncmp_w) < min_cmp_area:
-        tie_violat = (min_cmp_area / ncmp_w - cmp_l) / 2
-    diode_np_cell.shapes(comp).insert(
-        pya.Box(0, -tie_violat, ncmp_w, cmp_l + tie_violat)
-    )
-    diode_np_cell.shapes(pplus).insert(
-        pya.Box(
-            -implant_comp_enc,
-            -implant_comp_enc - tie_violat,
-            ncmp_w + implant_comp_enc,
-            cmp_l + implant_comp_enc + tie_violat,
+    # n generation
+    ncmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
+    nplus = c.add_ref(
+        gf.components.rectangle(
+            size=(ncmp.size[0] + (2 * np_enc_comp), ncmp.size[1] + (2 * np_enc_comp),),
+            layer=layer["nplus"],
         )
     )
-
-    diode_np_cell.shapes(comp).insert(
-        pya.Box(ncmp_w + pcmp2ncmp_spc, 0, ncmp_w + pcmp2ncmp_spc + pcmp_w, cmp_l)
-    )
-    diode_np_cell.shapes(nplus).insert(
-        pya.Box(
-            ncmp_w + pcmp2ncmp_spc - implant_comp_enc,
-            -implant_comp_enc,
-            ncmp_w + pcmp2ncmp_spc + pcmp_w + implant_comp_enc,
-            cmp_l + implant_comp_enc,
+    nplus.xmin = ncmp.xmin - np_enc_comp
+    nplus.ymin = ncmp.ymin - np_enc_comp
+    diode_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(ncmp.size[0], ncmp.size[1]), layer=layer["diode_mk"]
         )
     )
+    diode_mk.xmin = ncmp.xmin
+    diode_mk.ymin = ncmp.ymin
 
-    # Inserting metal
-    diode_np_cell.shapes(metal1).insert(
-        pya.Box(0, -tie_violat, ncmp_w, cmp_l + tie_violat)
-    )
-    diode_np_cell.shapes(metal1).insert(
-        pya.Box(ncmp_w + pcmp2ncmp_spc, 0, ncmp_w + pcmp2ncmp_spc + pcmp_w, cmp_l)
-    )
-
-    # Inserting pcomp contacts
-    num_ncmp_con_1, ncmp_con_free_spc_1 = number_spc_contacts(
-        ncmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_con_2, ncmp_con_free_spc_2 = number_spc_contacts(
-        cmp_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(pya.Point(ncmp_con_free_spc_1 / 2, ncmp_con_free_spc_2 / 2)),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_con_1,
-        num_ncmp_con_2,
-    )
-    diode_np_cell.insert(ncmp_con_arr)
-
-    # Inserting ncomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        pcmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        cmp_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                ncmp_w + pcmp2ncmp_spc + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    diode_np_cell.insert(pcmp_con_arr)
-
-    # Inserting Deep NWELL layers
-    if deepnwell == True:
-        diode_np_cell.shapes(lvpwell).insert(
-            pya.Box(
-                -lvpwell_enc_pcmp,
-                -lvpwell_enc_ncmp,
-                ncmp_w + pcmp2ncmp_spc + pcmp_w + lvpwell_enc_ncmp,
-                cmp_l + lvpwell_enc_ncmp,
-            )
+    ncmp_con = c.add_ref(
+        via_stack(
+            x_range=(ncmp.xmin, ncmp.xmax),
+            y_range=(ncmp.ymin, ncmp.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
         )
-        diode_np_cell.shapes(dnwell).insert(
-            pya.Box(
-                -lvpwell_enc_pcmp - dnwell_enc_lvpwell,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell,
-                ncmp_w + pcmp2ncmp_spc + pcmp_w + lvpwell_enc_ncmp + dnwell_enc_lvpwell,
-                cmp_l + lvpwell_enc_ncmp + dnwell_enc_lvpwell,
-            )
+    )  # ncomp_con
+
+    # p generation
+    pcmp = c.add_ref(gf.components.rectangle(size=(cw, la), layer=layer["comp"]))
+    pcmp.xmax = ncmp.xmin - comp_spacing
+    pplus = c.add_ref(
+        gf.components.rectangle(
+            size=(pcmp.size[0] + (2 * pp_enc_comp), pcmp.size[1] + (2 * pp_enc_comp),),
+            layer=layer["pplus"],
+        )
+    )
+    pplus.xmin = pcmp.xmin - pp_enc_comp
+    pplus.ymin = pcmp.ymin - pp_enc_comp
+
+    pcmp_con = c.add_ref(
+        via_stack(
+            x_range=(pcmp.xmin, pcmp.xmax),
+            y_range=(pcmp.ymin, pcmp.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )  # pcomp_con
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                ncmp_con.xmin + (ncmp_con.size[0] / 2),
+                ncmp_con.ymin + (ncmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
         )
 
-        # Inserting Deep NWELL P+ Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -lvpwell_enc_pcmp - dnwell_enc_lvpwell - pcmp_gr2dnw,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw,
-                ncmp_w
-                + pcmp2ncmp_spc
-                + pcmp_w
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw,
-                cmp_l + lvpwell_enc_ncmp + dnwell_enc_lvpwell + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -lvpwell_enc_pcmp - dnwell_enc_lvpwell - pcmp_gr2dnw - ncmp_w,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw - ncmp_w,
-                ncmp_w
-                + pcmp2ncmp_spc
-                + pcmp_w
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + ncmp_w,
-                cmp_l + lvpwell_enc_ncmp + dnwell_enc_lvpwell + pcmp_gr2dnw + ncmp_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            diode_np_cell.shapes(comp).insert(cmp_gr)
-
-            pp_inner = pya.Box(
-                -lvpwell_enc_pcmp - dnwell_enc_lvpwell - pcmp_gr2dnw + implant_comp_enc,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw + implant_comp_enc,
-                ncmp_w
-                + pcmp2ncmp_spc
-                + pcmp_w
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                - implant_comp_enc,
-                cmp_l
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                - implant_comp_enc,
-            )
-            pp_outer = pya.Box(
-                -lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                - ncmp_w
-                - implant_comp_enc,
-                -lvpwell_enc_ncmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                - ncmp_w
-                - implant_comp_enc,
-                ncmp_w
-                + pcmp2ncmp_spc
-                + pcmp_w
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + ncmp_w
-                + implant_comp_enc,
-                cmp_l
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + ncmp_w
-                + implant_comp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            diode_np_cell.shapes(pplus).insert(pp_gr)
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                pcmp_con.xmin + (pcmp_con.size[0] / 2),
+                pcmp_con.ymin + (pcmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     if volt == "5/6V":
-        # Inserting marker
-        diode_np_cell.shapes(diode_mk).insert(
-            pya.Box(
-                -dualgate_cmp_enc,
-                -dualgate_cmp_enc,
-                ncmp_w + pcmp2ncmp_spc + pcmp_w + dualgate_cmp_enc,
-                cmp_l + dualgate_cmp_enc,
+        dg = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    ncmp.xmax - pcmp.xmin + (2 * dg_enc_cmp),
+                    ncmp.size[1] + (2 * dg_enc_cmp),
+                ),
+                layer=layer["dualgate"],
             )
         )
-        # Inserting dualgate
-        if deepnwell == True:
-            diode_np_cell.shapes(dualgate).insert(
-                pya.Box(
-                    -lvpwell_enc_pcmp - dnwell_enc_lvpwell - dg_enc_dnwell,
-                    -lvpwell_enc_ncmp - dnwell_enc_lvpwell - dg_enc_dnwell,
-                    ncmp_w
-                    + pcmp2ncmp_spc
-                    + pcmp_w
-                    + lvpwell_enc_ncmp
-                    + dnwell_enc_lvpwell
-                    + dg_enc_dnwell,
-                    cmp_l + lvpwell_enc_ncmp + dnwell_enc_lvpwell + dg_enc_dnwell,
-                )
-            )
-        else:
-            diode_np_cell.shapes(dualgate).insert(
-                pya.Box(
-                    -dualgate_cmp_enc,
-                    -dualgate_cmp_enc,
-                    ncmp_w + pcmp2ncmp_spc + pcmp_w + dualgate_cmp_enc,
-                    cmp_l + dualgate_cmp_enc,
-                )
-            )
-    else:
-        diode_np_cell.shapes(diode_mk).insert(
-            pya.Box(
-                -implant_comp_enc,
-                -implant_comp_enc,
-                ncmp_w + pcmp2ncmp_spc + pcmp_w + implant_comp_enc,
-                cmp_l + implant_comp_enc,
+        dg.xmin = pcmp.xmin - dg_enc_cmp
+        dg.ymin = pcmp.ymin - dg_enc_cmp
+
+    if deepnwell == 1:
+        lvpwell = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    ncmp.xmax - pcmp.xmin + (lvpwell_enc_ncmp + lvpwell_enc_pcmp),
+                    ncmp.size[1] + (2 * lvpwell_enc_ncmp),
+                ),
+                layer=layer["lvpwell"],
             )
         )
 
-    diode_np_cell.flatten(True)
-    return diode_np_cell
+        lvpwell.xmin = pcmp.xmin - lvpwell_enc_pcmp
+        lvpwell.ymin = ncmp.ymin - lvpwell_enc_ncmp
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    lvpwell.size[0] + (2 * dn_enc_lvpwell),
+                    lvpwell.size[1] + (2 * dn_enc_lvpwell),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+
+        dn_rect.xmin = lvpwell.xmin - dn_enc_lvpwell
+        dn_rect.ymin = lvpwell.ymin - dn_enc_lvpwell
+
+        if pcmpgr == 1:
+
+            c_temp_gr = gf.Component("temp_store guard ring")
+            rect_pcmpgr_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (dn_rect.xmax - dn_rect.xmin) + 2 * pcmpgr_enc_dn,
+                        (dn_rect.ymax - dn_rect.ymin) + 2 * pcmpgr_enc_dn,
+                    ),
+                    layer=layer["comp"],
+                )
+            )
+            rect_pcmpgr_in.move(
+                (dn_rect.xmin - pcmpgr_enc_dn, dn_rect.ymin - pcmpgr_enc_dn)
+            )
+            rect_pcmpgr_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                    ),
+                    layer=layer["comp"],
+                )
+            )
+            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+            c.add_ref(
+                gf.geometry.boolean(
+                    A=rect_pcmpgr_out,
+                    B=rect_pcmpgr_in,
+                    operation="A-B",
+                    layer=layer["comp"],
+                )
+            )  # guardring Bulk draw
+
+            psdm_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * pp_enc_comp,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * pp_enc_comp,
+                    ),
+                    layer=layer["pplus"],
+                )
+            )
+            psdm_in.move(
+                (rect_pcmpgr_in.xmin + pp_enc_comp, rect_pcmpgr_in.ymin + pp_enc_comp,)
+            )
+            psdm_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * pp_enc_comp,
+                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * pp_enc_comp,
+                    ),
+                    layer=layer["pplus"],
+                )
+            )
+            psdm_out.move(
+                (
+                    rect_pcmpgr_out.xmin - pp_enc_comp,
+                    rect_pcmpgr_out.ymin - pp_enc_comp,
+                )
+            )
+            c.add_ref(
+                gf.geometry.boolean(
+                    A=psdm_out, B=psdm_in, operation="A-B", layer=layer["pplus"]
+                )
+            )  # psdm draw
+
+            # generating contacts
+
+            c.add_ref(
+                via_generator(
+                    x_range=(
+                        rect_pcmpgr_in.xmin + con_size,
+                        rect_pcmpgr_in.xmax - con_size,
+                    ),
+                    y_range=(rect_pcmpgr_out.ymin, rect_pcmpgr_in.ymin),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=layer["contact"],
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )  # bottom contact
+
+            c.add_ref(
+                via_generator(
+                    x_range=(
+                        rect_pcmpgr_in.xmin + con_size,
+                        rect_pcmpgr_in.xmax - con_size,
+                    ),
+                    y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=layer["contact"],
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )  # upper contact
+
+            c.add_ref(
+                via_generator(
+                    x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
+                    y_range=(
+                        rect_pcmpgr_in.ymin + con_size,
+                        rect_pcmpgr_in.ymax - con_size,
+                    ),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=layer["contact"],
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )  # right contact
+
+            c.add_ref(
+                via_generator(
+                    x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
+                    y_range=(
+                        rect_pcmpgr_in.ymin + con_size,
+                        rect_pcmpgr_in.ymax - con_size,
+                    ),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=layer["contact"],
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )  # left contact
+
+            comp_m1_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(rect_pcmpgr_in.size[0], rect_pcmpgr_in.size[1]),
+                    layer=layer["metal1"],
+                )
+            )
+
+            comp_m1_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (comp_m1_in.size[0]) + 2 * cw,
+                        (comp_m1_in.size[1]) + 2 * cw,
+                    ),
+                    layer=layer["metal1"],
+                )
+            )
+            comp_m1_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+            c.add_ref(
+                gf.geometry.boolean(
+                    A=rect_pcmpgr_out,
+                    B=rect_pcmpgr_in,
+                    operation="A-B",
+                    layer=layer["metal1"],
+                )
+            )  # guardring metal1
+
+    # creating layout and cell in klayout
+
+    c.write_gds("diode_nd2ps_temp.gds")
+    layout.read("diode_nd2ps_temp.gds")
+    cell_name = "diode_nd2ps_dev"
+
+    return layout.cell(cell_name)
 
 
-def draw_diode_pd2nw(layout, l, w, volt, deepnwell, pcmpgr):
+def draw_diode_pd2nw(
+    layout,
+    la: float = 0.1,
+    wa: float = 0.1,
+    cw: float = 0.1,
+    volt: str = "3.3V",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
+) -> gf.Component:
     """
     Usage:-
      used to draw 3.3V P+/Nwell diode (Outside DNWELL) by specifying parameters
     Arguments:-
      layout     : Object of layout
-     l          : Float of diffusion length
-     w          : Float of diffusion width
+     la         : Float of diffusion length (anode)
+     wa         : Float of diffusion width (anode)
      volt       : String of operating voltage of the diode [3.3V, 5V/6V]
      deepnwell  : Boolean of using Deep NWELL device
      pcmpgr     : Boolean of using P+ Guard Ring for Deep NWELL devices only
     """
 
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    nplus = layout.layer(32, 0)
-    pplus = layout.layer(31, 0)
-    nwell = layout.layer(21, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    dualgate = layout.layer(55, 0)
-    diode_mk = layout.layer(115, 5)
+    c = gf.Component("diode_pd2nw_dev")
 
-    # Define variables
-    dbu_PERCISION = 1 / layout.dbu
-    pcmp2ncmp_spc = 0.48 * dbu_PERCISION
-    ncmp_w = 0.36 * dbu_PERCISION
-    pcmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
-    implant_comp_enc = 0.16 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.28 * dbu_PERCISION
+    comp_spacing: float = 0.48
+    np_enc_comp: float = 0.16
+    pp_enc_comp: float = 0.16
 
-    nwell_ncmp_enc = 0.12 * dbu_PERCISION
-    nwell_pcmp_enc = 0.43 * dbu_PERCISION
-    dg_enc_dnwell = 0.5 * dbu_PERCISION
-    dnwell_enc_nwell = 0.5 * dbu_PERCISION
-    min_cmp_area = 0.2025 * dbu_PERCISION * dbu_PERCISION
-    tie_violat = 0 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    dnwell_violat = 0 * dbu_PERCISION
+    con_size = 0.22
+    con_sp = 0.28
+    con_comp_enc = 0.07
 
-    if volt == "5/6V" or deepnwell == True:
-        nwell_ncmp_enc = 0.16 * dbu_PERCISION
-        nwell_pcmp_enc = 0.6 * dbu_PERCISION
-        dnwell_violat = 0.12 * dbu_PERCISION
+    dg_enc_cmp = 0.24
+    dn_enc_nwell = 0.5
+    nwell_ncmp_enc = 0.12
+    nwell_pcmp_enc = 0.43
+    pcmpgr_enc_dn = 2.5
 
-    # Inserting pn cell
-    cell_index = layout.add_cell("diode_pn")
-    diode_pn_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting diffusion
-    if (cmp_l * ncmp_w) < min_cmp_area:
-        tie_violat = (min_cmp_area / ncmp_w - cmp_l) / 2
-    diode_pn_cell.shapes(comp).insert(
-        pya.Box(0, -tie_violat, ncmp_w, cmp_l + tie_violat)
-    )
-    diode_pn_cell.shapes(nplus).insert(
-        pya.Box(
-            -implant_comp_enc,
-            -implant_comp_enc - tie_violat,
-            ncmp_w + implant_comp_enc,
-            cmp_l + implant_comp_enc + tie_violat,
+    # p generation
+    pcmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
+    pplus = c.add_ref(
+        gf.components.rectangle(
+            size=(pcmp.size[0] + (2 * pp_enc_comp), pcmp.size[1] + (2 * pp_enc_comp),),
+            layer=layer["pplus"],
         )
     )
-
-    diode_pn_cell.shapes(comp).insert(
-        pya.Box(ncmp_w + pcmp2ncmp_spc, 0, ncmp_w + pcmp2ncmp_spc + pcmp_w, cmp_l)
-    )
-    diode_pn_cell.shapes(pplus).insert(
-        pya.Box(
-            ncmp_w + pcmp2ncmp_spc - implant_comp_enc,
-            -implant_comp_enc,
-            ncmp_w + pcmp2ncmp_spc + pcmp_w + implant_comp_enc,
-            cmp_l + implant_comp_enc,
+    pplus.xmin = pcmp.xmin - pp_enc_comp
+    pplus.ymin = pcmp.ymin - pp_enc_comp
+    diode_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(pcmp.size[0], pcmp.size[1]), layer=layer["diode_mk"]
         )
     )
+    diode_mk.xmin = pcmp.xmin
+    diode_mk.ymin = pcmp.ymin
 
-    # Inserting metal
-    diode_pn_cell.shapes(metal1).insert(
-        pya.Box(0, -tie_violat, ncmp_w, cmp_l + tie_violat)
-    )
-    diode_pn_cell.shapes(metal1).insert(
-        pya.Box(ncmp_w + pcmp2ncmp_spc, 0, ncmp_w + pcmp2ncmp_spc + pcmp_w, cmp_l)
-    )
+    pcmp_con = c.add_ref(
+        via_stack(
+            x_range=(pcmp.xmin, pcmp.xmax),
+            y_range=(pcmp.ymin, pcmp.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )  # pcomp_contact
 
-    # Inserting nwell
-    diode_pn_cell.shapes(nwell).insert(
-        pya.Box(
-            -nwell_ncmp_enc - dnwell_violat,
-            -nwell_pcmp_enc,
-            ncmp_w + pcmp2ncmp_spc + pcmp_w + nwell_pcmp_enc,
-            cmp_l + nwell_pcmp_enc,
+    # n generation
+    ncmp = c.add_ref(gf.components.rectangle(size=(cw, la), layer=layer["comp"]))
+    ncmp.xmax = pcmp.xmin - comp_spacing
+    nplus = c.add_ref(
+        gf.components.rectangle(
+            size=(ncmp.size[0] + (2 * np_enc_comp), ncmp.size[1] + (2 * np_enc_comp),),
+            layer=layer["nplus"],
         )
     )
+    nplus.xmin = ncmp.xmin - np_enc_comp
+    nplus.ymin = ncmp.ymin - np_enc_comp
 
-    # Inserting pcomp contacts
-    num_ncmp_con_1, ncmp_con_free_spc_1 = number_spc_contacts(
-        ncmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_con_2, ncmp_con_free_spc_2 = number_spc_contacts(
-        cmp_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(pya.Point(ncmp_con_free_spc_1 / 2, ncmp_con_free_spc_2 / 2)),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_con_1,
-        num_ncmp_con_2,
-    )
-    diode_pn_cell.insert(ncmp_con_arr)
+    ncmp_con = c.add_ref(
+        via_stack(
+            x_range=(ncmp.xmin, ncmp.xmax),
+            y_range=(ncmp.ymin, ncmp.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )  # ncomp contact
 
-    # Inserting ncomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        pcmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        cmp_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                ncmp_w + pcmp2ncmp_spc + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    diode_pn_cell.insert(pcmp_con_arr)
+    # labels generation
+    if lbl == 1:
 
-    # Inserting Deep NWELL layers
-    if deepnwell == True:
-        diode_pn_cell.shapes(dnwell).insert(
-            pya.Box(
-                -nwell_ncmp_enc - dnwell_enc_nwell - dnwell_violat,
-                -nwell_pcmp_enc - dnwell_enc_nwell,
-                ncmp_w + pcmp2ncmp_spc + pcmp_w + nwell_pcmp_enc + dnwell_enc_nwell,
-                cmp_l + nwell_pcmp_enc + dnwell_enc_nwell,
-            )
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                ncmp_con.xmin + (ncmp_con.size[0] / 2),
+                ncmp_con.ymin + (ncmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
         )
 
-        # Inserting Deep NWELL P+ Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -nwell_ncmp_enc - dnwell_enc_nwell - pcmp_gr2dnw - dnwell_violat,
-                -nwell_pcmp_enc - dnwell_enc_nwell - pcmp_gr2dnw,
-                ncmp_w
-                + pcmp2ncmp_spc
-                + pcmp_w
-                + nwell_pcmp_enc
-                + dnwell_enc_nwell
-                + pcmp_gr2dnw,
-                cmp_l + nwell_pcmp_enc + dnwell_enc_nwell + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -nwell_ncmp_enc
-                - dnwell_enc_nwell
-                - pcmp_gr2dnw
-                - ncmp_w
-                - dnwell_violat,
-                -nwell_pcmp_enc - dnwell_enc_nwell - pcmp_gr2dnw - ncmp_w,
-                ncmp_w
-                + pcmp2ncmp_spc
-                + pcmp_w
-                + nwell_pcmp_enc
-                + dnwell_enc_nwell
-                + pcmp_gr2dnw
-                + ncmp_w,
-                cmp_l + nwell_pcmp_enc + dnwell_enc_nwell + pcmp_gr2dnw + ncmp_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            diode_pn_cell.shapes(comp).insert(cmp_gr)
-
-            pp_inner = pya.Box(
-                -nwell_ncmp_enc
-                - dnwell_enc_nwell
-                - pcmp_gr2dnw
-                + implant_comp_enc
-                - dnwell_violat,
-                -nwell_pcmp_enc - dnwell_enc_nwell - pcmp_gr2dnw + implant_comp_enc,
-                ncmp_w
-                + pcmp2ncmp_spc
-                + pcmp_w
-                + nwell_pcmp_enc
-                + dnwell_enc_nwell
-                + pcmp_gr2dnw
-                - implant_comp_enc,
-                cmp_l
-                + nwell_pcmp_enc
-                + dnwell_enc_nwell
-                + pcmp_gr2dnw
-                - implant_comp_enc,
-            )
-            pp_outer = pya.Box(
-                -nwell_ncmp_enc
-                - dnwell_enc_nwell
-                - pcmp_gr2dnw
-                - ncmp_w
-                - implant_comp_enc
-                - dnwell_violat,
-                -nwell_pcmp_enc
-                - dnwell_enc_nwell
-                - pcmp_gr2dnw
-                - ncmp_w
-                - implant_comp_enc,
-                ncmp_w
-                + pcmp2ncmp_spc
-                + pcmp_w
-                + nwell_pcmp_enc
-                + dnwell_enc_nwell
-                + pcmp_gr2dnw
-                + ncmp_w
-                + implant_comp_enc,
-                cmp_l
-                + nwell_pcmp_enc
-                + dnwell_enc_nwell
-                + pcmp_gr2dnw
-                + ncmp_w
-                + implant_comp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            diode_pn_cell.shapes(pplus).insert(pp_gr)
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                pcmp_con.xmin + (pcmp_con.size[0] / 2),
+                pcmp_con.ymin + (pcmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     if volt == "5/6V":
-        # Inserting dualgate
-        if deepnwell == True:
-            diode_pn_cell.shapes(dualgate).insert(
-                pya.Box(
-                    -nwell_ncmp_enc - dnwell_enc_nwell - dg_enc_dnwell - dnwell_violat,
-                    -nwell_pcmp_enc - dnwell_enc_nwell - dg_enc_dnwell,
-                    ncmp_w
-                    + pcmp2ncmp_spc
-                    + pcmp_w
-                    + nwell_pcmp_enc
-                    + dnwell_enc_nwell
-                    + dg_enc_dnwell,
-                    cmp_l + nwell_pcmp_enc + dnwell_enc_nwell + dg_enc_dnwell,
-                )
+        dg = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    pcmp.xmax - ncmp.xmin + (2 * dg_enc_cmp),
+                    ncmp.size[1] + (2 * dg_enc_cmp),
+                ),
+                layer=layer["dualgate"],
             )
-        else:
-            diode_pn_cell.shapes(dualgate).insert(
-                pya.Box(
-                    -nwell_ncmp_enc - dnwell_violat - dnwell_violat,
-                    -nwell_pcmp_enc,
-                    ncmp_w + pcmp2ncmp_spc + pcmp_w + nwell_pcmp_enc,
-                    cmp_l + nwell_pcmp_enc,
-                )
-            )
+        )
+        dg.xmin = ncmp.xmin - dg_enc_cmp
+        dg.ymin = ncmp.ymin - dg_enc_cmp
 
-    # Inserting marker
-    diode_pn_cell.shapes(diode_mk).insert(
-        pya.Box(ncmp_w + pcmp2ncmp_spc, 0, ncmp_w + pcmp2ncmp_spc + pcmp_w, cmp_l)
+    # nwell generation
+    nwell = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                pcmp.xmax - ncmp.xmin + (nwell_ncmp_enc + nwell_pcmp_enc),
+                pcmp.size[1] + (2 * nwell_pcmp_enc),
+            ),
+            layer=layer["nwell"],
+        )
     )
 
-    diode_pn_cell.flatten(True)
-    return diode_pn_cell
+    nwell.xmin = ncmp.xmin - nwell_ncmp_enc
+    nwell.ymin = pcmp.ymin - nwell_pcmp_enc
+
+    if deepnwell == 1:
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    nwell.size[0] + (2 * dn_enc_nwell),
+                    nwell.size[1] + (2 * dn_enc_nwell),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+
+        dn_rect.xmin = nwell.xmin - dn_enc_nwell
+        dn_rect.ymin = nwell.ymin - dn_enc_nwell
+
+        if pcmpgr == 1:
+
+            c_temp_gr = gf.Component("temp_store guard ring")
+            rect_pcmpgr_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (dn_rect.xmax - dn_rect.xmin) + 2 * pcmpgr_enc_dn,
+                        (dn_rect.ymax - dn_rect.ymin) + 2 * pcmpgr_enc_dn,
+                    ),
+                    layer=layer["comp"],
+                )
+            )
+            rect_pcmpgr_in.move(
+                (dn_rect.xmin - pcmpgr_enc_dn, dn_rect.ymin - pcmpgr_enc_dn)
+            )
+            rect_pcmpgr_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                    ),
+                    layer=layer["comp"],
+                )
+            )
+            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+            c.add_ref(
+                gf.geometry.boolean(
+                    A=rect_pcmpgr_out,
+                    B=rect_pcmpgr_in,
+                    operation="A-B",
+                    layer=layer["comp"],
+                )
+            )  # Bulk guardring
+
+            psdm_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * pp_enc_comp,
+                        (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * pp_enc_comp,
+                    ),
+                    layer=layer["pplus"],
+                )
+            )
+            psdm_in.move(
+                (rect_pcmpgr_in.xmin + pp_enc_comp, rect_pcmpgr_in.ymin + pp_enc_comp,)
+            )
+            psdm_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * pp_enc_comp,
+                        (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * pp_enc_comp,
+                    ),
+                    layer=layer["pplus"],
+                )
+            )
+            psdm_out.move(
+                (
+                    rect_pcmpgr_out.xmin - pp_enc_comp,
+                    rect_pcmpgr_out.ymin - pp_enc_comp,
+                )
+            )
+            c.add_ref(
+                gf.geometry.boolean(
+                    A=psdm_out, B=psdm_in, operation="A-B", layer=layer["pplus"]
+                )
+            )  # psdm guardring
+
+            # generating contacts
+
+            c.add_ref(
+                via_generator(
+                    x_range=(
+                        rect_pcmpgr_in.xmin + con_size,
+                        rect_pcmpgr_in.xmax - con_size,
+                    ),
+                    y_range=(rect_pcmpgr_out.ymin, rect_pcmpgr_in.ymin),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=layer["contact"],
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )  # bottom contact
+
+            c.add_ref(
+                via_generator(
+                    x_range=(
+                        rect_pcmpgr_in.xmin + con_size,
+                        rect_pcmpgr_in.xmax - con_size,
+                    ),
+                    y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=layer["contact"],
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )  # upper contact
+
+            c.add_ref(
+                via_generator(
+                    x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
+                    y_range=(
+                        rect_pcmpgr_in.ymin + con_size,
+                        rect_pcmpgr_in.ymax - con_size,
+                    ),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=layer["contact"],
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )  # right contact
+
+            c.add_ref(
+                via_generator(
+                    x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
+                    y_range=(
+                        rect_pcmpgr_in.ymin + con_size,
+                        rect_pcmpgr_in.ymax - con_size,
+                    ),
+                    via_enclosure=(con_comp_enc, con_comp_enc),
+                    via_layer=layer["contact"],
+                    via_size=(con_size, con_size),
+                    via_spacing=(con_sp, con_sp),
+                )
+            )  # left contact
+
+            comp_m1_in = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(rect_pcmpgr_in.size[0], rect_pcmpgr_in.size[1]),
+                    layer=layer["metal1"],
+                )
+            )
+
+            comp_m1_out = c_temp_gr.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        (comp_m1_in.size[0]) + 2 * cw,
+                        (comp_m1_in.size[1]) + 2 * cw,
+                    ),
+                    layer=layer["metal1"],
+                )
+            )
+            comp_m1_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+            c.add_ref(
+                gf.geometry.boolean(
+                    A=rect_pcmpgr_out,
+                    B=rect_pcmpgr_in,
+                    operation="A-B",
+                    layer=layer["metal1"],
+                )
+            )  # guardring metal1
+
+    # creating layout and cell in klayout
+
+    c.write_gds("diode_pd2nw_temp.gds")
+    layout.read("diode_pd2nw_temp.gds")
+    cell_name = "diode_pd2nw_dev"
+
+    return layout.cell(cell_name)
 
 
-def draw_diode_nw2ps(layout, l, w, volt):
+def draw_diode_nw2ps(
+    layout,
+    la: float = 0.1,
+    wa: float = 0.1,
+    cw: float = 0.1,
+    volt: str = "3.3V",
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
+) -> gf.Component:
     """
     Usage:-
      used to draw 3.3V Nwell/Psub diode by specifying parameters
     Arguments:-
      layout     : Object of layout
-     l          : Float of diff length
-     w          : Float of diff width
+     la         : Float of diff length (anode)
+     wa         : Float of diff width (anode)
+     cw         : Float of Cathode width
      volt       : String of operating voltage of the diode [3.3V, 5V/6V]
     """
 
-    # Define layers
-    comp = layout.layer(22, 0)
-    nplus = layout.layer(32, 0)
-    pplus = layout.layer(31, 0)
-    nwell = layout.layer(21, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    dualgate = layout.layer(55, 0)
-    well_diode_mk = layout.layer(153, 51)
+    c = gf.Component("diode_nw2ps_dev")
 
-    # Define variables
-    dbu_PERCISION = 1 / layout.dbu
-    pcmp2ncmp_spc = 0.44 * dbu_PERCISION
-    ncmp_w = 0.36 * dbu_PERCISION
-    pcmp_w = w * dbu_PERCISION
-    cmp_l = l * dbu_PERCISION
-    implant_comp_enc = 0.16 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.28 * dbu_PERCISION
-    dualgate_cmp_enc = 0.24 * dbu_PERCISION
+    comp_spacing: float = 0.48
+    np_enc_comp: float = 0.16
+    pp_enc_comp: float = 0.16
 
-    # Inserting nwp cell
-    cell_index = layout.add_cell("diode_nw2ps")
-    diode_nw2ps_cell = layout.cell(cell_index)
+    dg_enc_cmp = 0.24
 
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
+    nwell_ncmp_enc = 0.16
 
-    # Inserting diffusion
-    diode_nw2ps_cell.shapes(comp).insert(pya.Box(0, 0, ncmp_w, cmp_l))
-    diode_nw2ps_cell.shapes(pplus).insert(
-        pya.Box(
-            -implant_comp_enc,
-            -implant_comp_enc,
-            ncmp_w + implant_comp_enc,
-            cmp_l + implant_comp_enc,
+    # n generation
+    ncmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
+    nplus = c.add_ref(
+        gf.components.rectangle(
+            size=(ncmp.size[0] + (2 * np_enc_comp), ncmp.size[1] + (2 * np_enc_comp),),
+            layer=layer["nplus"],
         )
     )
-
-    diode_nw2ps_cell.shapes(comp).insert(
-        pya.Box(ncmp_w + pcmp2ncmp_spc, 0, ncmp_w + pcmp2ncmp_spc + pcmp_w, cmp_l)
-    )
-    diode_nw2ps_cell.shapes(nplus).insert(
-        pya.Box(
-            ncmp_w + pcmp2ncmp_spc - implant_comp_enc,
-            -implant_comp_enc,
-            ncmp_w + pcmp2ncmp_spc + pcmp_w + implant_comp_enc,
-            cmp_l + implant_comp_enc,
+    nplus.xmin = ncmp.xmin - np_enc_comp
+    nplus.ymin = ncmp.ymin - np_enc_comp
+    diode_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(ncmp.size[0], ncmp.size[1]), layer=layer["diode_mk"]
         )
     )
+    diode_mk.xmin = ncmp.xmin
+    diode_mk.ymin = ncmp.ymin
 
-    # Inserting nwell
-    diode_nw2ps_cell.shapes(nwell).insert(
-        pya.Box(
-            ncmp_w + pcmp2ncmp_spc - implant_comp_enc,
-            -implant_comp_enc,
-            ncmp_w + pcmp2ncmp_spc + pcmp_w + implant_comp_enc,
-            cmp_l + implant_comp_enc,
+    nwell = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                ncmp.size[0] + (2 * nwell_ncmp_enc),
+                ncmp.size[1] + (2 * nwell_ncmp_enc),
+            ),
+            layer=layer["nwell"],
         )
     )
+    nwell.xmin = ncmp.xmin - nwell_ncmp_enc
+    nwell.ymin = ncmp.ymin - nwell_ncmp_enc
 
-    # Inserting metal
-    diode_nw2ps_cell.shapes(metal1).insert(pya.Box(0, 0, ncmp_w, cmp_l))
-    diode_nw2ps_cell.shapes(metal1).insert(
-        pya.Box(ncmp_w + pcmp2ncmp_spc, 0, ncmp_w + pcmp2ncmp_spc + pcmp_w, cmp_l)
-    )
+    n_con = c.add_ref(
+        via_stack(
+            x_range=(ncmp.xmin, ncmp.xmax),
+            y_range=(ncmp.ymin, ncmp.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )  # ncomp contact
 
-    # Inserting pcomp contacts
-    num_ncmp_con_1, ncmp_con_free_spc_1 = number_spc_contacts(
-        ncmp_w, comp_cont_enc, cont_min_spc, cont_size
+    # p generation
+    pcmp = c.add_ref(gf.components.rectangle(size=(cw, la), layer=layer["comp"]))
+    pcmp.xmax = ncmp.xmin - comp_spacing
+    pplus = c.add_ref(
+        gf.components.rectangle(
+            size=(pcmp.size[0] + (2 * pp_enc_comp), pcmp.size[1] + (2 * pp_enc_comp),),
+            layer=layer["pplus"],
+        )
     )
-    num_ncmp_con_2, ncmp_con_free_spc_2 = number_spc_contacts(
-        cmp_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(pya.Point(ncmp_con_free_spc_1 / 2, ncmp_con_free_spc_2 / 2)),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_con_1,
-        num_ncmp_con_2,
-    )
-    diode_nw2ps_cell.insert(ncmp_con_arr)
+    pplus.xmin = pcmp.xmin - pp_enc_comp
+    pplus.ymin = pcmp.ymin - pp_enc_comp
 
-    # Inserting ncomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        pcmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        cmp_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                ncmp_w + pcmp2ncmp_spc + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    diode_nw2ps_cell.insert(pcmp_con_arr)
+    p_con = c.add_ref(
+        via_stack(
+            x_range=(pcmp.xmin, pcmp.xmax),
+            y_range=(pcmp.ymin, pcmp.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )  # pcmop contact
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                n_con.xmin + (n_con.size[0] / 2),
+                n_con.ymin + (n_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                p_con.xmin + (p_con.size[0] / 2),
+                p_con.ymin + (p_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
     if volt == "5/6V":
-        # Inserting marker
-        diode_nw2ps_cell.shapes(well_diode_mk).insert(
-            pya.Box(
-                -dualgate_cmp_enc,
-                -dualgate_cmp_enc,
-                ncmp_w + pcmp2ncmp_spc + pcmp_w + dualgate_cmp_enc,
-                cmp_l + dualgate_cmp_enc,
+        dg = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    ncmp.xmax - pcmp.xmin + (2 * dg_enc_cmp),
+                    ncmp.size[1] + (2 * dg_enc_cmp),
+                ),
+                layer=layer["dualgate"],
             )
         )
-        # Inserting dualgate
-        diode_nw2ps_cell.shapes(dualgate).insert(
-            pya.Box(
-                -dualgate_cmp_enc,
-                -dualgate_cmp_enc,
-                ncmp_w + pcmp2ncmp_spc + pcmp_w + dualgate_cmp_enc,
-                cmp_l + dualgate_cmp_enc,
+        dg.xmin = pcmp.xmin - dg_enc_cmp
+        dg.ymin = pcmp.ymin - dg_enc_cmp
+
+    # creating layout and cell in klayout
+
+    c.write_gds("diode_nw2ps_temp.gds")
+    layout.read("diode_nw2ps_temp.gds")
+    cell_name = "diode_nw2ps_dev"
+
+    return layout.cell(cell_name)
+
+
+def draw_diode_pw2dw(
+    layout,
+    la: float = 0.1,
+    wa: float = 0.1,
+    cw: float = 0.1,
+    volt: str = "3.3V",
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
+) -> gf.Component:
+    """
+    Usage:-
+     used to draw LVPWELL/DNWELL diode by specifying parameters
+    Arguments:-
+     layout     : Object of layout
+     la         : Float of diff length (anode)
+     wa         : Float of diff width (anode)
+     cw         : Float of cathode width
+     volt       : String of operating voltage of the diode [3.3V, 5V/6V]
+    """
+
+    c = gf.Component("diode_pw2dw_dev")
+
+    comp_spacing: float = 0.48
+    np_enc_comp: float = 0.16
+    pp_enc_comp: float = 0.16
+
+    dg_enc_dn = 0.5
+
+    lvpwell_enc_pcmp = 0.16
+    dn_enc_lvpwell = 2.5
+
+    con_size = 0.22
+    con_sp = 0.28
+    con_comp_enc = 0.07
+
+    pcmpgr_enc_dn = 2.5
+
+    # p generation
+    pcmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
+    pplus = c.add_ref(
+        gf.components.rectangle(
+            size=(pcmp.size[0] + (2 * pp_enc_comp), pcmp.size[1] + (2 * pp_enc_comp),),
+            layer=layer["pplus"],
+        )
+    )
+    pplus.xmin = pcmp.xmin - pp_enc_comp
+    pplus.ymin = pcmp.ymin - pp_enc_comp
+    diode_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(pcmp.size[0], pcmp.size[1]), layer=layer["diode_mk"]
+        )
+    )
+    diode_mk.xmin = pcmp.xmin
+    diode_mk.ymin = pcmp.ymin
+
+    lvpwell = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                pcmp.size[0] + (2 * lvpwell_enc_pcmp),
+                pcmp.size[1] + (2 * lvpwell_enc_pcmp),
+            ),
+            layer=layer["lvpwell"],
+        )
+    )
+    lvpwell.xmin = pcmp.xmin - lvpwell_enc_pcmp
+    lvpwell.ymin = pcmp.ymin - lvpwell_enc_pcmp
+
+    p_con = c.add_ref(
+        via_stack(
+            x_range=(pcmp.xmin, pcmp.xmax),
+            y_range=(pcmp.ymin, pcmp.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )  # pcomp_contact
+
+    # n generation
+    ncmp = c.add_ref(gf.components.rectangle(size=(cw, la), layer=layer["comp"]))
+    ncmp.xmax = pcmp.xmin - comp_spacing
+    nplus = c.add_ref(
+        gf.components.rectangle(
+            size=(ncmp.size[0] + (2 * np_enc_comp), ncmp.size[1] + (2 * np_enc_comp),),
+            layer=layer["nplus"],
+        )
+    )
+    nplus.xmin = ncmp.xmin - np_enc_comp
+    nplus.ymin = ncmp.ymin - np_enc_comp
+
+    n_con = c.add_ref(
+        via_stack(
+            x_range=(ncmp.xmin, ncmp.xmax),
+            y_range=(ncmp.ymin, ncmp.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )  # ncomp contact
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                n_con.xmin + (n_con.size[0] / 2),
+                n_con.ymin + (n_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        # p_label generation
+        c.add_label(
+            p_lbl,
+            position=(
+                p_con.xmin + (p_con.size[0] / 2),
+                p_con.ymin + (p_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+    dn_rect = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                lvpwell.size[0] + (2 * dn_enc_lvpwell),
+                lvpwell.size[1] + (2 * dn_enc_lvpwell),
+            ),
+            layer=layer["dnwell"],
+        )
+    )
+
+    dn_rect.xmin = lvpwell.xmin - dn_enc_lvpwell
+    dn_rect.ymin = lvpwell.ymin - dn_enc_lvpwell
+
+    if pcmpgr == 1:
+
+        c_temp_gr = gf.Component("temp_store guard ring")
+        rect_pcmpgr_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (dn_rect.xmax - dn_rect.xmin) + 2 * pcmpgr_enc_dn,
+                    (dn_rect.ymax - dn_rect.ymin) + 2 * pcmpgr_enc_dn,
+                ),
+                layer=layer["comp"],
             )
         )
+        rect_pcmpgr_in.move(
+            (dn_rect.xmin - pcmpgr_enc_dn, dn_rect.ymin - pcmpgr_enc_dn)
+        )
+        rect_pcmpgr_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                ),
+                layer=layer["comp"],
+            )
+        )
+        rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        c.add_ref(
+            gf.geometry.boolean(
+                A=rect_pcmpgr_out,
+                B=rect_pcmpgr_in,
+                operation="A-B",
+                layer=layer["comp"],
+            )
+        )  # guardring Bulk
+
+        psdm_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * pp_enc_comp,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        psdm_in.move(
+            (rect_pcmpgr_in.xmin + pp_enc_comp, rect_pcmpgr_in.ymin + pp_enc_comp,)
+        )
+        psdm_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * pp_enc_comp,
+                    (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        psdm_out.move(
+            (rect_pcmpgr_out.xmin - pp_enc_comp, rect_pcmpgr_out.ymin - pp_enc_comp,)
+        )
+        c.add_ref(
+            gf.geometry.boolean(
+                A=psdm_out, B=psdm_in, operation="A-B", layer=layer["pplus"]
+            )
+        )  # guardring psdm
+
+        # generating contacts
+
+        c.add_ref(
+            via_generator(
+                x_range=(
+                    rect_pcmpgr_in.xmin + con_size,
+                    rect_pcmpgr_in.xmax - con_size,
+                ),
+                y_range=(rect_pcmpgr_out.ymin, rect_pcmpgr_in.ymin),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # bottom contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(
+                    rect_pcmpgr_in.xmin + con_size,
+                    rect_pcmpgr_in.xmax - con_size,
+                ),
+                y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # upper contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
+                y_range=(
+                    rect_pcmpgr_in.ymin + con_size,
+                    rect_pcmpgr_in.ymax - con_size,
+                ),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # right contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
+                y_range=(
+                    rect_pcmpgr_in.ymin + con_size,
+                    rect_pcmpgr_in.ymax - con_size,
+                ),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # left contact
+
+        comp_m1_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(rect_pcmpgr_in.size[0], rect_pcmpgr_in.size[1]),
+                layer=layer["metal1"],
+            )
+        )
+
+        comp_m1_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=((comp_m1_in.size[0]) + 2 * cw, (comp_m1_in.size[1]) + 2 * cw,),
+                layer=layer["metal1"],
+            )
+        )
+        comp_m1_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        c.add_ref(
+            gf.geometry.boolean(
+                A=rect_pcmpgr_out,
+                B=rect_pcmpgr_in,
+                operation="A-B",
+                layer=layer["metal1"],
+            )
+        )  # guardring metal1
+
+    if volt == "5/6V":
+        dg = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    dn_rect.size[0] + (2 * dg_enc_dn),
+                    dn_rect.size[1] + (2 * dg_enc_dn),
+                ),
+                layer=layer["dualgate"],
+            )
+        )
+        dg.xmin = dn_rect.xmin - dg_enc_dn
+        dg.ymin = dn_rect.ymin - dg_enc_dn
+
+    # creating layout and cell in klayout
+
+    c.write_gds("diode_pw2dw_temp.gds")
+    layout.read("diode_pw2dw_temp.gds")
+    cell_name = "diode_pw2dw_dev"
+
+    return layout.cell(cell_name)
+
+
+def draw_diode_dw2ps(
+    layout,
+    la: float = 0.1,
+    wa: float = 0.1,
+    cw: float = 0.1,
+    volt: str = "3.3V",
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
+) -> gf.Component:
+    """
+    Usage:-
+     used to draw LVPWELL/DNWELL diode by specifying parameters
+    Arguments:-
+     layout     : Object of layout
+     la         : Float of diff length (anode)
+     wa         : Float of diff width (anode)
+     volt       : String of operating voltage of the diode [3.3V, 5V/6V]
+    """
+
+    c = gf.Component("diode_dw2ps_dev")
+
+    if volt == "5/6V":
+        dn_enc_ncmp = 0.66
     else:
-        # Inserting marker
-        diode_nw2ps_cell.shapes(well_diode_mk).insert(
-            pya.Box(
-                -implant_comp_enc,
-                -implant_comp_enc,
-                ncmp_w + pcmp2ncmp_spc + pcmp_w + implant_comp_enc,
-                cmp_l + implant_comp_enc,
+        dn_enc_ncmp = 0.62
+
+    comp_spacing = 0.32
+    np_enc_comp: float = 0.16
+    pp_enc_comp: float = 0.16
+
+    con_size = 0.22
+    con_sp = 0.28
+    con_comp_enc = 0.07
+
+    dg_enc_dn = 0.5
+
+    pcmpgr_enc_dn = 2.5
+
+    if (wa < ((2 * cw) + comp_spacing)) or (la < ((2 * cw) + comp_spacing)):
+        ncmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
+
+        n_con = c.add_ref(
+            via_stack(
+                x_range=(ncmp.xmin, ncmp.xmax),
+                y_range=(ncmp.ymin, ncmp.ymax),
+                base_layer=layer["comp"],
+                metal_level=1,
+            )
+        )  # ncomp_contact
+
+        nplus = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    ncmp.size[0] + (2 * np_enc_comp),
+                    ncmp.size[1] + (2 * np_enc_comp),
+                ),
+                layer=layer["nplus"],
+            )
+        )
+        nplus.xmin = ncmp.xmin - np_enc_comp
+        nplus.ymin = ncmp.ymin - np_enc_comp
+    else:
+        c_temp = gf.Component("temp_store guard ring")
+        ncmp_in = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(wa - (2 * cw), la - (2 * cw)), layer=layer["comp"],
+            )
+        )
+        ncmp_out = c_temp.add_ref(
+            gf.components.rectangle(size=(wa, la), layer=layer["comp"],)
+        )
+        ncmp_out.move((ncmp_in.xmin - cw, ncmp_in.ymin - cw))
+        ncmp = c.add_ref(
+            gf.geometry.boolean(
+                A=ncmp_out, B=ncmp_in, operation="A-B", layer=layer["comp"],
             )
         )
 
-    diode_nw2ps_cell.flatten(True)
-    return diode_nw2ps_cell
+        pplus_in = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (ncmp_in.xmax - ncmp_in.xmin) - 2 * pp_enc_comp,
+                    (ncmp_in.ymax - ncmp_in.ymin) - 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        pplus_in.move((ncmp_in.xmin + pp_enc_comp, ncmp_in.ymin + pp_enc_comp,))
+        pplus_out = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (ncmp_out.xmax - ncmp_out.xmin) + 2 * pp_enc_comp,
+                    (ncmp_out.ymax - ncmp_out.ymin) + 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        pplus_out.move((ncmp_out.xmin - pp_enc_comp, ncmp_out.ymin - pp_enc_comp,))
+        c.add_ref(
+            gf.geometry.boolean(
+                A=pplus_out, B=pplus_in, operation="A-B", layer=layer["nplus"]
+            )
+        )  # nplus
 
+        # generating contacts
 
-def draw_diode_pw2dw(layout, l, w, volt):
-    """
-    Usage:-
-     used to draw LVPWELL/DNWELL diode by specifying parameters
-    Arguments:-
-     layout     : Object of layout
-     l          : Float of diff length
-     w          : Float of diff width
-     volt       : String of operating voltage of the diode [3.3V, 5V/6V]
-    """
+        c.add_ref(
+            via_generator(
+                x_range=(ncmp_in.xmin + con_size, ncmp_in.xmax - con_size,),
+                y_range=(ncmp_out.ymin, ncmp_in.ymin),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # bottom contact
 
-    # Define layers
-    lvpwell = layout.layer(204, 0)
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    nplus = layout.layer(32, 0)
-    pplus = layout.layer(31, 0)
-    nwell = layout.layer(21, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    dualgate = layout.layer(55, 0)
-    well_diode_mk = layout.layer(153, 51)
+        c.add_ref(
+            via_generator(
+                x_range=(ncmp_in.xmin + con_size, ncmp_in.xmax - con_size,),
+                y_range=(ncmp_in.ymax, ncmp_out.ymax),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # upper contact
 
-    # Define variables
-    dbu_PERCISION = 1 / layout.dbu
-    lvpwell_w = w * dbu_PERCISION
-    lvpwell_l = l * dbu_PERCISION
-    dnwell_lvpwell_enc = 2.5 * dbu_PERCISION
-    lvpwell_pcmp_enc = 0.12 * dbu_PERCISION
-    cmp_w = 0.36 * dbu_PERCISION
-    pcmp2ncmp_spc = 0.32 * dbu_PERCISION
-    implant_comp_enc = 0.16 * dbu_PERCISION
-    ncmp_ext = 0.56 * dbu_PERCISION
-    lvpwell_gr_spc = 5 * dbu_PERCISION
-    cont_spc_tol = 0.11 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    dualgate_lvpwell_enc = 3 * dbu_PERCISION
-    pcmp2ncmp_spc = 0.32 * dbu_PERCISION
-    lvpwell_pcmp_enc = 0.12 * dbu_PERCISION
+        n_con = c.add_ref(
+            via_generator(
+                x_range=(ncmp_out.xmin, ncmp_in.xmin),
+                y_range=(ncmp_in.ymin + con_size, ncmp_in.ymax - con_size,),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # left contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(ncmp_in.xmax, ncmp_out.xmax),
+                y_range=(ncmp_in.ymin + con_size, ncmp_in.ymax - con_size,),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # right contact
+
+        comp_m1_in = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(ncmp_in.size[0], ncmp_in.size[1]), layer=layer["metal1"],
+            )
+        )
+
+        comp_m1_out = c_temp.add_ref(
+            gf.components.rectangle(
+                size=((comp_m1_in.size[0]) + 2 * cw, (comp_m1_in.size[0]) + 2 * cw,),
+                layer=layer["metal1"],
+            )
+        )
+        comp_m1_out.move((ncmp_in.xmin - cw, ncmp_in.ymin - cw))
+        c.add_ref(
+            gf.geometry.boolean(
+                A=ncmp_out, B=ncmp_in, operation="A-B", layer=layer["metal1"],
+            )
+        )  # guardring metal1
+
+    # labels generation
+    if lbl == 1:
+
+        # n_label generation
+        c.add_label(
+            n_lbl,
+            position=(
+                n_con.xmin + (n_con.size[0] / 2),
+                n_con.ymin + (n_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+    # generate dnwell
+
+    dn_rect = c.add_ref(
+        gf.components.rectangle(
+            size=(ncmp.size[0] + (2 * dn_enc_ncmp), ncmp.size[1] + (2 * dn_enc_ncmp),),
+            layer=layer["dnwell"],
+        )
+    )
+    dn_rect.xmin = ncmp.xmin - dn_enc_ncmp
+    dn_rect.ymin = ncmp.ymin - dn_enc_ncmp
+
+    diode_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(dn_rect.size[0], dn_rect.size[1]), layer=layer["diode_mk"]
+        )
+    )
+    diode_mk.xmin = dn_rect.xmin
+    diode_mk.ymin = dn_rect.ymin
+
+    if pcmpgr == 1:
+
+        c_temp_gr = gf.Component("temp_store guard ring")
+        rect_pcmpgr_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (dn_rect.xmax - dn_rect.xmin) + 2 * pcmpgr_enc_dn,
+                    (dn_rect.ymax - dn_rect.ymin) + 2 * pcmpgr_enc_dn,
+                ),
+                layer=layer["comp"],
+            )
+        )
+        rect_pcmpgr_in.move(
+            (dn_rect.xmin - pcmpgr_enc_dn, dn_rect.ymin - pcmpgr_enc_dn)
+        )
+        rect_pcmpgr_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                ),
+                layer=layer["comp"],
+            )
+        )
+        rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        c.add_ref(
+            gf.geometry.boolean(
+                A=rect_pcmpgr_out,
+                B=rect_pcmpgr_in,
+                operation="A-B",
+                layer=layer["comp"],
+            )
+        )  # guardring Bulk
+
+        psdm_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * pp_enc_comp,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        psdm_in.move(
+            (rect_pcmpgr_in.xmin + pp_enc_comp, rect_pcmpgr_in.ymin + pp_enc_comp,)
+        )
+        psdm_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * pp_enc_comp,
+                    (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        psdm_out.move(
+            (rect_pcmpgr_out.xmin - pp_enc_comp, rect_pcmpgr_out.ymin - pp_enc_comp,)
+        )
+        c.add_ref(
+            gf.geometry.boolean(
+                A=psdm_out, B=psdm_in, operation="A-B", layer=layer["pplus"]
+            )
+        )  # psdm
+
+        # generating contacts
+
+        c.add_ref(
+            via_generator(
+                x_range=(
+                    rect_pcmpgr_in.xmin + con_size,
+                    rect_pcmpgr_in.xmax - con_size,
+                ),
+                y_range=(rect_pcmpgr_out.ymin, rect_pcmpgr_in.ymin),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # bottom contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(
+                    rect_pcmpgr_in.xmin + con_size,
+                    rect_pcmpgr_in.xmax - con_size,
+                ),
+                y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # upper contact
+
+        p_con = c.add_ref(
+            via_generator(
+                x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
+                y_range=(
+                    rect_pcmpgr_in.ymin + con_size,
+                    rect_pcmpgr_in.ymax - con_size,
+                ),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # left contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
+                y_range=(
+                    rect_pcmpgr_in.ymin + con_size,
+                    rect_pcmpgr_in.ymax - con_size,
+                ),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # right contact
+
+        # labels generation
+        if lbl == 1:
+
+            # n_label generation
+            c.add_label(
+                p_lbl,
+                position=(
+                    p_con.xmin + (p_con.size[0] / 2),
+                    p_con.ymin + (p_con.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
+
+        comp_m1_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(rect_pcmpgr_in.size[0], rect_pcmpgr_in.size[1]),
+                layer=layer["metal1"],
+            )
+        )
+
+        comp_m1_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                ),
+                layer=layer["metal1"],
+            )
+        )
+        comp_m1_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        c.add_ref(
+            gf.geometry.boolean(
+                A=rect_pcmpgr_out,
+                B=rect_pcmpgr_in,
+                operation="A-B",
+                layer=layer["metal1"],
+            )
+        )  # guardring metal1
+
+    # generate dualgate
 
     if volt == "5/6V":
-        pcmp2ncmp_spc = 0.36 * dbu_PERCISION
-        lvpwell_pcmp_enc = 0.16 * dbu_PERCISION
-
-    # Inserting diode_pw2dw cell
-    cell_index = layout.add_cell("diode_pw2dw")
-    diode_pw2dw_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting lvpwell
-    diode_pw2dw_cell.shapes(lvpwell).insert(pya.Box(0, 0, lvpwell_w, lvpwell_l))
-
-    # Inserting dnwell
-    diode_pw2dw_cell.shapes(dnwell).insert(
-        pya.Box(
-            -dnwell_lvpwell_enc,
-            -dnwell_lvpwell_enc,
-            lvpwell_w + dnwell_lvpwell_enc,
-            lvpwell_l + dnwell_lvpwell_enc,
-        )
-    )
-
-    # Inserting p diffusion
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            lvpwell_pcmp_enc,
-            lvpwell_pcmp_enc,
-            lvpwell_pcmp_enc + cmp_w,
-            lvpwell_l - lvpwell_pcmp_enc,
-        )
-    )  # left
-    diode_pw2dw_cell.shapes(pplus).insert(
-        pya.Box(
-            lvpwell_pcmp_enc - implant_comp_enc,
-            lvpwell_pcmp_enc - implant_comp_enc,
-            lvpwell_pcmp_enc + cmp_w + implant_comp_enc,
-            lvpwell_l - lvpwell_pcmp_enc + implant_comp_enc,
-        )
-    )
-
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w,
-            lvpwell_pcmp_enc,
-            lvpwell_w - lvpwell_pcmp_enc,
-            lvpwell_l - lvpwell_pcmp_enc,
-        )
-    )  # right
-    diode_pw2dw_cell.shapes(pplus).insert(
-        pya.Box(
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w - implant_comp_enc,
-            lvpwell_pcmp_enc - implant_comp_enc,
-            lvpwell_w - lvpwell_pcmp_enc + implant_comp_enc,
-            lvpwell_l - lvpwell_pcmp_enc + implant_comp_enc,
-        )
-    )
-
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            lvpwell_pcmp_enc + cmp_w,
-            lvpwell_l - lvpwell_pcmp_enc - cmp_w,
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w,
-            lvpwell_l - lvpwell_pcmp_enc,
-        )
-    )  # top
-    diode_pw2dw_cell.shapes(pplus).insert(
-        pya.Box(
-            lvpwell_pcmp_enc + cmp_w + implant_comp_enc,
-            lvpwell_l - lvpwell_pcmp_enc - cmp_w - implant_comp_enc,
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w - implant_comp_enc,
-            lvpwell_l - lvpwell_pcmp_enc + implant_comp_enc,
-        )
-    )  # top
-
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            lvpwell_pcmp_enc + cmp_w,
-            lvpwell_pcmp_enc,
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w,
-            lvpwell_pcmp_enc + cmp_w,
-        )
-    )  # bottom
-    diode_pw2dw_cell.shapes(pplus).insert(
-        pya.Box(
-            lvpwell_pcmp_enc + cmp_w + implant_comp_enc,
-            lvpwell_pcmp_enc - implant_comp_enc,
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w - implant_comp_enc,
-            lvpwell_pcmp_enc + cmp_w + implant_comp_enc,
-        )
-    )  # bottom
-
-    # Inserting pcomp metal
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            lvpwell_pcmp_enc,
-            lvpwell_pcmp_enc,
-            lvpwell_pcmp_enc + cmp_w,
-            lvpwell_l - lvpwell_pcmp_enc,
-        )
-    )  # left
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w,
-            lvpwell_pcmp_enc,
-            lvpwell_w - lvpwell_pcmp_enc,
-            lvpwell_l - lvpwell_pcmp_enc,
-        )
-    )  # right
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            lvpwell_pcmp_enc + cmp_w,
-            lvpwell_l - lvpwell_pcmp_enc - cmp_w,
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w,
-            lvpwell_l - lvpwell_pcmp_enc,
-        )
-    )  # top
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            lvpwell_pcmp_enc + cmp_w,
-            lvpwell_pcmp_enc,
-            lvpwell_w - lvpwell_pcmp_enc - cmp_w,
-            lvpwell_pcmp_enc + cmp_w,
-        )
-    )  # bottom
-
-    # Inserting pcomp contacts
-    num_pcmp_left_con_1, pcmp_left_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_left_con_2, pcmp_left_con_free_spc_2 = number_spc_contacts(
-        lvpwell_l - 2 * lvpwell_pcmp_enc, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                lvpwell_pcmp_enc + pcmp_left_con_free_spc_1 / 2,
-                lvpwell_pcmp_enc + pcmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_left_con_1,
-        num_pcmp_left_con_2,
-    )
-    diode_pw2dw_cell.insert(pcmp_left_con_arr)
-
-    num_cmp_right_con_1, cmp_right_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_cmp_right_con_2, cmp_right_con_free_spc_2 = number_spc_contacts(
-        lvpwell_l - 2 * lvpwell_pcmp_enc, comp_cont_enc, cont_min_spc, cont_size
-    )
-    cmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                lvpwell_w - lvpwell_pcmp_enc - cmp_w + cmp_right_con_free_spc_1 / 2,
-                lvpwell_pcmp_enc + cmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_cmp_right_con_1,
-        num_cmp_right_con_2,
-    )
-    diode_pw2dw_cell.insert(cmp_right_con_arr)
-
-    num_cmp_top_con_1, cmp_top_con_free_spc_1 = number_spc_contacts(
-        lvpwell_w - 2 * lvpwell_pcmp_enc - 2 * cmp_w - 2 * cont_spc_tol,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    num_cmp_top_con_2, cmp_top_con_free_spc_2 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    cmp_top_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                lvpwell_pcmp_enc + cmp_w + cont_spc_tol + cmp_top_con_free_spc_1 / 2,
-                lvpwell_l - lvpwell_pcmp_enc - cmp_w + cmp_top_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_cmp_top_con_1,
-        num_cmp_top_con_2,
-    )
-    diode_pw2dw_cell.insert(cmp_top_con_arr)
-
-    num_cmp_bot_con_1, cmp_bot_con_free_spc_1 = number_spc_contacts(
-        lvpwell_w - 2 * lvpwell_pcmp_enc - 2 * cmp_w - 2 * cont_spc_tol,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    num_cmp_bot_con_2, cmp_bot_con_free_spc_2 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    cmp_bot_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                lvpwell_pcmp_enc + cmp_w + cont_spc_tol + cmp_bot_con_free_spc_1 / 2,
-                lvpwell_pcmp_enc + cmp_bot_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_cmp_bot_con_1,
-        num_cmp_bot_con_2,
-    )
-    diode_pw2dw_cell.insert(cmp_bot_con_arr)
-
-    # Inserting n diffusion
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            lvpwell_pcmp_enc - pcmp2ncmp_spc - cmp_w,
-            -ncmp_ext,
-            lvpwell_pcmp_enc - pcmp2ncmp_spc,
-            lvpwell_l + ncmp_ext,
-        )
-    )
-    diode_pw2dw_cell.shapes(nplus).insert(
-        pya.Box(
-            lvpwell_pcmp_enc - pcmp2ncmp_spc - cmp_w - implant_comp_enc,
-            -ncmp_ext - implant_comp_enc,
-            lvpwell_pcmp_enc - pcmp2ncmp_spc + implant_comp_enc,
-            lvpwell_l + ncmp_ext + implant_comp_enc,
-        )
-    )
-
-    # Inserting ncomp metal
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            lvpwell_pcmp_enc - pcmp2ncmp_spc - cmp_w,
-            -ncmp_ext,
-            lvpwell_pcmp_enc - pcmp2ncmp_spc,
-            lvpwell_l + ncmp_ext,
-        )
-    )
-
-    # Inserting ncomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        lvpwell_l + 2 * ncmp_ext, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                lvpwell_pcmp_enc - pcmp2ncmp_spc - cmp_w + pcmp_con_free_spc_1 / 2,
-                -ncmp_ext + pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    diode_pw2dw_cell.insert(pcmp_con_arr)
-
-    # Inserting GR
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            -lvpwell_gr_spc - cmp_w,
-            -lvpwell_gr_spc - cmp_w,
-            -lvpwell_gr_spc,
-            lvpwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # left
-    diode_pw2dw_cell.shapes(pplus).insert(
-        pya.Box(
-            -lvpwell_gr_spc - cmp_w - implant_comp_enc,
-            -lvpwell_gr_spc - cmp_w - implant_comp_enc,
-            -lvpwell_gr_spc + implant_comp_enc,
-            lvpwell_l + lvpwell_gr_spc + cmp_w + implant_comp_enc,
-        )
-    )
-
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            lvpwell_w + lvpwell_gr_spc,
-            -lvpwell_gr_spc - cmp_w,
-            lvpwell_w + lvpwell_gr_spc + cmp_w,
-            lvpwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # right
-    diode_pw2dw_cell.shapes(pplus).insert(
-        pya.Box(
-            lvpwell_w + lvpwell_gr_spc - implant_comp_enc,
-            -lvpwell_gr_spc - cmp_w - implant_comp_enc,
-            lvpwell_w + lvpwell_gr_spc + cmp_w + implant_comp_enc,
-            lvpwell_l + lvpwell_gr_spc + cmp_w + implant_comp_enc,
-        )
-    )
-
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            -lvpwell_gr_spc,
-            lvpwell_l + lvpwell_gr_spc,
-            lvpwell_w + lvpwell_gr_spc,
-            lvpwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # top
-    diode_pw2dw_cell.shapes(pplus).insert(
-        pya.Box(
-            -lvpwell_gr_spc + implant_comp_enc,
-            lvpwell_l + lvpwell_gr_spc - implant_comp_enc,
-            lvpwell_w + lvpwell_gr_spc - implant_comp_enc,
-            lvpwell_l + lvpwell_gr_spc + cmp_w + implant_comp_enc,
-        )
-    )
-
-    diode_pw2dw_cell.shapes(comp).insert(
-        pya.Box(
-            -lvpwell_gr_spc,
-            -lvpwell_gr_spc - cmp_w,
-            lvpwell_w + lvpwell_gr_spc,
-            -lvpwell_gr_spc,
-        )
-    )  # bot
-    diode_pw2dw_cell.shapes(pplus).insert(
-        pya.Box(
-            -lvpwell_gr_spc + implant_comp_enc,
-            -lvpwell_gr_spc - cmp_w - implant_comp_enc,
-            lvpwell_w + lvpwell_gr_spc - implant_comp_enc,
-            -lvpwell_gr_spc + implant_comp_enc,
-        )
-    )
-
-    # Inserting GR metal
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            -lvpwell_gr_spc - cmp_w,
-            -lvpwell_gr_spc - cmp_w,
-            -lvpwell_gr_spc,
-            lvpwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # left
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            lvpwell_w + lvpwell_gr_spc,
-            -lvpwell_gr_spc - cmp_w,
-            lvpwell_w + lvpwell_gr_spc + cmp_w,
-            lvpwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # right
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            -lvpwell_gr_spc,
-            lvpwell_l + lvpwell_gr_spc,
-            lvpwell_w + lvpwell_gr_spc,
-            lvpwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # top
-    diode_pw2dw_cell.shapes(metal1).insert(
-        pya.Box(
-            -lvpwell_gr_spc,
-            -lvpwell_gr_spc - cmp_w,
-            lvpwell_w + lvpwell_gr_spc,
-            -lvpwell_gr_spc,
-        )
-    )  # bot
-
-    # Inserting GR contacts
-    num_gr_left_con_1, gr_left_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_gr_left_con_2, gr_left_con_free_spc_2 = number_spc_contacts(
-        lvpwell_l + 2 * lvpwell_gr_spc + 2 * cmp_w,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    gr_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -lvpwell_gr_spc - cmp_w + gr_left_con_free_spc_1 / 2,
-                -lvpwell_gr_spc - cmp_w + gr_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_gr_left_con_1,
-        num_gr_left_con_2,
-    )
-    diode_pw2dw_cell.insert(gr_left_con_arr)
-
-    num_gr_right_con_1, gr_right_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_gr_right_con_2, gr_right_con_free_spc_2 = number_spc_contacts(
-        lvpwell_l + 2 * lvpwell_gr_spc + 2 * cmp_w,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    gr_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                lvpwell_w + lvpwell_gr_spc + gr_right_con_free_spc_1 / 2,
-                -lvpwell_gr_spc - cmp_w + gr_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_gr_right_con_1,
-        num_gr_right_con_2,
-    )
-    diode_pw2dw_cell.insert(gr_right_con_arr)
-
-    num_gr_top_con_1, gr_top_con_free_spc_1 = number_spc_contacts(
-        lvpwell_w + 2 * lvpwell_gr_spc - 2 * cont_spc_tol,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    num_gr_top_con_2, gr_top_con_free_spc_2 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    gr_top_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -lvpwell_gr_spc + cont_spc_tol + gr_top_con_free_spc_1 / 2,
-                lvpwell_l + lvpwell_gr_spc + gr_top_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_gr_top_con_1,
-        num_gr_top_con_2,
-    )
-    diode_pw2dw_cell.insert(gr_top_con_arr)
-
-    num_gr_bot_con_1, gr_bot_con_free_spc_1 = number_spc_contacts(
-        lvpwell_w + 2 * lvpwell_gr_spc - 2 * cont_spc_tol,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    num_gr_bot_con_2, gr_bot_con_free_spc_2 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    gr_bot_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -lvpwell_gr_spc + cont_spc_tol + gr_bot_con_free_spc_1 / 2,
-                -lvpwell_gr_spc - cmp_w + gr_bot_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_gr_bot_con_1,
-        num_gr_bot_con_2,
-    )
-    diode_pw2dw_cell.insert(gr_bot_con_arr)
-
-    # Inserting marker
-    diode_pw2dw_cell.shapes(well_diode_mk).insert(pya.Box(0, 0, lvpwell_w, lvpwell_l))
-
-    if volt == "5/6V":
-        # Inserting dualgate
-        diode_pw2dw_cell.shapes(dualgate).insert(
-            pya.Box(
-                -dualgate_lvpwell_enc,
-                -dualgate_lvpwell_enc,
-                lvpwell_w + dualgate_lvpwell_enc,
-                lvpwell_l + dualgate_lvpwell_enc,
+        dg = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    dn_rect.size[0] + (2 * dg_enc_dn),
+                    dn_rect.size[1] + (2 * dg_enc_dn),
+                ),
+                layer=layer["dualgate"],
             )
         )
+        dg.xmin = dn_rect.xmin - dg_enc_dn
+        dg.ymin = dn_rect.ymin - dg_enc_dn
 
-    diode_pw2dw_cell.flatten(True)
-    return diode_pw2dw_cell
+    # creating layout and cell in klayout
 
+    c.write_gds("diode_dw2ps_temp.gds")
+    layout.read("diode_dw2ps_temp.gds")
+    cell_name = "diode_dw2ps_dev"
 
-def draw_diode_dw2ps(layout, l, w, volt):
-    """
-    Usage:-
-     used to draw LVPWELL/DNWELL diode by specifying parameters
-    Arguments:-
-     layout     : Object of layout
-     l          : Float of diff length
-     w          : Float of diff width
-     volt       : String of operating voltage of the diode [3.3V, 5V/6V]
-    """
-
-    # Define layers
-    lvpwell = layout.layer(204, 0)
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    nplus = layout.layer(32, 0)
-    pplus = layout.layer(31, 0)
-    nwell = layout.layer(21, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    dualgate = layout.layer(55, 0)
-    well_diode_mk = layout.layer(153, 51)
-
-    # Define variables
-    dbu_PERCISION = 1 / layout.dbu
-    dnwell_w = w * dbu_PERCISION
-    dnwell_l = l * dbu_PERCISION
-    dnwell_pcmp_enc = 0.62 * dbu_PERCISION
-    cmp_w = 0.36 * dbu_PERCISION
-    pcmp2ncmp_spc = 0.32 * dbu_PERCISION
-    implant_comp_enc = 0.03 * dbu_PERCISION
-    ncmp_ext = 0.56 * dbu_PERCISION
-    lvpwell_gr_spc = 2.5 * dbu_PERCISION
-    cont_spc_tol = 0.11 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    dualgate_lvpwell_enc = 0.5 * dbu_PERCISION
-
-    if volt == "5/6V":
-        dnwell_pcmp_enc = 0.66 * dbu_PERCISION
-
-    # Inserting diode_dw2ps cell
-    cell_index = layout.add_cell("diode_dw2ps")
-    diode_dw2ps_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting dnwell
-    diode_dw2ps_cell.shapes(dnwell).insert(pya.Box(0, 0, dnwell_w, dnwell_l))
-
-    # Inserting n diffusion
-    diode_dw2ps_cell.shapes(comp).insert(
-        pya.Box(
-            dnwell_pcmp_enc,
-            dnwell_pcmp_enc,
-            dnwell_pcmp_enc + cmp_w,
-            dnwell_l - dnwell_pcmp_enc,
-        )
-    )  # left
-    diode_dw2ps_cell.shapes(nplus).insert(
-        pya.Box(
-            dnwell_pcmp_enc - implant_comp_enc,
-            dnwell_pcmp_enc - implant_comp_enc,
-            dnwell_pcmp_enc + cmp_w + implant_comp_enc,
-            dnwell_l - dnwell_pcmp_enc + implant_comp_enc,
-        )
-    )
-
-    diode_dw2ps_cell.shapes(comp).insert(
-        pya.Box(
-            dnwell_w - dnwell_pcmp_enc - cmp_w,
-            dnwell_pcmp_enc,
-            dnwell_w - dnwell_pcmp_enc,
-            dnwell_l - dnwell_pcmp_enc,
-        )
-    )  # right
-    diode_dw2ps_cell.shapes(nplus).insert(
-        pya.Box(
-            dnwell_w - dnwell_pcmp_enc - cmp_w - implant_comp_enc,
-            dnwell_pcmp_enc - implant_comp_enc,
-            dnwell_w - dnwell_pcmp_enc + implant_comp_enc,
-            dnwell_l - dnwell_pcmp_enc + implant_comp_enc,
-        )
-    )
-
-    diode_dw2ps_cell.shapes(comp).insert(
-        pya.Box(
-            dnwell_pcmp_enc + cmp_w,
-            dnwell_l - dnwell_pcmp_enc - cmp_w,
-            dnwell_w - dnwell_pcmp_enc - cmp_w,
-            dnwell_l - dnwell_pcmp_enc,
-        )
-    )  # top
-    diode_dw2ps_cell.shapes(nplus).insert(
-        pya.Box(
-            dnwell_pcmp_enc + cmp_w + implant_comp_enc,
-            dnwell_l - dnwell_pcmp_enc - cmp_w - implant_comp_enc,
-            dnwell_w - dnwell_pcmp_enc - cmp_w - implant_comp_enc,
-            dnwell_l - dnwell_pcmp_enc + implant_comp_enc,
-        )
-    )  # top
-
-    diode_dw2ps_cell.shapes(comp).insert(
-        pya.Box(
-            dnwell_pcmp_enc + cmp_w,
-            dnwell_pcmp_enc,
-            dnwell_w - dnwell_pcmp_enc - cmp_w,
-            dnwell_pcmp_enc + cmp_w,
-        )
-    )  # bottom
-    diode_dw2ps_cell.shapes(nplus).insert(
-        pya.Box(
-            dnwell_pcmp_enc + cmp_w + implant_comp_enc,
-            dnwell_pcmp_enc - implant_comp_enc,
-            dnwell_w - dnwell_pcmp_enc - cmp_w - implant_comp_enc,
-            dnwell_pcmp_enc + cmp_w + implant_comp_enc,
-        )
-    )  # bottom
-
-    # Inserting ncomp metal
-    diode_dw2ps_cell.shapes(metal1).insert(
-        pya.Box(
-            dnwell_pcmp_enc,
-            dnwell_pcmp_enc,
-            dnwell_pcmp_enc + cmp_w,
-            dnwell_l - dnwell_pcmp_enc,
-        )
-    )  # left
-    diode_dw2ps_cell.shapes(metal1).insert(
-        pya.Box(
-            dnwell_w - dnwell_pcmp_enc - cmp_w,
-            dnwell_pcmp_enc,
-            dnwell_w - dnwell_pcmp_enc,
-            dnwell_l - dnwell_pcmp_enc,
-        )
-    )  # right
-    diode_dw2ps_cell.shapes(metal1).insert(
-        pya.Box(
-            dnwell_pcmp_enc + cmp_w,
-            dnwell_l - dnwell_pcmp_enc - cmp_w,
-            dnwell_w - dnwell_pcmp_enc - cmp_w,
-            dnwell_l - dnwell_pcmp_enc,
-        )
-    )  # top
-    diode_dw2ps_cell.shapes(metal1).insert(
-        pya.Box(
-            dnwell_pcmp_enc + cmp_w,
-            dnwell_pcmp_enc,
-            dnwell_w - dnwell_pcmp_enc - cmp_w,
-            dnwell_pcmp_enc + cmp_w,
-        )
-    )  # bottom
-
-    # Inserting ncomp contacts
-    num_pcmp_left_con_1, pcmp_left_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_left_con_2, pcmp_left_con_free_spc_2 = number_spc_contacts(
-        dnwell_l - 2 * dnwell_pcmp_enc, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                dnwell_pcmp_enc + pcmp_left_con_free_spc_1 / 2,
-                dnwell_pcmp_enc + pcmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_left_con_1,
-        num_pcmp_left_con_2,
-    )
-    diode_dw2ps_cell.insert(pcmp_left_con_arr)
-
-    num_cmp_right_con_1, cmp_right_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_cmp_right_con_2, cmp_right_con_free_spc_2 = number_spc_contacts(
-        dnwell_l - 2 * dnwell_pcmp_enc, comp_cont_enc, cont_min_spc, cont_size
-    )
-    cmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                dnwell_w - dnwell_pcmp_enc - cmp_w + cmp_right_con_free_spc_1 / 2,
-                dnwell_pcmp_enc + cmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_cmp_right_con_1,
-        num_cmp_right_con_2,
-    )
-    diode_dw2ps_cell.insert(cmp_right_con_arr)
-
-    num_cmp_top_con_1, cmp_top_con_free_spc_1 = number_spc_contacts(
-        dnwell_w - 2 * dnwell_pcmp_enc - 2 * cmp_w - 2 * cont_spc_tol,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    num_cmp_top_con_2, cmp_top_con_free_spc_2 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    cmp_top_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                dnwell_pcmp_enc + cmp_w + cont_spc_tol + cmp_top_con_free_spc_1 / 2,
-                dnwell_l - dnwell_pcmp_enc - cmp_w + cmp_top_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_cmp_top_con_1,
-        num_cmp_top_con_2,
-    )
-    diode_dw2ps_cell.insert(cmp_top_con_arr)
-
-    num_cmp_bot_con_1, cmp_bot_con_free_spc_1 = number_spc_contacts(
-        dnwell_w - 2 * dnwell_pcmp_enc - 2 * cmp_w - 2 * cont_spc_tol,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    num_cmp_bot_con_2, cmp_bot_con_free_spc_2 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    cmp_bot_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                dnwell_pcmp_enc + cmp_w + cont_spc_tol + cmp_bot_con_free_spc_1 / 2,
-                dnwell_pcmp_enc + cmp_bot_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_cmp_bot_con_1,
-        num_cmp_bot_con_2,
-    )
-    diode_dw2ps_cell.insert(cmp_bot_con_arr)
-
-    # Inserting GR
-    diode_dw2ps_cell.shapes(comp).insert(
-        pya.Box(
-            -lvpwell_gr_spc - cmp_w,
-            -lvpwell_gr_spc - cmp_w,
-            -lvpwell_gr_spc,
-            dnwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # left
-    diode_dw2ps_cell.shapes(pplus).insert(
-        pya.Box(
-            -lvpwell_gr_spc - cmp_w - implant_comp_enc,
-            -lvpwell_gr_spc - cmp_w - implant_comp_enc,
-            -lvpwell_gr_spc + implant_comp_enc,
-            dnwell_l + lvpwell_gr_spc + cmp_w + implant_comp_enc,
-        )
-    )
-
-    diode_dw2ps_cell.shapes(comp).insert(
-        pya.Box(
-            dnwell_w + lvpwell_gr_spc,
-            -lvpwell_gr_spc - cmp_w,
-            dnwell_w + lvpwell_gr_spc + cmp_w,
-            dnwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # right
-    diode_dw2ps_cell.shapes(pplus).insert(
-        pya.Box(
-            dnwell_w + lvpwell_gr_spc - implant_comp_enc,
-            -lvpwell_gr_spc - cmp_w - implant_comp_enc,
-            dnwell_w + lvpwell_gr_spc + cmp_w + implant_comp_enc,
-            dnwell_l + lvpwell_gr_spc + cmp_w + implant_comp_enc,
-        )
-    )
-
-    diode_dw2ps_cell.shapes(comp).insert(
-        pya.Box(
-            -lvpwell_gr_spc,
-            dnwell_l + lvpwell_gr_spc,
-            dnwell_w + lvpwell_gr_spc,
-            dnwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # top
-    diode_dw2ps_cell.shapes(pplus).insert(
-        pya.Box(
-            -lvpwell_gr_spc + implant_comp_enc,
-            dnwell_l + lvpwell_gr_spc - implant_comp_enc,
-            dnwell_w + lvpwell_gr_spc - implant_comp_enc,
-            dnwell_l + lvpwell_gr_spc + cmp_w + implant_comp_enc,
-        )
-    )
-
-    diode_dw2ps_cell.shapes(comp).insert(
-        pya.Box(
-            -lvpwell_gr_spc,
-            -lvpwell_gr_spc - cmp_w,
-            dnwell_w + lvpwell_gr_spc,
-            -lvpwell_gr_spc,
-        )
-    )  # bot
-    diode_dw2ps_cell.shapes(pplus).insert(
-        pya.Box(
-            -lvpwell_gr_spc + implant_comp_enc,
-            -lvpwell_gr_spc - cmp_w - implant_comp_enc,
-            dnwell_w + lvpwell_gr_spc - implant_comp_enc,
-            -lvpwell_gr_spc + implant_comp_enc,
-        )
-    )
-
-    # Inserting GR metal
-    diode_dw2ps_cell.shapes(metal1).insert(
-        pya.Box(
-            -lvpwell_gr_spc - cmp_w,
-            -lvpwell_gr_spc - cmp_w,
-            -lvpwell_gr_spc,
-            dnwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # left
-    diode_dw2ps_cell.shapes(metal1).insert(
-        pya.Box(
-            dnwell_w + lvpwell_gr_spc,
-            -lvpwell_gr_spc - cmp_w,
-            dnwell_w + lvpwell_gr_spc + cmp_w,
-            dnwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # right
-    diode_dw2ps_cell.shapes(metal1).insert(
-        pya.Box(
-            -lvpwell_gr_spc,
-            dnwell_l + lvpwell_gr_spc,
-            dnwell_w + lvpwell_gr_spc,
-            dnwell_l + lvpwell_gr_spc + cmp_w,
-        )
-    )  # top
-    diode_dw2ps_cell.shapes(metal1).insert(
-        pya.Box(
-            -lvpwell_gr_spc,
-            -lvpwell_gr_spc - cmp_w,
-            dnwell_w + lvpwell_gr_spc,
-            -lvpwell_gr_spc,
-        )
-    )  # bot
-
-    # Inserting GR contacts
-    num_gr_left_con_1, gr_left_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_gr_left_con_2, gr_left_con_free_spc_2 = number_spc_contacts(
-        dnwell_l + 2 * lvpwell_gr_spc + 2 * cmp_w,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    gr_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -lvpwell_gr_spc - cmp_w + gr_left_con_free_spc_1 / 2,
-                -lvpwell_gr_spc - cmp_w + gr_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_gr_left_con_1,
-        num_gr_left_con_2,
-    )
-    diode_dw2ps_cell.insert(gr_left_con_arr)
-
-    num_gr_right_con_1, gr_right_con_free_spc_1 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_gr_right_con_2, gr_right_con_free_spc_2 = number_spc_contacts(
-        dnwell_l + 2 * lvpwell_gr_spc + 2 * cmp_w,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    gr_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                dnwell_w + lvpwell_gr_spc + gr_right_con_free_spc_1 / 2,
-                -lvpwell_gr_spc - cmp_w + gr_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_gr_right_con_1,
-        num_gr_right_con_2,
-    )
-    diode_dw2ps_cell.insert(gr_right_con_arr)
-
-    num_gr_top_con_1, gr_top_con_free_spc_1 = number_spc_contacts(
-        dnwell_w + 2 * lvpwell_gr_spc - 2 * cont_spc_tol,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    num_gr_top_con_2, gr_top_con_free_spc_2 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    gr_top_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -lvpwell_gr_spc + cont_spc_tol + gr_top_con_free_spc_1 / 2,
-                dnwell_l + lvpwell_gr_spc + gr_top_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_gr_top_con_1,
-        num_gr_top_con_2,
-    )
-    diode_dw2ps_cell.insert(gr_top_con_arr)
-
-    num_gr_bot_con_1, gr_bot_con_free_spc_1 = number_spc_contacts(
-        dnwell_w + 2 * lvpwell_gr_spc - 2 * cont_spc_tol,
-        comp_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    num_gr_bot_con_2, gr_bot_con_free_spc_2 = number_spc_contacts(
-        cmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    gr_bot_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -lvpwell_gr_spc + cont_spc_tol + gr_bot_con_free_spc_1 / 2,
-                -lvpwell_gr_spc - cmp_w + gr_bot_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_gr_bot_con_1,
-        num_gr_bot_con_2,
-    )
-    diode_dw2ps_cell.insert(gr_bot_con_arr)
-
-    # Inserting marker
-    diode_dw2ps_cell.shapes(well_diode_mk).insert(pya.Box(0, 0, dnwell_w, dnwell_l))
-
-    if volt == "5/6V":
-        # Inserting dualgate
-        diode_dw2ps_cell.shapes(dualgate).insert(
-            pya.Box(
-                -dualgate_lvpwell_enc,
-                -dualgate_lvpwell_enc,
-                dnwell_w + dualgate_lvpwell_enc,
-                dnwell_l + dualgate_lvpwell_enc,
-            )
-        )
-
-    diode_dw2ps_cell.flatten(True)
-    return diode_dw2ps_cell
+    return layout.cell(cell_name)
 
 
-def draw_sc_diode(layout, l, w, m, pcmpgr):
+def draw_sc_diode(
+    layout,
+    la: float = 0.1,
+    wa: float = 0.1,
+    cw: float = 0.1,
+    m: int = 1,
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    p_lbl: str = "",
+    n_lbl: str = "",
+) -> gf.Component:
     """
     Usage:-
      used to draw N+/LVPWELL diode (Outside DNWELL) by specifying parameters
     Arguments:-
      layout     : Object of layout
-     l          : Float of diff length
-     w          : Float of diff width
+     la         : Float of diff length (anode)
+     wa         : Float of diff width (anode)
      m          : Integer of number of fingers
      pcmpgr     : Boolean of using P+ Guard Ring for Deep NWELL devices only
     """
 
-    # Define layers
-    comp = layout.layer(22, 0)
-    nplus = layout.layer(32, 0)
-    dnwell = layout.layer(12, 0)
-    pplus = layout.layer(31, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    sc_diode_mk = layout.layer(241, 0)
+    c = gf.Component("sc_diode_dev")
 
-    # Define variables
-    dbu_PERCISION = 1 / layout.dbu
-    ncmp_metcmp_spc = 0.28 * dbu_PERCISION
-    ncmp_w = 0.36 * dbu_PERCISION
-    sc_w = w * dbu_PERCISION
-    sc_l = l * dbu_PERCISION
-    implant_comp_enc = 0.03 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
+    sc_enc_comp = 0.16
+    sc_comp_spacing = 0.28
+    dn_enc_sc_an = 1.4
+    np_enc_comp = 0.03
+    m1_w = 0.23
+    pcmpgr_enc_dn = 2.5
+    pp_enc_comp: float = 0.16
 
-    metcmp_min_spc = 0.92 * dbu_PERCISION
-    met_cmp_enc_in = 0.23 * dbu_PERCISION
-    met_ncmp_enc = 0.46 * dbu_PERCISION
-    dnwell_cmp_enc_x = 0.76 * dbu_PERCISION
-    dnwell_cmp_enc_y = 1.4 * dbu_PERCISION
-    sc_mk_cmp_enc = 0.16 * dbu_PERCISION
-    met_conn_w = 0.23 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
+    con_size = 0.22
+    con_sp = 0.28
+    con_comp_enc = 0.07
 
-    ncmp_min_spc = 2 * ncmp_metcmp_spc + sc_w
-    cmp_total_w = (m + 1) * ncmp_w + m * ncmp_min_spc
+    # cathode draw
 
-    # Inserting np cell
-    cell_index = layout.add_cell("sc_diode")
-    sc_diode_cell = layout.cell(cell_index)
+    @gf.cell
+    def sc_cathode_strap(size: Float2 = (0.1, 0.1)) -> gf.Component:
+        """Returns sc_diode cathode array element
 
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
+        Args :
+            size : size of cathode array element
+        """
 
-    # Inserting ncomp sc finger cell
-    ncmp_cell_index = layout.add_cell("ncomp")
-    ncmp_cell = layout.cell(ncmp_cell_index)
-    ncmp_cell.shapes(comp).insert(pya.Box.new(0, 0, ncmp_w, sc_l))
-    ncmp_cell.shapes(nplus).insert(
-        pya.Box.new(
-            -implant_comp_enc,
-            -implant_comp_enc,
-            ncmp_w + implant_comp_enc,
-            sc_l + implant_comp_enc,
+        c = gf.Component()
+
+        ncmp = c.add_ref(gf.components.rectangle(size=size, layer=layer["comp"]))
+
+        nplus = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    ncmp.size[0] + (2 * np_enc_comp),
+                    ncmp.size[1] + (2 * np_enc_comp),
+                ),
+                layer=layer["nplus"],
+            )
         )
-    )
-    ncmp_cell.shapes(metal1).insert(pya.Box.new(0, -met_cmp_enc_in, ncmp_w, sc_l))
-    ## Inserting pcomp contacts
-    num_ncmp_con_1, ncmp_con_free_spc_1 = number_spc_contacts(
-        ncmp_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_con_2, ncmp_con_free_spc_2 = number_spc_contacts(
-        sc_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(pya.Point(ncmp_con_free_spc_1 / 2, ncmp_con_free_spc_2 / 2)),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_con_1,
-        num_ncmp_con_2,
-    )
-    ncmp_cell.insert(ncmp_con_arr)
+        nplus.xmin = ncmp.xmin - np_enc_comp
+        nplus.ymin = ncmp.ymin - np_enc_comp
 
-    # Inserting comp_metal sc finger cell
-    met_cmp_cell_index = layout.add_cell("comp_metal")
-    met_cmp_cell = layout.cell(met_cmp_cell_index)
-    met_cmp_cell.shapes(comp).insert(pya.Box.new(0, 0, sc_w, sc_l))
+        c.add_ref(
+            via_stack(
+                x_range=(ncmp.xmin, ncmp.xmax),
+                y_range=(ncmp.ymin, ncmp.ymax),
+                base_layer=layer["comp"],
+                metal_level=1,
+            )
+        )  # ncomp contact
+
+        return c
+
+    @gf.cell
+    def sc_anode_strap(size: Float2 = (0.1, 0.1)) -> gf.Component:
+        """Returns sc_diode anode array element
+
+        Args :
+            size : size of anode array element
+        """
+
+        c = gf.Component()
+
+        cmp = c.add_ref(gf.components.rectangle(size=size, layer=layer["comp"]))
+
+        c.add_ref(
+            via_stack(
+                x_range=(cmp.xmin, cmp.xmax),
+                y_range=(cmp.ymin, cmp.ymax),
+                base_layer=layer["comp"],
+                metal_level=1,
+            )
+        )  # comp contact
+
+        return c
+
+    sc_an = sc_anode_strap(size=(wa, la))
+    sc_cath = sc_cathode_strap(size=(cw, la))
+
+    sc_cathode = c.add_array(
+        component=sc_cath,
+        rows=1,
+        columns=(m + 1),
+        spacing=((cw + wa + (2 * sc_comp_spacing)), 0),
+    )
+
+    cath_m1_polys = sc_cath.get_polygons(by_spec=layer["metal1"])
+    cath_m1_xmin = np.min(cath_m1_polys[0][:, 0])
+    cath_m1_ymin = np.min(cath_m1_polys[0][:, 1])
+    cath_m1_xmax = np.max(cath_m1_polys[0][:, 0])
+
+    cath_m1_v = c.add_array(
+        component=gf.components.rectangle(
+            size=(cath_m1_xmax - cath_m1_xmin, cath_m1_ymin - sc_cathode.ymin + m1_w,),
+            layer=layer["metal1"],
+        ),
+        rows=1,
+        columns=(m + 1),
+        spacing=((cw + wa + (2 * sc_comp_spacing)), 0),
+    )
+
+    cath_m1_v.xmin = cath_m1_xmin
+    cath_m1_v.ymax = cath_m1_ymin
+
+    cath_m1_h = c.add_ref(
+        gf.components.rectangle(size=(cath_m1_v.size[0], m1_w), layer=layer["metal1"])
+    )
+    cath_m1_h.xmin = cath_m1_v.xmin
+    cath_m1_h.ymax = cath_m1_v.ymin
+
+    # cathode label generation
+    if lbl == 1:
+        c.add_label(
+            n_lbl,
+            position=(
+                cath_m1_h.xmin + (cath_m1_h.size[0] / 2),
+                cath_m1_h.ymin + (cath_m1_h.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+    sc_anode = c.add_array(
+        component=sc_an,
+        rows=1,
+        columns=m,
+        spacing=(wa + cw + (2 * sc_comp_spacing), 0),
+    )
+
+    sc_anode.xmin = sc_cathode.xmin + (cw + sc_comp_spacing)
+
+    an_m1_polys = sc_anode.get_polygons(by_spec=layer["metal1"])
+    an_m1_xmin = np.min(an_m1_polys[0][:, 0])
+    an_m1_ymin = np.min(an_m1_polys[0][:, 1])
+    an_m1_xmax = np.max(an_m1_polys[0][:, 0])
+    an_m1_ymax = np.max(an_m1_polys[0][:, 1])
 
     if m > 1:
-        met_cmp_cell.shapes(metal1).insert(
-            pya.Box.new(0, 0, sc_w, sc_l + met_cmp_enc_in)
+
+        an_m1_v = c.add_array(
+            component=gf.components.rectangle(
+                size=(an_m1_xmax - an_m1_xmin, cath_m1_ymin - sc_an.ymin + m1_w,),
+                layer=layer["metal1"],
+            ),
+            rows=1,
+            columns=m,
+            spacing=((cw + wa + (2 * sc_comp_spacing)), 0),
         )
+
+        an_m1_v.xmin = an_m1_xmin
+        an_m1_v.ymin = an_m1_ymax
+
+        an_m1_h = c.add_ref(
+            gf.components.rectangle(size=(an_m1_v.size[0], m1_w), layer=layer["metal1"])
+        )
+        an_m1_h.xmin = an_m1_v.xmin
+        an_m1_h.ymin = an_m1_v.ymax
+
+        # anode label generation
+        if lbl == 1:
+            c.add_label(
+                p_lbl,
+                position=(
+                    an_m1_h.xmin + (an_m1_h.size[0] / 2),
+                    an_m1_h.ymin + (an_m1_h.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
+
     else:
-        met_cmp_cell.shapes(metal1).insert(pya.Box.new(0, 0, sc_w, sc_l))
 
-    ## Inserting comp_metal contacts
-    num_met_cmp_con_1, met_cmp_con_free_spc_1 = number_spc_contacts(
-        sc_w, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_met_cmp_con_2, met_cmp_con_free_spc_2 = number_spc_contacts(
-        sc_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    met_cmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(pya.Point(met_cmp_con_free_spc_1 / 2, met_cmp_con_free_spc_2 / 2)),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_met_cmp_con_1,
-        num_met_cmp_con_2,
-    )
-    met_cmp_cell.insert(met_cmp_con_arr)
+        # anode label generation
+        if lbl == 1:
+            c.add_label(
+                p_lbl,
+                position=(
+                    an_m1_xmin + ((an_m1_xmax - an_m1_xmin) / 2),
+                    an_m1_ymin + ((an_m1_ymax - an_m1_ymin) / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
 
-    # Inserting ncomp fingers
-    ncmp_arr = pya.CellInstArray(
-        ncmp_cell.cell_index(),
-        pya.Trans(pya.Point(0, 0)),
-        pya.Vector(ncmp_min_spc + ncmp_w, 0),
-        pya.Vector(0, ncmp_min_spc + ncmp_w),
-        m + 1,
-        1,
-    )
-    sc_diode_cell.insert(ncmp_arr)
-
-    # Inserting metal comp fingers
-    metcmp_arr = pya.CellInstArray(
-        met_cmp_cell.cell_index(),
-        pya.Trans(pya.Point(ncmp_w + ncmp_metcmp_spc, 0)),
-        pya.Vector(metcmp_min_spc + sc_w, 0),
-        pya.Vector(0, metcmp_min_spc + sc_w),
-        m,
-        1,
-    )
-    sc_diode_cell.insert(metcmp_arr)
-
-    # Inserting Deep NWELL
-    sc_diode_cell.shapes(dnwell).insert(
-        pya.Box(
-            -dnwell_cmp_enc_x,
-            -dnwell_cmp_enc_y,
-            cmp_total_w + dnwell_cmp_enc_x,
-            sc_l + dnwell_cmp_enc_y,
+    # diode_mk
+    diode_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                sc_cathode.size[0] + (2 * sc_enc_comp),
+                sc_cathode.size[1] + (2 * sc_enc_comp),
+            ),
+            layer=layer["schottky_diode"],
         )
     )
+    diode_mk.xmin = sc_cathode.xmin - sc_enc_comp
+    diode_mk.ymin = sc_cathode.ymin - sc_enc_comp
 
-    # Inserting Deep NWELL P+ Guard Ring
-    if pcmpgr == True:
-        cmp_inner = pya.Box(
-            -dnwell_cmp_enc_x - pcmp_gr2dnw,
-            -dnwell_cmp_enc_y - pcmp_gr2dnw,
-            cmp_total_w + dnwell_cmp_enc_x + pcmp_gr2dnw,
-            sc_l + dnwell_cmp_enc_y + pcmp_gr2dnw,
-        )
-        cmp_outer = pya.Box(
-            -dnwell_cmp_enc_x - ncmp_w - pcmp_gr2dnw,
-            -dnwell_cmp_enc_y - ncmp_w - pcmp_gr2dnw,
-            cmp_total_w + dnwell_cmp_enc_x + ncmp_w + pcmp_gr2dnw,
-            sc_l + dnwell_cmp_enc_y + ncmp_w + pcmp_gr2dnw,
-        )
-        cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-        sc_diode_cell.shapes(comp).insert(cmp_gr)
-
-        pp_inner = pya.Box(
-            -dnwell_cmp_enc_x + implant_comp_enc - pcmp_gr2dnw,
-            -dnwell_cmp_enc_y + implant_comp_enc - pcmp_gr2dnw,
-            cmp_total_w + dnwell_cmp_enc_x - implant_comp_enc + pcmp_gr2dnw,
-            sc_l + dnwell_cmp_enc_y - implant_comp_enc + pcmp_gr2dnw,
-        )
-        pp_outer = pya.Box(
-            -dnwell_cmp_enc_x - ncmp_w - implant_comp_enc - pcmp_gr2dnw,
-            -dnwell_cmp_enc_y - ncmp_w - implant_comp_enc - pcmp_gr2dnw,
-            cmp_total_w + dnwell_cmp_enc_x + ncmp_w + implant_comp_enc + pcmp_gr2dnw,
-            sc_l + dnwell_cmp_enc_y + ncmp_w + implant_comp_enc + pcmp_gr2dnw,
-        )
-        pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-        sc_diode_cell.shapes(pplus).insert(pp_gr)
-
-    # Inserting sc_marker
-    sc_diode_cell.shapes(sc_diode_mk).insert(
-        pya.Box(
-            -sc_mk_cmp_enc,
-            -sc_mk_cmp_enc,
-            cmp_total_w + sc_mk_cmp_enc,
-            sc_l + sc_mk_cmp_enc,
+    # dnwell
+    dn_rect = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                sc_anode.size[0] + (2 * dn_enc_sc_an),
+                sc_anode.size[1] + (2 * dn_enc_sc_an),
+            ),
+            layer=layer["dnwell"],
         )
     )
+    dn_rect.xmin = sc_anode.xmin - dn_enc_sc_an
+    dn_rect.ymin = sc_anode.ymin - dn_enc_sc_an
 
-    # Inserting connection metal  [bottom]
-    sc_diode_cell.shapes(metal1).insert(
-        pya.Box(0, -met_ncmp_enc, cmp_total_w, -met_ncmp_enc + met_conn_w)
-    )
+    if pcmpgr == 1:
 
-    # Inserting connection metal  [Top]
-    if m > 1:
-        sc_diode_cell.shapes(metal1).insert(
-            pya.Box(
-                ncmp_w + ncmp_metcmp_spc,
-                sc_l + met_ncmp_enc - met_conn_w,
-                cmp_total_w - ncmp_w - ncmp_metcmp_spc,
-                sc_l + met_ncmp_enc,
+        c_temp_gr = gf.Component("temp_store guard ring")
+        rect_pcmpgr_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (dn_rect.xmax - dn_rect.xmin) + 2 * pcmpgr_enc_dn,
+                    (dn_rect.ymax - dn_rect.ymin) + 2 * pcmpgr_enc_dn,
+                ),
+                layer=layer["comp"],
+            )
+        )
+        rect_pcmpgr_in.move(
+            (dn_rect.xmin - pcmpgr_enc_dn, dn_rect.ymin - pcmpgr_enc_dn)
+        )
+        rect_pcmpgr_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                ),
+                layer=layer["comp"],
+            )
+        )
+        rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        c.add_ref(
+            gf.geometry.boolean(
+                A=rect_pcmpgr_out,
+                B=rect_pcmpgr_in,
+                operation="A-B",
+                layer=layer["comp"],
+            )
+        )  # guardring Bulk
+
+        psdm_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * pp_enc_comp,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        psdm_in.move(
+            (rect_pcmpgr_in.xmin + pp_enc_comp, rect_pcmpgr_in.ymin + pp_enc_comp,)
+        )
+        psdm_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * pp_enc_comp,
+                    (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        psdm_out.move(
+            (rect_pcmpgr_out.xmin - pp_enc_comp, rect_pcmpgr_out.ymin - pp_enc_comp,)
+        )
+        c.add_ref(
+            gf.geometry.boolean(
+                A=psdm_out, B=psdm_in, operation="A-B", layer=layer["pplus"]
+            )
+        )  # psdm
+
+        # generating contacts
+
+        c.add_ref(
+            via_generator(
+                x_range=(
+                    rect_pcmpgr_in.xmin + con_size,
+                    rect_pcmpgr_in.xmax - con_size,
+                ),
+                y_range=(rect_pcmpgr_out.ymin, rect_pcmpgr_in.ymin),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # bottom contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(
+                    rect_pcmpgr_in.xmin + con_size,
+                    rect_pcmpgr_in.xmax - con_size,
+                ),
+                y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # upper contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
+                y_range=(
+                    rect_pcmpgr_in.ymin + con_size,
+                    rect_pcmpgr_in.ymax - con_size,
+                ),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # right contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
+                y_range=(
+                    rect_pcmpgr_in.ymin + con_size,
+                    rect_pcmpgr_in.ymax - con_size,
+                ),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # left contact
+
+        comp_m1_in = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=(rect_pcmpgr_in.size[0], rect_pcmpgr_in.size[1]),
+                layer=layer["metal1"],
             )
         )
 
-    sc_diode_cell.flatten(True)
-    return sc_diode_cell
+        comp_m1_out = c_temp_gr.add_ref(
+            gf.components.rectangle(
+                size=((comp_m1_in.size[0]) + 2 * cw, (comp_m1_in.size[1]) + 2 * cw,),
+                layer=layer["metal1"],
+            )
+        )
+        comp_m1_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        c.add_ref(
+            gf.geometry.boolean(
+                A=rect_pcmpgr_out,
+                B=rect_pcmpgr_in,
+                operation="A-B",
+                layer=layer["metal1"],
+            )
+        )  # guardring metal1
+
+    # creating layout and cell in klayout
+
+    c.write_gds("sc_diode_temp.gds")
+    layout.read("sc_diode_temp.gds")
+    cell_name = "sc_diode_dev"
+
+    return layout.cell(cell_name)

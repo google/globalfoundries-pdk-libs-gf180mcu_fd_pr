@@ -403,7 +403,7 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
     return None
 
 
-def main():
+def main():  # noqa: C901
     """Main function applies all regression steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
@@ -415,7 +415,9 @@ def main():
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
         print(version)
         if version <= 37:
-            logging.error("ngspice version is not supported. Please use ngspice version 38 or newer.")
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
             exit(1)
 
     # pandas setup

@@ -54,7 +54,9 @@ def call_simulator(file_name: str):
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def ext_npn_measured(dev_data_path: str, device: str, devices: list[str], dev_path: str) -> pd.DataFrame:
+def ext_npn_measured(
+    dev_data_path: str, device: str, devices: list[str], dev_path: str
+) -> pd.DataFrame:
     """Extract measured values from excel file.
     Args:
         dev_data_path (str): Path to excel file.
@@ -164,7 +166,9 @@ def ext_npn_measured(dev_data_path: str, device: str, devices: list[str], dev_pa
     return df
 
 
-def ext_pnp_measured(dev_data_path: str, device: str, devices: list[str], dev_path: str) -> pd.DataFrame:
+def ext_pnp_measured(
+    dev_data_path: str, device: str, devices: list[str], dev_path: str
+) -> pd.DataFrame:
     """Extract measured values from excel file.
     Args:
         dev_data_path (str): Path to excel file.
@@ -334,7 +338,9 @@ def run_sim(char: str, dirpath: str, device: str, temp: float) -> dict:
     return info
 
 
-def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
+def run_sims(
+    char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()
+) -> pd.DataFrame:
     """Run simulations.
     Args:
         char (str): ib or ic to simulate.
@@ -409,7 +415,7 @@ def run_sims(char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count
     return df
 
 
-def main():
+def main():  # noqa: C901
     """Main function applies all regression steps"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
@@ -421,7 +427,9 @@ def main():
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
         print(version)
         if version <= 37:
-            logging.error("ngspice version is not supported. Please use ngspice version 38 or newer.")
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
             exit(1)
     # pandas setup
     pd.set_option("display.max_columns", None)
@@ -527,8 +535,8 @@ def main():
                 result_data = simulated_data.merge(measured_data, how="left")
 
                 ## We found that most of the curr are in the range of milli-Amps and most of the
-                ## error happens in the off mode of the BJT. And it causes large rmse for the values. 
-                ## We will clip at 5nA for all currents to make sure that for small signal it works as expected. 
+                ## error happens in the off mode of the BJT. And it causes large rmse for the values.
+                ## We will clip at 5nA for all currents to make sure that for small signal it works as expected.
 
                 # Clipping all the  values to lowest_curr
                 lowest_curr = 5.0e-9

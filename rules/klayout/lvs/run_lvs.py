@@ -62,17 +62,17 @@ def main():
     if args["--gf180mcu"] == "A":
         switches = (
             switches
-            + f"-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM -rd  poly_res=1K -rd mim_cap=2 "
+            + "-rd metal_top=30K -rd mim_option=A -rd metal_level=3LM -rd  poly_res=1K -rd mim_cap=2 "
         )
     elif args["--gf180mcu"] == "B":
         switches = (
             switches
-            + f"-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM -rd  poly_res=1K -rd mim_cap=2 "
+            + "-rd metal_top=11K -rd mim_option=B -rd metal_level=4LM -rd  poly_res=1K -rd mim_cap=2 "
         )
     elif args["--gf180mcu"] == "C":
         switches = (
             switches
-            + f"-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM -rd  poly_res=1K -rd mim_cap=2 "
+            + "-rd metal_top=9K  -rd mim_option=B -rd metal_level=5LM -rd  poly_res=1K -rd mim_cap=2 "
         )
     else:
         print("gf180mcu switch allowed values are (A , B, C) only")
@@ -156,7 +156,7 @@ def main():
             exit()
 
         check_call(
-            f"klayout -b -r gf180mcu.lvs -rd input={path} -rd report={file_name[0]}.lyrdb -rd schematic={args['--net']} -rd target_netlist=extracted_netlist_{file_name[0]}.cir -rd thr={workers_count} {switches}",
+            f"klayout -b -r {run_lvs_full_path}/gf180mcu.lvs -rd input={path} -rd report={file_name[0]}.lyrdb -rd schematic={args['--net']} -rd target_netlist=extracted_netlist_{file_name[0]}.cir -rd thr={workers_count} {switches}",
             shell=True,
         )
 
@@ -169,17 +169,15 @@ if __name__ == "__main__":
 
     logging.basicConfig(
         level=logging.DEBUG,
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
     # Args
     args = docopt(__doc__, version="LVS Checker: 0.1")
-    workers_count = os.cpu_count() * 2 if args["--thr"] == None else int(args["--thr"])
+    workers_count = os.cpu_count() * 2 if args["--thr"] is None else int(args["--thr"])
 
-    # Env. variables
-    pdk_root = os.environ["PDK_ROOT"]
-    pdk = os.environ["PDK"]
+    run_lvs_full_path = os.path.dirname(os.path.abspath(__file__))
 
     # ========= Checking Klayout version =========
     klayout_v_ = os.popen("klayout -v").read()
@@ -191,7 +189,7 @@ if __name__ == "__main__":
             "Using this klayout version has not been assesed in this development. Limits are unknown"
         )
         logging.info(f"Your version is: {klayout_v_}")
-        logging.info(f"Prerequisites at a minimum: KLayout 0.27.8")
+        logging.info("Prerequisites at a minimum: KLayout 0.27.8")
 
     # Calling main function
     main()

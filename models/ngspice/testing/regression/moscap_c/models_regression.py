@@ -149,7 +149,9 @@ def ext_measured(dev_data_path: str, device: str, corners: str) -> pd.DataFrame:
     return df
 
 
-def run_sim(dirpath: str, device: str, length: float, width: float, corner: str, temp=25) -> dict:
+def run_sim(
+    dirpath: str, device: str, length: float, width: float, corner: str, temp=25
+) -> dict:
     """Run simulation for a given device, corner, length, width and temperature
     Args:
         dirpath (str): Path to directory
@@ -211,7 +213,9 @@ def run_sim(dirpath: str, device: str, length: float, width: float, corner: str,
     return info
 
 
-def run_sims(df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()) -> pd.DataFrame:
+def run_sims(
+    df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()
+) -> pd.DataFrame:
     """Run simulations for a given dataframe
     Args:
         df (pd.DataFrame): Dataframe containing device, corner, length, width and temperature
@@ -252,7 +256,7 @@ def run_sims(df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()) -> pd.D
 
 
 def main():
-    """Main function for moscap regression """
+    """Main function for moscap regression"""
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
 
@@ -263,7 +267,9 @@ def main():
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
         print(version)
         if version <= 37:
-            logging.error("ngspice version is not supported. Please use ngspice version 38 or newer or newer.")
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer or newer."
+            )
             exit(1)
 
     # pandas setup

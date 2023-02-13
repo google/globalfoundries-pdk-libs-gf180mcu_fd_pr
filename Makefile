@@ -40,13 +40,13 @@ test-DRC-switch: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) klayout -v
 
 ################################################################################
-## DRC Regression section
+## LVS Regression section
 ################################################################################
-# DRC main testing
+# LVS main testing
 test-LVS-main: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) klayout -v
 
-# DRC main testing
+# LVS main testing
 test-LVS-switch: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) klayout -v
 

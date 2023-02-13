@@ -16,28 +16,21 @@
 ## Resistor Pcells Generators for Klayout of GF180MCU
 ########################################################################################################################
 
-import pya
-
-tol = 1.05
-
-
-def number_spc_contacts(box_width, min_enc, cont_spacing, cont_width):
-    """ Calculate number of cantacts in a given dimensions and the free space for symmetry.
-        By getting the min enclosure,the width of the box,the width ans spacing of the contacts.
-        Parameters
-        ----------
-        box_width    (double) : length you place the via or cont. in
-        min_enc      (double) : spacing between the edge of the box and the first contact.
-        cont_spacing (double) : spacing between different contacts
-        cont_width   (double) : contacts in the same direction
-    """
-    spc_cont = box_width - 2 * min_enc
-    num_cont = int((spc_cont + cont_spacing) / (cont_width + cont_spacing))
-    free_spc = box_width - (num_cont * cont_width + (num_cont - 1) * cont_spacing)
-    return num_cont, free_spc
+import gdsfactory as gf
+from gdsfactory.types import LayerSpec, Float2
+from .layers_def import layer
+from .via_generator import via_generator, via_stack
 
 
-def draw_metal_res(layout, l, w, res_type):
+def draw_metal_res(
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "rm1",
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+) -> gf.Component:
     """
     Usage:-
      used to draw 2-terminal Metal resistor by specifying parameters
@@ -47,3165 +40,1145 @@ def draw_metal_res(layout, l, w, res_type):
      w      : Float of diff width
     """
 
-    # Define layers
-    metal1 = layout.layer(34, 0)
-    metal2 = layout.layer(36, 0)
-    metal3 = layout.layer(42, 0)
-    metaltop = layout.layer(53, 0)
+    c = gf.Component("res_dev")
 
-    metal1_res = layout.layer(110, 11)
-    metal2_res = layout.layer(110, 12)
-    metal3_res = layout.layer(110, 13)
-    metaltop_res = layout.layer(110, 16)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    metal_res_w = w * dbu_PERCISION
-    metal_res_l = l * dbu_PERCISION
+    m_ext = 0.28
 
     if res_type == "rm1":
-        metal_res = metal1_res
-        metal = metal1
-        metal_res_enc = 0.23 * dbu_PERCISION
-
+        m_layer = layer["metal1"]
+        res_layer = layer["metal1_res"]
+        m_lbl_layer = layer["metal1_label"]
     elif res_type == "rm2":
-        metal_res = metal2_res
-        metal = metal2
-        metal_res_enc = 0.28 * dbu_PERCISION
-
+        m_layer = layer["metal2"]
+        res_layer = layer["metal2_res"]
+        m_lbl_layer = layer["metal2_label"]
     elif res_type == "rm3":
-        metal_res = metal3_res
-        metal = metal3
-        metal_res_enc = 0.28 * dbu_PERCISION
-
-    elif res_type == "tm6k":
-        metal_res = metaltop_res
-        metal = metaltop
-        metal_res_enc = 0.36 * dbu_PERCISION
-
-    elif res_type == "tm9k" or res_type == "tm11k":
-        metal_res = metaltop_res
-        metal = metaltop
-        metal_res_enc = 0.44 * dbu_PERCISION
-
-    elif res_type == "tm30k":
-        metal_res = metaltop_res
-        metal = metaltop
-        metal_res_enc = 1.8 * dbu_PERCISION
-
+        m_layer = layer["metal3"]
+        res_layer = layer["metal3_res"]
+        m_lbl_layer = layer["metal3_label"]
     else:
-        metal_res = metal1_res
-        metal = metal1
-        metal_res_enc = 0.23 * dbu_PERCISION
+        m_layer = layer["metaltop"]
+        res_layer = layer["metal6_res"]
+        m_lbl_layer = layer["metaltop_label"]
 
-    # Inserting rm cell
-    cell_index = layout.add_cell("rm")
-    rm_cell = layout.cell(cell_index)
+    res_mk = c.add_ref(gf.components.rectangle(size=(l_res, w_res), layer=res_layer))
 
-    # Inserting metal_res
-    rm_cell.shapes(metal_res).insert(pya.Box(0, 0, metal_res_w, metal_res_l))
-
-    # Inserting metal
-    rm_cell.shapes(metal).insert(
-        pya.Box(-metal_res_enc, 0, metal_res_w + metal_res_enc, metal_res_l)
+    m_rect = c.add_ref(
+        gf.components.rectangle(size=(l_res + (2 * m_ext), w_res), layer=m_layer)
     )
+    m_rect.xmin = res_mk.xmin - m_ext
+    m_rect.ymin = res_mk.ymin
 
-    rm_cell.flatten(True)
-    return rm_cell
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                res_mk.xmin + (res_mk.size[0] / 2),
+                res_mk.ymin + (res_mk.size[1] / 2),
+            ),
+            layer=m_lbl_layer,
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                m_rect.xmin + (res_mk.xmin - m_rect.xmin) / 2,
+                m_rect.ymin + (m_rect.size[1] / 2),
+            ),
+            layer=m_lbl_layer,
+        )
+
+    # creating layout and cell in klayout
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
 
 
-def draw_nplus_s_res(layout, l, w, sub, deepnwell, pcmpgr):
+@gf.cell
+def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
+    """Return deepnwell guardring
+
+    Args :
+        dn_rect : deepnwell polygon
+        grw : guardring width
     """
-    Usage:-
-     used to draw 3-terminal salicided n+ diffusion resistor (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
 
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    lvpwell = layout.layer(204, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    res_mk = layout.layer(110, 5)
+    c = gf.Component()
 
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    nplus_s_res_w = w * dbu_PERCISION
-    nplus_s_res_l = l * dbu_PERCISION
-    cmp_res_enc = 0.29 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
-    ncmp_pcmp_spc = 0.72 * dbu_PERCISION
-    pcmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    min_cmp_area = 0.2025 * dbu_PERCISION * dbu_PERCISION
-    tie_violat = 0 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-    dnwell_enc_lvpwell = 2.5 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    lvpwell_enc_pcmp = 0.12 * dbu_PERCISION
-    lvpwell_enc_ncmp = 0.43 * dbu_PERCISION
+    comp_pp_enc: float = 0.16
+    con_size = 0.22
+    con_sp = 0.28
+    con_comp_enc = 0.07
+    pcmpgr_enc_dn = 2.5
 
-    # Inserting nplus_s_res cell
-    cell_index = layout.add_cell("nplus_s_resistor")
-    nplus_s_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    nplus_s_res_cell.shapes(res_mk).insert(pya.Box(0, 0, nplus_s_res_w, nplus_s_res_l))
-
-    # Inserting n diffusion
-    nplus_s_res_cell.shapes(comp).insert(
-        pya.Box(-cmp_res_enc, 0, nplus_s_res_w + cmp_res_enc, nplus_s_res_l)
+    c_temp_gr = gf.Component("temp_store guard ring")
+    rect_pcmpgr_in = c_temp_gr.add_ref(
+        gf.components.rectangle(
+            size=(
+                (dn_rect.xmax - dn_rect.xmin) + 2 * pcmpgr_enc_dn,
+                (dn_rect.ymax - dn_rect.ymin) + 2 * pcmpgr_enc_dn,
+            ),
+            layer=layer["comp"],
+        )
     )
-    nplus_s_res_cell.shapes(nplus).insert(
-        pya.Box(
-            -cmp_res_enc - implant_cmp_enc,
-            -implant_cmp_enc,
-            nplus_s_res_w + cmp_res_enc + implant_cmp_enc,
-            nplus_s_res_l + implant_cmp_enc,
+    rect_pcmpgr_in.move((dn_rect.xmin - pcmpgr_enc_dn, dn_rect.ymin - pcmpgr_enc_dn))
+    rect_pcmpgr_out = c_temp_gr.add_ref(
+        gf.components.rectangle(
+            size=(
+                (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * grw,
+                (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * grw,
+            ),
+            layer=layer["comp"],
+        )
+    )
+    rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+    c.add_ref(
+        gf.geometry.boolean(
+            A=rect_pcmpgr_out, B=rect_pcmpgr_in, operation="A-B", layer=layer["comp"],
+        )
+    )  # guardring bulk
+
+    psdm_in = c_temp_gr.add_ref(
+        gf.components.rectangle(
+            size=(
+                (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) - 2 * comp_pp_enc,
+                (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) - 2 * comp_pp_enc,
+            ),
+            layer=layer["pplus"],
+        )
+    )
+    psdm_in.move(
+        (rect_pcmpgr_in.xmin + comp_pp_enc, rect_pcmpgr_in.ymin + comp_pp_enc,)
+    )
+    psdm_out = c_temp_gr.add_ref(
+        gf.components.rectangle(
+            size=(
+                (rect_pcmpgr_out.xmax - rect_pcmpgr_out.xmin) + 2 * comp_pp_enc,
+                (rect_pcmpgr_out.ymax - rect_pcmpgr_out.ymin) + 2 * comp_pp_enc,
+            ),
+            layer=layer["pplus"],
+        )
+    )
+    psdm_out.move(
+        (rect_pcmpgr_out.xmin - comp_pp_enc, rect_pcmpgr_out.ymin - comp_pp_enc,)
+    )
+    c.add_ref(
+        gf.geometry.boolean(
+            A=psdm_out, B=psdm_in, operation="A-B", layer=layer["pplus"]
+        )
+    )  # pplus_draw
+
+    # generating contacts
+
+    c.add_ref(
+        via_generator(
+            x_range=(rect_pcmpgr_in.xmin + con_size, rect_pcmpgr_in.xmax - con_size,),
+            y_range=(rect_pcmpgr_out.ymin, rect_pcmpgr_in.ymin),
+            via_enclosure=(con_comp_enc, con_comp_enc),
+            via_layer=layer["contact"],
+            via_size=(con_size, con_size),
+            via_spacing=(con_sp, con_sp),
+        )
+    )  # bottom contact
+
+    c.add_ref(
+        via_generator(
+            x_range=(rect_pcmpgr_in.xmin + con_size, rect_pcmpgr_in.xmax - con_size,),
+            y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
+            via_enclosure=(con_comp_enc, con_comp_enc),
+            via_layer=layer["contact"],
+            via_size=(con_size, con_size),
+            via_spacing=(con_sp, con_sp),
+        )
+    )  # upper contact
+
+    c.add_ref(
+        via_generator(
+            x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
+            y_range=(rect_pcmpgr_in.ymin + con_size, rect_pcmpgr_in.ymax - con_size,),
+            via_enclosure=(con_comp_enc, con_comp_enc),
+            via_layer=layer["contact"],
+            via_size=(con_size, con_size),
+            via_spacing=(con_sp, con_sp),
+        )
+    )  # right contact
+
+    c.add_ref(
+        via_generator(
+            x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
+            y_range=(rect_pcmpgr_in.ymin + con_size, rect_pcmpgr_in.ymax - con_size,),
+            via_enclosure=(con_comp_enc, con_comp_enc),
+            via_layer=layer["contact"],
+            via_size=(con_size, con_size),
+            via_spacing=(con_sp, con_sp),
+        )
+    )  # left contact
+
+    comp_m1_in = c_temp_gr.add_ref(
+        gf.components.rectangle(
+            size=(rect_pcmpgr_in.size[0], rect_pcmpgr_in.size[1]),
+            layer=layer["metal1"],
         )
     )
 
-    # Inserting ncomp metal
-    nplus_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cont_size - met_cont_enc,
-            cmp_met_cont_enc_diff,
-            met_cont_enc,
-            nplus_s_res_l - cmp_met_cont_enc_diff,
+    comp_m1_out = c_temp_gr.add_ref(
+        gf.components.rectangle(
+            size=((comp_m1_in.size[0]) + 2 * grw, (comp_m1_in.size[1]) + 2 * grw,),
+            layer=layer["metal1"],
         )
-    )  # left
-    nplus_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            nplus_s_res_w - met_cont_enc,
-            cmp_met_cont_enc_diff,
-            nplus_s_res_w + cont_size + met_cont_enc,
-            nplus_s_res_l - cmp_met_cont_enc_diff,
+    )
+    comp_m1_out.move((rect_pcmpgr_in.xmin - grw, rect_pcmpgr_in.ymin - grw))
+    c.add_ref(
+        gf.geometry.boolean(
+            A=rect_pcmpgr_out, B=rect_pcmpgr_in, operation="A-B", layer=layer["metal1"],
         )
-    )  # Right
+    )  # metal1 guardring
 
-    # Inserting ncomp contacts
-    num_ncmp_left_con_1, ncmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_left_con_2, ncmp_left_con_free_spc_2 = number_spc_contacts(
-        nplus_s_res_l - 2 * cmp_met_cont_enc_diff, met_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cont_size - met_cont_enc + ncmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_left_con_1,
-        num_ncmp_left_con_2,
-    )
-    nplus_s_res_cell.insert(ncmp_left_con_arr)
+    return c
 
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        nplus_s_res_l - 2 * cmp_met_cont_enc_diff, met_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                nplus_s_res_w - met_cont_enc + ncmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    nplus_s_res_cell.insert(ncmp_right_con_arr)
 
-    if deepnwell == True:
-        sub = 1
-        # Inserting lvpwell
-        nplus_s_res_cell.shapes(lvpwell).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - pcmp_width - lvpwell_enc_pcmp,
-                -lvpwell_enc_ncmp,
-                nplus_s_res_w + cmp_res_enc + lvpwell_enc_ncmp,
-                nplus_s_res_l + lvpwell_enc_ncmp,
+@gf.cell
+def plus_res_inst(
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "nplus_s",
+    sub: bool = 0,
+    cmp_res_ext: float = 0.1,
+    con_enc: float = 0.1,
+    cmp_imp_layer: LayerSpec = layer["nplus"],
+    sub_imp_layer: LayerSpec = layer["pplus"],
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component()
+
+    sub_w: float = 0.36
+    np_enc_cmp: float = 0.16
+    pp_enc_cmp: float = 0.16
+    comp_spacing: float = 0.72
+    sab_res_ext = 0.22
+
+    res_mk = c.add_ref(
+        gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
+    )
+
+    if "plus_u" in res_type:
+        sab_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(res_mk.size[0], res_mk.size[1] + (2 * sab_res_ext)),
+                layer=layer["sab"],
             )
         )
-        # Inserting dnwell
-        nplus_s_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell,
-                nplus_s_res_w + cmp_res_enc + lvpwell_enc_ncmp + dnwell_enc_lvpwell,
-                nplus_s_res_l + lvpwell_enc_ncmp + dnwell_enc_lvpwell,
-            )
+        sab_rect.xmin = res_mk.xmin
+        sab_rect.ymin = res_mk.ymin - sab_res_ext
+
+    cmp = c.add_ref(
+        gf.components.rectangle(
+            size=(res_mk.size[0] + (2 * cmp_res_ext), res_mk.size[1]),
+            layer=layer["comp"],
+        )
+    )
+    cmp.xmin = res_mk.xmin - cmp_res_ext
+    cmp.ymin = res_mk.ymin
+
+    cmp_con = via_stack(
+        x_range=(cmp.xmin, res_mk.xmin + con_enc),
+        y_range=(cmp.ymin, cmp.ymax),
+        base_layer=layer["comp"],
+        metal_level=1,
+    )
+
+    cmp_con_arr = c.add_array(
+        component=cmp_con,
+        rows=1,
+        columns=2,
+        spacing=(cmp_res_ext - con_enc + res_mk.size[0], 0),
+    )  # comp contact array
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                cmp_con_arr.xmin + (cmp_con.size[0] / 2),
+                cmp_con_arr.ymin + (cmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                cmp_con_arr.xmax - (cmp_con.size[0] / 2),
+                cmp_con_arr.ymin + (cmp_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
         )
 
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw,
-                nplus_s_res_w
-                + cmp_res_enc
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw,
-                nplus_s_res_l + lvpwell_enc_ncmp + dnwell_enc_lvpwell + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                - gr_w,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw - gr_w,
-                nplus_s_res_w
-                + cmp_res_enc
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + gr_w,
-                nplus_s_res_l
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            nplus_s_res_cell.shapes(comp).insert(cmp_gr)
-
-            pp_inner = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw + implant_cmp_enc,
-                nplus_s_res_w
-                + cmp_res_enc
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                nplus_s_res_l
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -lvpwell_enc_ncmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                nplus_s_res_w
-                + cmp_res_enc
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                nplus_s_res_l
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            nplus_s_res_cell.shapes(pplus).insert(pp_gr)
-
-    else:
-        # Inserting lvpwell
-        nplus_s_res_cell.shapes(lvpwell).insert(
-            pya.Box(
-                -cmp_res_enc - implant_cmp_enc,
-                -implant_cmp_enc,
-                nplus_s_res_w + cmp_res_enc + implant_cmp_enc,
-                nplus_s_res_l + implant_cmp_enc,
-            )
+    cmp_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(cmp.size[0] + (2 * np_enc_cmp), cmp.size[1] + (2 * np_enc_cmp)),
+            layer=cmp_imp_layer,
         )
+    )
+    cmp_imp.xmin = cmp.xmin - np_enc_cmp
+    cmp_imp.ymin = cmp.ymin - np_enc_cmp
 
     if sub == 1:
-        # Inserting p diffusion
-        if (nplus_s_res_l * pcmp_width) < min_cmp_area:
-            tie_violat = (min_cmp_area / pcmp_width - nplus_s_res_l) / 2 * tol
-        nplus_s_res_cell.shapes(comp).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - pcmp_width,
-                -tie_violat,
-                -cmp_res_enc - ncmp_pcmp_spc,
-                nplus_s_res_l + tie_violat,
-            )
+
+        sub_rect = c.add_ref(
+            gf.components.rectangle(size=(sub_w, w_res), layer=layer["comp"])
         )
-        nplus_s_res_cell.shapes(pplus).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc - tie_violat,
-                -cmp_res_enc - ncmp_pcmp_spc + implant_cmp_enc,
-                nplus_s_res_l + implant_cmp_enc + tie_violat,
+        sub_rect.xmax = cmp.xmin - comp_spacing
+        sub_rect.ymin = cmp.ymin
+
+        # sub_rect contact
+        sub_con = c.add_ref(
+            via_stack(
+                x_range=(sub_rect.xmin, sub_rect.xmax),
+                y_range=(sub_rect.ymin, sub_rect.ymax),
+                base_layer=layer["comp"],
+                metal_level=1,
             )
         )
 
-        # Inserting pcomp metal
-        nplus_s_res_cell.shapes(metal1).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - pcmp_width,
-                -tie_violat,
-                -cmp_res_enc - ncmp_pcmp_spc,
-                nplus_s_res_l + tie_violat,
+        sub_imp = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    sub_rect.size[0] + (2 * pp_enc_cmp),
+                    cmp.size[1] + (2 * pp_enc_cmp),
+                ),
+                layer=sub_imp_layer,
             )
         )
+        sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
+        sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
 
-        # Inserting pcomp contacts
-        num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-            pcmp_width, comp_cont_enc, cont_min_spc, cont_size
+        # label generation
+        if lbl == 1:
+            c.add_label(
+                sub_lbl,
+                position=(
+                    sub_con.xmin + (sub_con.size[0] / 2),
+                    sub_con.ymin + (sub_con.size[1] / 2),
+                ),
+                layer=layer["metal1_label"],
+            )
+
+    return c
+
+
+def draw_nplus_res(
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "nplus_s",
+    sub: bool = 0,
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    lvpwell_enc_cmp = 0.43
+    dn_enc_lvpwell = 2.5
+    sub_w = 0.36
+
+    if res_type == "nplus_s":
+        cmp_res_ext = 0.29
+        con_enc = 0.07
+    else:
+        cmp_res_ext = 0.44
+        con_enc = 0.0
+
+    # adding res inst
+    r_inst = c.add_ref(
+        plus_res_inst(
+            l_res=l_res,
+            w_res=w_res,
+            res_type=res_type,
+            sub=sub,
+            cmp_res_ext=cmp_res_ext,
+            con_enc=con_enc,
+            cmp_imp_layer=layer["nplus"],
+            sub_imp_layer=layer["pplus"],
+            lbl=lbl,
+            r0_lbl=r0_lbl,
+            r1_lbl=r1_lbl,
+            sub_lbl=sub_lbl,
         )
-        num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-            nplus_s_res_l, comp_cont_enc, cont_min_spc, cont_size
+    )
+
+    if deepnwell == 1:
+        lvpwell = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (2 * lvpwell_enc_cmp),
+                    r_inst.size[1] + (2 * lvpwell_enc_cmp),
+                ),
+                layer=layer["lvpwell"],
+            )
         )
-        pcmp_con_arr = pya.CellInstArray(
-            cont_cell.cell_index(),
-            pya.Trans(
-                pya.Point(
-                    -cmp_res_enc - ncmp_pcmp_spc - pcmp_width + pcmp_con_free_spc_1 / 2,
-                    pcmp_con_free_spc_2 / 2,
-                )
+        lvpwell.xmin = r_inst.xmin - lvpwell_enc_cmp
+        lvpwell.ymin = r_inst.ymin - lvpwell_enc_cmp
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    lvpwell.size[0] + (2 * dn_enc_lvpwell),
+                    lvpwell.size[1] + (2 * dn_enc_lvpwell),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+        dn_rect.xmin = lvpwell.xmin - dn_enc_lvpwell
+        dn_rect.ymin = lvpwell.ymin - dn_enc_lvpwell
+
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
+
+
+def draw_pplus_res(
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "pplus_s",
+    sub: bool = 0,
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    nw_enc_pcmp = 0.6
+    dn_enc_ncmp = 0.66
+    dn_enc_pcmp = 1.02
+    sub_w = 0.36
+
+    if res_type == "pplus_s":
+        cmp_res_ext = 0.29
+        con_enc = 0.07
+    else:
+        cmp_res_ext = 0.44
+        con_enc = 0.0
+
+    # adding res inst
+    r_inst = c.add_ref(
+        plus_res_inst(
+            l_res=l_res,
+            w_res=w_res,
+            res_type=res_type,
+            sub=1,
+            cmp_res_ext=cmp_res_ext,
+            con_enc=con_enc,
+            cmp_imp_layer=layer["pplus"],
+            sub_imp_layer=layer["nplus"],
+            lbl=lbl,
+            r0_lbl=r0_lbl,
+            r1_lbl=r1_lbl,
+            sub_lbl=sub_lbl,
+        )
+    )
+
+    if deepnwell == 1:
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (dn_enc_pcmp + dn_enc_ncmp),
+                    r_inst.size[1] + (2 * dn_enc_pcmp),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+        dn_rect.xmax = r_inst.xmax + dn_enc_pcmp
+        dn_rect.ymin = r_inst.ymin - dn_enc_pcmp
+
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    else:
+
+        nw_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (2 * nw_enc_pcmp),
+                    r_inst.size[1] + (2 * nw_enc_pcmp),
+                ),
+                layer=layer["nwell"],
+            )
+        )
+        nw_rect.xmin = r_inst.xmin - nw_enc_pcmp
+        nw_rect.ymin = r_inst.ymin - nw_enc_pcmp
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
+
+
+@gf.cell
+def polyf_res_inst(
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "npolyf_s",
+    pl_res_ext: float = 0.1,
+    con_enc: float = 0.1,
+    pl_imp_layer: LayerSpec = layer["nplus"],
+    sub_imp_layer: LayerSpec = layer["pplus"],
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component()
+
+    sub_w: float = 0.36
+    np_enc_poly2 = 0.3
+    pp_enc_cmp: float = 0.16
+    comp_spacing: float = 0.72
+    sab_res_ext = 0.28
+
+    res_mk = c.add_ref(
+        gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
+    )
+
+    if "polyf_u" in res_type:
+        sab_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(res_mk.size[0], res_mk.size[1] + (2 * sab_res_ext)),
+                layer=layer["sab"],
+            )
+        )
+        sab_rect.xmin = res_mk.xmin
+        sab_rect.ymin = res_mk.ymin - sab_res_ext
+
+    pl = c.add_ref(
+        gf.components.rectangle(
+            size=(res_mk.size[0] + (2 * pl_res_ext), res_mk.size[1]),
+            layer=layer["poly2"],
+        )
+    )
+    pl.xmin = res_mk.xmin - pl_res_ext
+    pl.ymin = res_mk.ymin
+
+    pl_con = via_stack(
+        x_range=(pl.xmin, res_mk.xmin + con_enc),
+        y_range=(pl.ymin, pl.ymax),
+        base_layer=layer["poly2"],
+        metal_level=1,
+    )
+
+    pl_con_arr = c.add_array(
+        component=pl_con,
+        rows=1,
+        columns=2,
+        spacing=(pl_res_ext - con_enc + res_mk.size[0], 0),
+    )  # comp contact array
+
+    pl_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(pl.size[0] + (2 * np_enc_poly2), pl.size[1] + (2 * np_enc_poly2)),
+            layer=pl_imp_layer,
+        )
+    )
+    pl_imp.xmin = pl.xmin - np_enc_poly2
+    pl_imp.ymin = pl.ymin - np_enc_poly2
+
+    sub_rect = c.add_ref(
+        gf.components.rectangle(size=(sub_w, w_res), layer=layer["comp"])
+    )
+    sub_rect.xmax = pl.xmin - comp_spacing
+    sub_rect.ymin = pl.ymin
+
+    # sub_rect contact
+    sub_con = c.add_ref(
+        via_stack(
+            x_range=(sub_rect.xmin, sub_rect.xmax),
+            y_range=(sub_rect.ymin, sub_rect.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )
+
+    sub_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(sub_rect.size[0] + (2 * pp_enc_cmp), pl.size[1] + (2 * pp_enc_cmp),),
+            layer=sub_imp_layer,
+        )
+    )
+    sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
+    sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                pl_con_arr.xmin + (pl_con.size[0] / 2),
+                pl_con_arr.ymin + (pl_con.size[1] / 2),
             ),
-            pya.Vector(cont_min_spc + cont_size, 0),
-            pya.Vector(0, cont_min_spc + cont_size),
-            num_pcmp_con_1,
-            num_pcmp_con_2,
+            layer=layer["metal1_label"],
         )
-        nplus_s_res_cell.insert(pcmp_con_arr)
-
-    nplus_s_res_cell.flatten(True)
-    return nplus_s_res_cell
-
-
-def draw_pplus_s_res(layout, l, w, deepnwell, pcmpgr):
-    """
-    Usage:-
-     used to draw3-terminal salicided P+ diffusion resistor (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    nwell = layout.layer(21, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    pplus_s_res_w = w * dbu_PERCISION
-    pplus_s_res_l = l * dbu_PERCISION
-    cmp_res_enc = 0.29 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
-    nwell_pcmp_enc = 0.8 * dbu_PERCISION
-    nwell_ncmp_enc = 0.12 * dbu_PERCISION
-    ncmp_pcmp_spc = 0.32 * dbu_PERCISION
-    ncmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    min_cmp_area = 0.2025 * dbu_PERCISION * dbu_PERCISION
-    tie_violat = 0 * dbu_PERCISION
-    dnwell_ncmp_enc = 0.62 * dbu_PERCISION
-    dnwell_pcmp_enc = 0.93 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-
-    # Inserting pplus_s_res cell
-    cell_index = layout.add_cell("pplus_s_resistor")
-    pplus_s_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    pplus_s_res_cell.shapes(res_mk).insert(pya.Box(0, 0, pplus_s_res_w, pplus_s_res_l))
-
-    # Inserting p diffusion
-    pplus_s_res_cell.shapes(comp).insert(
-        pya.Box(-cmp_res_enc, 0, pplus_s_res_w + cmp_res_enc, pplus_s_res_l)
-    )
-    pplus_s_res_cell.shapes(pplus).insert(
-        pya.Box(
-            -cmp_res_enc - implant_cmp_enc,
-            -implant_cmp_enc,
-            pplus_s_res_w + cmp_res_enc + implant_cmp_enc,
-            pplus_s_res_l + implant_cmp_enc,
-        )
-    )
-
-    # Inserting pcomp metal
-    pplus_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cont_size - met_cont_enc,
-            cmp_met_cont_enc_diff,
-            met_cont_enc,
-            pplus_s_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # left
-    pplus_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            pplus_s_res_w - met_cont_enc,
-            cmp_met_cont_enc_diff,
-            pplus_s_res_w + cont_size + met_cont_enc,
-            pplus_s_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # Right
-
-    # Inserting pcomp contacts
-    num_pcmp_left_con_1, pcmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_left_con_2, pcmp_left_con_free_spc_2 = number_spc_contacts(
-        pplus_s_res_l - 2 * cmp_met_cont_enc_diff, met_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cont_size - met_cont_enc + pcmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + pcmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_left_con_1,
-        num_pcmp_left_con_2,
-    )
-    pplus_s_res_cell.insert(pcmp_left_con_arr)
-
-    num_pcmp_right_con_1, pcmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_right_con_2, pcmp_right_con_free_spc_2 = number_spc_contacts(
-        pplus_s_res_l - 2 * cmp_met_cont_enc_diff, met_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                pplus_s_res_w - met_cont_enc + pcmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + pcmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_right_con_1,
-        num_pcmp_right_con_2,
-    )
-    pplus_s_res_cell.insert(pcmp_right_con_arr)
-
-    # Inserting n diffusion
-    if (pplus_s_res_l * ncmp_width) < min_cmp_area:
-        tie_violat = (min_cmp_area / ncmp_width - pplus_s_res_l) / 2 * tol
-    pplus_s_res_cell.shapes(comp).insert(
-        pya.Box(
-            -cmp_res_enc - ncmp_pcmp_spc - ncmp_width,
-            -tie_violat,
-            -cmp_res_enc - ncmp_pcmp_spc,
-            pplus_s_res_l + tie_violat,
-        )
-    )
-    pplus_s_res_cell.shapes(nplus).insert(
-        pya.Box(
-            -cmp_res_enc - ncmp_pcmp_spc - ncmp_width - implant_cmp_enc,
-            -implant_cmp_enc - tie_violat,
-            -cmp_res_enc - ncmp_pcmp_spc + implant_cmp_enc,
-            pplus_s_res_l + implant_cmp_enc + tie_violat,
-        )
-    )
-
-    # Inserting ncomp metal
-    pplus_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cmp_res_enc - ncmp_pcmp_spc - ncmp_width,
-            -tie_violat,
-            -cmp_res_enc - ncmp_pcmp_spc,
-            pplus_s_res_l + tie_violat,
-        )
-    )
-
-    # Inserting ncomp contacts
-    num_ncmp_con_1, ncmp_con_free_spc_1 = number_spc_contacts(
-        ncmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_con_2, ncmp_con_free_spc_2 = number_spc_contacts(
-        pplus_s_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cmp_res_enc - ncmp_pcmp_spc - ncmp_width + ncmp_con_free_spc_1 / 2,
-                ncmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_con_1,
-        num_ncmp_con_2,
-    )
-    pplus_s_res_cell.insert(ncmp_con_arr)
-
-    if deepnwell == True:
-        # Inserting dnwell
-        pplus_s_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - ncmp_width - dnwell_ncmp_enc,
-                -dnwell_pcmp_enc,
-                pplus_s_res_w + cmp_res_enc + dnwell_pcmp_enc,
-                pplus_s_res_l + dnwell_pcmp_enc,
-            )
-        )
-
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - ncmp_width
-                - dnwell_ncmp_enc
-                - pcmp_gr2dnw,
-                -dnwell_pcmp_enc - pcmp_gr2dnw,
-                pplus_s_res_w + cmp_res_enc + dnwell_pcmp_enc + pcmp_gr2dnw,
-                pplus_s_res_l + dnwell_pcmp_enc + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - ncmp_width
-                - dnwell_ncmp_enc
-                - pcmp_gr2dnw
-                - gr_w,
-                -dnwell_pcmp_enc - pcmp_gr2dnw - gr_w,
-                pplus_s_res_w + cmp_res_enc + dnwell_pcmp_enc + pcmp_gr2dnw + gr_w,
-                pplus_s_res_l + dnwell_pcmp_enc + pcmp_gr2dnw + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            pplus_s_res_cell.shapes(comp).insert(cmp_gr)
-
-            pp_inner = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - ncmp_width
-                - dnwell_ncmp_enc
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -dnwell_pcmp_enc - pcmp_gr2dnw + implant_cmp_enc,
-                pplus_s_res_w
-                + cmp_res_enc
-                + dnwell_pcmp_enc
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                pplus_s_res_l + dnwell_pcmp_enc + pcmp_gr2dnw - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - ncmp_width
-                - dnwell_ncmp_enc
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -dnwell_pcmp_enc - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-                pplus_s_res_w
-                + cmp_res_enc
-                + dnwell_pcmp_enc
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                pplus_s_res_l + dnwell_pcmp_enc + pcmp_gr2dnw + gr_w + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            pplus_s_res_cell.shapes(pplus).insert(pp_gr)
-
-    else:
-        # Inserting nwell
-        pplus_s_res_cell.shapes(nwell).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - ncmp_width - nwell_ncmp_enc,
-                -nwell_pcmp_enc,
-                pplus_s_res_w + cmp_res_enc + nwell_pcmp_enc,
-                pplus_s_res_l + nwell_pcmp_enc,
-            )
-        )
-
-    pplus_s_res_cell.flatten(True)
-    return pplus_s_res_cell
-
-
-def draw_nplus_u_res(layout, l, w, sub, deepnwell, pcmpgr):
-    """
-    Usage:-
-     used to draw 3-terminal unsalicided n+ diffusion resistor (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    lvpwell = layout.layer(204, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    sab = layout.layer(49, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    nplus_u_res_w = w * dbu_PERCISION
-    nplus_u_res_l = l * dbu_PERCISION
-    cmp_res_enc = 0.44 * dbu_PERCISION
-    sab_res_enc = 0.23 * dbu_PERCISION
-    implant_cmp_enc = 0.18 * dbu_PERCISION
-    ncmp_pcmp_spc = 0.76 * dbu_PERCISION
-    pcmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    min_cmp_area = 0.2025 * dbu_PERCISION * dbu_PERCISION
-    tie_violat = 0 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-    dnwell_enc_lvpwell = 2.5 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    lvpwell_enc_pcmp = 0.12 * dbu_PERCISION
-    lvpwell_enc_ncmp = 0.43 * dbu_PERCISION
-
-    # Inserting nplus_u_res cell
-    cell_index = layout.add_cell("nplus_u_resistor")
-    nplus_u_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    nplus_u_res_cell.shapes(res_mk).insert(pya.Box(0, 0, nplus_u_res_w, nplus_u_res_l))
-
-    # Inserting sab
-    nplus_u_res_cell.shapes(sab).insert(
-        pya.Box(0, -sab_res_enc, nplus_u_res_w, nplus_u_res_l + sab_res_enc)
-    )
-
-    # Inserting n diffusion
-    nplus_u_res_cell.shapes(comp).insert(
-        pya.Box(-cmp_res_enc, 0, nplus_u_res_w + cmp_res_enc, nplus_u_res_l)
-    )
-    nplus_u_res_cell.shapes(nplus).insert(
-        pya.Box(
-            -cmp_res_enc - implant_cmp_enc,
-            -implant_cmp_enc,
-            nplus_u_res_w + cmp_res_enc + implant_cmp_enc,
-            nplus_u_res_l + implant_cmp_enc,
-        )
-    )
-
-    # Inserting ncomp metal
-    nplus_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cmp_res_enc + cmp_met_cont_enc_diff,
-            cmp_met_cont_enc_diff,
-            -cmp_res_enc + cmp_met_cont_enc_diff + metal_width,
-            nplus_u_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # left
-    nplus_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            nplus_u_res_w + cmp_res_enc - cmp_met_cont_enc_diff - metal_width,
-            cmp_met_cont_enc_diff,
-            nplus_u_res_w + cmp_res_enc - cmp_met_cont_enc_diff,
-            nplus_u_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # Right
-
-    # Inserting ncomp contacts
-    num_ncmp_left_con_1, ncmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_left_con_2, ncmp_left_con_free_spc_2 = number_spc_contacts(
-        nplus_u_res_l - 2 * cmp_met_cont_enc_diff, met_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cmp_res_enc + cmp_met_cont_enc_diff + ncmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_left_con_1,
-        num_ncmp_left_con_2,
-    )
-    nplus_u_res_cell.insert(ncmp_left_con_arr)
-
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        nplus_u_res_l - 2 * cmp_met_cont_enc_diff, met_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                nplus_u_res_w
-                + cmp_res_enc
-                - cmp_met_cont_enc_diff
-                - metal_width
-                + ncmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    nplus_u_res_cell.insert(ncmp_right_con_arr)
-
-    if deepnwell == True:
-        sub = 1
-        # Inserting lvpwell
-        nplus_u_res_cell.shapes(lvpwell).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - pcmp_width - lvpwell_enc_pcmp,
-                -lvpwell_enc_ncmp,
-                nplus_u_res_w + cmp_res_enc + lvpwell_enc_ncmp,
-                nplus_u_res_l + lvpwell_enc_ncmp,
-            )
-        )
-        # Inserting dnwell
-        nplus_u_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell,
-                nplus_u_res_w + cmp_res_enc + lvpwell_enc_ncmp + dnwell_enc_lvpwell,
-                nplus_u_res_l + lvpwell_enc_ncmp + dnwell_enc_lvpwell,
-            )
-        )
-
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw,
-                nplus_u_res_w
-                + cmp_res_enc
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw,
-                nplus_u_res_l + lvpwell_enc_ncmp + dnwell_enc_lvpwell + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                - gr_w,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw - gr_w,
-                nplus_u_res_w
-                + cmp_res_enc
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + gr_w,
-                nplus_u_res_l
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            nplus_u_res_cell.shapes(comp).insert(cmp_gr)
-
-            pp_inner = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -lvpwell_enc_ncmp - dnwell_enc_lvpwell - pcmp_gr2dnw + implant_cmp_enc,
-                nplus_u_res_w
-                + cmp_res_enc
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                nplus_u_res_l
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - pcmp_width
-                - lvpwell_enc_pcmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -lvpwell_enc_ncmp
-                - dnwell_enc_lvpwell
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                nplus_u_res_w
-                + cmp_res_enc
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                nplus_u_res_l
-                + lvpwell_enc_ncmp
-                + dnwell_enc_lvpwell
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            nplus_u_res_cell.shapes(pplus).insert(pp_gr)
-
-    else:
-        # Inserting lvpwell
-        nplus_u_res_cell.shapes(lvpwell).insert(
-            pya.Box(
-                -cmp_res_enc - implant_cmp_enc,
-                -implant_cmp_enc,
-                nplus_u_res_w + cmp_res_enc + implant_cmp_enc,
-                nplus_u_res_l + implant_cmp_enc,
-            )
-        )
-
-    if sub == 1:
-        # Inserting p diffusion
-        if (nplus_u_res_l * pcmp_width) < min_cmp_area:
-            tie_violat = (min_cmp_area / pcmp_width - nplus_u_res_l) / 2 * tol
-        nplus_u_res_cell.shapes(comp).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - pcmp_width,
-                -tie_violat,
-                -cmp_res_enc - ncmp_pcmp_spc,
-                nplus_u_res_l + tie_violat,
-            )
-        )
-        nplus_u_res_cell.shapes(pplus).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc - tie_violat,
-                -cmp_res_enc - ncmp_pcmp_spc + implant_cmp_enc,
-                nplus_u_res_l + tie_violat + implant_cmp_enc,
-            )
-        )
-
-        # Inserting pcomp metal
-        nplus_u_res_cell.shapes(metal1).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - pcmp_width,
-                -tie_violat,
-                -cmp_res_enc - ncmp_pcmp_spc,
-                nplus_u_res_l + tie_violat,
-            )
-        )
-
-        # Inserting pcomp contacts
-        num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-            pcmp_width, comp_cont_enc, cont_min_spc, cont_size
-        )
-        num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-            nplus_u_res_l, comp_cont_enc, cont_min_spc, cont_size
-        )
-        pcmp_con_arr = pya.CellInstArray(
-            cont_cell.cell_index(),
-            pya.Trans(
-                pya.Point(
-                    -cmp_res_enc - ncmp_pcmp_spc - pcmp_width + pcmp_con_free_spc_1 / 2,
-                    pcmp_con_free_spc_2 / 2,
-                )
+        c.add_label(
+            r1_lbl,
+            position=(
+                pl_con_arr.xmax - (pl_con.size[0] / 2),
+                pl_con_arr.ymin + (pl_con.size[1] / 2),
             ),
-            pya.Vector(cont_min_spc + cont_size, 0),
-            pya.Vector(0, cont_min_spc + cont_size),
-            num_pcmp_con_1,
-            num_pcmp_con_2,
-        )
-        nplus_u_res_cell.insert(pcmp_con_arr)
-
-    nplus_u_res_cell.flatten(True)
-    return nplus_u_res_cell
-
-
-def draw_pplus_u_res(layout, l, w, deepnwell, pcmpgr):
-    """
-    Usage:-
-     used to draw 3-terminal unsalicided P+ diffusion resistor (Outsdie DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    nwell = layout.layer(21, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    sab = layout.layer(49, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    pplus_u_res_w = w * dbu_PERCISION
-    pplus_u_res_l = l * dbu_PERCISION
-    cmp_res_enc = 0.44 * dbu_PERCISION
-    sab_res_enc = 0.23 * dbu_PERCISION
-    implant_cmp_enc = 0.18 * dbu_PERCISION
-    nwell_ncmp_enc = 0.12 * dbu_PERCISION
-    nwell_pcmp_enc = 0.93 * dbu_PERCISION
-    ncmp_pcmp_spc = 0.34 * dbu_PERCISION
-    ncmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    min_cmp_area = 0.2025 * dbu_PERCISION * dbu_PERCISION
-    tie_violat = 0 * dbu_PERCISION
-    dnwell_ncmp_enc = 0.62 * dbu_PERCISION
-    dnwell_pcmp_enc = 0.93 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-
-    # Inserting pplus_u_res cell
-    cell_index = layout.add_cell("pplus_u_resistor")
-    pplus_u_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    pplus_u_res_cell.shapes(res_mk).insert(pya.Box(0, 0, pplus_u_res_w, pplus_u_res_l))
-
-    # Inserting sab
-    pplus_u_res_cell.shapes(sab).insert(
-        pya.Box(0, -sab_res_enc, pplus_u_res_w, pplus_u_res_l + sab_res_enc)
-    )
-
-    # Inserting p diffusion
-    pplus_u_res_cell.shapes(comp).insert(
-        pya.Box(-cmp_res_enc, 0, pplus_u_res_w + cmp_res_enc, pplus_u_res_l)
-    )
-    pplus_u_res_cell.shapes(pplus).insert(
-        pya.Box(
-            -cmp_res_enc - implant_cmp_enc,
-            -implant_cmp_enc,
-            pplus_u_res_w + cmp_res_enc + implant_cmp_enc,
-            pplus_u_res_l + implant_cmp_enc,
-        )
-    )
-
-    # Inserting pcomp metal
-    pplus_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cmp_res_enc + cmp_met_cont_enc_diff,
-            cmp_met_cont_enc_diff,
-            -cmp_res_enc + cmp_met_cont_enc_diff + metal_width,
-            pplus_u_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # left
-    pplus_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            pplus_u_res_w + cmp_res_enc - cmp_met_cont_enc_diff - metal_width,
-            cmp_met_cont_enc_diff,
-            pplus_u_res_w + cmp_res_enc - cmp_met_cont_enc_diff,
-            pplus_u_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # Right
-
-    # Inserting pcomp contacts
-    num_pcmp_left_con_1, pcmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_left_con_2, pcmp_left_con_free_spc_2 = number_spc_contacts(
-        pplus_u_res_l - 2 * cmp_met_cont_enc_diff, met_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cmp_res_enc + cmp_met_cont_enc_diff + pcmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + pcmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_left_con_1,
-        num_pcmp_left_con_2,
-    )
-    pplus_u_res_cell.insert(pcmp_left_con_arr)
-
-    num_pcmp_right_con_1, pcmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_right_con_2, pcmp_right_con_free_spc_2 = number_spc_contacts(
-        pplus_u_res_l - 2 * cmp_met_cont_enc_diff, met_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                pplus_u_res_w
-                + cmp_res_enc
-                - cmp_met_cont_enc_diff
-                - metal_width
-                + pcmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + pcmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_right_con_1,
-        num_pcmp_right_con_2,
-    )
-    pplus_u_res_cell.insert(pcmp_right_con_arr)
-
-    # Inserting n diffusion
-    if (pplus_u_res_l * ncmp_width) < min_cmp_area:
-        tie_violat = (min_cmp_area / ncmp_width - pplus_u_res_l) / 2 * tol
-    pplus_u_res_cell.shapes(comp).insert(
-        pya.Box(
-            -cmp_res_enc - ncmp_pcmp_spc - ncmp_width,
-            -tie_violat,
-            -cmp_res_enc - ncmp_pcmp_spc,
-            pplus_u_res_l + tie_violat,
-        )
-    )
-    pplus_u_res_cell.shapes(nplus).insert(
-        pya.Box(
-            -cmp_res_enc - ncmp_pcmp_spc - ncmp_width - implant_cmp_enc,
-            -implant_cmp_enc - tie_violat,
-            -cmp_res_enc - ncmp_pcmp_spc + implant_cmp_enc,
-            pplus_u_res_l + implant_cmp_enc + tie_violat,
-        )
-    )
-
-    # Inserting ncomp metal
-    pplus_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cmp_res_enc - ncmp_pcmp_spc - ncmp_width,
-            -tie_violat,
-            -cmp_res_enc - ncmp_pcmp_spc,
-            pplus_u_res_l + tie_violat,
-        )
-    )
-
-    # Inserting ncomp contacts
-    num_ncmp_con_1, ncmp_con_free_spc_1 = number_spc_contacts(
-        ncmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_con_2, ncmp_con_free_spc_2 = number_spc_contacts(
-        pplus_u_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cmp_res_enc - ncmp_pcmp_spc - ncmp_width + ncmp_con_free_spc_1 / 2,
-                ncmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_con_1,
-        num_ncmp_con_2,
-    )
-    pplus_u_res_cell.insert(ncmp_con_arr)
-
-    if deepnwell == True:
-        # Inserting dnwell
-        pplus_u_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - ncmp_width - dnwell_ncmp_enc,
-                -dnwell_pcmp_enc,
-                pplus_u_res_w + cmp_res_enc + dnwell_pcmp_enc,
-                pplus_u_res_l + dnwell_pcmp_enc,
-            )
+            layer=layer["metal1_label"],
         )
 
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - ncmp_width
-                - dnwell_ncmp_enc
-                - pcmp_gr2dnw,
-                -dnwell_pcmp_enc - pcmp_gr2dnw,
-                pplus_u_res_w + cmp_res_enc + dnwell_pcmp_enc + pcmp_gr2dnw,
-                pplus_u_res_l + dnwell_pcmp_enc + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - ncmp_width
-                - dnwell_ncmp_enc
-                - pcmp_gr2dnw
-                - gr_w,
-                -dnwell_pcmp_enc - pcmp_gr2dnw - gr_w,
-                pplus_u_res_w + cmp_res_enc + dnwell_pcmp_enc + pcmp_gr2dnw + gr_w,
-                pplus_u_res_l + dnwell_pcmp_enc + pcmp_gr2dnw + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            pplus_u_res_cell.shapes(comp).insert(cmp_gr)
+        c.add_label(
+            sub_lbl,
+            position=(
+                sub_con.xmin + (sub_con.size[0] / 2),
+                sub_con.ymin + (sub_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
 
-            pp_inner = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - ncmp_width
-                - dnwell_ncmp_enc
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -dnwell_pcmp_enc - pcmp_gr2dnw + implant_cmp_enc,
-                pplus_u_res_w
-                + cmp_res_enc
-                + dnwell_pcmp_enc
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                pplus_u_res_l + dnwell_pcmp_enc + pcmp_gr2dnw - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -cmp_res_enc
-                - ncmp_pcmp_spc
-                - ncmp_width
-                - dnwell_ncmp_enc
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -dnwell_pcmp_enc - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-                pplus_u_res_w
-                + cmp_res_enc
-                + dnwell_pcmp_enc
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                pplus_u_res_l + dnwell_pcmp_enc + pcmp_gr2dnw + gr_w + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            pplus_u_res_cell.shapes(pplus).insert(pp_gr)
+    return c
 
+
+def draw_npolyf_res(
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "npolyf_s",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    lvpwell_enc_cmp = 0.43
+    dn_enc_lvpwell = 2.5
+    sub_w = 0.36
+
+    if res_type == "npolyf_s":
+        pl_res_ext = 0.29
+        con_enc = 0.07
     else:
-        # Inserting nwell
-        pplus_u_res_cell.shapes(nwell).insert(
-            pya.Box(
-                -cmp_res_enc - ncmp_pcmp_spc - ncmp_width - nwell_ncmp_enc,
-                -nwell_pcmp_enc,
-                pplus_u_res_w + cmp_res_enc + nwell_pcmp_enc,
-                pplus_u_res_l + nwell_pcmp_enc,
+        pl_res_ext = 0.44
+        con_enc = 0.0
+
+    # adding res inst
+    r_inst = c.add_ref(
+        polyf_res_inst(
+            l_res=l_res,
+            w_res=w_res,
+            res_type=res_type,
+            pl_res_ext=pl_res_ext,
+            con_enc=con_enc,
+            pl_imp_layer=layer["nplus"],
+            sub_imp_layer=layer["pplus"],
+            lbl=lbl,
+            r0_lbl=r0_lbl,
+            r1_lbl=r1_lbl,
+            sub_lbl=sub_lbl,
+        )
+    )
+
+    if deepnwell == 1:
+        lvpwell = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (2 * lvpwell_enc_cmp),
+                    r_inst.size[1] + (2 * lvpwell_enc_cmp),
+                ),
+                layer=layer["lvpwell"],
             )
         )
+        lvpwell.xmin = r_inst.xmin - lvpwell_enc_cmp
+        lvpwell.ymin = r_inst.ymin - lvpwell_enc_cmp
 
-    pplus_u_res_cell.flatten(True)
-    return pplus_u_res_cell
-
-
-def draw_nwell_res(layout, l, w):
-    """
-    Usage:-
-     used to draw 3-terminal Nwell resistor under STI (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    comp = layout.layer(22, 0)
-    nwell = layout.layer(21, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    nwell_res_w = w * dbu_PERCISION
-    nwell_res_l = l * dbu_PERCISION
-    nwell_res_enc = 0.48 * dbu_PERCISION
-    res_nwell_ext = 0.5 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
-    nwell_cmp_enc = 0.12 * dbu_PERCISION
-    ncmp_pcmp_spc = 0.84 * dbu_PERCISION
-    cmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-
-    # Inserting nwell_res cell
-    cell_index = layout.add_cell("nwell_resistor")
-    nwell_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    nwell_res_cell.shapes(res_mk).insert(
-        pya.Box(0, -res_nwell_ext, nwell_res_w, nwell_res_l + res_nwell_ext)
-    )
-
-    # Inserting nwell
-    nwell_res_cell.shapes(nwell).insert(
-        pya.Box(-nwell_res_enc, 0, nwell_res_w + nwell_res_enc, nwell_res_l)
-    )
-
-    # Inserting n diffusion
-    nwell_res_cell.shapes(comp).insert(
-        pya.Box(-cmp_width, nwell_cmp_enc, 0, nwell_res_l - nwell_cmp_enc)
-    )  # left
-    nwell_res_cell.shapes(comp).insert(
-        pya.Box(
-            nwell_res_w,
-            nwell_cmp_enc,
-            nwell_res_w + cmp_width,
-            nwell_res_l - nwell_cmp_enc,
-        )
-    )  # right
-    nwell_res_cell.shapes(nplus).insert(
-        pya.Box(
-            -cmp_width - implant_cmp_enc,
-            nwell_cmp_enc - implant_cmp_enc,
-            implant_cmp_enc,
-            nwell_res_l - nwell_cmp_enc + implant_cmp_enc,
-        )
-    )
-    nwell_res_cell.shapes(nplus).insert(
-        pya.Box(
-            nwell_res_w - implant_cmp_enc,
-            nwell_cmp_enc - implant_cmp_enc,
-            nwell_res_w + cmp_width + implant_cmp_enc,
-            nwell_res_l - nwell_cmp_enc + implant_cmp_enc,
-        )
-    )
-
-    # Inserting ncomp metal
-    nwell_res_cell.shapes(metal1).insert(
-        pya.Box(-cmp_width, nwell_cmp_enc, 0, nwell_res_l - nwell_cmp_enc)
-    )  # left
-    nwell_res_cell.shapes(metal1).insert(
-        pya.Box(
-            nwell_res_w,
-            nwell_cmp_enc,
-            nwell_res_w + cmp_width,
-            nwell_res_l - nwell_cmp_enc,
-        )
-    )  # right
-
-    # Inserting ncomp contacts
-    num_ncmp_left_con_1, ncmp_left_con_free_spc_1 = number_spc_contacts(
-        cmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_left_con_2, ncmp_left_con_free_spc_2 = number_spc_contacts(
-        nwell_res_l - 2 * nwell_cmp_enc, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cmp_width + ncmp_left_con_free_spc_1 / 2,
-                nwell_cmp_enc + ncmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_left_con_1,
-        num_ncmp_left_con_2,
-    )
-    nwell_res_cell.insert(ncmp_left_con_arr)
-
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        cmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        nwell_res_l - 2 * nwell_cmp_enc, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                nwell_res_w + ncmp_right_con_free_spc_1 / 2,
-                nwell_cmp_enc + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    nwell_res_cell.insert(ncmp_right_con_arr)
-
-    # Inserting p diffusion
-    nwell_res_cell.shapes(comp).insert(
-        pya.Box(
-            -cmp_width - ncmp_pcmp_spc - cmp_width,
-            0,
-            -cmp_width - ncmp_pcmp_spc,
-            nwell_res_l,
-        )
-    )
-    nwell_res_cell.shapes(pplus).insert(
-        pya.Box(
-            -cmp_width - ncmp_pcmp_spc - cmp_width - implant_cmp_enc,
-            -implant_cmp_enc,
-            -cmp_width - ncmp_pcmp_spc + implant_cmp_enc,
-            nwell_res_l + implant_cmp_enc,
-        )
-    )
-
-    # Inserting pcomp metal
-    nwell_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cmp_width - ncmp_pcmp_spc - cmp_width,
-            0,
-            -cmp_width - ncmp_pcmp_spc,
-            nwell_res_l,
-        )
-    )
-
-    # Inserting pcomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        cmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        nwell_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cmp_width - ncmp_pcmp_spc - cmp_width + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    nwell_res_cell.insert(pcmp_con_arr)
-
-    nwell_res_cell.flatten(True)
-    return nwell_res_cell
-
-
-def draw_pwell_res(layout, l, w, pcmpgr):
-    """
-    Usage:-
-     used to draw 3-terminal Pwell resistor under STI (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    comp = layout.layer(22, 0)
-    dnwell = layout.layer(12, 0)
-    lvpwell = layout.layer(204, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    pwell_res_w = w * dbu_PERCISION
-    pwell_res_l = l * dbu_PERCISION
-    pwell_res_enc = 0.48 * dbu_PERCISION
-    dnwell_lvpwell_enc = 2.5 * dbu_PERCISION
-    res_pwell_ext = 0.5 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
-    pwell_cmp_enc = 0.12 * dbu_PERCISION
-    ncmp_pcmp_spc = 0.84 * dbu_PERCISION
-    cmp_width = 0.36 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-
-    # Inserting pwell_res cell
-    cell_index = layout.add_cell("pwell_resistor")
-    pwell_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    pwell_res_cell.shapes(res_mk).insert(
-        pya.Box(0, -res_pwell_ext, pwell_res_w, pwell_res_l + res_pwell_ext)
-    )
-
-    # Inserting pwell
-    pwell_res_cell.shapes(lvpwell).insert(
-        pya.Box(-pwell_res_enc, 0, pwell_res_w + pwell_res_enc, pwell_res_l)
-    )
-
-    # Inserting DNWELL
-    pwell_res_cell.shapes(dnwell).insert(
-        pya.Box(
-            -pwell_res_enc - dnwell_lvpwell_enc,
-            -dnwell_lvpwell_enc,
-            pwell_res_w + pwell_res_enc + dnwell_lvpwell_enc,
-            pwell_res_l + dnwell_lvpwell_enc,
-        )
-    )
-
-    # Inserting Guard Ring
-    if pcmpgr == True:
-        cmp_inner = pya.Box(
-            -pwell_res_enc - dnwell_lvpwell_enc - pcmp_gr2dnw,
-            -dnwell_lvpwell_enc - pcmp_gr2dnw,
-            pwell_res_w + pwell_res_enc + dnwell_lvpwell_enc + pcmp_gr2dnw,
-            pwell_res_l + dnwell_lvpwell_enc + pcmp_gr2dnw,
-        )
-        cmp_outer = pya.Box(
-            -pwell_res_enc - dnwell_lvpwell_enc - pcmp_gr2dnw - gr_w,
-            -dnwell_lvpwell_enc - pcmp_gr2dnw - gr_w,
-            pwell_res_w + pwell_res_enc + dnwell_lvpwell_enc + pcmp_gr2dnw + gr_w,
-            pwell_res_l + dnwell_lvpwell_enc + pcmp_gr2dnw + gr_w,
-        )
-        cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-        pwell_res_cell.shapes(comp).insert(cmp_gr)
-
-        pp_inner = pya.Box(
-            -pwell_res_enc - dnwell_lvpwell_enc - pcmp_gr2dnw + implant_cmp_enc,
-            -dnwell_lvpwell_enc - pcmp_gr2dnw + implant_cmp_enc,
-            pwell_res_w
-            + pwell_res_enc
-            + dnwell_lvpwell_enc
-            + pcmp_gr2dnw
-            - implant_cmp_enc,
-            pwell_res_l + dnwell_lvpwell_enc + pcmp_gr2dnw - implant_cmp_enc,
-        )
-        pp_outer = pya.Box(
-            -pwell_res_enc - dnwell_lvpwell_enc - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-            -dnwell_lvpwell_enc - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-            pwell_res_w
-            + pwell_res_enc
-            + dnwell_lvpwell_enc
-            + pcmp_gr2dnw
-            + gr_w
-            + implant_cmp_enc,
-            pwell_res_l + dnwell_lvpwell_enc + pcmp_gr2dnw + gr_w + implant_cmp_enc,
-        )
-        pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-        pwell_res_cell.shapes(pplus).insert(pp_gr)
-
-    # Inserting p diffusion
-    pwell_res_cell.shapes(comp).insert(
-        pya.Box(-cmp_width, pwell_cmp_enc, 0, pwell_res_l - pwell_cmp_enc)
-    )  # left
-    pwell_res_cell.shapes(comp).insert(
-        pya.Box(
-            pwell_res_w,
-            pwell_cmp_enc,
-            pwell_res_w + cmp_width,
-            pwell_res_l - pwell_cmp_enc,
-        )
-    )  # right
-    pwell_res_cell.shapes(pplus).insert(
-        pya.Box(
-            -cmp_width - implant_cmp_enc,
-            pwell_cmp_enc - implant_cmp_enc,
-            implant_cmp_enc,
-            pwell_res_l - pwell_cmp_enc + implant_cmp_enc,
-        )
-    )
-    pwell_res_cell.shapes(pplus).insert(
-        pya.Box(
-            pwell_res_w - implant_cmp_enc,
-            pwell_cmp_enc - implant_cmp_enc,
-            pwell_res_w + cmp_width + implant_cmp_enc,
-            pwell_res_l - pwell_cmp_enc + implant_cmp_enc,
-        )
-    )
-
-    # Inserting ncomp metal
-    pwell_res_cell.shapes(metal1).insert(
-        pya.Box(-cmp_width, pwell_cmp_enc, 0, pwell_res_l - pwell_cmp_enc)
-    )  # left
-    pwell_res_cell.shapes(metal1).insert(
-        pya.Box(
-            pwell_res_w,
-            pwell_cmp_enc,
-            pwell_res_w + cmp_width,
-            pwell_res_l - pwell_cmp_enc,
-        )
-    )  # right
-
-    # Inserting pcomp contacts
-    num_pcmp_left_con_1, pcmp_left_con_free_spc_1 = number_spc_contacts(
-        cmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_left_con_2, pcmp_left_con_free_spc_2 = number_spc_contacts(
-        pwell_res_l - 2 * pwell_cmp_enc, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cmp_width + pcmp_left_con_free_spc_1 / 2,
-                pwell_cmp_enc + pcmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_left_con_1,
-        num_pcmp_left_con_2,
-    )
-    pwell_res_cell.insert(pcmp_left_con_arr)
-
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        cmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        pwell_res_l - 2 * pwell_cmp_enc, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                pwell_res_w + ncmp_right_con_free_spc_1 / 2,
-                pwell_cmp_enc + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    pwell_res_cell.insert(ncmp_right_con_arr)
-
-    # Inserting n diffusion
-    pwell_res_cell.shapes(comp).insert(
-        pya.Box(
-            -cmp_width - ncmp_pcmp_spc - cmp_width,
-            0,
-            -cmp_width - ncmp_pcmp_spc,
-            pwell_res_l,
-        )
-    )
-    pwell_res_cell.shapes(nplus).insert(
-        pya.Box(
-            -cmp_width - ncmp_pcmp_spc - cmp_width - implant_cmp_enc,
-            -implant_cmp_enc,
-            -cmp_width - ncmp_pcmp_spc + implant_cmp_enc,
-            pwell_res_l + implant_cmp_enc,
-        )
-    )
-
-    # Inserting pcomp metal
-    pwell_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cmp_width - ncmp_pcmp_spc - cmp_width,
-            0,
-            -cmp_width - ncmp_pcmp_spc,
-            pwell_res_l,
-        )
-    )
-
-    # Inserting pcomp contacts
-    num_ncmp_con_1, ncmp_con_free_spc_1 = number_spc_contacts(
-        cmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_con_2, ncmp_con_free_spc_2 = number_spc_contacts(
-        pwell_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    ncmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cmp_width - ncmp_pcmp_spc - cmp_width + ncmp_con_free_spc_1 / 2,
-                ncmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_con_1,
-        num_ncmp_con_2,
-    )
-    pwell_res_cell.insert(ncmp_con_arr)
-
-    pwell_res_cell.flatten(True)
-    return pwell_res_cell
-
-
-def draw_npolyf_s_res(layout, l, w, deepnwell, pcmpgr):
-    """
-    Usage:-
-     used to draw 3-terminal salicided n+ poly resistor (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    poly = layout.layer(30, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    npolyf_s_res_w = w * dbu_PERCISION
-    npolyf_s_res_l = l * dbu_PERCISION
-    poly_res_enc = 0.29 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
-    implant_poly_enc = 0.3 * dbu_PERCISION
-    npoly_pcmp_spc = 0.72 * dbu_PERCISION
-    pcmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    dnwell_enc_ncmp = 0.62 * dbu_PERCISION
-    dnwell_enc_poly = 1.34 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-
-    # Inserting npolyf_s_res cell
-    cell_index = layout.add_cell("npolyf_s_resistor")
-    npolyf_s_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    npolyf_s_res_cell.shapes(res_mk).insert(
-        pya.Box(0, 0, npolyf_s_res_w, npolyf_s_res_l)
-    )
-
-    # Inserting n poly
-    npolyf_s_res_cell.shapes(poly).insert(
-        pya.Box(-poly_res_enc, 0, npolyf_s_res_w + poly_res_enc, npolyf_s_res_l)
-    )
-    npolyf_s_res_cell.shapes(nplus).insert(
-        pya.Box(
-            -poly_res_enc - implant_poly_enc,
-            -implant_poly_enc,
-            npolyf_s_res_w + poly_res_enc + implant_poly_enc,
-            npolyf_s_res_l + implant_poly_enc,
-        )
-    )
-
-    # Inserting ncomp metal
-    npolyf_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cont_size - met_cont_enc,
-            cmp_met_cont_enc_diff,
-            met_cont_enc,
-            npolyf_s_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # left
-    npolyf_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            npolyf_s_res_w - met_cont_enc,
-            cmp_met_cont_enc_diff,
-            npolyf_s_res_w + cont_size + met_cont_enc,
-            npolyf_s_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # Right
-
-    # Inserting ncomp contacts
-    num_ncmp_left_con_1, ncmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_left_con_2, ncmp_left_con_free_spc_2 = number_spc_contacts(
-        npolyf_s_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cont_size - met_cont_enc + ncmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_left_con_1,
-        num_ncmp_left_con_2,
-    )
-    npolyf_s_res_cell.insert(ncmp_left_con_arr)
-
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        npolyf_s_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                npolyf_s_res_w - met_cont_enc + ncmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    npolyf_s_res_cell.insert(ncmp_right_con_arr)
-
-    # Inserting p diffusion
-    npolyf_s_res_cell.shapes(comp).insert(
-        pya.Box(
-            -poly_res_enc - npoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - npoly_pcmp_spc,
-            npolyf_s_res_l,
-        )
-    )
-
-    # Inserting pcomp metal
-    npolyf_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -poly_res_enc - npoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - npoly_pcmp_spc,
-            npolyf_s_res_l,
-        )
-    )
-
-    # Inserting pcomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        pcmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        npolyf_s_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -poly_res_enc - npoly_pcmp_spc - pcmp_width + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    npolyf_s_res_cell.insert(pcmp_con_arr)
-
-    if deepnwell == True:
-        # Inserting Ntap
-        npolyf_s_res_cell.shapes(nplus).insert(
-            pya.Box(
-                -poly_res_enc - npoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - npoly_pcmp_spc + implant_cmp_enc,
-                npolyf_s_res_l + implant_cmp_enc,
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    lvpwell.size[0] + (2 * dn_enc_lvpwell),
+                    lvpwell.size[1] + (2 * dn_enc_lvpwell),
+                ),
+                layer=layer["dnwell"],
             )
         )
+        dn_rect.xmin = lvpwell.xmin - dn_enc_lvpwell
+        dn_rect.ymin = lvpwell.ymin - dn_enc_lvpwell
 
-        # Inserting dnwell
-        npolyf_s_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -poly_res_enc - npoly_pcmp_spc - pcmp_width - dnwell_enc_ncmp,
-                -dnwell_enc_poly,
-                npolyf_s_res_w + poly_res_enc + dnwell_enc_poly,
-                npolyf_s_res_l + dnwell_enc_poly,
-            )
-        )
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
 
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -poly_res_enc
-                - npoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw,
-                -dnwell_enc_poly - pcmp_gr2dnw,
-                npolyf_s_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw,
-                npolyf_s_res_l + dnwell_enc_poly + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -poly_res_enc
-                - npoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w,
-                npolyf_s_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-                npolyf_s_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            npolyf_s_res_cell.shapes(comp).insert(cmp_gr)
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
 
-            pp_inner = pya.Box(
-                -poly_res_enc
-                - npoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw + implant_cmp_enc,
-                npolyf_s_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                npolyf_s_res_l + dnwell_enc_poly + pcmp_gr2dnw - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -poly_res_enc
-                - npoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-                npolyf_s_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                npolyf_s_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            npolyf_s_res_cell.shapes(pplus).insert(pp_gr)
+    return layout.cell(cell_name)
 
+
+def draw_ppolyf_res(
+    layout,
+    l_res: float = 0.1,
+    w_res: float = 0.1,
+    res_type: str = "ppolyf_s",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    sub_w = 0.36
+    dn_enc_ncmp = 0.66
+    dn_enc_poly2 = 1.34
+
+    if res_type == "ppolyf_s":
+        pl_res_ext = 0.29
+        con_enc = 0.07
     else:
-        npolyf_s_res_cell.shapes(pplus).insert(
-            pya.Box(
-                -poly_res_enc - npoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - npoly_pcmp_spc + implant_cmp_enc,
-                npolyf_s_res_l + implant_cmp_enc,
-            )
-        )
+        pl_res_ext = 0.44
+        con_enc = 0.0
 
-    npolyf_s_res_cell.flatten(True)
-    return npolyf_s_res_cell
-
-
-def draw_ppolyf_s_res(layout, l, w, deepnwell, pcmpgr):
-    """
-    Usage:-
-     used to draw 3-terminal salicided p+ poly resistor (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    poly = layout.layer(30, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    ppolyf_s_res_w = w * dbu_PERCISION
-    ppolyf_s_res_l = l * dbu_PERCISION
-    poly_res_enc = 0.29 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
-    implant_poly_enc = 0.3 * dbu_PERCISION
-    ppoly_pcmp_spc = 0.86 * dbu_PERCISION
-    pcmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    dnwell_enc_ncmp = 0.62 * dbu_PERCISION
-    dnwell_enc_poly = 1.34 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-
-    # Inserting ppolyf_s_res cell
-    cell_index = layout.add_cell("ppolyf_s_resistor")
-    ppolyf_s_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    ppolyf_s_res_cell.shapes(res_mk).insert(
-        pya.Box(0, 0, ppolyf_s_res_w, ppolyf_s_res_l)
-    )
-
-    # Inserting n poly
-    ppolyf_s_res_cell.shapes(poly).insert(
-        pya.Box(-poly_res_enc, 0, ppolyf_s_res_w + poly_res_enc, ppolyf_s_res_l)
-    )
-    ppolyf_s_res_cell.shapes(pplus).insert(
-        pya.Box(
-            -poly_res_enc - implant_poly_enc,
-            -implant_poly_enc,
-            ppolyf_s_res_w + poly_res_enc + implant_poly_enc,
-            ppolyf_s_res_l + implant_poly_enc,
-        )
-    )
-
-    # Inserting ncomp metal
-    ppolyf_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -cont_size - met_cont_enc,
-            cmp_met_cont_enc_diff,
-            met_cont_enc,
-            ppolyf_s_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # left
-    ppolyf_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            ppolyf_s_res_w - met_cont_enc,
-            cmp_met_cont_enc_diff,
-            ppolyf_s_res_w + cont_size + met_cont_enc,
-            ppolyf_s_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # Right
-
-    # Inserting ncomp contacts
-    num_ncmp_left_con_1, ncmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_left_con_2, ncmp_left_con_free_spc_2 = number_spc_contacts(
-        ppolyf_s_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -cont_size - met_cont_enc + ncmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_left_con_1,
-        num_ncmp_left_con_2,
-    )
-    ppolyf_s_res_cell.insert(ncmp_left_con_arr)
-
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        ppolyf_s_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                ppolyf_s_res_w - met_cont_enc + ncmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    ppolyf_s_res_cell.insert(ncmp_right_con_arr)
-
-    # Inserting p diffusion
-    ppolyf_s_res_cell.shapes(comp).insert(
-        pya.Box(
-            -poly_res_enc - ppoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - ppoly_pcmp_spc,
-            ppolyf_s_res_l,
-        )
-    )
-
-    # Inserting pcomp metal
-    ppolyf_s_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -poly_res_enc - ppoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - ppoly_pcmp_spc,
-            ppolyf_s_res_l,
-        )
-    )
-
-    # Inserting pcomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        pcmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        ppolyf_s_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    ppolyf_s_res_cell.insert(pcmp_con_arr)
-
-    if deepnwell == True:
-        # Inserting Ntap
-        ppolyf_s_res_cell.shapes(nplus).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - ppoly_pcmp_spc + implant_cmp_enc,
-                ppolyf_s_res_l + implant_cmp_enc,
-            )
-        )
-
-        # Inserting dnwell
-        ppolyf_s_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - dnwell_enc_ncmp,
-                -dnwell_enc_poly,
-                ppolyf_s_res_w + poly_res_enc + dnwell_enc_poly,
-                ppolyf_s_res_l + dnwell_enc_poly,
-            )
-        )
-
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw,
-                -dnwell_enc_poly - pcmp_gr2dnw,
-                ppolyf_s_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw,
-                ppolyf_s_res_l + dnwell_enc_poly + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w,
-                ppolyf_s_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-                ppolyf_s_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            ppolyf_s_res_cell.shapes(comp).insert(cmp_gr)
-
-            pp_inner = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw + implant_cmp_enc,
-                ppolyf_s_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                ppolyf_s_res_l + dnwell_enc_poly + pcmp_gr2dnw - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-                ppolyf_s_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                ppolyf_s_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            ppolyf_s_res_cell.shapes(pplus).insert(pp_gr)
-
+    if deepnwell == 1:
+        sub_layer = layer["nplus"]
     else:
-        ppolyf_s_res_cell.shapes(pplus).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - ppoly_pcmp_spc + implant_cmp_enc,
-                ppolyf_s_res_l + implant_cmp_enc,
-            )
-        )
+        sub_layer = layer["pplus"]
 
-    ppolyf_s_res_cell.flatten(True)
-    return ppolyf_s_res_cell
-
-
-def draw_npolyf_u_res(layout, l, w, deepnwell, pcmpgr):
-    """
-    Usage:-
-     used to draw 3-terminal unsalicided n+ poly resistor (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    poly = layout.layer(30, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    sab = layout.layer(49, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    npolyf_u_res_w = w * dbu_PERCISION
-    npolyf_u_res_l = l * dbu_PERCISION
-    poly_res_enc = 0.51 * dbu_PERCISION
-    sab_res_enc = 0.28 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
-    implant_poly_enc = 0.3 * dbu_PERCISION
-    npoly_pcmp_spc = 0.72 * dbu_PERCISION
-    pcmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    dnwell_enc_ncmp = 0.62 * dbu_PERCISION
-    dnwell_enc_poly = 1.34 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-
-    # Inserting npolyf_u_res cell
-    cell_index = layout.add_cell("npolyf_u_resistor")
-    npolyf_u_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    npolyf_u_res_cell.shapes(res_mk).insert(
-        pya.Box(0, 0, npolyf_u_res_w, npolyf_u_res_l)
-    )
-
-    # Inserting sab
-    npolyf_u_res_cell.shapes(sab).insert(
-        pya.Box(0, -sab_res_enc, npolyf_u_res_w, npolyf_u_res_l + sab_res_enc)
-    )
-
-    # Inserting n poly
-    npolyf_u_res_cell.shapes(poly).insert(
-        pya.Box(-poly_res_enc, 0, npolyf_u_res_w + poly_res_enc, npolyf_u_res_l)
-    )
-    npolyf_u_res_cell.shapes(nplus).insert(
-        pya.Box(
-            -poly_res_enc - implant_poly_enc,
-            -implant_poly_enc,
-            npolyf_u_res_w + poly_res_enc + implant_poly_enc,
-            npolyf_u_res_l + implant_poly_enc,
+    # adding res inst
+    r_inst = c.add_ref(
+        polyf_res_inst(
+            l_res=l_res,
+            w_res=w_res,
+            res_type=res_type,
+            pl_res_ext=pl_res_ext,
+            con_enc=con_enc,
+            pl_imp_layer=layer["pplus"],
+            sub_imp_layer=sub_layer,
+            lbl=lbl,
+            r0_lbl=r0_lbl,
+            r1_lbl=r1_lbl,
+            sub_lbl=sub_lbl,
         )
     )
 
-    # Inserting npoly metal
-    npolyf_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -poly_res_enc + cmp_met_cont_enc_diff,
-            cmp_met_cont_enc_diff,
-            -poly_res_enc + cmp_met_cont_enc_diff + metal_width,
-            npolyf_u_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # left
-    npolyf_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            npolyf_u_res_w + poly_res_enc - cmp_met_cont_enc_diff - metal_width,
-            cmp_met_cont_enc_diff,
-            npolyf_u_res_w + poly_res_enc - cmp_met_cont_enc_diff,
-            npolyf_u_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # Right
+    if deepnwell == 1:
 
-    # Inserting npoly contacts
-    num_ncmp_left_con_1, ncmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_left_con_2, ncmp_left_con_free_spc_2 = number_spc_contacts(
-        npolyf_u_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -poly_res_enc + cmp_met_cont_enc_diff + ncmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_left_con_free_spc_2 / 2,
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    r_inst.size[0] + (dn_enc_poly2 + dn_enc_ncmp),
+                    r_inst.size[1] + (2 * dn_enc_poly2),
+                ),
+                layer=layer["dnwell"],
             )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_left_con_1,
-        num_ncmp_left_con_2,
-    )
-    npolyf_u_res_cell.insert(ncmp_left_con_arr)
+        )
+        dn_rect.xmax = r_inst.xmax + dn_enc_poly2
+        dn_rect.ymin = r_inst.ymin - dn_enc_poly2
 
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        npolyf_u_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                npolyf_u_res_w
-                + poly_res_enc
-                - cmp_met_cont_enc_diff
-                - metal_width
-                + ncmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    npolyf_u_res_cell.insert(ncmp_right_con_arr)
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
 
-    # Inserting p diffusion
-    npolyf_u_res_cell.shapes(comp).insert(
-        pya.Box(
-            -poly_res_enc - npoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - npoly_pcmp_spc,
-            npolyf_u_res_l,
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
+
+
+def draw_ppolyf_u_high_Rs_res(
+    layout,
+    l_res: float = 0.42,
+    w_res: float = 0.42,
+    volt: str = "3.3V",
+    deepnwell: bool = 0,
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    dn_enc_ncmp = 0.62
+    dn_enc_poly2 = 1.34
+
+    pl_res_ext = 0.64
+
+    sub_w: float = 0.42
+    pp_enc_poly2 = 0.18
+    pp_enc_cmp: float = 0.02
+    comp_spacing: float = 0.7
+    sab_res_ext = (0.1, 0.28)
+    con_size = 0.36
+    resis_enc = (1.04, 0.4)
+    dg_enc_dn = 0.5
+
+    res_mk = c.add_ref(
+        gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
+    )
+
+    resis_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                res_mk.size[0] + (2 * resis_enc[0]),
+                res_mk.size[1] + (2 * resis_enc[1]),
+            ),
+            layer=layer["resistor"],
         )
     )
 
-    # Inserting pcomp metal
-    npolyf_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -poly_res_enc - npoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - npoly_pcmp_spc,
-            npolyf_u_res_l,
+    resis_mk.xmin = res_mk.xmin - resis_enc[0]
+    resis_mk.ymin = res_mk.ymin - resis_enc[1]
+
+    sab_rect = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                res_mk.size[0] + (2 * sab_res_ext[0]),
+                res_mk.size[1] + (2 * sab_res_ext[1]),
+            ),
+            layer=layer["sab"],
+        )
+    )
+    sab_rect.xmin = res_mk.xmin - sab_res_ext[0]
+    sab_rect.ymin = res_mk.ymin - sab_res_ext[1]
+
+    pl = c.add_ref(
+        gf.components.rectangle(
+            size=(res_mk.size[0] + (2 * pl_res_ext), res_mk.size[1]),
+            layer=layer["poly2"],
+        )
+    )
+    pl.xmin = res_mk.xmin - pl_res_ext
+    pl.ymin = res_mk.ymin
+
+    pl_con = via_stack(
+        x_range=(pl.xmin, pl.xmin + con_size),
+        y_range=(pl.ymin, pl.ymax),
+        base_layer=layer["poly2"],
+        metal_level=1,
+    )
+
+    pl_con_arr = c.add_array(
+        component=pl_con, rows=1, columns=2, spacing=(pl.size[0] - con_size, 0),
+    )  # comp contact array
+
+    pplus = gf.components.rectangle(
+        size=(pl_res_ext + pp_enc_poly2, pl.size[1] + (2 * pp_enc_poly2)),
+        layer=layer["pplus"],
+    )
+
+    pplus_arr = c.add_array(
+        component=pplus, rows=1, columns=2, spacing=(pplus.size[0] + res_mk.size[0], 0)
+    )
+
+    pplus_arr.xmin = pl.xmin - pp_enc_poly2
+    pplus_arr.ymin = pl.ymin - pp_enc_poly2
+
+    sub_rect = c.add_ref(
+        gf.components.rectangle(size=(sub_w, w_res), layer=layer["comp"])
+    )
+    sub_rect.xmax = pl.xmin - comp_spacing
+    sub_rect.ymin = pl.ymin
+
+    # sub_rect contact
+    sub_con = c.add_ref(
+        via_stack(
+            x_range=(sub_rect.xmin, sub_rect.xmax),
+            y_range=(sub_rect.ymin, sub_rect.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
         )
     )
 
-    # Inserting pcomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        pcmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        npolyf_u_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -poly_res_enc - npoly_pcmp_spc - pcmp_width + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    npolyf_u_res_cell.insert(pcmp_con_arr)
-
-    if deepnwell == True:
-        # Inserting Ntap
-        npolyf_u_res_cell.shapes(nplus).insert(
-            pya.Box(
-                -poly_res_enc - npoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - npoly_pcmp_spc + implant_cmp_enc,
-                npolyf_u_res_l + implant_cmp_enc,
-            )
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                pl_con_arr.xmin + (pl_con.size[0] / 2),
+                pl_con_arr.ymin + (pl_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                pl_con_arr.xmax - (pl_con.size[0] / 2),
+                pl_con_arr.ymin + (pl_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
         )
 
-        # Inserting dnwell
-        npolyf_u_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -poly_res_enc - npoly_pcmp_spc - pcmp_width - dnwell_enc_ncmp,
-                -dnwell_enc_poly,
-                npolyf_u_res_w + poly_res_enc + dnwell_enc_poly,
-                npolyf_u_res_l + dnwell_enc_poly,
-            )
+        c.add_label(
+            sub_lbl,
+            position=(
+                sub_con.xmin + (sub_con.size[0] / 2),
+                sub_con.ymin + (sub_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
         )
 
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -poly_res_enc
-                - npoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw,
-                -dnwell_enc_poly - pcmp_gr2dnw,
-                npolyf_u_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw,
-                npolyf_u_res_l + dnwell_enc_poly + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -poly_res_enc
-                - npoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w,
-                npolyf_u_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-                npolyf_u_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            npolyf_u_res_cell.shapes(comp).insert(cmp_gr)
-
-            pp_inner = pya.Box(
-                -poly_res_enc
-                - npoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw + implant_cmp_enc,
-                npolyf_u_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                npolyf_u_res_l + dnwell_enc_poly + pcmp_gr2dnw - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -poly_res_enc
-                - npoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-                npolyf_u_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                npolyf_u_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            npolyf_u_res_cell.shapes(pplus).insert(pp_gr)
-
+    if deepnwell == 1:
+        sub_layer = layer["nplus"]
     else:
-        npolyf_u_res_cell.shapes(pplus).insert(
-            pya.Box(
-                -poly_res_enc - npoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - npoly_pcmp_spc + implant_cmp_enc,
-                npolyf_u_res_l + implant_cmp_enc,
+        sub_layer = layer["pplus"]
+
+    sub_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(sub_rect.size[0] + (2 * pp_enc_cmp), pl.size[1] + (2 * pp_enc_cmp),),
+            layer=sub_layer,
+        )
+    )
+    sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
+    sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
+
+    if deepnwell == 1:
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (pl.xmax - sub_rect.xmin) + (dn_enc_poly2 + dn_enc_ncmp),
+                    pl.size[1] + (2 * dn_enc_poly2),
+                ),
+                layer=layer["dnwell"],
             )
         )
+        dn_rect.xmax = pl.xmax + dn_enc_poly2
+        dn_rect.ymin = pl.ymin - dn_enc_poly2
 
-    npolyf_u_res_cell.flatten(True)
-    return npolyf_u_res_cell
-
-
-def draw_ppolyf_u_res(layout, l, w, deepnwell, pcmpgr):
-    """
-    Usage:-
-     used to draw 3-terminal unsalicided p+ poly resistor (Outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    poly = layout.layer(30, 0)
-    pplus = layout.layer(31, 0)
-    nplus = layout.layer(32, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    sab = layout.layer(49, 0)
-    res_mk = layout.layer(110, 5)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    ppolyf_u_res_w = w * dbu_PERCISION
-    ppolyf_u_res_l = l * dbu_PERCISION
-    poly_res_enc = 0.51 * dbu_PERCISION
-    sab_res_enc = 0.28 * dbu_PERCISION
-    implant_cmp_enc = 0.16 * dbu_PERCISION
-    implant_poly_enc = 0.3 * dbu_PERCISION
-    ppoly_pcmp_spc = 0.86 * dbu_PERCISION
-    pcmp_width = 0.36 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    dnwell_enc_ncmp = 0.62 * dbu_PERCISION
-    dnwell_enc_poly = 1.34 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-
-    # Inserting ppolyf_u_res cell
-    cell_index = layout.add_cell("ppolyf_u_resistor")
-    ppolyf_u_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    ppolyf_u_res_cell.shapes(res_mk).insert(
-        pya.Box(0, 0, ppolyf_u_res_w, ppolyf_u_res_l)
-    )
-
-    # Inserting sab
-    ppolyf_u_res_cell.shapes(sab).insert(
-        pya.Box(0, -sab_res_enc, ppolyf_u_res_w, ppolyf_u_res_l + sab_res_enc)
-    )
-
-    # Inserting p poly
-    ppolyf_u_res_cell.shapes(poly).insert(
-        pya.Box(-poly_res_enc, 0, ppolyf_u_res_w + poly_res_enc, ppolyf_u_res_l)
-    )
-    ppolyf_u_res_cell.shapes(pplus).insert(
-        pya.Box(
-            -poly_res_enc - implant_poly_enc,
-            -implant_poly_enc,
-            ppolyf_u_res_w + poly_res_enc + implant_poly_enc,
-            ppolyf_u_res_l + implant_poly_enc,
-        )
-    )
-
-    # Inserting npoly metal
-    ppolyf_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -poly_res_enc + cmp_met_cont_enc_diff,
-            cmp_met_cont_enc_diff,
-            -poly_res_enc + cmp_met_cont_enc_diff + metal_width,
-            ppolyf_u_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # left
-    ppolyf_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            ppolyf_u_res_w + poly_res_enc - cmp_met_cont_enc_diff - metal_width,
-            cmp_met_cont_enc_diff,
-            ppolyf_u_res_w + poly_res_enc - cmp_met_cont_enc_diff,
-            ppolyf_u_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # Right
-
-    # Inserting npoly contacts
-    num_ncmp_left_con_1, ncmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_left_con_2, ncmp_left_con_free_spc_2 = number_spc_contacts(
-        ppolyf_u_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -poly_res_enc + cmp_met_cont_enc_diff + ncmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_left_con_1,
-        num_ncmp_left_con_2,
-    )
-    ppolyf_u_res_cell.insert(ncmp_left_con_arr)
-
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        ppolyf_u_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                ppolyf_u_res_w
-                + poly_res_enc
-                - cmp_met_cont_enc_diff
-                - metal_width
-                + ncmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    ppolyf_u_res_cell.insert(ncmp_right_con_arr)
-
-    # Inserting p diffusion
-    ppolyf_u_res_cell.shapes(comp).insert(
-        pya.Box(
-            -poly_res_enc - ppoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - ppoly_pcmp_spc,
-            ppolyf_u_res_l,
-        )
-    )
-
-    # Inserting pcomp metal
-    ppolyf_u_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -poly_res_enc - ppoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - ppoly_pcmp_spc,
-            ppolyf_u_res_l,
-        )
-    )
-
-    # Inserting pcomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        pcmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        ppolyf_u_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    ppolyf_u_res_cell.insert(pcmp_con_arr)
-
-    if deepnwell == True:
-        # Inserting Ntap
-        ppolyf_u_res_cell.shapes(nplus).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - ppoly_pcmp_spc + implant_cmp_enc,
-                ppolyf_u_res_l + implant_cmp_enc,
-            )
-        )
-
-        # Inserting dnwell
-        ppolyf_u_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - dnwell_enc_ncmp,
-                -dnwell_enc_poly,
-                ppolyf_u_res_w + poly_res_enc + dnwell_enc_poly,
-                ppolyf_u_res_l + dnwell_enc_poly,
-            )
-        )
-
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw,
-                -dnwell_enc_poly - pcmp_gr2dnw,
-                ppolyf_u_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw,
-                ppolyf_u_res_l + dnwell_enc_poly + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w,
-                ppolyf_u_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-                ppolyf_u_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            ppolyf_u_res_cell.shapes(comp).insert(cmp_gr)
-
-            pp_inner = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw + implant_cmp_enc,
-                ppolyf_u_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                ppolyf_u_res_l + dnwell_enc_poly + pcmp_gr2dnw - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-                ppolyf_u_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                ppolyf_u_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            ppolyf_u_res_cell.shapes(pplus).insert(pp_gr)
-
-    else:
-        ppolyf_u_res_cell.shapes(pplus).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - ppoly_pcmp_spc + implant_cmp_enc,
-                ppolyf_u_res_l + implant_cmp_enc,
-            )
-        )
-
-    ppolyf_u_res_cell.flatten(True)
-    return ppolyf_u_res_cell
-
-
-def draw_ppolyf_u_high_Rs_res(layout, l, w, volt, deepnwell, pcmpgr):
-    """
-    Usage:-
-     used to draw high-Rs p+ poly resistor (outside DNWELL) by specifying parameters
-    Arguments:-
-     layout : Object of layout
-     l      : Float of diff length
-     w      : Float of diff width
-    """
-
-    # Define layers
-    dnwell = layout.layer(12, 0)
-    comp = layout.layer(22, 0)
-    poly = layout.layer(30, 0)
-    nplus = layout.layer(32, 0)
-    pplus = layout.layer(31, 0)
-    contact = layout.layer(33, 0)
-    metal1 = layout.layer(34, 0)
-    sab = layout.layer(49, 0)
-    res_mk = layout.layer(110, 5)
-    resistor = layout.layer(62, 0)
-    dualgate = layout.layer(55, 0)
-
-    # VARIABLES
-    dbu_PERCISION = 1 / layout.dbu
-    ppolyf_u_high_Rs_res_w = w * dbu_PERCISION
-    ppolyf_u_high_Rs_res_l = l * dbu_PERCISION
-    poly_res_enc = 0.64 * dbu_PERCISION
-    sab_res_enc = 0.28 * dbu_PERCISION
-    sab_res_ext = 0.1 * dbu_PERCISION
-    implant_cmp_enc = 0.02 * dbu_PERCISION
-    implant_poly_enc = 0.18 * dbu_PERCISION
-    ppoly_pcmp_spc = 0.7 * dbu_PERCISION
-    pcmp_width = 0.42 * dbu_PERCISION
-    metal_width = 0.34 * dbu_PERCISION
-    met_cont_enc = 0.06 * dbu_PERCISION
-    comp_cont_enc = 0.07 * dbu_PERCISION
-    cont_size = 0.22 * dbu_PERCISION
-    cont_min_spc = 0.25 * dbu_PERCISION
-    cmp_met_cont_enc_diff = 0.01 * dbu_PERCISION
-    resistor_poly_enc = 0.4 * dbu_PERCISION
-    dnwell_enc_ncmp = 0.62 * dbu_PERCISION
-    dnwell_enc_poly = 1.34 * dbu_PERCISION
-    pcmp_gr2dnw = 2.5 * dbu_PERCISION
-    gr_w = 0.36 * dbu_PERCISION
-    dg_enc_dnwell = 0.5 * dbu_PERCISION
-
-    if volt == "5/6V":
-        dnwell_enc_ncmp = 0.66 * dbu_PERCISION
-
-    # Inserting ppolyf_u_high_Rs_res cell
-    cell_index = layout.add_cell("ppolyf_u_high_Rs_resistor")
-    ppolyf_u_high_Rs_res_cell = layout.cell(cell_index)
-
-    # Inserting a contact cell
-    cont_cell_index = layout.add_cell("contact")
-    cont_cell = layout.cell(cont_cell_index)
-    cont_cell.shapes(contact).insert(pya.Box.new(0, 0, cont_size, cont_size))
-
-    # Inserting res_mk
-    ppolyf_u_high_Rs_res_cell.shapes(res_mk).insert(
-        pya.Box(0, 0, ppolyf_u_high_Rs_res_w, ppolyf_u_high_Rs_res_l)
-    )
-
-    # Inserting sab
-    ppolyf_u_high_Rs_res_cell.shapes(sab).insert(
-        pya.Box(
-            -sab_res_ext,
-            -sab_res_enc,
-            ppolyf_u_high_Rs_res_w + sab_res_ext,
-            ppolyf_u_high_Rs_res_l + sab_res_enc,
-        )
-    )
-
-    # Inserting p poly
-    ppolyf_u_high_Rs_res_cell.shapes(poly).insert(
-        pya.Box(
-            -poly_res_enc,
-            0,
-            ppolyf_u_high_Rs_res_w + poly_res_enc,
-            ppolyf_u_high_Rs_res_l,
-        )
-    )
-    ppolyf_u_high_Rs_res_cell.shapes(pplus).insert(
-        pya.Box(
-            -poly_res_enc - implant_poly_enc,
-            -implant_poly_enc,
-            0,
-            ppolyf_u_high_Rs_res_l + implant_poly_enc,
-        )
-    )
-    ppolyf_u_high_Rs_res_cell.shapes(pplus).insert(
-        pya.Box(
-            ppolyf_u_high_Rs_res_w,
-            -implant_poly_enc,
-            ppolyf_u_high_Rs_res_w + poly_res_enc + implant_poly_enc,
-            ppolyf_u_high_Rs_res_l + implant_poly_enc,
-        )
-    )
-
-    # Inserting npoly metal
-    ppolyf_u_high_Rs_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -poly_res_enc + cmp_met_cont_enc_diff,
-            cmp_met_cont_enc_diff,
-            -poly_res_enc + cmp_met_cont_enc_diff + metal_width,
-            ppolyf_u_high_Rs_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # left
-    ppolyf_u_high_Rs_res_cell.shapes(metal1).insert(
-        pya.Box(
-            ppolyf_u_high_Rs_res_w + poly_res_enc - cmp_met_cont_enc_diff - metal_width,
-            cmp_met_cont_enc_diff,
-            ppolyf_u_high_Rs_res_w + poly_res_enc - cmp_met_cont_enc_diff,
-            ppolyf_u_high_Rs_res_l - cmp_met_cont_enc_diff,
-        )
-    )  # Right
-
-    # Inserting npoly contacts
-    num_ncmp_left_con_1, ncmp_left_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_left_con_2, ncmp_left_con_free_spc_2 = number_spc_contacts(
-        ppolyf_u_high_Rs_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_left_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -poly_res_enc + cmp_met_cont_enc_diff + ncmp_left_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_left_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_left_con_1,
-        num_ncmp_left_con_2,
-    )
-    ppolyf_u_high_Rs_res_cell.insert(ncmp_left_con_arr)
-
-    num_ncmp_right_con_1, ncmp_right_con_free_spc_1 = number_spc_contacts(
-        metal_width, met_cont_enc, cont_min_spc, cont_size
-    )
-    num_ncmp_right_con_2, ncmp_right_con_free_spc_2 = number_spc_contacts(
-        ppolyf_u_high_Rs_res_l - 2 * cmp_met_cont_enc_diff,
-        met_cont_enc,
-        cont_min_spc,
-        cont_size,
-    )
-    ncmp_right_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                ppolyf_u_high_Rs_res_w
-                + poly_res_enc
-                - cmp_met_cont_enc_diff
-                - metal_width
-                + ncmp_right_con_free_spc_1 / 2,
-                cmp_met_cont_enc_diff + ncmp_right_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_ncmp_right_con_1,
-        num_ncmp_right_con_2,
-    )
-    ppolyf_u_high_Rs_res_cell.insert(ncmp_right_con_arr)
-
-    # Inserting p diffusion
-    ppolyf_u_high_Rs_res_cell.shapes(comp).insert(
-        pya.Box(
-            -poly_res_enc - ppoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - ppoly_pcmp_spc,
-            ppolyf_u_high_Rs_res_l,
-        )
-    )
-
-    # Inserting pcomp metal
-    ppolyf_u_high_Rs_res_cell.shapes(metal1).insert(
-        pya.Box(
-            -poly_res_enc - ppoly_pcmp_spc - pcmp_width,
-            0,
-            -poly_res_enc - ppoly_pcmp_spc,
-            ppolyf_u_high_Rs_res_l,
-        )
-    )
-
-    # Inserting pcomp contacts
-    num_pcmp_con_1, pcmp_con_free_spc_1 = number_spc_contacts(
-        pcmp_width, comp_cont_enc, cont_min_spc, cont_size
-    )
-    num_pcmp_con_2, pcmp_con_free_spc_2 = number_spc_contacts(
-        ppolyf_u_high_Rs_res_l, comp_cont_enc, cont_min_spc, cont_size
-    )
-    pcmp_con_arr = pya.CellInstArray(
-        cont_cell.cell_index(),
-        pya.Trans(
-            pya.Point(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width + pcmp_con_free_spc_1 / 2,
-                pcmp_con_free_spc_2 / 2,
-            )
-        ),
-        pya.Vector(cont_min_spc + cont_size, 0),
-        pya.Vector(0, cont_min_spc + cont_size),
-        num_pcmp_con_1,
-        num_pcmp_con_2,
-    )
-    ppolyf_u_high_Rs_res_cell.insert(pcmp_con_arr)
-
-    # Inserting resistor
-    ppolyf_u_high_Rs_res_cell.shapes(resistor).insert(
-        pya.Box(
-            -poly_res_enc - resistor_poly_enc,
-            -resistor_poly_enc,
-            ppolyf_u_high_Rs_res_w + poly_res_enc + resistor_poly_enc,
-            ppolyf_u_high_Rs_res_l + resistor_poly_enc,
-        )
-    )
-
-    if deepnwell == True:
-        # Inserting Ntap
-        ppolyf_u_high_Rs_res_cell.shapes(nplus).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - ppoly_pcmp_spc + implant_cmp_enc,
-                ppolyf_u_high_Rs_res_l + implant_cmp_enc,
-            )
-        )
-
-        # Inserting dnwell
-        ppolyf_u_high_Rs_res_cell.shapes(dnwell).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - dnwell_enc_ncmp,
-                -dnwell_enc_poly,
-                ppolyf_u_high_Rs_res_w + poly_res_enc + dnwell_enc_poly,
-                ppolyf_u_high_Rs_res_l + dnwell_enc_poly,
-            )
-        )
-
-        # for 5/6V
-        # Inserting dualgate
         if volt == "5/6V":
-            ppolyf_u_high_Rs_res_cell.shapes(dualgate).insert(
-                pya.Box(
-                    -poly_res_enc
-                    - ppoly_pcmp_spc
-                    - pcmp_width
-                    - dnwell_enc_ncmp
-                    - dg_enc_dnwell,
-                    -dnwell_enc_poly - dg_enc_dnwell,
-                    ppolyf_u_high_Rs_res_w
-                    + poly_res_enc
-                    + dnwell_enc_poly
-                    + dg_enc_dnwell,
-                    ppolyf_u_high_Rs_res_l + dnwell_enc_poly + dg_enc_dnwell,
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        dn_rect.size[0] + (2 * dg_enc_dn),
+                        dn_rect.size[1] + (2 * dg_enc_dn),
+                    ),
+                    layer=layer["dualgate"],
                 )
             )
 
-        # Inserting Guard Ring
-        if pcmpgr == True:
-            cmp_inner = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw,
-                -dnwell_enc_poly - pcmp_gr2dnw,
-                ppolyf_u_high_Rs_res_w + poly_res_enc + dnwell_enc_poly + pcmp_gr2dnw,
-                ppolyf_u_high_Rs_res_l + dnwell_enc_poly + pcmp_gr2dnw,
-            )
-            cmp_outer = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w,
-                ppolyf_u_high_Rs_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                + gr_w,
-                ppolyf_u_high_Rs_res_l + dnwell_enc_poly + pcmp_gr2dnw + gr_w,
-            )
-            cmp_gr = pya.Region(cmp_outer) - pya.Region(cmp_inner)
-            ppolyf_u_high_Rs_res_cell.shapes(comp).insert(cmp_gr)
+            dg.xmin = dn_rect.xmin - dg_enc_dn
+            dg.ymin = dn_rect.ymin - dg_enc_dn
 
-            pp_inner = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                + implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw + implant_cmp_enc,
-                ppolyf_u_high_Rs_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-                ppolyf_u_high_Rs_res_l
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                - implant_cmp_enc,
-            )
-            pp_outer = pya.Box(
-                -poly_res_enc
-                - ppoly_pcmp_spc
-                - pcmp_width
-                - dnwell_enc_ncmp
-                - pcmp_gr2dnw
-                - gr_w
-                - implant_cmp_enc,
-                -dnwell_enc_poly - pcmp_gr2dnw - gr_w - implant_cmp_enc,
-                ppolyf_u_high_Rs_res_w
-                + poly_res_enc
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-                ppolyf_u_high_Rs_res_l
-                + dnwell_enc_poly
-                + pcmp_gr2dnw
-                + gr_w
-                + implant_cmp_enc,
-            )
-            pp_gr = pya.Region(pp_outer) - pya.Region(pp_inner)
-            ppolyf_u_high_Rs_res_cell.shapes(pplus).insert(pp_gr)
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
 
     else:
-        ppolyf_u_high_Rs_res_cell.shapes(pplus).insert(
-            pya.Box(
-                -poly_res_enc - ppoly_pcmp_spc - pcmp_width - implant_cmp_enc,
-                -implant_cmp_enc,
-                -poly_res_enc - ppoly_pcmp_spc + implant_cmp_enc,
-                ppolyf_u_high_Rs_res_l + implant_cmp_enc,
-            )
-        )
-
-        # for 5/6V
-        # Inserting dualgate
         if volt == "5/6V":
-            ppolyf_u_high_Rs_res_cell.shapes(dualgate).insert(
-                pya.Box(
-                    -poly_res_enc - resistor_poly_enc,
-                    -resistor_poly_enc,
-                    ppolyf_u_high_Rs_res_w + poly_res_enc + resistor_poly_enc,
-                    ppolyf_u_high_Rs_res_l + resistor_poly_enc,
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(resis_mk.size[0], resis_mk.size[1]), layer=layer["dualgate"]
                 )
             )
 
-    ppolyf_u_high_Rs_res_cell.flatten(True)
-    return ppolyf_u_high_Rs_res_cell
+            dg.xmin = resis_mk.xmin
+            dg.ymin = resis_mk.ymin
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
+
+
+def draw_well_res(
+    layout,
+    l_res: float = 0.42,
+    w_res: float = 0.42,
+    res_type: str = "nwell",
+    pcmpgr: bool = 0,
+    lbl: bool = 0,
+    r0_lbl: str = "",
+    r1_lbl: str = "",
+    sub_lbl: str = "",
+) -> gf.Component:
+
+    c = gf.Component("res_dev")
+
+    nw_res_ext = 0.48
+    nw_res_enc = 0.5
+    nw_enc_cmp = 0.12
+
+    sub_w: float = 0.36
+    pp_enc_cmp: float = 0.16
+    nw_comp_spacing: float = 0.72
+    dn_enc_lvpwell = 2.5
+
+    if res_type == "pwell":
+        cmp_imp_layer = layer["pplus"]
+        sub_imp_layer = layer["nplus"]
+        well_layer = layer["lvpwell"]
+    else:
+        cmp_imp_layer = layer["nplus"]
+        sub_imp_layer = layer["pplus"]
+        well_layer = layer["nwell"]
+
+    res_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(l_res, w_res + (2 * nw_res_enc)), layer=layer["res_mk"]
+        )
+    )
+
+    well_rect = c.add_ref(
+        gf.components.rectangle(
+            size=(res_mk.size[0] + (2 * nw_res_ext), w_res), layer=well_layer
+        )
+    )
+    well_rect.xmin = res_mk.xmin - nw_res_ext
+    well_rect.ymin = res_mk.ymin + nw_res_enc
+
+    @gf.cell
+    def comp_related_gen(size: Float2 = (0.42, 0.42)) -> gf.Component:
+
+        c = gf.Component()
+
+        cmp = c.add_ref(gf.components.rectangle(size=size, layer=layer["comp"]))
+        cmp.xmin = well_rect.xmin + nw_enc_cmp
+        cmp.ymin = well_rect.ymin + nw_enc_cmp
+
+        c.add_ref(
+            via_stack(
+                x_range=(cmp.xmin, cmp.xmax),
+                y_range=(cmp.ymin, cmp.ymax),
+                base_layer=layer["comp"],
+                metal_level=1,
+            )
+        )  # contact
+
+        return c
+
+    con_polys = comp_related_gen(
+        size=(
+            res_mk.xmin - well_rect.xmin - nw_enc_cmp,
+            well_rect.size[1] - (2 * nw_enc_cmp),
+        )
+    )
+
+    con_polys_arr = c.add_array(
+        component=con_polys,
+        rows=1,
+        columns=2,
+        spacing=(well_rect.size[0] - (2 * nw_enc_cmp) - con_polys.size[0], 0),
+    )  # comp and its related contact array
+
+    nplus_rect = gf.components.rectangle(
+        size=(
+            con_polys.size[0] + (2 * pp_enc_cmp),
+            con_polys.size[1] + (2 * pp_enc_cmp),
+        ),
+        layer=cmp_imp_layer,
+    )
+    nplus_arr = c.add_array(
+        component=nplus_rect,
+        rows=1,
+        columns=2,
+        spacing=(well_rect.size[0] - (2 * nw_enc_cmp) - con_polys.size[0], 0),
+    )
+    nplus_arr.xmin = con_polys.xmin - pp_enc_cmp
+    nplus_arr.ymin = con_polys.ymin - pp_enc_cmp
+
+    sub_rect = c.add_ref(
+        gf.components.rectangle(size=(sub_w, well_rect.size[1]), layer=layer["comp"])
+    )
+    sub_rect.xmax = well_rect.xmin - nw_comp_spacing
+    sub_rect.ymin = well_rect.ymin
+
+    # sub_rect contact
+    sub_con = c.add_ref(
+        via_stack(
+            x_range=(sub_rect.xmin, sub_rect.xmax),
+            y_range=(sub_rect.ymin, sub_rect.ymax),
+            base_layer=layer["comp"],
+            metal_level=1,
+        )
+    )
+
+    sub_imp = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                sub_rect.size[0] + (2 * pp_enc_cmp),
+                well_rect.size[1] + (2 * pp_enc_cmp),
+            ),
+            layer=sub_imp_layer,
+        )
+    )
+    sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
+    sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
+
+    if res_type == "pwell":
+
+        dn_rect = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    well_rect.size[0] + (2 * dn_enc_lvpwell),
+                    well_rect.size[1] + (2 * dn_enc_lvpwell),
+                ),
+                layer=layer["dnwell"],
+            )
+        )
+        dn_rect.xmin = well_rect.xmin - dn_enc_lvpwell
+        dn_rect.ymin = well_rect.ymin - dn_enc_lvpwell
+
+        if pcmpgr == 1:
+            c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
+
+    # labels generation
+    if lbl == 1:
+        c.add_label(
+            r0_lbl,
+            position=(
+                con_polys_arr.xmin + (con_polys.size[0] / 2),
+                con_polys_arr.ymin + (con_polys.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+        c.add_label(
+            r1_lbl,
+            position=(
+                con_polys_arr.xmax - (con_polys.size[0] / 2),
+                con_polys_arr.ymin + (con_polys.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+        c.add_label(
+            sub_lbl,
+            position=(
+                sub_con.xmin + (sub_con.size[0] / 2),
+                sub_con.ymin + (sub_con.size[1] / 2),
+            ),
+            layer=layer["metal1_label"],
+        )
+
+    c.write_gds("res_temp.gds")
+    layout.read("res_temp.gds")
+    cell_name = "res_dev"
+
+    return layout.cell(cell_name)
