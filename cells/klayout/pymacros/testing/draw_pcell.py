@@ -40,7 +40,7 @@ import glob
 pcell_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, pcell_path)
 
-from cells import gf180mcu
+from cells import gf180mcu # noqa E402
 
 DEV_SPACES = dict()
 DEV_SPACES["fet"] = 450
