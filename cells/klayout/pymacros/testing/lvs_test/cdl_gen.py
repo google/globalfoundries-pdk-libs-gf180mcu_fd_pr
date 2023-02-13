@@ -17,14 +17,14 @@ import os
 from pathlib import Path
 
 
-def cdl_gen(df, device_name,device_type):
+def cdl_gen(df, device_name, device_type):
 
     cdl_f = open(f"../testcases/{device_name}_pcells.cdl", "w")
 
     # if "pfet" in device_name and "_dn" not in device_name:
     #     top_cell = f"{device_name}_pcells"
     # else:
-    top_cell = f"{device_type}_pcells"
+    top_cell = f"{device_name}_pcells"
 
     cdl_f.write(
         f"""
@@ -49,8 +49,8 @@ def cdl_gen(df, device_name,device_type):
     )
 
     if "fet" in device_name:
-        length = df["l"]
-        w = df["w"]
+        length = df["l_gate"]
+        w = df["w_gate"]
         dev = device_name
         interdig = df["interdig"]
         num_fingers = df["nf"]
@@ -122,7 +122,9 @@ if __name__ == "__main__":
     patt_path = Path(cdl_gen_path).resolve().parents[0]
 
     for device_name in devices:
-        df = pd.read_csv(f"{patt_path}/patterns/{device_type}/{device_name}_patterns.csv")
+        df = pd.read_csv(
+            f"{patt_path}/patterns/{device_type}/{device_name}_patterns.csv"
+        )
 
         # Calling cdl generation function
-        cdl_gen(df=df, device_name=device_name,device_type=device_type)
+        cdl_gen(df=df, device_name=device_name, device_type=device_type)

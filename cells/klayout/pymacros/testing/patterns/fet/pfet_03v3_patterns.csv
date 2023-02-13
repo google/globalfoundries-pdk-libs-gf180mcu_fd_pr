@@ -1,147 +1,149 @@
-volt,bulk,l,w,ld,nf,gate_con_pos,sd_con_col,cont_bet_fin,interdig,patt
-3.3V,None,9.74,5.68,9.6,8.0,top,6.0,0,0,ABA
-3.3V,Bulk Tie,6.75,5.23,8.68,9.0,bottom,5.0,1,1,ABCDDCBA
-3.3V,Guard Ring,5.13,4.37,7.53,9.0,alternating,9.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,Guard Ring,7.74,5.82,6.63,6.0,bottom,1.0,0,1,DCCBBCCAACCBBCCD
-3.3V,Bulk Tie,1.8,2.03,7.72,4.0,top,8.0,0,0,ABBAABBAABBA
-3.3V,None,1.53,7.66,9.58,4.0,alternating,4.0,1,1,AAABCDDCBAAA
-3.3V,None,3.93,5.58,8.94,6.0,bottom,7.0,1,0,ABBA
-3.3V,Bulk Tie,9.44,9.89,8.75,4.0,alternating,1.0,0,1,AAABAAAABAAA
-3.3V,Guard Ring,7.35,1.29,8.06,2.0,top,5.0,1,1,DAABAAACAEACAAABAAD
-3.3V,Guard Ring,0.5,1.16,0.9,9.0,top,3.0,0,0,AABCCDCCBAA
-3.3V,Bulk Tie,0.5,5.58,9.58,8.0,alternating,1.0,1,1,AABCCDCCBAA
-3.3V,None,7.35,5.82,7.53,9.0,bottom,8.0,1,1,ABA
-3.3V,None,7.74,4.37,0.9,4.0,top,5.0,1,0,AAABAAAABAAA
-3.3V,Bulk Tie,5.13,1.16,8.06,6.0,bottom,4.0,0,0,DAABAAACAEACAAABAAD
-3.3V,Guard Ring,3.93,7.66,9.6,4.0,alternating,5.0,0,1,ABBA
-3.3V,None,9.44,2.03,8.68,2.0,alternating,3.0,1,0,DCCBBCCAACCBBCCD
-3.3V,Guard Ring,1.8,5.23,8.75,6.0,top,4.0,0,0,ABCDDCBA
-3.3V,Bulk Tie,1.53,5.68,8.94,9.0,bottom,5.0,0,1,AAAABBBCCDCCBBBAAAA
-3.3V,None,6.75,1.29,6.63,9.0,top,1.0,0,0,AAABCDDCBAAA
-3.3V,Bulk Tie,9.74,5.82,0.9,4.0,alternating,7.0,0,1,ABBAABBAABBA
-3.3V,Guard Ring,9.74,9.89,7.72,9.0,bottom,9.0,1,1,AAABCDDCBAAA
-3.3V,None,1.8,1.16,9.58,9.0,alternating,5.0,1,0,ABA
-3.3V,Guard Ring,1.53,5.58,8.68,4.0,top,6.0,0,0,ABBAABBAABBA
-3.3V,Bulk Tie,7.35,4.37,6.63,6.0,alternating,6.0,1,1,AAABCDDCBAAA
-3.3V,None,5.13,9.89,9.6,4.0,top,1.0,1,0,ABBAABBAABBA
-3.3V,Bulk Tie,3.93,1.29,7.53,6.0,top,3.0,1,1,ABBA
-3.3V,Guard Ring,9.44,5.68,9.58,4.0,bottom,1.0,1,0,ABBAABBAABBA
-3.3V,None,0.5,5.23,8.06,4.0,alternating,9.0,0,0,ABCDDCBA
-3.3V,Guard Ring,6.75,2.03,8.94,8.0,bottom,7.0,1,1,AAABAAAABAAA
-3.3V,Bulk Tie,7.74,7.66,8.75,2.0,bottom,6.0,1,0,AABCCDCCBAA
-3.3V,None,0.5,1.29,7.72,4.0,bottom,4.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,Bulk Tie,9.44,5.82,9.6,9.0,top,9.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,3.93,4.37,8.75,9.0,top,8.0,0,0,DCCBBCCAACCBBCCD
-3.3V,None,7.35,5.23,8.94,6.0,alternating,1.0,0,0,AABCCDCCBAA
-3.3V,Guard Ring,1.8,5.68,0.9,4.0,bottom,9.0,1,1,DCCBBCCAACCBBCCD
-3.3V,Guard Ring,7.74,1.16,7.53,8.0,alternating,8.0,0,1,AAABCDDCBAAA
-3.3V,Bulk Tie,6.75,7.66,7.72,9.0,alternating,5.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,5.13,5.58,6.63,2.0,alternating,5.0,0,1,ABA
-3.3V,None,1.53,2.03,8.06,6.0,alternating,1.0,1,0,DAABAAACAEACAAABAAD
-3.3V,Bulk Tie,9.74,5.23,9.58,9.0,top,3.0,0,0,AAABAAAABAAA
-3.3V,Bulk Tie,3.93,9.89,8.68,9.0,top,7.0,1,0,ABA
-3.3V,Guard Ring,9.44,1.29,8.94,4.0,alternating,6.0,1,0,ABA
-3.3V,None,0.5,4.37,9.6,2.0,bottom,1.0,1,0,ABCDDCBA
-3.3V,None,9.74,7.66,8.06,4.0,top,8.0,1,0,AABCCDCCBAA
-3.3V,None,1.53,5.82,8.75,4.0,bottom,3.0,1,0,ABA
-3.3V,None,5.13,5.68,7.72,6.0,alternating,3.0,1,0,AABCCDCCBAA
-3.3V,None,6.75,1.16,8.75,4.0,alternating,9.0,1,0,ABBA
-3.3V,None,7.74,9.89,8.06,9.0,alternating,6.0,1,0,ABBA
-3.3V,None,1.8,5.58,7.53,9.0,alternating,1.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,7.35,2.03,0.9,9.0,alternating,4.0,1,0,ABBA
-3.3V,None,3.93,5.82,9.58,4.0,alternating,5.0,1,0,ABCDDCBA
-3.3V,None,0.5,7.66,6.63,9.0,alternating,7.0,1,0,ABBAABBAABBA
-3.3V,None,1.8,9.89,8.94,2.0,top,1.0,1,0,AAABCDDCBAAA
-3.3V,None,7.74,5.23,9.6,4.0,alternating,5.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,9.44,5.58,0.9,6.0,alternating,5.0,1,0,AAABCDDCBAAA
-3.3V,None,7.35,1.16,8.68,4.0,alternating,1.0,1,0,AAABAAAABAAA
-3.3V,None,6.75,5.68,7.53,4.0,alternating,1.0,1,0,ABA
-3.3V,None,5.13,1.29,8.68,8.0,alternating,9.0,1,0,ABBA
-3.3V,None,1.53,4.37,7.72,8.0,alternating,7.0,1,0,ABCDDCBA
-3.3V,None,9.74,2.03,6.63,9.0,alternating,5.0,1,0,ABCDDCBA
-3.3V,None,3.93,5.23,6.63,8.0,alternating,4.0,1,0,ABBAABBAABBA
-3.3V,None,0.5,9.89,7.53,6.0,alternating,5.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,5.13,5.82,8.94,9.0,alternating,6.0,1,0,AAABAAAABAAA
-3.3V,None,9.44,7.66,7.53,9.0,alternating,1.0,1,0,ABCDDCBA
-3.3V,None,7.74,5.68,8.68,6.0,alternating,7.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,1.8,1.29,9.6,6.0,alternating,8.0,1,0,AAABAAAABAAA
-3.3V,None,9.74,4.37,8.94,4.0,alternating,4.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,1.53,1.16,6.63,2.0,alternating,9.0,1,0,AAABAAAABAAA
-3.3V,None,6.75,5.58,8.06,4.0,alternating,3.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,7.35,9.89,9.58,6.0,alternating,5.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,1.8,4.37,8.06,9.0,alternating,7.0,1,0,AAABCDDCBAAA
-3.3V,None,3.93,2.03,0.9,4.0,alternating,1.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,7.74,2.03,9.58,9.0,alternating,9.0,1,0,ABA
-3.3V,None,0.5,5.68,8.75,9.0,alternating,5.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,7.35,7.66,7.72,8.0,alternating,3.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,6.75,5.82,7.72,2.0,alternating,4.0,1,0,ABBA
-3.3V,None,9.44,5.23,7.72,4.0,alternating,7.0,1,0,ABBA
-3.3V,None,5.13,5.23,0.9,4.0,alternating,6.0,1,0,AAABCDDCBAAA
-3.3V,None,1.53,1.29,0.9,9.0,alternating,1.0,1,0,ABBA
-3.3V,None,9.74,1.16,7.53,6.0,alternating,5.0,1,0,ABBAABBAABBA
-3.3V,None,1.8,7.66,8.68,6.0,alternating,6.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,6.75,4.37,9.58,6.0,alternating,8.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,0.5,5.82,8.68,4.0,alternating,8.0,1,0,AAABCDDCBAAA
-3.3V,None,3.93,1.16,7.72,9.0,alternating,6.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,5.13,2.03,8.75,9.0,alternating,5.0,1,0,AAABCDDCBAAA
-3.3V,None,9.44,4.37,6.63,4.0,alternating,5.0,1,0,AABCCDCCBAA
-3.3V,None,7.35,5.58,9.6,4.0,alternating,9.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,7.74,1.29,8.94,9.0,alternating,3.0,1,0,ABBAABBAABBA
-3.3V,None,9.74,5.58,8.75,6.0,alternating,1.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,1.53,9.89,7.53,4.0,alternating,7.0,1,0,AABCCDCCBAA
-3.3V,None,3.93,5.68,8.06,9.0,alternating,4.0,1,0,AAABAAAABAAA
-3.3V,None,9.44,1.16,8.06,8.0,alternating,5.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,1.8,5.82,6.63,8.0,alternating,5.0,1,0,AABCCDCCBAA
-3.3V,None,1.53,5.23,9.6,6.0,alternating,8.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,7.74,5.58,7.72,4.0,alternating,1.0,1,0,AAABAAAABAAA
-3.3V,None,5.13,7.66,9.58,6.0,alternating,1.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,0.5,2.03,9.6,6.0,alternating,6.0,1,0,AAABAAAABAAA
-3.3V,None,6.75,9.89,0.9,8.0,alternating,5.0,1,0,ABCDDCBA
-3.3V,None,7.35,5.68,6.63,9.0,alternating,3.0,1,0,ABCDDCBA
-3.3V,None,6.75,1.29,9.6,4.0,alternating,7.0,1,0,AABCCDCCBAA
-3.3V,None,3.93,5.23,7.53,2.0,alternating,1.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,9.74,1.29,8.68,9.0,alternating,1.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,9.44,1.16,8.94,4.0,alternating,8.0,1,0,ABCDDCBA
-3.3V,None,9.44,4.37,8.68,6.0,alternating,4.0,1,0,ABA
-3.3V,None,3.93,1.29,9.58,2.0,alternating,7.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,3.93,9.89,6.63,4.0,alternating,8.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,7.35,7.66,0.9,4.0,alternating,9.0,1,0,AAABAAAABAAA
-3.3V,None,0.5,5.58,8.94,9.0,alternating,8.0,1,0,ABBA
-3.3V,None,5.13,5.82,8.06,9.0,alternating,1.0,1,0,ABA
-3.3V,None,5.13,4.37,0.9,4.0,alternating,3.0,1,0,AAABCDDCBAAA
-3.3V,None,7.74,5.68,0.9,2.0,alternating,8.0,1,0,AAABCDDCBAAA
-3.3V,None,7.74,4.37,7.72,6.0,alternating,1.0,1,0,ABA
-3.3V,None,7.74,1.29,8.75,8.0,alternating,5.0,1,0,ABCDDCBA
-3.3V,None,1.53,5.58,9.6,9.0,alternating,4.0,1,0,AAABCDDCBAAA
-3.3V,None,1.8,1.16,9.6,9.0,alternating,3.0,1,0,ABBA
-3.3V,None,7.74,5.23,7.53,9.0,alternating,4.0,1,0,AABCCDCCBAA
-3.3V,None,3.93,5.23,0.9,6.0,alternating,9.0,1,0,ABA
-3.3V,None,5.13,2.03,7.53,4.0,alternating,6.0,1,0,ABCDDCBA
-3.3V,None,1.53,5.23,6.63,9.0,alternating,5.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,7.35,4.37,8.75,6.0,alternating,7.0,1,0,ABBAABBAABBA
-3.3V,None,6.75,1.16,6.63,4.0,alternating,7.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,6.75,2.03,8.06,9.0,alternating,6.0,1,0,AABCCDCCBAA
-3.3V,None,3.93,5.82,9.58,9.0,alternating,6.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,3.93,7.66,8.94,6.0,alternating,9.0,1,0,AABCCDCCBAA
-3.3V,None,6.75,9.89,6.63,6.0,alternating,3.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,5.13,4.37,8.94,8.0,alternating,5.0,1,0,AAABCDDCBAAA
-3.3V,None,5.13,4.37,8.06,8.0,alternating,1.0,1,0,DCCBBCCAACCBBCCD
-3.3V,None,5.13,4.37,7.72,4.0,alternating,5.0,1,0,ABBA
-3.3V,None,5.13,1.16,8.68,4.0,alternating,5.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,5.13,1.16,6.63,9.0,alternating,1.0,1,0,ABBA
-3.3V,None,5.13,9.89,0.9,9.0,alternating,4.0,1,0,AAAABBBCCDCCBBBAAAA
-3.3V,None,5.13,7.66,0.9,6.0,alternating,7.0,1,0,ABCDDCBA
-3.3V,None,9.44,7.66,0.9,9.0,alternating,9.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,0.5,7.66,8.06,9.0,alternating,5.0,1,0,ABA
-3.3V,None,9.74,5.82,8.06,2.0,alternating,5.0,1,0,ABBA
-3.3V,None,5.13,5.82,8.06,6.0,alternating,8.0,1,0,ABBAABBAABBA
-3.3V,None,3.93,2.03,8.94,4.0,alternating,5.0,1,0,AAABCDDCBAAA
-3.3V,None,6.75,5.58,8.94,9.0,alternating,1.0,1,0,ABCDDCBA
-3.3V,None,6.75,5.68,8.94,9.0,alternating,5.0,1,0,ABBAABBAABBA
-3.3V,None,7.74,5.68,8.94,6.0,alternating,5.0,1,0,ABBA
-3.3V,None,1.53,4.37,8.94,2.0,alternating,1.0,1,0,DAABAAACAEACAAABAAD
-3.3V,None,1.8,4.37,7.53,4.0,alternating,5.0,1,0,AAABAAAABAAA
-3.3V,None,5.13,4.37,9.6,9.0,alternating,9.0,1,0,ABBAABBAABBA
-3.3V,None,5.13,4.37,8.68,2.0,alternating,5.0,1,0,ABBAABBAABBA
-3.3V,None,5.13,4.37,8.68,9.0,alternating,5.0,1,0,AABCCDCCBAA
-3.3V,None,5.13,4.37,9.58,9.0,alternating,5.0,1,0,ABBA
+,pcell_name,netlist_name,volt,bulk,l_gate,w_gate,ld,nf,gate_con_pos,sd_con_col,con_bet_fin,interdig,patt,patt_lbl,lbl,g_lbl,sd_lbl,sub_lbl
+0,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,8.16,6.19,9.0,top,4.0,0,0,ABA,0,1,g0_g0_g0_g0_g0_g0_g0_g0_g0,s0_d0_s0_d0_s0_d0_s0_d0_s0_d0,sub
+1,pfet,pfet_03v3_pcells,3.3V,Guard Ring,0.47,1.76,4.72,4.0,bottom,5.0,1,1,ABCDDCBA,0,1,gA1_gB1_gC1_gD1,s1_d1_s1_d1_s1_d1_s1_d1_s1,sub
+2,pfet,pfet_03v3_pcells,3.3V,Guard Ring,3.93,5.86,8.1,1.0,alternating,1.0,0,1,AAAABBBCCDCCBBBAAAA,0,1,g2,s2_d2,sub
+3,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,3.59,7.79,3.0,alternating,4.0,1,0,DCCBBCCAACCBBCCD,0,1,g3_g3_g3,s3_d3_s3_d3,sub
+4,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,7.64,4.54,8.0,bottom,5.0,0,0,ABBAABBAABBA,0,1,g4_g4_g4_g4_g4_g4_g4_g4,s4_d4_s4_d4_s4_d4_s4_d4_s4,sub
+5,pfet,pfet_03v3_pcells,3.3V,Guard Ring,9.76,7.05,9.92,8.0,top,4.0,1,1,AAABCDDCBAAA,0,1,gA5_gB5_gC5_gD5,s5_d5_s5_d5_s5_d5_s5_d5_s5_d5_s5_d5_s5,sub
+6,pfet,pfet_03v3_pcells,3.3V,Guard Ring,5.98,4.11,3.85,4.0,top,3.0,1,0,ABBA,0,1,g6_g6_g6_g6,s6_d6_s6_d6_s6,sub
+7,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,8.43,8.0,bottom,6.0,0,1,AAABAAAABAAA,0,1,gA7_gB7,s7_d7_s7_d7_s7_d7_s7_d7_s7_d7_s7_d7_s7,sub
+8,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,5.91,0.98,7.0,alternating,3.0,0,1,DAABAAACAEACAAABAAD,0,1,gD8_gA8_gB8_gC8_gE8,s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8,sub
+9,pfet,pfet_03v3_pcells,3.3V,Guard Ring,5.89,1.43,1.39,1.0,alternating,7.0,1,0,AABCCDCCBAA,0,1,g9,s9_d9,sub
+10,pfet,pfet_03v3_pcells,3.3V,Guard Ring,3.98,1.79,4.54,3.0,top,7.0,1,1,ABA,0,1,gA10_gB10,s10_d10_s10_d10,sub
+11,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,4.11,9.92,1.0,bottom,4.0,0,1,DCCBBCCAACCBBCCD,0,1,g11,s11_d11,sub
+12,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,7.05,8.1,4.0,bottom,7.0,0,0,AAABCDDCBAAA,0,1,g12_g12_g12_g12,s12_d12_s12_d12_s12,sub
+13,pfet,pfet_03v3_pcells,3.3V,Guard Ring,2.94,7.64,7.79,9.0,top,3.0,1,1,ABBAABBAABBA,0,1,gA13_gB13,s13_d13_s13_d13_s13_d13_s13_d13_s13_d13_s13_d13_s13,sub
+14,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,5.86,4.72,1.0,top,4.0,0,0,ABCDDCBA,0,1,g14,s14_d14,sub
+15,pfet,pfet_03v3_pcells,3.3V,Guard Ring,5.31,3.59,6.19,7.0,bottom,1.0,1,1,AABCCDCCBAA,0,1,gA15_gB15_gC15_gD15,s15_d15_s15_d15_s15_d15_s15_d15_s15_d15_s15_d15,sub
+16,pfet,pfet_03v3_pcells,3.3V,Guard Ring,9.54,8.16,0.98,8.0,top,5.0,1,1,DAABAAACAEACAAABAAD,0,1,gD16_gA16_gB16_gC16_gE16,s16_d16_s16_d16_s16_d16_s16_d16_s16_d16_s16_d16_s16_d16_s16_d16_s16_d16_s16_d16,sub
+17,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,1.76,1.39,4.0,bottom,4.0,0,0,DAABAAACAEACAAABAAD,0,1,g17_g17_g17_g17,s17_d17_s17_d17_s17,sub
+18,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,1.43,3.85,8.0,alternating,3.0,0,1,ABBA,0,1,gA18_gB18,s18_d18_s18_d18_s18,sub
+19,pfet,pfet_03v3_pcells,3.3V,Guard Ring,9.6,5.91,8.43,8.0,alternating,6.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g19_g19_g19_g19_g19_g19_g19_g19,s19_d19_s19_d19_s19_d19_s19_d19_s19,sub
+20,pfet,pfet_03v3_pcells,3.3V,Guard Ring,9.6,1.43,0.98,1.0,bottom,4.0,1,0,AAABAAAABAAA,0,1,g20,s20_d20,sub
+21,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,1.79,9.92,4.0,alternating,5.0,0,0,AABCCDCCBAA,0,1,g21_g21_g21_g21,s21_d21_s21_d21_s21,sub
+22,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,7.05,3.85,8.0,top,1.0,1,0,AAABAAAABAAA,0,1,g22_g22_g22_g22_g22_g22_g22_g22,s22_d22_s22_d22_s22_d22_s22_d22_s22,sub
+23,pfet,pfet_03v3_pcells,3.3V,Guard Ring,9.54,7.64,4.72,7.0,alternating,4.0,1,0,AAABAAAABAAA,0,1,g23_g23_g23_g23_g23_g23_g23,s23_d23_s23_d23_s23_d23_s23_d23,sub
+24,pfet,pfet_03v3_pcells,3.3V,Guard Ring,5.31,5.91,1.39,8.0,top,5.0,1,0,DCCBBCCAACCBBCCD,0,1,g24_g24_g24_g24_g24_g24_g24_g24,s24_d24_s24_d24_s24_d24_s24_d24_s24,sub
+25,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,1.76,8.1,9.0,alternating,5.0,1,0,AAABAAAABAAA,0,1,g25_g25_g25_g25_g25_g25_g25_g25_g25,s25_d25_s25_d25_s25_d25_s25_d25_s25_d25,sub
+26,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,8.16,4.54,1.0,alternating,4.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g26,s26_d26,sub
+27,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,3.59,8.43,1.0,top,3.0,0,1,ABA,0,1,g27,s27_d27,sub
+28,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,5.86,7.79,4.0,bottom,3.0,1,0,AAABAAAABAAA,0,1,g28_g28_g28_g28,s28_d28_s28_d28_s28,sub
+29,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,7.05,6.19,8.0,alternating,4.0,1,0,ABBAABBAABBA,0,1,g29_g29_g29_g29_g29_g29_g29_g29,s29_d29_s29_d29_s29_d29_s29_d29_s29,sub
+30,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,4.11,8.43,4.0,alternating,4.0,0,0,ABBAABBAABBA,0,1,g30_g30_g30_g30,s30_d30_s30_d30_s30,sub
+31,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,5.91,8.1,3.0,bottom,3.0,0,0,ABBA,0,1,g31_g31_g31,s31_d31_s31_d31,sub
+32,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,8.16,3.85,7.0,top,6.0,1,0,ABCDDCBA,0,1,g32_g32_g32_g32_g32_g32_g32,s32_d32_s32_d32_s32_d32_s32_d32,sub
+33,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,7.64,1.39,1.0,alternating,6.0,1,1,ABCDDCBA,0,1,g33,s33_d33,sub
+34,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,1.43,7.79,8.0,top,4.0,0,1,AABCCDCCBAA,0,1,gA34_gB34_gC34_gD34,s34_d34_s34_d34_s34_d34_s34_d34_s34_d34_s34_d34,sub
+35,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,1.76,0.98,3.0,alternating,3.0,1,0,AAABCDDCBAAA,0,1,g35_g35_g35,s35_d35_s35_d35,sub
+36,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,1.79,4.72,9.0,bottom,3.0,1,0,DCCBBCCAACCBBCCD,0,1,g36_g36_g36_g36_g36_g36_g36_g36_g36,s36_d36_s36_d36_s36_d36_s36_d36_s36_d36,sub
+37,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,4.11,4.54,8.0,bottom,1.0,1,1,ABCDDCBA,0,1,gA37_gB37_gC37_gD37,s37_d37_s37_d37_s37_d37_s37_d37_s37,sub
+38,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,3.59,3.85,8.0,bottom,5.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g38_g38_g38_g38_g38_g38_g38_g38,s38_d38_s38_d38_s38_d38_s38_d38_s38,sub
+39,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,5.86,9.92,8.0,alternating,7.0,1,0,DAABAAACAEACAAABAAD,0,1,g39_g39_g39_g39_g39_g39_g39_g39,s39_d39_s39_d39_s39_d39_s39_d39_s39,sub
+40,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,7.05,0.98,1.0,bottom,6.0,1,0,DCCBBCCAACCBBCCD,0,1,g40,s40_d40,sub
+41,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,7.64,6.19,4.0,top,4.0,1,1,AAAABBBCCDCCBBBAAAA,0,1,gA41_gB41_gC41_gD41,s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41,sub
+42,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,8.16,8.43,4.0,bottom,7.0,1,1,DCCBBCCAACCBBCCD,0,1,gD42_gC42_gB42_gA42,s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42,sub
+43,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,5.91,6.19,1.0,bottom,3.0,1,0,ABA,0,1,g43,s43_d43,sub
+44,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.43,8.1,4.0,top,5.0,1,0,ABCDDCBA,0,1,g44_g44_g44_g44,s44_d44_s44_d44_s44,sub
+45,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,1.76,9.92,1.0,top,1.0,1,0,ABBAABBAABBA,0,1,g45,s45_d45,sub
+46,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,3.59,4.72,4.0,alternating,6.0,1,0,ABBAABBAABBA,0,1,g46_g46_g46_g46,s46_d46_s46_d46_s46,sub
+47,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,1.79,7.79,1.0,top,4.0,1,0,ABBA,0,1,g47,s47_d47,sub
+48,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,5.86,4.54,8.0,alternating,4.0,1,0,DCCBBCCAACCBBCCD,0,1,g48_g48_g48_g48_g48_g48_g48_g48,s48_d48_s48_d48_s48_d48_s48_d48_s48,sub
+49,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,5.91,4.72,9.0,alternating,4.0,1,0,AABCCDCCBAA,0,1,g49_g49_g49_g49_g49_g49_g49_g49_g49,s49_d49_s49_d49_s49_d49_s49_d49_s49_d49,sub
+50,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,4.11,1.39,7.0,top,5.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g50_g50_g50_g50_g50_g50_g50,s50_d50_s50_d50_s50_d50_s50_d50,sub
+51,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,1.43,8.43,3.0,alternating,5.0,1,0,ABBAABBAABBA,0,1,g51_g51_g51,s51_d51_s51_d51,sub
+52,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,7.64,0.98,8.0,alternating,7.0,1,0,ABA,0,1,g52_g52_g52_g52_g52_g52_g52_g52,s52_d52_s52_d52_s52_d52_s52_d52_s52,sub
+53,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,7.05,7.79,7.0,alternating,5.0,1,0,ABA,0,1,g53_g53_g53_g53_g53_g53_g53,s53_d53_s53_d53_s53_d53_s53_d53,sub
+54,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,1.79,6.19,8.0,alternating,5.0,1,0,DAABAAACAEACAAABAAD,0,1,g54_g54_g54_g54_g54_g54_g54_g54,s54_d54_s54_d54_s54_d54_s54_d54_s54,sub
+55,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,8.16,8.1,8.0,alternating,4.0,1,0,ABA,0,1,g55_g55_g55_g55_g55_g55_g55_g55,s55_d55_s55_d55_s55_d55_s55_d55_s55,sub
+56,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,4.11,4.72,8.0,alternating,3.0,1,0,AAABCDDCBAAA,0,1,g56_g56_g56_g56_g56_g56_g56_g56,s56_d56_s56_d56_s56_d56_s56_d56_s56,sub
+57,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.76,3.85,1.0,alternating,4.0,1,0,AABCCDCCBAA,0,1,g57,s57_d57,sub
+58,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,5.86,1.39,9.0,alternating,6.0,1,0,AAABCDDCBAAA,0,1,g58_g58_g58_g58_g58_g58_g58_g58_g58,s58_d58_s58_d58_s58_d58_s58_d58_s58_d58,sub
+59,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,3.59,4.54,4.0,alternating,3.0,1,0,DAABAAACAEACAAABAAD,0,1,g59_g59_g59_g59,s59_d59_s59_d59_s59,sub
+60,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,7.64,9.92,3.0,alternating,5.0,1,0,AABCCDCCBAA,0,1,g60_g60_g60,s60_d60_s60_d60,sub
+61,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,1.79,8.1,4.0,alternating,4.0,1,0,ABBAABBAABBA,0,1,g61_g61_g61_g61,s61_d61_s61_d61_s61,sub
+62,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,5.91,9.92,8.0,alternating,7.0,1,0,ABCDDCBA,0,1,g62_g62_g62_g62_g62_g62_g62_g62,s62_d62_s62_d62_s62_d62_s62_d62_s62,sub
+63,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,8.16,7.79,8.0,alternating,1.0,1,0,AAABCDDCBAAA,0,1,g63_g63_g63_g63_g63_g63_g63_g63,s63_d63_s63_d63_s63_d63_s63_d63_s63,sub
+64,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,7.05,8.43,9.0,alternating,4.0,1,0,ABCDDCBA,0,1,g64_g64_g64_g64_g64_g64_g64_g64_g64,s64_d64_s64_d64_s64_d64_s64_d64_s64_d64,sub
+65,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,1.43,4.72,8.0,alternating,3.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g65_g65_g65_g65_g65_g65_g65_g65,s65_d65_s65_d65_s65_d65_s65_d65_s65,sub
+66,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,4.11,6.19,3.0,alternating,6.0,1,0,ABA,0,1,g66_g66_g66,s66_d66_s66_d66,sub
+67,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,1.76,4.54,4.0,alternating,3.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g67_g67_g67_g67,s67_d67_s67_d67_s67,sub
+68,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,3.59,0.98,4.0,alternating,1.0,1,0,ABBA,0,1,g68_g68_g68_g68,s68_d68_s68_d68_s68,sub
+69,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,8.16,9.92,7.0,alternating,3.0,1,0,ABBAABBAABBA,0,1,g69_g69_g69_g69_g69_g69_g69,s69_d69_s69_d69_s69_d69_s69_d69,sub
+70,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,5.86,8.43,8.0,alternating,5.0,1,0,ABBA,0,1,g70_g70_g70_g70_g70_g70_g70_g70,s70_d70_s70_d70_s70_d70_s70_d70_s70,sub
+71,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,3.59,1.39,8.0,alternating,4.0,1,0,AAABAAAABAAA,0,1,g71_g71_g71_g71_g71_g71_g71_g71,s71_d71_s71_d71_s71_d71_s71_d71_s71,sub
+72,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,4.11,0.98,1.0,alternating,4.0,1,0,AABCCDCCBAA,0,1,g72,s72_d72,sub
+73,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,1.76,3.85,1.0,alternating,7.0,1,0,ABBA,0,1,g73,s73_d73,sub
+74,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,5.91,7.79,1.0,alternating,5.0,1,0,AAABAAAABAAA,0,1,g74,s74_d74,sub
+75,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,7.05,3.85,3.0,alternating,4.0,1,0,DAABAAACAEACAAABAAD,0,1,g75_g75_g75,s75_d75_s75_d75,sub
+76,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,7.64,8.1,8.0,alternating,4.0,1,0,DCCBBCCAACCBBCCD,0,1,g76_g76_g76_g76_g76_g76_g76_g76,s76_d76_s76_d76_s76_d76_s76_d76_s76,sub
+77,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,1.76,7.79,8.0,alternating,6.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g77_g77_g77_g77_g77_g77_g77_g77,s77_d77_s77_d77_s77_d77_s77_d77_s77,sub
+78,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,7.05,1.39,3.0,alternating,3.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g78_g78_g78,s78_d78_s78_d78,sub
+79,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,1.43,9.92,9.0,alternating,1.0,1,0,ABA,0,1,g79_g79_g79_g79_g79_g79_g79_g79_g79,s79_d79_s79_d79_s79_d79_s79_d79_s79_d79,sub
+80,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,1.79,3.85,7.0,alternating,3.0,1,0,DCCBBCCAACCBBCCD,0,1,g80_g80_g80_g80_g80_g80_g80,s80_d80_s80_d80_s80_d80_s80_d80,sub
+81,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,1.43,6.19,8.0,alternating,4.0,1,0,DCCBBCCAACCBBCCD,0,1,g81_g81_g81_g81_g81_g81_g81_g81,s81_d81_s81_d81_s81_d81_s81_d81_s81,sub
+82,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,5.86,6.19,4.0,alternating,5.0,1,0,ABA,0,1,g82_g82_g82_g82,s82_d82_s82_d82_s82,sub
+83,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,3.59,4.54,1.0,alternating,5.0,1,0,AAABCDDCBAAA,0,1,g83,s83_d83,sub
+84,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,1.79,3.85,8.0,alternating,4.0,1,0,ABCDDCBA,0,1,g84_g84_g84_g84_g84_g84_g84_g84,s84_d84_s84_d84_s84_d84_s84_d84_s84,sub
+85,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,4.11,8.1,9.0,alternating,7.0,1,0,AAABAAAABAAA,0,1,g85_g85_g85_g85_g85_g85_g85_g85_g85,s85_d85_s85_d85_s85_d85_s85_d85_s85_d85,sub
+86,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,5.86,8.1,8.0,alternating,4.0,1,0,AABCCDCCBAA,0,1,g86_g86_g86_g86_g86_g86_g86_g86,s86_d86_s86_d86_s86_d86_s86_d86_s86,sub
+87,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,8.16,4.72,8.0,alternating,3.0,1,0,AAABAAAABAAA,0,1,g87_g87_g87_g87_g87_g87_g87_g87,s87_d87_s87_d87_s87_d87_s87_d87_s87,sub
+88,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,7.64,0.98,4.0,alternating,5.0,1,0,ABBA,0,1,g88_g88_g88_g88,s88_d88_s88_d88_s88,sub
+89,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,5.91,4.72,4.0,alternating,4.0,1,0,ABA,0,1,g89_g89_g89_g89,s89_d89_s89_d89_s89,sub
+90,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,8.16,1.39,4.0,alternating,4.0,1,0,AABCCDCCBAA,0,1,g90_g90_g90_g90,s90_d90_s90_d90_s90,sub
+91,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,7.64,8.43,1.0,alternating,4.0,1,0,DAABAAACAEACAAABAAD,0,1,g91,s91_d91,sub
+92,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,1.76,4.72,3.0,alternating,1.0,1,0,DCCBBCCAACCBBCCD,0,1,g92_g92_g92,s92_d92_s92_d92,sub
+93,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,3.59,9.92,9.0,alternating,5.0,1,0,ABBA,0,1,g93_g93_g93_g93_g93_g93_g93_g93_g93,s93_d93_s93_d93_s93_d93_s93_d93_s93_d93,sub
+94,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,7.05,4.54,4.0,alternating,4.0,1,0,AAABAAAABAAA,0,1,g94_g94_g94_g94,s94_d94_s94_d94_s94,sub
+95,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,1.79,1.39,4.0,alternating,3.0,1,0,DCCBBCCAACCBBCCD,0,1,g95_g95_g95_g95,s95_d95_s95_d95_s95,sub
+96,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,5.86,3.85,4.0,alternating,5.0,1,0,ABA,0,1,g96_g96_g96_g96,s96_d96_s96_d96_s96,sub
+97,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,7.05,8.1,1.0,alternating,5.0,1,0,DAABAAACAEACAAABAAD,0,1,g97,s97_d97,sub
+98,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,1.43,6.19,7.0,alternating,6.0,1,0,ABBA,0,1,g98_g98_g98_g98_g98_g98_g98,s98_d98_s98_d98_s98_d98_s98_d98,sub
+99,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,4.11,6.19,8.0,alternating,4.0,1,0,AAABCDDCBAAA,0,1,g99_g99_g99_g99_g99_g99_g99_g99,s99_d99_s99_d99_s99_d99_s99_d99_s99,sub
+100,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,5.91,1.39,8.0,alternating,1.0,1,0,ABBAABBAABBA,0,1,g100_g100_g100_g100_g100_g100_g100_g100,s100_d100_s100_d100_s100_d100_s100_d100_s100,sub
+101,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,1.76,6.19,8.0,alternating,3.0,1,0,ABCDDCBA,0,1,g101_g101_g101_g101_g101_g101_g101_g101,s101_d101_s101_d101_s101_d101_s101_d101_s101,sub
+102,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,7.05,9.92,1.0,alternating,3.0,1,0,AABCCDCCBAA,0,1,g102,s102_d102,sub
+103,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,7.64,4.54,7.0,alternating,6.0,1,0,AAABCDDCBAAA,0,1,g103_g103_g103_g103_g103_g103_g103,s103_d103_s103_d103_s103_d103_s103_d103,sub
+104,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,7.64,0.98,9.0,alternating,4.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g104_g104_g104_g104_g104_g104_g104_g104_g104,s104_d104_s104_d104_s104_d104_s104_d104_s104_d104,sub
+105,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,7.64,8.43,1.0,alternating,3.0,1,0,AABCCDCCBAA,0,1,g105,s105_d105,sub
+106,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,1.76,8.43,7.0,alternating,4.0,1,0,ABA,0,1,g106_g106_g106_g106_g106_g106_g106,s106_d106_s106_d106_s106_d106_s106_d106,sub
+107,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,5.91,3.85,3.0,alternating,4.0,1,0,AAABAAAABAAA,0,1,g107_g107_g107,s107_d107_s107_d107,sub
+108,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,5.86,0.98,8.0,alternating,7.0,1,0,ABBAABBAABBA,0,1,g108_g108_g108_g108_g108_g108_g108_g108,s108_d108_s108_d108_s108_d108_s108_d108_s108,sub
+109,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,1.79,0.98,8.0,alternating,4.0,1,0,AABCCDCCBAA,0,1,g109_g109_g109_g109_g109_g109_g109_g109,s109_d109_s109_d109_s109_d109_s109_d109_s109,sub
+110,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,3.59,8.1,7.0,alternating,3.0,1,0,ABCDDCBA,0,1,g110_g110_g110_g110_g110_g110_g110,s110_d110_s110_d110_s110_d110_s110_d110,sub
+111,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,1.79,9.92,4.0,alternating,6.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g111_g111_g111_g111,s111_d111_s111_d111_s111,sub
+112,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,5.91,4.54,4.0,alternating,4.0,1,0,AAABCDDCBAAA,0,1,g112_g112_g112_g112,s112_d112_s112_d112_s112,sub
+113,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,4.11,7.79,8.0,alternating,5.0,1,0,DAABAAACAEACAAABAAD,0,1,g113_g113_g113_g113_g113_g113_g113_g113,s113_d113_s113_d113_s113_d113_s113_d113_s113,sub
+114,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,1.43,4.54,1.0,alternating,5.0,1,0,AAABCDDCBAAA,0,1,g114,s114_d114,sub
+115,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,8.16,4.72,1.0,alternating,7.0,1,0,DAABAAACAEACAAABAAD,0,1,g115,s115_d115,sub
+116,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.89,7.64,3.85,8.0,alternating,1.0,1,0,DAABAAACAEACAAABAAD,0,1,g116_g116_g116_g116_g116_g116_g116_g116,s116_d116_s116_d116_s116_d116_s116_d116_s116,sub
+117,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,3.85,7.0,alternating,4.0,1,0,AAABCDDCBAAA,0,1,g117_g117_g117_g117_g117_g117_g117,s117_d117_s117_d117_s117_d117_s117_d117,sub
+118,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,0.47,7.05,4.54,9.0,alternating,5.0,1,0,ABBA,0,1,g118_g118_g118_g118_g118_g118_g118_g118_g118,s118_d118_s118_d118_s118_d118_s118_d118_s118_d118,sub
+119,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,8.16,9.92,4.0,alternating,6.0,1,0,AABCCDCCBAA,0,1,g119_g119_g119_g119,s119_d119_s119_d119_s119,sub
+120,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,8.16,6.19,3.0,alternating,5.0,1,0,AAABAAAABAAA,0,1,g120_g120_g120,s120_d120_s120_d120,sub
+121,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,3.59,7.79,8.0,alternating,7.0,1,0,AAABCDDCBAAA,0,1,g121_g121_g121_g121_g121_g121_g121_g121,s121_d121_s121_d121_s121_d121_s121_d121_s121,sub
+122,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,5.86,3.85,9.0,alternating,7.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g122_g122_g122_g122_g122_g122_g122_g122_g122,s122_d122_s122_d122_s122_d122_s122_d122_s122_d122,sub
+123,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,5.86,6.19,7.0,alternating,7.0,1,0,AABCCDCCBAA,0,1,g123_g123_g123_g123_g123_g123_g123,s123_d123_s123_d123_s123_d123_s123_d123,sub
+124,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,5.86,7.79,3.0,alternating,3.0,1,0,ABCDDCBA,0,1,g124_g124_g124,s124_d124_s124_d124,sub
+125,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,1.79,9.92,1.0,alternating,4.0,1,0,AAABAAAABAAA,0,1,g125,s125_d125,sub
+126,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,1.79,0.98,1.0,alternating,4.0,1,0,ABCDDCBA,0,1,g126,s126_d126,sub
+127,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.6,1.76,4.72,8.0,alternating,3.0,1,0,ABBA,0,1,g127_g127_g127_g127_g127_g127_g127_g127,s127_d127_s127_d127_s127_d127_s127_d127_s127,sub
+128,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.43,8.43,4.0,alternating,1.0,1,0,AAABCDDCBAAA,0,1,g128_g128_g128_g128,s128_d128_s128_d128_s128,sub
+129,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,1.39,8.0,alternating,3.0,1,0,ABBA,0,1,g129_g129_g129_g129_g129_g129_g129_g129,s129_d129_s129_d129_s129_d129_s129_d129_s129,sub
+130,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,3.85,9.0,alternating,1.0,1,0,DCCBBCCAACCBBCCD,0,1,g130_g130_g130_g130_g130_g130_g130_g130_g130,s130_d130_s130_d130_s130_d130_s130_d130_s130_d130,sub
+131,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.31,1.76,3.85,9.0,alternating,4.0,1,0,ABCDDCBA,0,1,g131_g131_g131_g131_g131_g131_g131_g131_g131,s131_d131_s131_d131_s131_d131_s131_d131_s131_d131,sub
+132,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.93,8.16,3.85,9.0,alternating,5.0,1,0,ABA,0,1,g132_g132_g132_g132_g132_g132_g132_g132_g132,s132_d132_s132_d132_s132_d132_s132_d132_s132_d132,sub
+133,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,5.98,8.16,3.85,9.0,alternating,5.0,1,0,ABBA,0,1,g133_g133_g133_g133_g133_g133_g133_g133_g133,s133_d133_s133_d133_s133_d133_s133_d133_s133_d133,sub
+134,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.54,7.05,4.72,9.0,alternating,5.0,1,0,ABBA,0,1,g134_g134_g134_g134_g134_g134_g134_g134_g134,s134_d134_s134_d134_s134_d134_s134_d134_s134_d134,sub
+135,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.76,1.43,3.85,9.0,alternating,4.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g135_g135_g135_g135_g135_g135_g135_g135_g135,s135_d135_s135_d135_s135_d135_s135_d135_s135_d135,sub
+136,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,3.98,1.43,3.85,4.0,alternating,1.0,1,0,DAABAAACAEACAAABAAD,0,1,g136_g136_g136_g136,s136_d136_s136_d136_s136,sub
+137,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,3.59,3.85,9.0,alternating,4.0,1,0,DAABAAACAEACAAABAAD,0,1,g137_g137_g137_g137_g137_g137_g137_g137_g137,s137_d137_s137_d137_s137_d137_s137_d137_s137_d137,sub
+138,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,3.85,8.0,alternating,5.0,1,0,ABBAABBAABBA,0,1,g138_g138_g138_g138_g138_g138_g138_g138,s138_d138_s138_d138_s138_d138_s138_d138_s138,sub
+139,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,6.19,1.0,alternating,4.0,1,0,ABBA,0,1,g139,s139_d139,sub
+140,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,4.54,1.0,alternating,4.0,1,0,ABBA,0,1,g140,s140_d140,sub
+141,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,4.54,1.0,alternating,5.0,1,0,AABCCDCCBAA,0,1,g141,s141_d141,sub
+142,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,1.39,1.0,alternating,5.0,1,0,AAABCDDCBAAA,0,1,g142,s142_d142,sub
+143,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,1.39,8.0,alternating,5.0,1,0,ABA,0,1,g143_g143_g143_g143_g143_g143_g143_g143,s143_d143_s143_d143_s143_d143_s143_d143_s143,sub
+144,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,7.79,4.0,alternating,5.0,1,0,DCCBBCCAACCBBCCD,0,1,g144_g144_g144_g144,s144_d144_s144_d144_s144,sub
+145,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,8.1,1.0,alternating,6.0,1,0,DAABAAACAEACAAABAAD,0,1,g145,s145_d145,sub
+146,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,3.85,1.0,alternating,5.0,1,0,ABBAABBAABBA,0,1,g146,s146_d146,sub
+147,pfet,pfet_03v3_pcells,3.3V,Bulk Tie,2.94,1.79,3.85,8.0,alternating,5.0,1,0,ABBAABBAABBA,0,1,g147_g147_g147_g147_g147_g147_g147_g147,s147_d147_s147_d147_s147_d147_s147_d147_s147,sub
