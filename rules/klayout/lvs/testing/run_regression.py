@@ -41,33 +41,28 @@ def check_klayout_version():
     klayout_v_list = []
 
     if klayout_v_ == "":
-        logging.error("Klayout is not found. Please make sure klayout is installed.")
+        logging.error(f"Klayout is not found. Please make sure klayout is installed. Current version: {klayout_v_}")
         exit(1)
     else:
         klayout_v_list = [int(v) for v in klayout_v_.split(" ")[-1].split(".")]
 
+    if len(klayout_v_list) < 1 or len(klayout_v_list) > 3:
+        logging.error(f"Was not able to get klayout version properly. Current version: {klayout_v_}")
+        exit(1)
+    elif len(klayout_v_list) >= 2 and len(klayout_v_list) <= 3:
+        if klayout_v_list[1] < 28:
+            logging.error("Prerequisites at a minimum: KLayout 0.28.0")
+            logging.error(
+                "Using this klayout version has not been assesed in this development. Limits are unknown"
+            )
+            exit(1)
+    
     logging.info(f"Your Klayout version is: {klayout_v_}")
 
-    if len(klayout_v_list) < 1 or len(klayout_v_list) > 3:
-        logging.error("Was not able to get klayout version properly.")
-        exit(1)
-    elif len(klayout_v_list) == 2:
-        if klayout_v_list[1] <= 27:
-            logging.warning(f"Prerequisites at a minimum: KLayout 0.27.8")
-            logging.error(
-                "Using this klayout version has not been assesed in this development. Limits are unknown"
-            )
-            exit(1)
-    elif len(klayout_v_list) == 3:
-        if klayout_v_list[1] <= 27 and klayout_v_list[2] < 8:
-            logging.warning(f"Prerequisites at a minimum: KLayout 0.27.8")
-            logging.error(
-                "Using this klayout version has not been assesed in this development. Limits are unknown"
-            )
-            exit(1)
 
-def lvs_check(table, files):
+def lvs_check(table, devices):
 
+    # counters
     pass_count = 0
     fail_count = 0
 
@@ -76,29 +71,29 @@ def lvs_check(table, files):
     logging.info(f"================================================ \n")
 
     # Get manual test cases
-    x = os.popen("find man_testing/ -name *.gds").read()
-    man_testing = x.split("\n")[:-1]
+    man_testcases_ = os.popen("find man_testcases/ -name *.gds").read()
+    man_testcases = man_testcases_.split("\n")[:-1]
 
     # Generate databases
-    for file in files:
-        layout = file[0]
+    for device in devices:
+        layout = device[0]
 
         # Get switches
         if layout == "sample_ggnfet_06v0_dss":
             switches = " -rd lvs_sub=sub!"
         else:
             switches = " -rd lvs_sub=vdd!"
-        if len(file) > 1:
-            switches = file[1] + switches
+        if len(device) > 1:
+            switches = device[1] + switches
 
-        # Check if file is mosfet or esd
+        # Check if device is mosfet or esd
         if "sample" in layout:
             net = f"{layout}.src"
         else:
             net = layout
 
         if os.path.exists(f"testcases/{net}.cdl"):
-            # Get netlist with $ and ][
+            # Get netlist without $ and ][
             with open(f"testcases/{net}.cdl", "r") as file:
                 spice_netlist = file.read()
 
@@ -108,7 +103,7 @@ def lvs_check(table, files):
             spice_netlist = spice_netlist.replace("[", "")
             spice_netlist = spice_netlist.replace("]", "")
 
-            # Write the file out again
+            # Write clean netlist
             with open(f"testcases/{layout}_generated.cdl", "w") as file:
                 file.write(spice_netlist)
 
@@ -133,7 +128,7 @@ def lvs_check(table, files):
             logging.error(
                 f"Extraction of {layout} in fab provided test case is failed."
             )
-            for file in man_testing:
+            for file in man_testcases:
                 file_clean = file.split("/")[-1].replace(".gds", "")
                 if layout == file_clean:
                     result = os.popen(
@@ -175,38 +170,37 @@ def lvs_check(table, files):
         return True
 
 
-def main():
+def main(out_dir):
 
     ## Check Klayout version
     check_klayout_version()
 
     # Check out_dir existance
-    out_dir = arguments["--run_dir"]
-    if os.path.exists(out_dir) and os.path.isdir(out_dir):
-        pass
-    else:
+    if not os.path.exists(out_dir) and os.path.isdir(out_dir):
         logging.error("This run directory doesn't exist. Please recheck.")
-        exit()
+        exit(1)
 
     # MOSFET
-    mosfet_files = [
-        ["sample_pfet_06v0_dn"],
-        ["sample_nfet_10v0_asym"],
+    mosfet_devices = [
         ["sample_nfet_03v3"],
-        ["sample_pfet_05v0_dn"],
-        ["sample_pfet_06v0"],
+        ["sample_nfet_03v3_dn"],
+        ["sample_pfet_03v3"],
+        ["sample_pfet_03v3_dn"],
         ["sample_nfet_05v0"],
-        ["sample_nfet_06v0"],
-        ["sample_nfet_06v0_dn"],
-        ["sample_pfet_10v0_asym"],
         ["sample_nfet_05v0_dn"],
         ["sample_pfet_05v0"],
-        ["sample_pfet_03v3"],
+        ["sample_pfet_05v0_dn"],
+        ["sample_nfet_06v0"],
+        ["sample_nfet_06v0_dn"],
+        ["sample_pfet_06v0"],
+        ["sample_pfet_06v0_dn"],
         ["sample_nfet_06v0_nvt"],
+        ["sample_nfet_10v0_asym"],
+        ["sample_pfet_10v0_asym"],
     ]
 
     # BJT
-    bjt_files = [
+    bjt_devices = [
         ["npn_10p00x10p00"],
         ["npn_05p00x05p00"],
         ["npn_00p54x16p00"],
@@ -220,7 +214,7 @@ def main():
     ]
 
     # Diode
-    diode_files = [
+    diode_devices = [
         ["diode_nd2ps_03v3"],
         ["diode_nd2ps_03v3_dn"],
         ["diode_nd2ps_06v0"],
@@ -239,17 +233,17 @@ def main():
     ]
 
     # Resistor
-    resistor_files = [
-        # ["pplus_u"],
-        # ["nplus_s"],
-        # ["pplus_u_dw"],
-        # ["nplus_s_dw"],
-        # ["pplus_s"],
-        # ["pplus_s_dw"],
-        # ["nplus_u_dw"],
-        # ["nplus_u"],
-        # ["nwell"],
-        # ["pwell"],
+    resistor_devices = [
+        ["pplus_u"],
+        ["nplus_s"],
+        ["pplus_u_dw"],
+        ["nplus_s_dw"],
+        ["pplus_s"],
+        ["pplus_s_dw"],
+        ["nplus_u_dw"],
+        ["nplus_u"],
+        ["nwell"],
+        ["pwell"],
         ["ppolyf_s"],
         ["ppolyf_u_3k", "-rd poly_res=3k"],
         ["ppolyf_s_dw"],
@@ -280,7 +274,7 @@ def main():
     ]
 
     # MIM Capacitor
-    mim_files = [
+    mim_devices = [
         ["cap_mim_1f0_m2m3_noshield", "-rd mim_option=A -rd mim_cap=1"],
         ["cap_mim_1f5_m2m3_noshield", "-rd mim_option=A -rd mim_cap=1.5"],
         ["cap_mim_2f0_m2m3_noshield", "-rd mim_option=A -rd mim_cap=2"],
@@ -292,11 +286,11 @@ def main():
         ["cap_mim_2f0_m4m5_noshield", "-rd mim_option=B -rd mim_cap=2"],
         ["cap_mim_1f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1"],
         ["cap_mim_1f5_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1.5"],
-        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"]        
+        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"]
     ]
 
     # MOS Capacitor
-    moscap_files = [
+    moscap_devices = [
         ["cap_pmos_03v3_b"],
         ["cap_nmos_03v3_b"],
         ["cap_nmos_03v3"],
@@ -312,7 +306,7 @@ def main():
     ]
 
     # ESD (SAB MOSFET)
-    esd_files = [
+    esd_devices = [
         ["sample_pfet_05v0_dss"],
         ["sample_nfet_05v0_dss"],
         ["sample_pfet_03v3_dn_dss"],
@@ -328,7 +322,7 @@ def main():
     ]
 
     # eFuse
-    efuse_files = [["efuse"]]
+    efuse_devices = [["efuse"]]
 
     logging.info("================================")
     logging.info("Running LVS regression")
@@ -336,30 +330,30 @@ def main():
 
     status = True
     if arguments["--device"] == "MOS":
-        status = lvs_check("MOS DEVICES", mosfet_files)
+        status = lvs_check("MOS DEVICES", mosfet_devices)
     elif arguments["--device"] == "BJT":
-        status = lvs_check("BJT DEVICES", bjt_files)
+        status = lvs_check("BJT DEVICES", bjt_devices)
     elif arguments["--device"] == "DIODE":
-        status = lvs_check("DIODE DEVICES", diode_files)
+        status = lvs_check("DIODE DEVICES", diode_devices)
     elif arguments["--device"] == "RES":
-        status = lvs_check("RES DEVICES", resistor_files)
+        status = lvs_check("RES DEVICES", resistor_devices)
     elif arguments["--device"] == "MIMCAP":
-        status = lvs_check("MIMCAP DEVICES", mim_files)
+        status = lvs_check("MIMCAP DEVICES", mim_devices)
     elif arguments["--device"] == "MOSCAP":
-        status = lvs_check("MOSCAP DEVICES", moscap_files)
+        status = lvs_check("MOSCAP DEVICES", moscap_devices)
     elif arguments["--device"] == "MOS-SAB":
-        status = lvs_check("MOS-SAB DEVICES", esd_files)
+        status = lvs_check("MOS-SAB DEVICES", esd_devices)
     elif arguments["--device"] == "EFUSE":
-        status = lvs_check("EFUSE DEVICES", efuse_files)
+        status = lvs_check("EFUSE DEVICES", efuse_devices)
     else:
-        status = lvs_check("MOS DEVICES", mosfet_files)
-        status = lvs_check("BJT DEVICES", bjt_files)
-        status = lvs_check("DIODE DEVICES", diode_files)
-        status = lvs_check("RES DEVICES", resistor_files)
-        status = lvs_check("MIM DEVICES", mim_files)
-        status = lvs_check("MOSCAP DEVICES", moscap_files)
-        status = lvs_check("ESD DEVICES", esd_files)
-        status = lvs_check("EFUSE DEVICES", efuse_files)
+        status = lvs_check("MOS DEVICES", mosfet_devices)
+        status = lvs_check("BJT DEVICES", bjt_devices)
+        status = lvs_check("DIODE DEVICES", diode_devices)
+        status = lvs_check("RES DEVICES", resistor_devices)
+        status = lvs_check("MIM DEVICES", mim_devices)
+        status = lvs_check("MOSCAP DEVICES", moscap_devices)
+        status = lvs_check("ESD DEVICES", esd_devices)
+        status = lvs_check("EFUSE DEVICES", efuse_devices)
 
     if not status:
         logging.error(" There are failed cases will exit with 1.")
@@ -376,6 +370,8 @@ if __name__ == "__main__":
         else int(arguments["--num_cores"])
     )
 
+    out_dir = arguments["--run_dir"]
+
     # logs format
     logging.basicConfig(
         level=logging.DEBUG,
@@ -384,4 +380,4 @@ if __name__ == "__main__":
     )
 
     # Calling main function
-    main()
+    main(out_dir)
