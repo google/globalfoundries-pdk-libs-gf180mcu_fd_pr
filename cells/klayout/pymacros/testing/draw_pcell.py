@@ -81,10 +81,10 @@ def run_generation(target_device):
     
     for i,p in enumerate(list_patt_files):
         device = p.split("/")[-1].split("_patt")[0]
-        device_type = device.split("_")[0]
+        # device_type = device.split("_")[0]
         out_file = os.path.join(file_path, "testcases", f"{device}.gds")
 
-        draw_pcell(layout, top, lib, p, device_type, DEV_SPACES[target_device])
+        draw_pcell(layout, top, lib, p, device, DEV_SPACES[target_device])
 
         # Save the file
         options = k.SaveLayoutOptions()
