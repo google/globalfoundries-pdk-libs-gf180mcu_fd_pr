@@ -1,248 +1,248 @@
-,pcell_name,netlist_name,volt,bulk,l_gate,w_gate,ld,nf,gate_con_pos,sd_con_col,con_bet_fin,interdig,patt,patt_lbl,lbl,g_lbl,sd_lbl,sub_lbl
-0,nfet,nfet_03v3_pcells,3.3V,None,1.71,6.24,2.09,2.0,top,6.0,0,0,ABA,0,1,g0_g0,s0_d0_s0,sub
-1,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,7.33,7.82,6.74,2.0,bottom,10.0,1,1,ABCDDCBA,0,1,gA1_gB1_gC1_gD1,s1_d1_s1_d1_s1_d1_s1_d1_s1,sub
-2,nfet,nfet_03v3_pcells,3.3V,Guard Ring,0.87,7.31,7.48,4.0,alternating,6.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g2_g2_g2_g2,s2_d2_s2_d2_s2,sub
-3,nfet,nfet_03v3_pcells,3.3V,Guard Ring,6.47,4.3,6.9,3.0,bottom,9.0,0,1,DCCBBCCAACCBBCCD,0,1,gD3_gC3_gB3_gA3,s3_d3_s3_d3_s3_d3_s3_d3_s3_d3_s3_d3_s3_d3_s3_d3_s3,sub
-4,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,5.01,4.02,8.4,4.0,top,2.0,0,0,ABBAABBAABBA,0,1,g4_g4_g4_g4,s4_d4_s4_d4_s4,sub
-5,nfet,nfet_03v3_pcells,3.3V,None,7.57,0.94,8.06,4.0,alternating,1.0,1,1,AAABCDDCBAAA,0,1,gA5_gB5_gC5_gD5,s5_d5_s5_d5_s5_d5_s5_d5_s5_d5_s5_d5_s5,sub
-6,nfet,nfet_03v3_pcells,3.3V,None,0.65,5.69,1.35,3.0,bottom,6.0,1,0,ABBA,0,1,g6_g6_g6,s6_d6_s6_d6,sub
-7,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,7.74,6.25,6.04,2.0,alternating,4.0,0,1,AAABAAAABAAA,0,1,gA7_gB7,s7_d7_s7_d7_s7_d7_s7_d7_s7_d7_s7_d7_s7,sub
-8,nfet,nfet_03v3_pcells,3.3V,Guard Ring,8.76,1.88,9.35,3.0,top,2.0,1,1,DAABAAACAEACAAABAAD,0,1,gD8_gA8_gB8_gC8_gE8,s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8,sub
-9,nfet,nfet_03v3_pcells,3.3V,Guard Ring,6.55,8.17,8.94,3.0,top,1.0,0,0,AABCCDCCBAA,0,1,g9_g9_g9,s9_d9_s9_d9,sub
-10,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,6.55,5.69,8.06,4.0,alternating,9.0,0,0,DAABAAACAEACAAABAAD,0,1,g10_g10_g10_g10,s10_d10_s10_d10_s10,sub
-11,nfet,nfet_03v3_pcells,3.3V,None,8.76,4.3,7.48,2.0,bottom,1.0,1,1,ABBAABBAABBA,0,1,gA11_gB11,s11_d11_s11_d11_s11_d11_s11_d11_s11_d11_s11_d11_s11,sub
-12,nfet,nfet_03v3_pcells,3.3V,None,6.47,7.31,8.94,1.0,top,4.0,1,1,ABA,0,1,g12,s12_d12,sub
-13,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,0.87,8.17,9.35,4.0,bottom,1.0,0,0,AAABCDDCBAAA,0,1,g13_g13_g13_g13,s13_d13_s13_d13_s13,sub
-14,nfet,nfet_03v3_pcells,3.3V,Guard Ring,0.65,0.94,2.09,2.0,alternating,2.0,0,1,ABCDDCBA,0,1,gA14_gB14_gC14_gD14,s14_d14_s14_d14_s14_d14_s14_d14_s14,sub
-15,nfet,nfet_03v3_pcells,3.3V,None,7.74,4.02,6.74,1.0,top,6.0,1,1,AABCCDCCBAA,0,1,g15,s15_d15,sub
-16,nfet,nfet_03v3_pcells,3.3V,Guard Ring,5.01,7.82,6.04,3.0,top,6.0,1,0,DCCBBCCAACCBBCCD,0,1,g16_g16_g16,s16_d16_s16_d16,sub
-17,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,7.57,6.24,1.35,3.0,bottom,2.0,0,1,AAAABBBCCDCCBBBAAAA,0,1,gA17_gB17_gC17_gD17,s17_d17_s17_d17_s17_d17_s17_d17_s17_d17_s17_d17_s17_d17_s17_d17_s17_d17_s17_d17,sub
-18,nfet,nfet_03v3_pcells,3.3V,Guard Ring,1.71,6.25,8.4,5.0,bottom,6.0,1,1,ABBA,0,1,gA18_gB18,s18_d18_s18_d18_s18,sub
-19,nfet,nfet_03v3_pcells,3.3V,None,7.33,1.88,6.9,2.0,alternating,10.0,0,0,ABBA,0,1,g19_g19,s19_d19_s19,sub
-20,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,8.76,0.94,6.9,5.0,top,6.0,0,0,AAABAAAABAAA,0,1,g20_g20_g20_g20_g20,s20_d20_s20_d20_s20_d20,sub
-21,nfet,nfet_03v3_pcells,3.3V,None,5.01,8.17,6.74,4.0,alternating,2.0,0,1,DCCBBCCAACCBBCCD,0,1,gD21_gC21_gB21_gA21,s21_d21_s21_d21_s21_d21_s21_d21_s21_d21_s21_d21_s21_d21_s21_d21_s21,sub
-22,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,1.71,4.3,8.94,2.0,alternating,6.0,1,0,AAABAAAABAAA,0,1,g22_g22,s22_d22_s22,sub
-23,nfet,nfet_03v3_pcells,3.3V,Guard Ring,7.33,5.69,1.35,4.0,top,1.0,0,0,AAABAAAABAAA,0,1,g23_g23_g23_g23,s23_d23_s23_d23_s23,sub
-24,nfet,nfet_03v3_pcells,3.3V,None,6.55,6.25,9.35,4.0,bottom,2.0,1,1,AAABAAAABAAA,0,1,gA24_gB24,s24_d24_s24_d24_s24_d24_s24_d24_s24_d24_s24_d24_s24,sub
-25,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,6.47,1.88,7.48,3.0,alternating,6.0,0,0,AABCCDCCBAA,0,1,g25_g25_g25,s25_d25_s25_d25,sub
-26,nfet,nfet_03v3_pcells,3.3V,Guard Ring,7.57,4.02,2.09,3.0,top,10.0,0,0,AAABCDDCBAAA,0,1,g26_g26_g26,s26_d26_s26_d26,sub
-27,nfet,nfet_03v3_pcells,3.3V,None,0.87,7.82,8.4,2.0,top,9.0,1,0,ABCDDCBA,0,1,g27_g27,s27_d27_s27,sub
-28,nfet,nfet_03v3_pcells,3.3V,Guard Ring,7.74,6.24,8.06,2.0,bottom,4.0,0,0,ABBAABBAABBA,0,1,g28_g28,s28_d28_s28,sub
-29,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,0.65,7.31,6.04,2.0,bottom,2.0,0,0,AABCCDCCBAA,0,1,g29_g29,s29_d29_s29,sub
-30,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,5.01,6.25,2.09,2.0,bottom,6.0,1,0,DAABAAACAEACAAABAAD,0,1,g30_g30,s30_d30_s30,sub
-31,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,0.65,7.82,8.06,3.0,alternating,1.0,0,1,ABA,0,1,gA31_gB31,s31_d31_s31_d31,sub
-32,nfet,nfet_03v3_pcells,3.3V,None,7.74,5.69,6.9,3.0,alternating,1.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g32_g32_g32,s32_d32_s32_d32,sub
-33,nfet,nfet_03v3_pcells,3.3V,Guard Ring,0.87,6.24,6.74,1.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g33,s33_d33,sub
-34,nfet,nfet_03v3_pcells,3.3V,None,7.57,1.88,6.04,4.0,bottom,6.0,0,1,ABA,0,1,gA34_gB34,s34_d34_s34_d34,sub
-35,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,7.33,4.02,8.94,3.0,alternating,6.0,1,0,ABBAABBAABBA,0,1,g35_g35_g35,s35_d35_s35_d35,sub
-36,nfet,nfet_03v3_pcells,3.3V,Guard Ring,1.71,8.17,7.48,3.0,top,9.0,1,0,ABA,0,1,g36_g36_g36,s36_d36_s36_d36,sub
-37,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,8.76,7.31,8.4,1.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD,0,1,g37,s37_d37,sub
-38,nfet,nfet_03v3_pcells,3.3V,None,6.47,0.94,9.35,3.0,bottom,10.0,1,0,DAABAAACAEACAAABAAD,0,1,g38_g38_g38,s38_d38_s38_d38,sub
-39,nfet,nfet_03v3_pcells,3.3V,Guard Ring,6.55,4.3,1.35,2.0,alternating,4.0,1,1,ABCDDCBA,0,1,gA39_gB39_gC39_gD39,s39_d39_s39_d39_s39_d39_s39_d39_s39,sub
-40,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,1.71,4.02,9.35,4.0,bottom,4.0,0,0,ABBA,0,1,g40_g40_g40_g40,s40_d40_s40_d40_s40,sub
-41,nfet,nfet_03v3_pcells,3.3V,Guard Ring,7.33,6.25,8.06,4.0,top,2.0,1,1,AAAABBBCCDCCBBBAAAA,0,1,gA41_gB41_gC41_gD41,s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41,sub
-42,nfet,nfet_03v3_pcells,3.3V,None,7.57,5.69,8.94,3.0,bottom,2.0,0,1,DAABAAACAEACAAABAAD,0,1,gD42_gA42_gB42_gC42_gE42,s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42,sub
-43,nfet,nfet_03v3_pcells,3.3V,None,0.87,4.3,6.04,2.0,top,6.0,0,1,ABBA,0,1,gA43_gB43,s43_d43_s43_d43_s43,sub
-44,nfet,nfet_03v3_pcells,3.3V,Guard Ring,7.74,7.82,2.09,4.0,alternating,1.0,0,0,ABBA,0,1,g44_g44_g44_g44,s44_d44_s44_d44_s44,sub
-45,nfet,nfet_03v3_pcells,3.3V,Guard Ring,0.65,6.24,6.9,4.0,top,1.0,1,0,AABCCDCCBAA,0,1,g45_g45_g45_g45,s45_d45_s45_d45_s45,sub
-46,nfet,nfet_03v3_pcells,3.3V,None,5.01,1.88,1.35,2.0,top,9.0,0,0,AAABCDDCBAAA,0,1,g46_g46,s46_d46_s46,sub
-47,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,6.55,0.94,7.48,3.0,alternating,2.0,0,1,ABBA,0,1,gA47_gB47,s47_d47_s47_d47_s47,sub
-48,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,6.47,8.17,8.4,4.0,bottom,6.0,0,1,AAAABBBCCDCCBBBAAAA,0,1,gA48_gB48_gC48_gD48,s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48,sub
-49,nfet,nfet_03v3_pcells,3.3V,None,8.76,5.69,6.74,4.0,alternating,6.0,0,0,ABA,0,1,g49_g49_g49_g49,s49_d49_s49_d49_s49,sub
-50,nfet,nfet_03v3_pcells,3.3V,Guard Ring,1.71,7.31,6.74,2.0,top,2.0,0,1,AAABCDDCBAAA,0,1,gA50_gB50_gC50_gD50,s50_d50_s50_d50_s50_d50_s50_d50_s50_d50_s50_d50_s50,sub
-51,nfet,nfet_03v3_pcells,3.3V,Guard Ring,5.01,7.31,9.35,2.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g51_g51,s51_d51_s51,sub
-52,nfet,nfet_03v3_pcells,3.3V,None,0.65,4.02,7.48,5.0,alternating,10.0,0,0,DCCBBCCAACCBBCCD,0,1,g52_g52_g52_g52_g52,s52_d52_s52_d52_s52_d52,sub
-53,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,7.74,4.3,8.4,1.0,bottom,2.0,0,0,AAABCDDCBAAA,0,1,g53,s53_d53,sub
-54,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,7.57,6.25,6.9,2.0,bottom,1.0,0,0,AAABCDDCBAAA,0,1,g54_g54,s54_d54_s54,sub
-55,nfet,nfet_03v3_pcells,3.3V,None,7.33,8.17,2.09,2.0,alternating,4.0,0,0,DAABAAACAEACAAABAAD,0,1,g55_g55,s55_d55_s55,sub
-56,nfet,nfet_03v3_pcells,3.3V,None,8.76,7.82,8.94,3.0,alternating,6.0,0,0,AAABCDDCBAAA,0,1,g56_g56_g56,s56_d56_s56_d56,sub
-57,nfet,nfet_03v3_pcells,3.3V,Guard Ring,6.47,6.24,6.04,1.0,bottom,2.0,0,0,AAABCDDCBAAA,0,1,g57,s57_d57,sub
-58,nfet,nfet_03v3_pcells,3.3V,None,6.55,1.88,2.09,3.0,top,1.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g58_g58_g58,s58_d58_s58_d58,sub
-59,nfet,nfet_03v3_pcells,3.3V,Guard Ring,0.87,0.94,1.35,2.0,top,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g59_g59,s59_d59_s59,sub
-60,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,1.71,5.69,6.04,3.0,bottom,10.0,0,0,ABBAABBAABBA,0,1,g60_g60_g60,s60_d60_s60_d60,sub
-61,nfet,nfet_03v3_pcells,3.3V,None,7.57,7.82,9.35,2.0,bottom,6.0,0,0,AABCCDCCBAA,0,1,g61_g61,s61_d61_s61,sub
-62,nfet,nfet_03v3_pcells,3.3V,None,0.87,4.02,8.06,2.0,alternating,1.0,0,0,AAABAAAABAAA,0,1,g62_g62,s62_d62_s62,sub
-63,nfet,nfet_03v3_pcells,3.3V,None,8.76,6.25,1.35,3.0,alternating,2.0,0,0,AABCCDCCBAA,0,1,g63_g63_g63,s63_d63_s63_d63,sub
-64,nfet,nfet_03v3_pcells,3.3V,None,7.33,7.31,8.06,3.0,alternating,9.0,0,0,AABCCDCCBAA,0,1,g64_g64_g64,s64_d64_s64_d64,sub
-65,nfet,nfet_03v3_pcells,3.3V,None,7.74,0.94,8.94,4.0,top,9.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g65_g65_g65_g65,s65_d65_s65_d65_s65,sub
-66,nfet,nfet_03v3_pcells,3.3V,None,0.65,8.17,6.9,4.0,alternating,6.0,0,0,ABBAABBAABBA,0,1,g66_g66_g66_g66,s66_d66_s66_d66_s66,sub
-67,nfet,nfet_03v3_pcells,3.3V,None,5.01,4.3,8.06,1.0,alternating,10.0,0,0,ABA,0,1,g67,s67_d67,sub
-68,nfet,nfet_03v3_pcells,3.3V,None,6.55,6.24,8.4,3.0,alternating,6.0,0,0,AAABCDDCBAAA,0,1,g68_g68_g68,s68_d68_s68_d68,sub
-69,nfet,nfet_03v3_pcells,3.3V,None,6.47,5.69,2.09,2.0,bottom,2.0,0,0,ABBAABBAABBA,0,1,g69_g69,s69_d69_s69,sub
-70,nfet,nfet_03v3_pcells,3.3V,None,1.71,1.88,8.06,4.0,alternating,6.0,0,0,ABCDDCBA,0,1,g70_g70_g70_g70,s70_d70_s70_d70_s70,sub
-71,nfet,nfet_03v3_pcells,3.3V,None,0.65,6.25,6.74,4.0,alternating,9.0,0,0,ABBAABBAABBA,0,1,g71_g71_g71_g71,s71_d71_s71_d71_s71,sub
-72,nfet,nfet_03v3_pcells,3.3V,None,7.74,7.31,1.35,3.0,alternating,10.0,0,0,DAABAAACAEACAAABAAD,0,1,g72_g72_g72,s72_d72_s72_d72,sub
-73,nfet,nfet_03v3_pcells,3.3V,None,7.33,6.24,7.48,3.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g73_g73_g73,s73_d73_s73_d73,sub
-74,nfet,nfet_03v3_pcells,3.3V,None,7.57,4.3,6.74,5.0,alternating,1.0,0,0,DAABAAACAEACAAABAAD,0,1,g74_g74_g74_g74_g74,s74_d74_s74_d74_s74_d74,sub
-75,nfet,nfet_03v3_pcells,3.3V,None,5.01,5.69,7.48,2.0,alternating,4.0,0,0,AAABCDDCBAAA,0,1,g75_g75,s75_d75_s75,sub
-76,nfet,nfet_03v3_pcells,3.3V,None,8.76,4.02,6.04,2.0,alternating,9.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g76_g76,s76_d76_s76,sub
-77,nfet,nfet_03v3_pcells,3.3V,None,0.87,1.88,8.94,4.0,alternating,2.0,0,0,DCCBBCCAACCBBCCD,0,1,g77_g77_g77_g77,s77_d77_s77_d77_s77,sub
-78,nfet,nfet_03v3_pcells,3.3V,None,6.47,7.82,1.35,4.0,alternating,1.0,0,0,ABBAABBAABBA,0,1,g78_g78_g78_g78,s78_d78_s78_d78_s78,sub
-79,nfet,nfet_03v3_pcells,3.3V,None,6.55,7.82,6.9,4.0,alternating,2.0,0,0,DAABAAACAEACAAABAAD,0,1,g79_g79_g79_g79,s79_d79_s79_d79_s79,sub
-80,nfet,nfet_03v3_pcells,3.3V,None,7.57,8.17,8.4,3.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g80_g80_g80,s80_d80_s80_d80,sub
-81,nfet,nfet_03v3_pcells,3.3V,None,7.33,0.94,8.4,3.0,alternating,1.0,0,0,DAABAAACAEACAAABAAD,0,1,g81_g81_g81,s81_d81_s81_d81,sub
-82,nfet,nfet_03v3_pcells,3.3V,None,0.65,4.3,9.35,3.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g82_g82_g82,s82_d82_s82_d82,sub
-83,nfet,nfet_03v3_pcells,3.3V,None,1.71,0.94,6.74,3.0,alternating,1.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g83_g83_g83,s83_d83_s83_d83,sub
-84,nfet,nfet_03v3_pcells,3.3V,None,6.55,7.31,2.09,2.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g84_g84,s84_d84_s84,sub
-85,nfet,nfet_03v3_pcells,3.3V,None,0.87,6.25,8.94,3.0,alternating,10.0,0,0,ABA,0,1,g85_g85_g85,s85_d85_s85_d85,sub
-86,nfet,nfet_03v3_pcells,3.3V,None,5.01,6.24,8.94,5.0,alternating,1.0,0,0,ABCDDCBA,0,1,g86_g86_g86_g86_g86,s86_d86_s86_d86_s86_d86,sub
-87,nfet,nfet_03v3_pcells,3.3V,None,7.74,8.17,9.35,3.0,alternating,2.0,0,0,ABCDDCBA,0,1,g87_g87_g87,s87_d87_s87_d87,sub
-88,nfet,nfet_03v3_pcells,3.3V,None,6.47,4.02,6.9,2.0,alternating,1.0,0,0,ABCDDCBA,0,1,g88_g88,s88_d88_s88,sub
-89,nfet,nfet_03v3_pcells,3.3V,None,8.76,8.17,8.06,1.0,alternating,10.0,0,0,ABBA,0,1,g89,s89_d89,sub
-90,nfet,nfet_03v3_pcells,3.3V,None,6.55,4.02,6.04,1.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g90,s90_d90,sub
-91,nfet,nfet_03v3_pcells,3.3V,None,1.71,7.82,7.48,3.0,alternating,2.0,0,0,AAABAAAABAAA,0,1,g91_g91_g91,s91_d91_s91_d91,sub
-92,nfet,nfet_03v3_pcells,3.3V,None,0.65,1.88,8.4,4.0,alternating,4.0,0,0,AAABAAAABAAA,0,1,g92_g92_g92_g92,s92_d92_s92_d92_s92,sub
-93,nfet,nfet_03v3_pcells,3.3V,None,7.33,4.3,9.35,4.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g93_g93_g93_g93,s93_d93_s93_d93_s93,sub
-94,nfet,nfet_03v3_pcells,3.3V,None,7.57,7.31,7.48,4.0,alternating,4.0,0,0,ABCDDCBA,0,1,g94_g94_g94_g94,s94_d94_s94_d94_s94,sub
-95,nfet,nfet_03v3_pcells,3.3V,None,0.87,5.69,2.09,3.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD,0,1,g95_g95_g95,s95_d95_s95_d95,sub
-96,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,8.06,4.0,alternating,2.0,0,0,DCCBBCCAACCBBCCD,0,1,g96_g96_g96_g96,s96_d96_s96_d96_s96,sub
-97,nfet,nfet_03v3_pcells,3.3V,None,7.74,1.88,7.48,2.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g97_g97,s97_d97_s97,sub
-98,nfet,nfet_03v3_pcells,3.3V,None,5.01,0.94,6.9,1.0,alternating,4.0,0,0,AABCCDCCBAA,0,1,g98,s98_d98,sub
-99,nfet,nfet_03v3_pcells,3.3V,None,1.71,5.69,9.35,1.0,alternating,1.0,0,0,DAABAAACAEACAAABAAD,0,1,g99,s99_d99,sub
-100,nfet,nfet_03v3_pcells,3.3V,None,8.76,6.24,2.09,4.0,alternating,10.0,0,0,AABCCDCCBAA,0,1,g100_g100_g100_g100,s100_d100_s100_d100_s100,sub
-101,nfet,nfet_03v3_pcells,3.3V,None,6.55,5.69,6.74,2.0,alternating,10.0,0,0,AAABAAAABAAA,0,1,g101_g101,s101_d101_s101,sub
-102,nfet,nfet_03v3_pcells,3.3V,None,1.71,6.24,6.9,2.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD,0,1,g102_g102,s102_d102_s102,sub
-103,nfet,nfet_03v3_pcells,3.3V,None,6.47,0.94,6.04,4.0,alternating,6.0,0,0,ABCDDCBA,0,1,g103_g103_g103_g103,s103_d103_s103_d103_s103,sub
-104,nfet,nfet_03v3_pcells,3.3V,None,0.87,6.25,6.9,2.0,alternating,2.0,0,0,ABA,0,1,g104_g104,s104_d104_s104,sub
-105,nfet,nfet_03v3_pcells,3.3V,None,7.57,7.31,6.9,3.0,alternating,9.0,0,0,ABBA,0,1,g105_g105_g105,s105_d105_s105_d105,sub
-106,nfet,nfet_03v3_pcells,3.3V,None,7.33,5.69,8.4,2.0,alternating,2.0,0,0,AABCCDCCBAA,0,1,g106_g106,s106_d106_s106,sub
-107,nfet,nfet_03v3_pcells,3.3V,None,0.65,6.25,8.94,3.0,alternating,1.0,0,0,AAABCDDCBAAA,0,1,g107_g107_g107,s107_d107_s107_d107,sub
-108,nfet,nfet_03v3_pcells,3.3V,None,8.76,1.88,6.74,3.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g108_g108_g108,s108_d108_s108_d108,sub
-109,nfet,nfet_03v3_pcells,3.3V,None,5.01,4.3,2.09,4.0,alternating,1.0,0,0,ABBA,0,1,g109_g109_g109_g109,s109_d109_s109_d109_s109,sub
-110,nfet,nfet_03v3_pcells,3.3V,None,7.74,7.82,1.35,2.0,alternating,6.0,0,0,ABA,0,1,g110_g110,s110_d110_s110,sub
-111,nfet,nfet_03v3_pcells,3.3V,None,7.33,4.02,6.04,2.0,alternating,1.0,0,0,ABA,0,1,g111_g111,s111_d111_s111,sub
-112,nfet,nfet_03v3_pcells,3.3V,None,6.47,7.82,6.74,3.0,alternating,6.0,0,0,ABBA,0,1,g112_g112_g112,s112_d112_s112_d112,sub
-113,nfet,nfet_03v3_pcells,3.3V,None,6.55,6.24,9.35,2.0,alternating,9.0,0,0,ABA,0,1,g113_g113,s113_d113_s113,sub
-114,nfet,nfet_03v3_pcells,3.3V,None,5.01,8.17,1.35,2.0,alternating,1.0,0,0,DAABAAACAEACAAABAAD,0,1,g114_g114,s114_d114_s114,sub
-115,nfet,nfet_03v3_pcells,3.3V,None,8.76,6.25,7.48,4.0,alternating,2.0,0,0,ABCDDCBA,0,1,g115_g115_g115_g115,s115_d115_s115_d115_s115,sub
-116,nfet,nfet_03v3_pcells,3.3V,None,0.65,4.02,1.35,2.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g116_g116,s116_d116_s116,sub
-117,nfet,nfet_03v3_pcells,3.3V,None,7.57,4.3,8.94,4.0,alternating,6.0,0,0,ABBA,0,1,g117_g117_g117_g117,s117_d117_s117_d117_s117,sub
-118,nfet,nfet_03v3_pcells,3.3V,None,0.87,1.88,8.4,3.0,alternating,10.0,0,0,ABBAABBAABBA,0,1,g118_g118_g118,s118_d118_s118_d118,sub
-119,nfet,nfet_03v3_pcells,3.3V,None,7.57,7.31,8.06,3.0,alternating,6.0,0,0,ABBAABBAABBA,0,1,g119_g119_g119,s119_d119_s119_d119,sub
-120,nfet,nfet_03v3_pcells,3.3V,None,5.01,0.94,8.4,4.0,alternating,6.0,0,0,ABA,0,1,g120_g120_g120_g120,s120_d120_s120_d120_s120,sub
-121,nfet,nfet_03v3_pcells,3.3V,None,6.55,5.69,6.04,2.0,alternating,1.0,0,0,ABBAABBAABBA,0,1,g121_g121,s121_d121_s121,sub
-122,nfet,nfet_03v3_pcells,3.3V,None,1.71,7.31,1.35,4.0,alternating,1.0,0,0,AABCCDCCBAA,0,1,g122_g122_g122_g122,s122_d122_s122_d122_s122,sub
-123,nfet,nfet_03v3_pcells,3.3V,None,7.74,7.82,8.06,5.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g123_g123_g123_g123_g123,s123_d123_s123_d123_s123_d123,sub
-124,nfet,nfet_03v3_pcells,3.3V,None,5.01,8.17,6.04,3.0,alternating,1.0,0,0,ABA,0,1,g124_g124_g124,s124_d124_s124_d124,sub
-125,nfet,nfet_03v3_pcells,3.3V,None,7.74,5.69,8.94,2.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g125_g125,s125_d125_s125,sub
-126,nfet,nfet_03v3_pcells,3.3V,None,0.87,0.94,7.48,1.0,alternating,6.0,0,0,ABBAABBAABBA,0,1,g126,s126_d126,sub
-127,nfet,nfet_03v3_pcells,3.3V,None,0.65,1.88,9.35,1.0,alternating,1.0,0,0,ABBAABBAABBA,0,1,g127,s127_d127,sub
-128,nfet,nfet_03v3_pcells,3.3V,None,8.76,4.3,2.09,3.0,alternating,9.0,0,0,AAABAAAABAAA,0,1,g128_g128_g128,s128_d128_s128_d128,sub
-129,nfet,nfet_03v3_pcells,3.3V,None,6.47,4.02,7.48,4.0,alternating,2.0,0,0,ABCDDCBA,0,1,g129_g129_g129_g129,s129_d129_s129_d129_s129,sub
-130,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.24,8.94,4.0,alternating,2.0,0,0,DAABAAACAEACAAABAAD,0,1,g130_g130_g130_g130,s130_d130_s130_d130_s130,sub
-131,nfet,nfet_03v3_pcells,3.3V,None,7.33,6.24,8.06,3.0,alternating,2.0,0,0,ABA,0,1,g131_g131_g131,s131_d131_s131_d131,sub
-132,nfet,nfet_03v3_pcells,3.3V,None,6.47,4.3,8.4,3.0,alternating,1.0,0,0,AAABAAAABAAA,0,1,g132_g132_g132,s132_d132_s132_d132,sub
-133,nfet,nfet_03v3_pcells,3.3V,None,5.01,7.31,6.9,3.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g133_g133_g133,s133_d133_s133_d133,sub
-134,nfet,nfet_03v3_pcells,3.3V,None,7.33,6.25,6.74,4.0,alternating,1.0,0,0,AAABCDDCBAAA,0,1,g134_g134_g134_g134,s134_d134_s134_d134_s134,sub
-135,nfet,nfet_03v3_pcells,3.3V,None,8.76,6.25,8.4,2.0,alternating,6.0,0,0,ABA,0,1,g135_g135,s135_d135_s135,sub
-136,nfet,nfet_03v3_pcells,3.3V,None,0.65,8.17,8.06,3.0,alternating,6.0,0,0,ABCDDCBA,0,1,g136_g136_g136,s136_d136_s136_d136,sub
-137,nfet,nfet_03v3_pcells,3.3V,None,0.87,6.25,7.48,1.0,alternating,1.0,0,0,AAABAAAABAAA,0,1,g137,s137_d137,sub
-138,nfet,nfet_03v3_pcells,3.3V,None,0.87,5.69,6.74,3.0,alternating,2.0,0,0,ABCDDCBA,0,1,g138_g138_g138,s138_d138_s138_d138,sub
-139,nfet,nfet_03v3_pcells,3.3V,None,7.74,7.31,2.09,4.0,alternating,10.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g139_g139_g139_g139,s139_d139_s139_d139_s139,sub
-140,nfet,nfet_03v3_pcells,3.3V,None,6.55,4.3,9.35,4.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD,0,1,g140_g140_g140_g140,s140_d140_s140_d140_s140,sub
-141,nfet,nfet_03v3_pcells,3.3V,None,7.57,6.24,9.35,2.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g141_g141,s141_d141_s141,sub
-142,nfet,nfet_03v3_pcells,3.3V,None,0.87,8.17,6.04,5.0,alternating,2.0,0,0,AABCCDCCBAA,0,1,g142_g142_g142_g142_g142,s142_d142_s142_d142_s142_d142,sub
-143,nfet,nfet_03v3_pcells,3.3V,None,7.74,4.02,1.35,3.0,alternating,1.0,0,0,ABA,0,1,g143_g143_g143,s143_d143_s143_d143,sub
-144,nfet,nfet_03v3_pcells,3.3V,None,1.71,1.88,9.35,2.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g144_g144,s144_d144_s144,sub
-145,nfet,nfet_03v3_pcells,3.3V,None,7.74,0.94,8.06,2.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD,0,1,g145_g145,s145_d145_s145,sub
-146,nfet,nfet_03v3_pcells,3.3V,None,5.01,0.94,8.4,3.0,alternating,6.0,0,0,AAABCDDCBAAA,0,1,g146_g146_g146,s146_d146_s146_d146,sub
-147,nfet,nfet_03v3_pcells,3.3V,None,6.47,0.94,1.35,2.0,alternating,1.0,0,0,AAABAAAABAAA,0,1,g147_g147,s147_d147_s147,sub
-148,nfet,nfet_03v3_pcells,3.3V,None,1.71,7.82,1.35,1.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g148,s148_d148,sub
-149,nfet,nfet_03v3_pcells,3.3V,None,7.57,0.94,6.04,4.0,alternating,1.0,0,0,DAABAAACAEACAAABAAD,0,1,g149_g149_g149_g149,s149_d149_s149_d149_s149,sub
-150,nfet,nfet_03v3_pcells,3.3V,None,6.55,0.94,2.09,3.0,alternating,6.0,0,0,ABCDDCBA,0,1,g150_g150_g150,s150_d150_s150_d150,sub
-151,nfet,nfet_03v3_pcells,3.3V,None,0.65,6.25,6.74,3.0,alternating,6.0,0,0,ABCDDCBA,0,1,g151_g151_g151,s151_d151_s151_d151,sub
-152,nfet,nfet_03v3_pcells,3.3V,None,0.65,6.24,6.9,1.0,alternating,6.0,0,0,ABBA,0,1,g152,s152_d152,sub
-153,nfet,nfet_03v3_pcells,3.3V,None,8.76,4.3,8.94,2.0,alternating,2.0,0,0,ABBA,0,1,g153_g153,s153_d153_s153,sub
-154,nfet,nfet_03v3_pcells,3.3V,None,7.33,7.31,1.35,5.0,alternating,6.0,0,0,ABA,0,1,g154_g154_g154_g154_g154,s154_d154_s154_d154_s154_d154,sub
-155,nfet,nfet_03v3_pcells,3.3V,None,0.65,7.82,8.4,2.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g155_g155,s155_d155_s155,sub
-156,nfet,nfet_03v3_pcells,3.3V,None,6.47,7.82,8.06,3.0,alternating,6.0,0,0,ABBA,0,1,g156_g156_g156,s156_d156_s156_d156,sub
-157,nfet,nfet_03v3_pcells,3.3V,None,5.01,7.82,9.35,2.0,alternating,6.0,0,0,ABBA,0,1,g157_g157,s157_d157_s157,sub
-158,nfet,nfet_03v3_pcells,3.3V,None,0.87,1.88,8.94,4.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g158_g158_g158_g158,s158_d158_s158_d158_s158,sub
-159,nfet,nfet_03v3_pcells,3.3V,None,7.33,1.88,6.9,4.0,alternating,6.0,0,0,ABA,0,1,g159_g159_g159_g159,s159_d159_s159_d159_s159,sub
-160,nfet,nfet_03v3_pcells,3.3V,None,8.76,1.88,6.74,3.0,alternating,1.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g160_g160_g160,s160_d160_s160_d160,sub
-161,nfet,nfet_03v3_pcells,3.3V,None,8.76,4.02,2.09,4.0,alternating,10.0,0,0,AAABAAAABAAA,0,1,g161_g161_g161_g161,s161_d161_s161_d161_s161,sub
-162,nfet,nfet_03v3_pcells,3.3V,None,8.76,8.17,6.04,4.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g162_g162_g162_g162,s162_d162_s162_d162_s162,sub
-163,nfet,nfet_03v3_pcells,3.3V,None,6.55,8.17,7.48,2.0,alternating,1.0,0,0,ABA,0,1,g163_g163,s163_d163_s163,sub
-164,nfet,nfet_03v3_pcells,3.3V,None,7.57,0.94,9.35,3.0,alternating,6.0,0,0,ABBA,0,1,g164_g164_g164,s164_d164_s164_d164,sub
-165,nfet,nfet_03v3_pcells,3.3V,None,7.57,1.88,8.4,2.0,alternating,2.0,0,0,AAABAAAABAAA,0,1,g165_g165,s165_d165_s165,sub
-166,nfet,nfet_03v3_pcells,3.3V,None,1.71,7.82,1.35,4.0,alternating,6.0,0,0,ABA,0,1,g166_g166_g166_g166,s166_d166_s166_d166_s166,sub
-167,nfet,nfet_03v3_pcells,3.3V,None,8.76,8.17,1.35,2.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g167_g167,s167_d167_s167,sub
-168,nfet,nfet_03v3_pcells,3.3V,None,7.57,7.31,1.35,1.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g168,s168_d168,sub
-169,nfet,nfet_03v3_pcells,3.3V,None,0.87,7.31,7.48,3.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD,0,1,g169_g169_g169,s169_d169_s169_d169,sub
-170,nfet,nfet_03v3_pcells,3.3V,None,5.01,4.3,6.04,3.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g170_g170_g170,s170_d170_s170_d170,sub
-171,nfet,nfet_03v3_pcells,3.3V,None,6.47,4.3,2.09,5.0,alternating,9.0,0,0,AAABCDDCBAAA,0,1,g171_g171_g171_g171_g171,s171_d171_s171_d171_s171_d171,sub
-172,nfet,nfet_03v3_pcells,3.3V,None,0.65,4.3,6.74,2.0,alternating,10.0,0,0,DCCBBCCAACCBBCCD,0,1,g172_g172,s172_d172_s172,sub
-173,nfet,nfet_03v3_pcells,3.3V,None,1.71,4.3,6.9,3.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD,0,1,g173_g173_g173,s173_d173_s173_d173,sub
-174,nfet,nfet_03v3_pcells,3.3V,None,6.55,4.3,8.94,2.0,alternating,9.0,0,0,AABCCDCCBAA,0,1,g174_g174,s174_d174_s174,sub
-175,nfet,nfet_03v3_pcells,3.3V,None,6.55,6.24,1.35,4.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g175_g175_g175_g175,s175_d175_s175_d175_s175,sub
-176,nfet,nfet_03v3_pcells,3.3V,None,7.33,5.69,1.35,4.0,alternating,10.0,0,0,ABA,0,1,g176_g176_g176_g176,s176_d176_s176_d176_s176,sub
-177,nfet,nfet_03v3_pcells,3.3V,None,7.33,4.02,8.4,3.0,alternating,10.0,0,0,ABBA,0,1,g177_g177_g177,s177_d177_s177_d177,sub
-178,nfet,nfet_03v3_pcells,3.3V,None,7.74,4.02,8.4,3.0,alternating,6.0,0,0,ABCDDCBA,0,1,g178_g178_g178,s178_d178_s178_d178,sub
-179,nfet,nfet_03v3_pcells,3.3V,None,8.76,0.94,8.4,3.0,alternating,4.0,0,0,AAABCDDCBAAA,0,1,g179_g179_g179,s179_d179_s179_d179,sub
-180,nfet,nfet_03v3_pcells,3.3V,None,7.33,0.94,9.35,2.0,alternating,6.0,0,0,AAABCDDCBAAA,0,1,g180_g180,s180_d180_s180,sub
-181,nfet,nfet_03v3_pcells,3.3V,None,6.55,7.31,9.35,3.0,alternating,4.0,0,0,ABBAABBAABBA,0,1,g181_g181_g181,s181_d181_s181_d181,sub
-182,nfet,nfet_03v3_pcells,3.3V,None,6.55,7.82,8.94,1.0,alternating,9.0,0,0,AAABAAAABAAA,0,1,g182,s182_d182,sub
-183,nfet,nfet_03v3_pcells,3.3V,None,0.65,1.88,6.9,2.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD,0,1,g183_g183,s183_d183_s183,sub
-184,nfet,nfet_03v3_pcells,3.3V,None,6.47,1.88,6.74,2.0,alternating,10.0,0,0,AABCCDCCBAA,0,1,g184_g184,s184_d184_s184,sub
-185,nfet,nfet_03v3_pcells,3.3V,None,6.47,4.02,2.09,3.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD,0,1,g185_g185_g185,s185_d185_s185_d185,sub
-186,nfet,nfet_03v3_pcells,3.3V,None,6.47,5.69,6.04,3.0,alternating,4.0,0,0,AABCCDCCBAA,0,1,g186_g186_g186,s186_d186_s186_d186,sub
-187,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.24,7.48,2.0,alternating,4.0,0,0,DAABAAACAEACAAABAAD,0,1,g187_g187,s187_d187_s187,sub
-188,nfet,nfet_03v3_pcells,3.3V,None,5.01,8.17,8.06,2.0,alternating,6.0,0,0,ABBA,0,1,g188_g188,s188_d188_s188,sub
-189,nfet,nfet_03v3_pcells,3.3V,None,0.87,8.17,1.35,2.0,alternating,2.0,0,0,ABBAABBAABBA,0,1,g189_g189,s189_d189_s189,sub
-190,nfet,nfet_03v3_pcells,3.3V,None,7.57,6.25,1.35,4.0,alternating,6.0,0,0,AAABCDDCBAAA,0,1,g190_g190_g190_g190,s190_d190_s190_d190_s190,sub
-191,nfet,nfet_03v3_pcells,3.3V,None,7.57,6.25,8.4,1.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g191,s191_d191,sub
-192,nfet,nfet_03v3_pcells,3.3V,None,7.74,6.25,8.4,4.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD,0,1,g192_g192_g192_g192,s192_d192_s192_d192_s192,sub
-193,nfet,nfet_03v3_pcells,3.3V,None,1.71,6.25,9.35,2.0,alternating,10.0,0,0,AAABCDDCBAAA,0,1,g193_g193,s193_d193_s193,sub
-194,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,9.35,2.0,alternating,9.0,0,0,AABCCDCCBAA,0,1,g194_g194,s194_d194_s194,sub
-195,nfet,nfet_03v3_pcells,3.3V,None,7.57,6.25,9.35,4.0,alternating,4.0,0,0,AABCCDCCBAA,0,1,g195_g195_g195_g195,s195_d195_s195_d195_s195,sub
-196,nfet,nfet_03v3_pcells,3.3V,None,7.57,6.25,8.06,2.0,alternating,6.0,0,0,ABA,0,1,g196_g196,s196_d196_s196,sub
-197,nfet,nfet_03v3_pcells,3.3V,None,6.55,6.25,7.48,5.0,alternating,2.0,0,0,ABBAABBAABBA,0,1,g197_g197_g197_g197_g197,s197_d197_s197_d197_s197_d197,sub
-198,nfet,nfet_03v3_pcells,3.3V,None,8.76,6.25,7.48,2.0,alternating,2.0,0,0,ABCDDCBA,0,1,g198_g198,s198_d198_s198,sub
-199,nfet,nfet_03v3_pcells,3.3V,None,0.87,6.25,6.04,3.0,alternating,2.0,0,0,ABA,0,1,g199_g199_g199,s199_d199_s199_d199,sub
-200,nfet,nfet_03v3_pcells,3.3V,None,5.01,0.94,6.04,4.0,alternating,9.0,0,0,DCCBBCCAACCBBCCD,0,1,g200_g200_g200_g200,s200_d200_s200_d200_s200,sub
-201,nfet,nfet_03v3_pcells,3.3V,None,5.01,4.3,6.04,3.0,alternating,2.0,0,0,ABBAABBAABBA,0,1,g201_g201_g201,s201_d201_s201_d201,sub
-202,nfet,nfet_03v3_pcells,3.3V,None,5.01,1.88,2.09,4.0,alternating,9.0,0,0,ABBAABBAABBA,0,1,g202_g202_g202_g202,s202_d202_s202_d202_s202,sub
-203,nfet,nfet_03v3_pcells,3.3V,None,0.65,8.17,2.09,1.0,alternating,2.0,0,0,ABCDDCBA,0,1,g203,s203_d203,sub
-204,nfet,nfet_03v3_pcells,3.3V,None,0.65,7.82,6.74,2.0,alternating,6.0,0,0,ABA,0,1,g204_g204,s204_d204_s204,sub
-205,nfet,nfet_03v3_pcells,3.3V,None,0.65,7.31,6.9,4.0,alternating,10.0,0,0,ABA,0,1,g205_g205_g205_g205,s205_d205_s205_d205_s205,sub
-206,nfet,nfet_03v3_pcells,3.3V,None,0.65,6.24,8.94,3.0,alternating,6.0,0,0,AABCCDCCBAA,0,1,g206_g206_g206,s206_d206_s206_d206,sub
-207,nfet,nfet_03v3_pcells,3.3V,None,7.33,5.69,8.94,1.0,alternating,9.0,0,0,ABCDDCBA,0,1,g207,s207_d207,sub
-208,nfet,nfet_03v3_pcells,3.3V,None,1.71,4.02,8.94,4.0,alternating,4.0,0,0,AAABCDDCBAAA,0,1,g208_g208_g208_g208,s208_d208_s208_d208_s208,sub
-209,nfet,nfet_03v3_pcells,3.3V,None,7.74,6.25,8.94,2.0,alternating,2.0,0,0,ABA,0,1,g209_g209,s209_d209_s209,sub
-210,nfet,nfet_03v3_pcells,3.3V,None,7.74,6.25,1.35,3.0,alternating,9.0,0,0,AABCCDCCBAA,0,1,g210_g210_g210,s210_d210_s210_d210,sub
-211,nfet,nfet_03v3_pcells,3.3V,None,7.74,6.25,9.35,3.0,alternating,6.0,0,0,ABA,0,1,g211_g211_g211,s211_d211_s211_d211,sub
-212,nfet,nfet_03v3_pcells,3.3V,None,7.74,4.3,9.35,4.0,alternating,6.0,0,0,AABCCDCCBAA,0,1,g212_g212_g212_g212,s212_d212_s212_d212_s212,sub
-213,nfet,nfet_03v3_pcells,3.3V,None,7.74,0.94,9.35,3.0,alternating,6.0,0,0,ABA,0,1,g213_g213_g213,s213_d213_s213_d213,sub
-214,nfet,nfet_03v3_pcells,3.3V,None,7.74,0.94,9.35,4.0,alternating,6.0,0,0,ABA,0,1,g214_g214_g214_g214,s214_d214_s214_d214_s214,sub
-215,nfet,nfet_03v3_pcells,3.3V,None,0.65,0.94,9.35,2.0,alternating,6.0,0,0,ABA,0,1,g215_g215,s215_d215_s215,sub
-216,nfet,nfet_03v3_pcells,3.3V,None,0.65,1.88,9.35,5.0,alternating,6.0,0,0,ABA,0,1,g216_g216_g216_g216_g216,s216_d216_s216_d216_s216_d216,sub
-217,nfet,nfet_03v3_pcells,3.3V,None,0.65,7.31,8.4,2.0,alternating,6.0,0,0,ABBA,0,1,g217_g217,s217_d217_s217,sub
-218,nfet,nfet_03v3_pcells,3.3V,None,0.65,7.82,8.94,4.0,alternating,6.0,0,0,ABCDDCBA,0,1,g218_g218_g218_g218,s218_d218_s218_d218_s218,sub
-219,nfet,nfet_03v3_pcells,3.3V,None,0.65,8.17,8.94,4.0,alternating,2.0,0,0,ABBA,0,1,g219_g219_g219_g219,s219_d219_s219_d219_s219,sub
-220,nfet,nfet_03v3_pcells,3.3V,None,0.65,4.02,8.94,2.0,alternating,6.0,0,0,ABA,0,1,g220_g220,s220_d220_s220,sub
-221,nfet,nfet_03v3_pcells,3.3V,None,0.65,5.69,8.94,4.0,alternating,6.0,0,0,ABBAABBAABBA,0,1,g221_g221_g221_g221,s221_d221_s221_d221_s221,sub
-222,nfet,nfet_03v3_pcells,3.3V,None,0.65,6.24,8.94,4.0,alternating,6.0,0,0,ABA,0,1,g222_g222_g222_g222,s222_d222_s222_d222_s222,sub
-223,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,8.94,2.0,alternating,6.0,0,0,ABA,0,1,g223_g223,s223_d223_s223,sub
-224,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,6.04,4.0,alternating,6.0,0,0,ABA,0,1,g224_g224_g224_g224,s224_d224_s224_d224_s224,sub
-225,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,2.09,1.0,alternating,6.0,0,0,ABA,0,1,g225,s225_d225,sub
-226,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,7.48,4.0,alternating,6.0,0,0,ABA,0,1,g226_g226_g226_g226,s226_d226_s226_d226_s226,sub
-227,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,6.9,3.0,alternating,6.0,0,0,ABA,0,1,g227_g227_g227,s227_d227_s227_d227,sub
-228,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,6.74,4.0,alternating,6.0,0,0,ABA,0,1,g228_g228_g228_g228,s228_d228_s228_d228_s228,sub
-229,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,8.06,2.0,alternating,6.0,0,0,ABA,0,1,g229_g229,s229_d229_s229,sub
-230,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,9.35,2.0,alternating,6.0,0,0,ABA,0,1,g230_g230,s230_d230_s230,sub
-231,nfet,nfet_03v3_pcells,3.3V,None,5.01,6.25,9.35,1.0,alternating,6.0,0,0,ABA,0,1,g231,s231_d231,sub
-232,nfet,nfet_03v3_pcells,3.3V,None,5.01,0.94,9.35,2.0,alternating,6.0,0,0,ABA,0,1,g232_g232,s232_d232_s232,sub
-233,nfet,nfet_03v3_pcells,3.3V,None,5.01,4.3,9.35,3.0,alternating,6.0,0,0,ABA,0,1,g233_g233_g233,s233_d233_s233_d233,sub
-234,nfet,nfet_03v3_pcells,3.3V,None,7.57,1.88,9.35,2.0,alternating,6.0,0,0,ABA,0,1,g234_g234,s234_d234_s234,sub
-235,nfet,nfet_03v3_pcells,3.3V,None,8.76,1.88,9.35,4.0,alternating,6.0,0,0,ABA,0,1,g235_g235_g235_g235,s235_d235_s235_d235_s235,sub
-236,nfet,nfet_03v3_pcells,3.3V,None,6.55,1.88,9.35,3.0,alternating,6.0,0,0,ABA,0,1,g236_g236_g236,s236_d236_s236_d236,sub
-237,nfet,nfet_03v3_pcells,3.3V,None,7.33,1.88,9.35,1.0,alternating,6.0,0,0,ABA,0,1,g237,s237_d237,sub
-238,nfet,nfet_03v3_pcells,3.3V,None,0.87,8.17,9.35,2.0,alternating,6.0,0,0,ABA,0,1,g238_g238,s238_d238_s238,sub
-239,nfet,nfet_03v3_pcells,3.3V,None,0.87,7.82,9.35,3.0,alternating,6.0,0,0,ABBAABBAABBA,0,1,g239_g239_g239,s239_d239_s239_d239,sub
-240,nfet,nfet_03v3_pcells,3.3V,None,0.87,7.31,9.35,4.0,alternating,6.0,0,0,ABA,0,1,g240_g240_g240_g240,s240_d240_s240_d240_s240,sub
-241,nfet,nfet_03v3_pcells,3.3V,None,1.71,7.31,9.35,2.0,alternating,6.0,0,0,ABA,0,1,g241_g241,s241_d241_s241,sub
-242,nfet,nfet_03v3_pcells,3.3V,None,1.71,6.24,9.35,3.0,alternating,6.0,0,0,ABA,0,1,g242_g242_g242,s242_d242_s242_d242,sub
-243,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.24,9.35,3.0,alternating,6.0,0,0,ABA,0,1,g243_g243_g243,s243_d243_s243_d243,sub
-244,nfet,nfet_03v3_pcells,3.3V,None,6.47,5.69,9.35,5.0,alternating,6.0,0,0,ABA,0,1,g244_g244_g244_g244_g244,s244_d244_s244_d244_s244_d244,sub
-245,nfet,nfet_03v3_pcells,3.3V,None,6.47,4.02,9.35,3.0,alternating,6.0,0,0,ABA,0,1,g245_g245_g245,s245_d245_s245_d245,sub
-246,nfet,nfet_03v3_pcells,3.3V,None,6.47,6.25,9.35,2.0,alternating,6.0,0,0,ABBAABBAABBA,0,1,g246_g246,s246_d246_s246,sub
+,pcell_name,netlist_name,volt,bulk,l_gate,w_gate,ld,nf,gate_con_pos,sd_con_col,con_bet_fin,interdig,patt,patt_lbl,lbl,g_lbl,sd_lbl,sub_lbl,netlist_nets,netlists_param,dev_name
+0,nfet,nfet_03v3_pcells,3.3V,None,1.55,2.53,0.65,1.0,top,7.0,0,0,ABA,0,1,g0,s0_d0,sub,d0 g0 s0 sub,W=2.53u L=1.55u,M0
+1,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,8.33,6.6,1.7,2.0,bottom,6.0,1,1,ABCDDCBA,0,1,gA1_gB1_gC1_gD1,s1_d1_s1_d1_s1_d1_s1_d1_s1,sub,d1 gA1 s1 sub_d1 gB1 s1 sub_d1 gC1 s1 sub_d1 gD1 s1 sub,W=13.2u L=8.33u_W=13.2u L=8.33u_W=13.2u L=8.33u_W=13.2u L=8.33u,M1A_M1B_M1C_M1D
+2,nfet,nfet_03v3_pcells,3.3V,Guard Ring,4.11,3.35,6.01,5.0,alternating,2.0,1,0,AAAABBBCCDCCBBBAAAA,0,1,g2_g2_g2_g2_g2,s2_d2_s2_d2_s2_d2,sub,d2 g2 s2 sub,W=16.75u L=4.11u,M2
+3,nfet,nfet_03v3_pcells,3.3V,Guard Ring,6.32,2.86,7.36,2.0,bottom,4.0,0,1,DCCBBCCAACCBBCCD,0,1,gD3_gC3_gB3_gA3,s3_d3_s3_d3_s3_d3_s3_d3_s3_d3_s3_d3_s3_d3_s3_d3_s3,sub,d3 gD3 s3 sub_d3 gC3 s3 sub_d3 gB3 s3 sub_d3 gA3 s3 sub,W=5.72u L=6.32u_W=22.88u L=6.32u_W=11.44u L=6.32u_W=5.72u L=6.32u,M3D_M3C_M3B_M3A
+4,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,5.98,2.49,3.82,5.0,top,5.0,0,0,ABBAABBAABBA,0,1,g4_g4_g4_g4_g4,s4_d4_s4_d4_s4_d4,sub,d4 g4 s4 sub,W=12.45u L=5.98u,M4
+5,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.4,6.84,3.0,alternating,6.0,1,1,AAABCDDCBAAA,0,1,gA5_gB5_gC5_gD5,s5_d5_s5_d5_s5_d5_s5_d5_s5_d5_s5_d5_s5,sub,d5 gA5 s5 sub_d5 gB5 s5 sub_d5 gC5 s5 sub_d5 gD5 s5 sub,W=20.4u L=2.29u_W=6.8u L=2.29u_W=6.8u L=2.29u_W=6.8u L=2.29u,M5A_M5B_M5C_M5D
+6,nfet,nfet_03v3_pcells,3.3V,None,0.78,7.28,3.16,3.0,bottom,1.0,1,0,ABBA,0,1,g6_g6_g6,s6_d6_s6_d6,sub,d6 g6 s6 sub,W=21.84u L=0.78u,M6
+7,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,6.89,7.12,4.0,1.0,alternating,3.0,0,1,AAABAAAABAAA,0,1,g7,s7_d7,sub,d7 g7 s7 sub,W=7.12u L=6.89u,M7
+8,nfet,nfet_03v3_pcells,3.3V,Guard Ring,7.73,3.72,3.21,5.0,top,9.0,1,1,DAABAAACAEACAAABAAD,0,1,gD8_gA8_gB8_gC8_gE8,s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8_s8_d8,sub,d8 gD8 s8 sub_d8 gA8 s8 sub_d8 gB8 s8 sub_d8 gC8 s8 sub_d8 gE8 s8 sub,W=7.44u L=7.73u_W=44.64u L=7.73u_W=7.44u L=7.73u_W=7.44u L=7.73u_W=3.72u L=7.73u,M8D_M8A_M8B_M8C_M8E
+9,nfet,nfet_03v3_pcells,3.3V,Guard Ring,4.03,1.38,4.63,2.0,top,5.0,0,0,AABCCDCCBAA,0,1,g9_g9,s9_d9_s9,sub,d9 g9 s9 sub,W=2.76u L=4.03u,M9
+10,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,4.03,7.28,6.84,2.0,alternating,4.0,0,0,DAABAAACAEACAAABAAD,0,1,g10_g10,s10_d10_s10,sub,d10 g10 s10 sub,W=14.56u L=4.03u,M10
+11,nfet,nfet_03v3_pcells,3.3V,None,7.73,2.86,6.01,2.0,bottom,5.0,1,1,ABBAABBAABBA,0,1,gA11_gB11,s11_d11_s11_d11_s11_d11_s11_d11_s11_d11_s11_d11_s11,sub,d11 gA11 s11 sub_d11 gB11 s11 sub,W=17.16u L=7.73u_W=17.16u L=7.73u,M11A_M11B
+12,nfet,nfet_03v3_pcells,3.3V,None,6.32,3.35,4.63,3.0,top,3.0,1,1,ABA,0,1,gA12_gB12,s12_d12_s12_d12,sub,d12 gA12 s12 sub_d12 gB12 s12 sub,W=6.7u L=6.32u_W=3.35u L=6.32u,M12A_M12B
+13,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,4.11,1.38,3.21,4.0,bottom,6.0,0,0,AAABCDDCBAAA,0,1,g13_g13_g13_g13,s13_d13_s13_d13_s13,sub,d13 g13 s13 sub,W=5.52u L=4.11u,M13
+14,nfet,nfet_03v3_pcells,3.3V,Guard Ring,0.78,3.4,0.65,4.0,alternating,5.0,0,1,ABCDDCBA,0,1,gA14_gB14_gC14_gD14,s14_d14_s14_d14_s14_d14_s14_d14_s14,sub,d14 gA14 s14 sub_d14 gB14 s14 sub_d14 gC14 s14 sub_d14 gD14 s14 sub,W=6.8u L=0.78u_W=6.8u L=0.78u_W=6.8u L=0.78u_W=6.8u L=0.78u,M14A_M14B_M14C_M14D
+15,nfet,nfet_03v3_pcells,3.3V,None,6.89,2.49,1.7,2.0,top,2.0,1,1,AABCCDCCBAA,0,1,gA15_gB15_gC15_gD15,s15_d15_s15_d15_s15_d15_s15_d15_s15_d15_s15_d15,sub,d15 gA15 s15 sub_d15 gB15 s15 sub_d15 gC15 s15 sub_d15 gD15 s15 sub,W=9.96u L=6.89u_W=4.98u L=6.89u_W=9.96u L=6.89u_W=2.49u L=6.89u,M15A_M15B_M15C_M15D
+16,nfet,nfet_03v3_pcells,3.3V,Guard Ring,5.98,6.6,4.0,5.0,top,1.0,1,0,DCCBBCCAACCBBCCD,0,1,g16_g16_g16_g16_g16,s16_d16_s16_d16_s16_d16,sub,d16 g16 s16 sub,W=33.0u L=5.98u,M16
+17,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,2.29,2.53,3.16,1.0,bottom,9.0,0,1,AAAABBBCCDCCBBBAAAA,0,1,g17,s17_d17,sub,d17 g17 s17 sub,W=2.53u L=2.29u,M17
+18,nfet,nfet_03v3_pcells,3.3V,Guard Ring,1.55,7.12,3.82,5.0,bottom,7.0,1,1,ABBA,0,1,gA18_gB18,s18_d18_s18_d18_s18,sub,d18 gA18 s18 sub_d18 gB18 s18 sub,W=14.24u L=1.55u_W=14.24u L=1.55u,M18A_M18B
+19,nfet,nfet_03v3_pcells,3.3V,None,8.33,3.72,7.36,2.0,alternating,6.0,0,0,ABBA,0,1,g19_g19,s19_d19_s19,sub,d19 g19 s19 sub,W=7.44u L=8.33u,M19
+20,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,7.73,3.4,7.36,5.0,top,1.0,0,0,AAABAAAABAAA,0,1,g20_g20_g20_g20_g20,s20_d20_s20_d20_s20_d20,sub,d20 g20 s20 sub,W=17.0u L=7.73u,M20
+21,nfet,nfet_03v3_pcells,3.3V,None,5.98,1.38,1.7,5.0,alternating,9.0,0,1,DCCBBCCAACCBBCCD,0,1,gD21_gC21_gB21_gA21,s21_d21_s21_d21_s21_d21_s21_d21_s21_d21_s21_d21_s21_d21_s21_d21_s21,sub,d21 gD21 s21 sub_d21 gC21 s21 sub_d21 gB21 s21 sub_d21 gA21 s21 sub,W=2.76u L=5.98u_W=11.04u L=5.98u_W=5.52u L=5.98u_W=2.76u L=5.98u,M21D_M21C_M21B_M21A
+22,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,1.55,2.86,4.63,4.0,alternating,2.0,1,0,AAABAAAABAAA,0,1,g22_g22_g22_g22,s22_d22_s22_d22_s22,sub,d22 g22 s22 sub,W=11.44u L=1.55u,M22
+23,nfet,nfet_03v3_pcells,3.3V,Guard Ring,8.33,7.28,3.16,3.0,top,6.0,0,0,AAABAAAABAAA,0,1,g23_g23_g23,s23_d23_s23_d23,sub,d23 g23 s23 sub,W=21.84u L=8.33u,M23
+24,nfet,nfet_03v3_pcells,3.3V,None,4.03,7.12,3.21,5.0,bottom,5.0,1,1,AAABAAAABAAA,0,1,gA24_gB24,s24_d24_s24_d24_s24_d24_s24_d24_s24_d24_s24_d24_s24,sub,d24 gA24 s24 sub_d24 gB24 s24 sub,W=71.2u L=4.03u_W=14.24u L=4.03u,M24A_M24B
+25,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,6.32,3.72,6.01,5.0,alternating,7.0,0,0,AABCCDCCBAA,0,1,g25_g25_g25_g25_g25,s25_d25_s25_d25_s25_d25,sub,d25 g25 s25 sub,W=18.6u L=6.32u,M25
+26,nfet,nfet_03v3_pcells,3.3V,Guard Ring,2.29,2.49,0.65,3.0,top,6.0,0,0,AAABCDDCBAAA,0,1,g26_g26_g26,s26_d26_s26_d26,sub,d26 g26 s26 sub,W=7.47u L=2.29u,M26
+27,nfet,nfet_03v3_pcells,3.3V,None,4.11,6.6,3.82,1.0,top,4.0,1,0,ABCDDCBA,0,1,g27,s27_d27,sub,d27 g27 s27 sub,W=6.6u L=4.11u,M27
+28,nfet,nfet_03v3_pcells,3.3V,Guard Ring,6.89,2.53,6.84,2.0,bottom,3.0,0,0,ABBAABBAABBA,0,1,g28_g28,s28_d28_s28,sub,d28 g28 s28 sub,W=5.06u L=6.89u,M28
+29,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,0.78,3.35,4.0,2.0,bottom,9.0,0,0,AABCCDCCBAA,0,1,g29_g29,s29_d29_s29,sub,d29 g29 s29 sub,W=6.7u L=0.78u,M29
+30,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,5.98,7.12,0.65,2.0,bottom,2.0,1,0,DAABAAACAEACAAABAAD,0,1,g30_g30,s30_d30_s30,sub,d30 g30 s30 sub,W=14.24u L=5.98u,M30
+31,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,0.78,6.6,6.84,2.0,alternating,5.0,0,1,ABA,0,1,gA31_gB31,s31_d31_s31_d31,sub,d31 gA31 s31 sub_d31 gB31 s31 sub,W=13.2u L=0.78u_W=6.6u L=0.78u,M31A_M31B
+32,nfet,nfet_03v3_pcells,3.3V,None,6.89,7.28,7.36,5.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g32_g32_g32_g32_g32,s32_d32_s32_d32_s32_d32,sub,d32 g32 s32 sub,W=36.4u L=6.89u,M32
+33,nfet,nfet_03v3_pcells,3.3V,Guard Ring,4.11,2.53,1.7,3.0,alternating,1.0,0,0,DAABAAACAEACAAABAAD,0,1,g33_g33_g33,s33_d33_s33_d33,sub,d33 g33 s33 sub,W=7.59u L=4.11u,M33
+34,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.72,4.0,2.0,bottom,2.0,0,1,ABA,0,1,gA34_gB34,s34_d34_s34_d34,sub,d34 gA34 s34 sub_d34 gB34 s34 sub,W=7.44u L=2.29u_W=3.72u L=2.29u,M34A_M34B
+35,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,8.33,2.49,4.63,2.0,alternating,1.0,1,0,ABBAABBAABBA,0,1,g35_g35,s35_d35_s35,sub,d35 g35 s35 sub,W=4.98u L=8.33u,M35
+36,nfet,nfet_03v3_pcells,3.3V,Guard Ring,1.55,1.38,6.01,1.0,top,4.0,1,0,ABA,0,1,g36,s36_d36,sub,d36 g36 s36 sub,W=1.38u L=1.55u,M36
+37,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,7.73,3.35,3.82,2.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g37_g37,s37_d37_s37,sub,d37 g37 s37 sub,W=6.7u L=7.73u,M37
+38,nfet,nfet_03v3_pcells,3.3V,None,6.32,3.4,3.21,2.0,bottom,6.0,1,0,DAABAAACAEACAAABAAD,0,1,g38_g38,s38_d38_s38,sub,d38 g38 s38 sub,W=6.8u L=6.32u,M38
+39,nfet,nfet_03v3_pcells,3.3V,Guard Ring,4.03,2.86,3.16,1.0,alternating,3.0,1,1,ABCDDCBA,0,1,g39,s39_d39,sub,d39 g39 s39 sub,W=2.86u L=4.03u,M39
+40,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,1.55,2.49,3.21,5.0,bottom,3.0,0,0,ABBA,0,1,g40_g40_g40_g40_g40,s40_d40_s40_d40_s40_d40,sub,d40 g40 s40 sub,W=12.45u L=1.55u,M40
+41,nfet,nfet_03v3_pcells,3.3V,Guard Ring,8.33,7.12,6.84,4.0,top,9.0,1,1,AAAABBBCCDCCBBBAAAA,0,1,gA41_gB41_gC41_gD41,s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41_s41_d41,sub,d41 gA41 s41 sub_d41 gB41 s41 sub_d41 gC41 s41 sub_d41 gD41 s41 sub,W=56.96u L=8.33u_W=42.72u L=8.33u_W=28.48u L=8.33u_W=7.12u L=8.33u,M41A_M41B_M41C_M41D
+42,nfet,nfet_03v3_pcells,3.3V,None,2.29,7.28,4.63,5.0,bottom,5.0,0,1,DAABAAACAEACAAABAAD,0,1,gD42_gA42_gB42_gC42_gE42,s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42_s42_d42,sub,d42 gD42 s42 sub_d42 gA42 s42 sub_d42 gB42 s42 sub_d42 gC42 s42 sub_d42 gE42 s42 sub,W=14.56u L=2.29u_W=87.36u L=2.29u_W=14.56u L=2.29u_W=14.56u L=2.29u_W=7.28u L=2.29u,M42D_M42A_M42B_M42C_M42E
+43,nfet,nfet_03v3_pcells,3.3V,None,4.11,2.86,4.0,2.0,top,7.0,0,1,ABBA,0,1,gA43_gB43,s43_d43_s43_d43_s43,sub,d43 gA43 s43 sub_d43 gB43 s43 sub,W=5.72u L=4.11u_W=5.72u L=4.11u,M43A_M43B
+44,nfet,nfet_03v3_pcells,3.3V,Guard Ring,6.89,6.6,0.65,5.0,alternating,6.0,0,0,ABBA,0,1,g44_g44_g44_g44_g44,s44_d44_s44_d44_s44_d44,sub,d44 g44 s44 sub,W=33.0u L=6.89u,M44
+45,nfet,nfet_03v3_pcells,3.3V,Guard Ring,0.78,2.53,7.36,2.0,top,6.0,1,0,AABCCDCCBAA,0,1,g45_g45,s45_d45_s45,sub,d45 g45 s45 sub,W=5.06u L=0.78u,M45
+46,nfet,nfet_03v3_pcells,3.3V,None,5.98,3.72,3.16,4.0,top,4.0,0,0,AAABCDDCBAAA,0,1,g46_g46_g46_g46,s46_d46_s46_d46_s46,sub,d46 g46 s46 sub,W=14.88u L=5.98u,M46
+47,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,4.03,3.4,6.01,3.0,alternating,9.0,0,1,ABBA,0,1,gA47_gB47,s47_d47_s47_d47_s47,sub,d47 gA47 s47 sub_d47 gB47 s47 sub,W=6.8u L=4.03u_W=6.8u L=4.03u,M47A_M47B
+48,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,6.32,1.38,3.82,3.0,bottom,1.0,0,1,AAAABBBCCDCCBBBAAAA,0,1,gA48_gB48_gC48_gD48,s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48_s48_d48,sub,d48 gA48 s48 sub_d48 gB48 s48 sub_d48 gC48 s48 sub_d48 gD48 s48 sub,W=11.04u L=6.32u_W=8.28u L=6.32u_W=5.52u L=6.32u_W=1.38u L=6.32u,M48A_M48B_M48C_M48D
+49,nfet,nfet_03v3_pcells,3.3V,None,7.73,7.28,1.7,4.0,alternating,7.0,0,0,ABA,0,1,g49_g49_g49_g49,s49_d49_s49_d49_s49,sub,d49 g49 s49 sub,W=29.12u L=7.73u,M49
+50,nfet,nfet_03v3_pcells,3.3V,Guard Ring,1.55,3.35,1.7,2.0,top,5.0,0,1,AAABCDDCBAAA,0,1,gA50_gB50_gC50_gD50,s50_d50_s50_d50_s50_d50_s50_d50_s50_d50_s50_d50_s50,sub,d50 gA50 s50 sub_d50 gB50 s50 sub_d50 gC50 s50 sub_d50 gD50 s50 sub,W=20.1u L=1.55u_W=6.7u L=1.55u_W=6.7u L=1.55u_W=6.7u L=1.55u,M50A_M50B_M50C_M50D
+51,nfet,nfet_03v3_pcells,3.3V,Guard Ring,5.98,3.35,3.21,1.0,alternating,7.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g51,s51_d51,sub,d51 g51 s51 sub,W=3.35u L=5.98u,M51
+52,nfet,nfet_03v3_pcells,3.3V,None,0.78,2.49,6.01,5.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g52_g52_g52_g52_g52,s52_d52_s52_d52_s52_d52,sub,d52 g52 s52 sub,W=12.45u L=0.78u,M52
+53,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,6.89,2.86,3.82,3.0,bottom,9.0,0,0,AAABCDDCBAAA,0,1,g53_g53_g53,s53_d53_s53_d53,sub,d53 g53 s53 sub,W=8.58u L=6.89u,M53
+54,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,2.29,7.12,7.36,1.0,bottom,5.0,0,0,AAABCDDCBAAA,0,1,g54,s54_d54,sub,d54 g54 s54 sub,W=7.12u L=2.29u,M54
+55,nfet,nfet_03v3_pcells,3.3V,None,8.33,1.38,0.65,2.0,alternating,3.0,0,0,DAABAAACAEACAAABAAD,0,1,g55_g55,s55_d55_s55,sub,d55 g55 s55 sub,W=2.76u L=8.33u,M55
+56,nfet,nfet_03v3_pcells,3.3V,None,7.73,6.6,4.63,1.0,alternating,7.0,0,0,AAABCDDCBAAA,0,1,g56,s56_d56,sub,d56 g56 s56 sub,W=6.6u L=7.73u,M56
+57,nfet,nfet_03v3_pcells,3.3V,Guard Ring,6.32,2.53,4.0,2.0,bottom,5.0,0,0,AAABCDDCBAAA,0,1,g57_g57,s57_d57_s57,sub,d57 g57 s57 sub,W=5.06u L=6.32u,M57
+58,nfet,nfet_03v3_pcells,3.3V,None,4.03,3.72,0.65,2.0,top,6.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g58_g58,s58_d58_s58,sub,d58 g58 s58 sub,W=7.44u L=4.03u,M58
+59,nfet,nfet_03v3_pcells,3.3V,Guard Ring,4.11,3.4,3.16,2.0,top,7.0,0,0,DCCBBCCAACCBBCCD,0,1,g59_g59,s59_d59_s59,sub,d59 g59 s59 sub,W=6.8u L=4.11u,M59
+60,nfet,nfet_03v3_pcells,3.3V,Bulk Tie,1.55,7.28,4.0,5.0,bottom,6.0,0,0,ABBAABBAABBA,0,1,g60_g60_g60_g60_g60,s60_d60_s60_d60_s60_d60,sub,d60 g60 s60 sub,W=36.4u L=1.55u,M60
+61,nfet,nfet_03v3_pcells,3.3V,None,2.29,6.6,3.21,4.0,bottom,1.0,0,0,AABCCDCCBAA,0,1,g61_g61_g61_g61,s61_d61_s61_d61_s61,sub,d61 g61 s61 sub,W=26.4u L=2.29u,M61
+62,nfet,nfet_03v3_pcells,3.3V,None,4.11,2.49,6.84,2.0,alternating,5.0,0,0,AAABAAAABAAA,0,1,g62_g62,s62_d62_s62,sub,d62 g62 s62 sub,W=4.98u L=4.11u,M62
+63,nfet,nfet_03v3_pcells,3.3V,None,7.73,7.12,3.16,2.0,alternating,5.0,0,0,AABCCDCCBAA,0,1,g63_g63,s63_d63_s63,sub,d63 g63 s63 sub,W=14.24u L=7.73u,M63
+64,nfet,nfet_03v3_pcells,3.3V,None,8.33,3.35,6.84,3.0,alternating,4.0,0,0,AABCCDCCBAA,0,1,g64_g64_g64,s64_d64_s64_d64,sub,d64 g64 s64 sub,W=10.05u L=8.33u,M64
+65,nfet,nfet_03v3_pcells,3.3V,None,6.89,3.4,4.63,5.0,top,4.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g65_g65_g65_g65_g65,s65_d65_s65_d65_s65_d65,sub,d65 g65 s65 sub,W=17.0u L=6.89u,M65
+66,nfet,nfet_03v3_pcells,3.3V,None,0.78,1.38,7.36,5.0,alternating,2.0,0,0,ABBAABBAABBA,0,1,g66_g66_g66_g66_g66,s66_d66_s66_d66_s66_d66,sub,d66 g66 s66 sub,W=6.9u L=0.78u,M66
+67,nfet,nfet_03v3_pcells,3.3V,None,5.98,2.86,6.84,2.0,alternating,6.0,0,0,ABA,0,1,g67_g67,s67_d67_s67,sub,d67 g67 s67 sub,W=5.72u L=5.98u,M67
+68,nfet,nfet_03v3_pcells,3.3V,None,4.03,2.53,3.82,5.0,alternating,2.0,0,0,AAABCDDCBAAA,0,1,g68_g68_g68_g68_g68,s68_d68_s68_d68_s68_d68,sub,d68 g68 s68 sub,W=12.65u L=4.03u,M68
+69,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.28,0.65,1.0,bottom,9.0,0,0,ABBAABBAABBA,0,1,g69,s69_d69,sub,d69 g69 s69 sub,W=7.28u L=6.32u,M69
+70,nfet,nfet_03v3_pcells,3.3V,None,1.55,3.72,6.84,5.0,alternating,1.0,0,0,ABCDDCBA,0,1,g70_g70_g70_g70_g70,s70_d70_s70_d70_s70_d70,sub,d70 g70 s70 sub,W=18.6u L=1.55u,M70
+71,nfet,nfet_03v3_pcells,3.3V,None,0.78,7.12,1.7,3.0,alternating,4.0,0,0,ABBAABBAABBA,0,1,g71_g71_g71,s71_d71_s71_d71,sub,d71 g71 s71 sub,W=21.36u L=0.78u,M71
+72,nfet,nfet_03v3_pcells,3.3V,None,6.89,3.35,3.16,2.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g72_g72,s72_d72_s72,sub,d72 g72 s72 sub,W=6.7u L=6.89u,M72
+73,nfet,nfet_03v3_pcells,3.3V,None,8.33,2.53,6.01,2.0,alternating,7.0,0,0,AAABAAAABAAA,0,1,g73_g73,s73_d73_s73,sub,d73 g73 s73 sub,W=5.06u L=8.33u,M73
+74,nfet,nfet_03v3_pcells,3.3V,None,2.29,2.86,1.7,5.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g74_g74_g74_g74_g74,s74_d74_s74_d74_s74_d74,sub,d74 g74 s74 sub,W=14.3u L=2.29u,M74
+75,nfet,nfet_03v3_pcells,3.3V,None,5.98,7.28,6.01,2.0,alternating,3.0,0,0,AAABCDDCBAAA,0,1,g75_g75,s75_d75_s75,sub,d75 g75 s75 sub,W=14.56u L=5.98u,M75
+76,nfet,nfet_03v3_pcells,3.3V,None,7.73,2.49,4.0,1.0,alternating,4.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g76,s76_d76,sub,d76 g76 s76 sub,W=2.49u L=7.73u,M76
+77,nfet,nfet_03v3_pcells,3.3V,None,4.11,3.72,4.63,3.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD,0,1,g77_g77_g77,s77_d77_s77_d77,sub,d77 g77 s77 sub,W=11.16u L=4.11u,M77
+78,nfet,nfet_03v3_pcells,3.3V,None,6.32,6.6,3.16,2.0,alternating,5.0,0,0,ABBAABBAABBA,0,1,g78_g78,s78_d78_s78,sub,d78 g78 s78 sub,W=13.2u L=6.32u,M78
+79,nfet,nfet_03v3_pcells,3.3V,None,4.03,6.6,7.36,4.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD,0,1,g79_g79_g79_g79,s79_d79_s79_d79_s79,sub,d79 g79 s79 sub,W=26.4u L=4.03u,M79
+80,nfet,nfet_03v3_pcells,3.3V,None,2.29,1.38,3.82,5.0,alternating,7.0,0,0,AAABAAAABAAA,0,1,g80_g80_g80_g80_g80,s80_d80_s80_d80_s80_d80,sub,d80 g80 s80 sub,W=6.9u L=2.29u,M80
+81,nfet,nfet_03v3_pcells,3.3V,None,8.33,3.4,3.82,1.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD,0,1,g81,s81_d81,sub,d81 g81 s81 sub,W=3.4u L=8.33u,M81
+82,nfet,nfet_03v3_pcells,3.3V,None,0.78,2.86,3.21,1.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g82,s82_d82,sub,d82 g82 s82 sub,W=2.86u L=0.78u,M82
+83,nfet,nfet_03v3_pcells,3.3V,None,1.55,3.4,1.7,5.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g83_g83_g83_g83_g83,s83_d83_s83_d83_s83_d83,sub,d83 g83 s83 sub,W=17.0u L=1.55u,M83
+84,nfet,nfet_03v3_pcells,3.3V,None,4.03,3.35,0.65,2.0,alternating,1.0,0,0,AAABAAAABAAA,0,1,g84_g84,s84_d84_s84,sub,d84 g84 s84 sub,W=6.7u L=4.03u,M84
+85,nfet,nfet_03v3_pcells,3.3V,None,4.11,7.12,4.63,3.0,alternating,6.0,0,0,ABA,0,1,g85_g85_g85,s85_d85_s85_d85,sub,d85 g85 s85 sub,W=21.36u L=4.11u,M85
+86,nfet,nfet_03v3_pcells,3.3V,None,5.98,2.53,4.63,5.0,alternating,5.0,0,0,ABCDDCBA,0,1,g86_g86_g86_g86_g86,s86_d86_s86_d86_s86_d86,sub,d86 g86 s86 sub,W=12.65u L=5.98u,M86
+87,nfet,nfet_03v3_pcells,3.3V,None,6.89,1.38,3.21,3.0,alternating,5.0,0,0,ABCDDCBA,0,1,g87_g87_g87,s87_d87_s87_d87,sub,d87 g87 s87 sub,W=4.14u L=6.89u,M87
+88,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.49,7.36,2.0,alternating,6.0,0,0,ABCDDCBA,0,1,g88_g88,s88_d88_s88,sub,d88 g88 s88 sub,W=4.98u L=6.32u,M88
+89,nfet,nfet_03v3_pcells,3.3V,None,7.73,1.38,6.84,3.0,alternating,6.0,0,0,ABBA,0,1,g89_g89_g89,s89_d89_s89_d89,sub,d89 g89 s89 sub,W=4.14u L=7.73u,M89
+90,nfet,nfet_03v3_pcells,3.3V,None,4.03,2.49,4.0,3.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD,0,1,g90_g90_g90,s90_d90_s90_d90,sub,d90 g90 s90 sub,W=7.47u L=4.03u,M90
+91,nfet,nfet_03v3_pcells,3.3V,None,1.55,6.6,6.01,2.0,alternating,9.0,0,0,AAABAAAABAAA,0,1,g91_g91,s91_d91_s91,sub,d91 g91 s91 sub,W=13.2u L=1.55u,M91
+92,nfet,nfet_03v3_pcells,3.3V,None,0.78,3.72,3.82,5.0,alternating,3.0,0,0,AAABAAAABAAA,0,1,g92_g92_g92_g92_g92,s92_d92_s92_d92_s92_d92,sub,d92 g92 s92 sub,W=18.6u L=0.78u,M92
+93,nfet,nfet_03v3_pcells,3.3V,None,8.33,2.86,3.21,2.0,alternating,2.0,0,0,DCCBBCCAACCBBCCD,0,1,g93_g93,s93_d93_s93,sub,d93 g93 s93 sub,W=5.72u L=8.33u,M93
+94,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.35,6.01,5.0,alternating,3.0,0,0,ABCDDCBA,0,1,g94_g94_g94_g94_g94,s94_d94_s94_d94_s94_d94,sub,d94 g94 s94 sub,W=16.75u L=2.29u,M94
+95,nfet,nfet_03v3_pcells,3.3V,None,4.11,7.28,0.65,2.0,alternating,3.0,0,0,DCCBBCCAACCBBCCD,0,1,g95_g95,s95_d95_s95,sub,d95 g95 s95 sub,W=14.56u L=4.11u,M95
+96,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,6.84,5.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD,0,1,g96_g96_g96_g96_g96,s96_d96_s96_d96_s96_d96,sub,d96 g96 s96 sub,W=35.6u L=6.32u,M96
+97,nfet,nfet_03v3_pcells,3.3V,None,6.89,3.72,6.01,1.0,alternating,1.0,0,0,DAABAAACAEACAAABAAD,0,1,g97,s97_d97,sub,d97 g97 s97 sub,W=3.72u L=6.89u,M97
+98,nfet,nfet_03v3_pcells,3.3V,None,5.98,3.4,7.36,3.0,alternating,3.0,0,0,AABCCDCCBAA,0,1,g98_g98_g98,s98_d98_s98_d98,sub,d98 g98 s98 sub,W=10.2u L=5.98u,M98
+99,nfet,nfet_03v3_pcells,3.3V,None,1.55,7.28,3.21,2.0,alternating,5.0,0,0,DAABAAACAEACAAABAAD,0,1,g99_g99,s99_d99_s99,sub,d99 g99 s99 sub,W=14.56u L=1.55u,M99
+100,nfet,nfet_03v3_pcells,3.3V,None,7.73,2.53,0.65,5.0,alternating,6.0,0,0,AABCCDCCBAA,0,1,g100_g100_g100_g100_g100,s100_d100_s100_d100_s100_d100,sub,d100 g100 s100 sub,W=12.65u L=7.73u,M100
+101,nfet,nfet_03v3_pcells,3.3V,None,4.03,7.28,1.7,4.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g101_g101_g101_g101,s101_d101_s101_d101_s101,sub,d101 g101 s101 sub,W=29.12u L=4.03u,M101
+102,nfet,nfet_03v3_pcells,3.3V,None,1.55,2.53,7.36,1.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g102,s102_d102,sub,d102 g102 s102 sub,W=2.53u L=1.55u,M102
+103,nfet,nfet_03v3_pcells,3.3V,None,6.32,3.4,4.0,4.0,alternating,2.0,0,0,ABCDDCBA,0,1,g103_g103_g103_g103,s103_d103_s103_d103_s103,sub,d103 g103 s103 sub,W=13.6u L=6.32u,M103
+104,nfet,nfet_03v3_pcells,3.3V,None,4.11,7.12,7.36,4.0,alternating,9.0,0,0,ABA,0,1,g104_g104_g104_g104,s104_d104_s104_d104_s104,sub,d104 g104 s104 sub,W=28.48u L=4.11u,M104
+105,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.35,7.36,2.0,alternating,4.0,0,0,ABBA,0,1,g105_g105,s105_d105_s105,sub,d105 g105 s105 sub,W=6.7u L=2.29u,M105
+106,nfet,nfet_03v3_pcells,3.3V,None,8.33,7.28,3.82,1.0,alternating,5.0,0,0,AABCCDCCBAA,0,1,g106,s106_d106,sub,d106 g106 s106 sub,W=7.28u L=8.33u,M106
+107,nfet,nfet_03v3_pcells,3.3V,None,0.78,7.12,4.63,5.0,alternating,6.0,0,0,AAABCDDCBAAA,0,1,g107_g107_g107_g107_g107,s107_d107_s107_d107_s107_d107,sub,d107 g107 s107 sub,W=35.6u L=0.78u,M107
+108,nfet,nfet_03v3_pcells,3.3V,None,7.73,3.72,1.7,3.0,alternating,3.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g108_g108_g108,s108_d108_s108_d108,sub,d108 g108 s108 sub,W=11.16u L=7.73u,M108
+109,nfet,nfet_03v3_pcells,3.3V,None,5.98,2.86,0.65,3.0,alternating,5.0,0,0,ABBA,0,1,g109_g109_g109,s109_d109_s109_d109,sub,d109 g109 s109 sub,W=8.58u L=5.98u,M109
+110,nfet,nfet_03v3_pcells,3.3V,None,6.89,6.6,3.16,2.0,alternating,7.0,0,0,ABA,0,1,g110_g110,s110_d110_s110,sub,d110 g110 s110 sub,W=13.2u L=6.89u,M110
+111,nfet,nfet_03v3_pcells,3.3V,None,8.33,2.49,4.0,4.0,alternating,6.0,0,0,ABA,0,1,g111_g111_g111_g111,s111_d111_s111_d111_s111,sub,d111 g111 s111 sub,W=9.96u L=8.33u,M111
+112,nfet,nfet_03v3_pcells,3.3V,None,6.32,6.6,1.7,5.0,alternating,2.0,0,0,ABBA,0,1,g112_g112_g112_g112_g112,s112_d112_s112_d112_s112_d112,sub,d112 g112 s112 sub,W=33.0u L=6.32u,M112
+113,nfet,nfet_03v3_pcells,3.3V,None,4.03,2.53,3.21,2.0,alternating,4.0,0,0,ABA,0,1,g113_g113,s113_d113_s113,sub,d113 g113 s113 sub,W=5.06u L=4.03u,M113
+114,nfet,nfet_03v3_pcells,3.3V,None,5.98,1.38,3.16,2.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g114_g114,s114_d114_s114,sub,d114 g114 s114 sub,W=2.76u L=5.98u,M114
+115,nfet,nfet_03v3_pcells,3.3V,None,7.73,7.12,6.01,2.0,alternating,5.0,0,0,ABCDDCBA,0,1,g115_g115,s115_d115_s115,sub,d115 g115 s115 sub,W=14.24u L=7.73u,M115
+116,nfet,nfet_03v3_pcells,3.3V,None,0.78,2.49,3.16,1.0,alternating,2.0,0,0,DAABAAACAEACAAABAAD,0,1,g116,s116_d116,sub,d116 g116 s116 sub,W=2.49u L=0.78u,M116
+117,nfet,nfet_03v3_pcells,3.3V,None,2.29,2.86,4.63,4.0,alternating,1.0,0,0,ABBA,0,1,g117_g117_g117_g117,s117_d117_s117_d117_s117,sub,d117 g117 s117 sub,W=11.44u L=2.29u,M117
+118,nfet,nfet_03v3_pcells,3.3V,None,4.11,3.72,3.82,1.0,alternating,6.0,0,0,ABBAABBAABBA,0,1,g118,s118_d118,sub,d118 g118 s118 sub,W=3.72u L=4.11u,M118
+119,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.35,6.84,2.0,alternating,7.0,0,0,ABBAABBAABBA,0,1,g119_g119,s119_d119_s119,sub,d119 g119 s119 sub,W=6.7u L=2.29u,M119
+120,nfet,nfet_03v3_pcells,3.3V,None,5.98,3.4,3.82,2.0,alternating,1.0,0,0,ABA,0,1,g120_g120,s120_d120_s120,sub,d120 g120 s120 sub,W=6.8u L=5.98u,M120
+121,nfet,nfet_03v3_pcells,3.3V,None,4.03,7.28,4.0,2.0,alternating,6.0,0,0,ABBAABBAABBA,0,1,g121_g121,s121_d121_s121,sub,d121 g121 s121 sub,W=14.56u L=4.03u,M121
+122,nfet,nfet_03v3_pcells,3.3V,None,1.55,3.35,3.16,4.0,alternating,5.0,0,0,AABCCDCCBAA,0,1,g122_g122_g122_g122,s122_d122_s122_d122_s122,sub,d122 g122 s122 sub,W=13.4u L=1.55u,M122
+123,nfet,nfet_03v3_pcells,3.3V,None,6.89,6.6,6.84,5.0,alternating,3.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g123_g123_g123_g123_g123,s123_d123_s123_d123_s123_d123,sub,d123 g123 s123 sub,W=33.0u L=6.89u,M123
+124,nfet,nfet_03v3_pcells,3.3V,None,5.98,1.38,4.0,2.0,alternating,5.0,0,0,ABA,0,1,g124_g124,s124_d124_s124,sub,d124 g124 s124 sub,W=2.76u L=5.98u,M124
+125,nfet,nfet_03v3_pcells,3.3V,None,6.89,7.28,4.63,2.0,alternating,2.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g125_g125,s125_d125_s125,sub,d125 g125 s125 sub,W=14.56u L=6.89u,M125
+126,nfet,nfet_03v3_pcells,3.3V,None,4.11,3.4,6.01,2.0,alternating,7.0,0,0,ABBAABBAABBA,0,1,g126_g126,s126_d126_s126,sub,d126 g126 s126 sub,W=6.8u L=4.11u,M126
+127,nfet,nfet_03v3_pcells,3.3V,None,0.78,3.72,3.21,3.0,alternating,5.0,0,0,ABBAABBAABBA,0,1,g127_g127_g127,s127_d127_s127_d127,sub,d127 g127 s127 sub,W=11.16u L=0.78u,M127
+128,nfet,nfet_03v3_pcells,3.3V,None,7.73,2.86,0.65,5.0,alternating,4.0,0,0,AAABAAAABAAA,0,1,g128_g128_g128_g128_g128,s128_d128_s128_d128_s128_d128,sub,d128 g128 s128 sub,W=14.3u L=7.73u,M128
+129,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.49,6.01,3.0,alternating,9.0,0,0,ABCDDCBA,0,1,g129_g129_g129,s129_d129_s129_d129,sub,d129 g129 s129 sub,W=7.47u L=6.32u,M129
+130,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.53,4.63,5.0,alternating,9.0,0,0,DAABAAACAEACAAABAAD,0,1,g130_g130_g130_g130_g130,s130_d130_s130_d130_s130_d130,sub,d130 g130 s130 sub,W=12.65u L=6.32u,M130
+131,nfet,nfet_03v3_pcells,3.3V,None,8.33,2.53,6.84,5.0,alternating,5.0,0,0,ABA,0,1,g131_g131_g131_g131_g131,s131_d131_s131_d131_s131_d131,sub,d131 g131 s131 sub,W=12.65u L=8.33u,M131
+132,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.86,3.82,3.0,alternating,5.0,0,0,AAABAAAABAAA,0,1,g132_g132_g132,s132_d132_s132_d132,sub,d132 g132 s132 sub,W=8.58u L=6.32u,M132
+133,nfet,nfet_03v3_pcells,3.3V,None,5.98,3.35,7.36,1.0,alternating,7.0,0,0,AAABAAAABAAA,0,1,g133,s133_d133,sub,d133 g133 s133 sub,W=3.35u L=5.98u,M133
+134,nfet,nfet_03v3_pcells,3.3V,None,8.33,7.12,1.7,5.0,alternating,5.0,0,0,AAABCDDCBAAA,0,1,g134_g134_g134_g134_g134,s134_d134_s134_d134_s134_d134,sub,d134 g134 s134 sub,W=35.6u L=8.33u,M134
+135,nfet,nfet_03v3_pcells,3.3V,None,7.73,7.12,3.82,2.0,alternating,2.0,0,0,ABA,0,1,g135_g135,s135_d135_s135,sub,d135 g135 s135 sub,W=14.24u L=7.73u,M135
+136,nfet,nfet_03v3_pcells,3.3V,None,0.78,1.38,6.84,5.0,alternating,7.0,0,0,ABCDDCBA,0,1,g136_g136_g136_g136_g136,s136_d136_s136_d136_s136_d136,sub,d136 g136 s136 sub,W=6.9u L=0.78u,M136
+137,nfet,nfet_03v3_pcells,3.3V,None,4.11,7.12,6.01,3.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g137_g137_g137,s137_d137_s137_d137,sub,d137 g137 s137 sub,W=21.36u L=4.11u,M137
+138,nfet,nfet_03v3_pcells,3.3V,None,4.11,7.28,1.7,2.0,alternating,5.0,0,0,ABCDDCBA,0,1,g138_g138,s138_d138_s138,sub,d138 g138 s138 sub,W=14.56u L=4.11u,M138
+139,nfet,nfet_03v3_pcells,3.3V,None,6.89,3.35,0.65,2.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g139_g139,s139_d139_s139,sub,d139 g139 s139 sub,W=6.7u L=6.89u,M139
+140,nfet,nfet_03v3_pcells,3.3V,None,4.03,2.86,3.21,5.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD,0,1,g140_g140_g140_g140_g140,s140_d140_s140_d140_s140_d140,sub,d140 g140 s140 sub,W=14.3u L=4.03u,M140
+141,nfet,nfet_03v3_pcells,3.3V,None,2.29,2.53,3.21,2.0,alternating,1.0,0,0,DCCBBCCAACCBBCCD,0,1,g141_g141,s141_d141_s141,sub,d141 g141 s141 sub,W=5.06u L=2.29u,M141
+142,nfet,nfet_03v3_pcells,3.3V,None,4.11,1.38,4.0,5.0,alternating,5.0,0,0,AABCCDCCBAA,0,1,g142_g142_g142_g142_g142,s142_d142_s142_d142_s142_d142,sub,d142 g142 s142 sub,W=6.9u L=4.11u,M142
+143,nfet,nfet_03v3_pcells,3.3V,None,6.89,2.49,3.16,5.0,alternating,6.0,0,0,ABA,0,1,g143_g143_g143_g143_g143,s143_d143_s143_d143_s143_d143,sub,d143 g143 s143 sub,W=12.45u L=6.89u,M143
+144,nfet,nfet_03v3_pcells,3.3V,None,1.55,3.72,3.21,2.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g144_g144,s144_d144_s144,sub,d144 g144 s144 sub,W=7.44u L=1.55u,M144
+145,nfet,nfet_03v3_pcells,3.3V,None,6.89,3.4,6.84,4.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD,0,1,g145_g145_g145_g145,s145_d145_s145_d145_s145,sub,d145 g145 s145 sub,W=13.6u L=6.89u,M145
+146,nfet,nfet_03v3_pcells,3.3V,None,5.98,3.4,3.82,2.0,alternating,1.0,0,0,AAABCDDCBAAA,0,1,g146_g146,s146_d146_s146,sub,d146 g146 s146 sub,W=6.8u L=5.98u,M146
+147,nfet,nfet_03v3_pcells,3.3V,None,6.32,3.4,3.16,1.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g147,s147_d147,sub,d147 g147 s147 sub,W=3.4u L=6.32u,M147
+148,nfet,nfet_03v3_pcells,3.3V,None,1.55,6.6,3.16,3.0,alternating,5.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g148_g148_g148,s148_d148_s148_d148,sub,d148 g148 s148 sub,W=19.8u L=1.55u,M148
+149,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.4,4.0,5.0,alternating,6.0,0,0,DAABAAACAEACAAABAAD,0,1,g149_g149_g149_g149_g149,s149_d149_s149_d149_s149_d149,sub,d149 g149 s149 sub,W=17.0u L=2.29u,M149
+150,nfet,nfet_03v3_pcells,3.3V,None,4.03,3.4,0.65,5.0,alternating,1.0,0,0,ABCDDCBA,0,1,g150_g150_g150_g150_g150,s150_d150_s150_d150_s150_d150,sub,d150 g150 s150 sub,W=17.0u L=4.03u,M150
+151,nfet,nfet_03v3_pcells,3.3V,None,0.78,7.12,1.7,1.0,alternating,1.0,0,0,ABCDDCBA,0,1,g151,s151_d151,sub,d151 g151 s151 sub,W=7.12u L=0.78u,M151
+152,nfet,nfet_03v3_pcells,3.3V,None,0.78,2.53,7.36,2.0,alternating,1.0,0,0,ABBA,0,1,g152_g152,s152_d152_s152,sub,d152 g152 s152 sub,W=5.06u L=0.78u,M152
+153,nfet,nfet_03v3_pcells,3.3V,None,7.73,2.86,4.63,1.0,alternating,5.0,0,0,ABBA,0,1,g153,s153_d153,sub,d153 g153 s153 sub,W=2.86u L=7.73u,M153
+154,nfet,nfet_03v3_pcells,3.3V,None,8.33,3.35,3.16,5.0,alternating,2.0,0,0,ABA,0,1,g154_g154_g154_g154_g154,s154_d154_s154_d154_s154_d154,sub,d154 g154 s154 sub,W=16.75u L=8.33u,M154
+155,nfet,nfet_03v3_pcells,3.3V,None,0.78,6.6,3.82,2.0,alternating,3.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g155_g155,s155_d155_s155,sub,d155 g155 s155 sub,W=13.2u L=0.78u,M155
+156,nfet,nfet_03v3_pcells,3.3V,None,6.32,6.6,6.84,1.0,alternating,2.0,0,0,ABBA,0,1,g156,s156_d156,sub,d156 g156 s156 sub,W=6.6u L=6.32u,M156
+157,nfet,nfet_03v3_pcells,3.3V,None,5.98,6.6,3.21,1.0,alternating,2.0,0,0,ABBA,0,1,g157,s157_d157,sub,d157 g157 s157 sub,W=6.6u L=5.98u,M157
+158,nfet,nfet_03v3_pcells,3.3V,None,4.11,3.72,4.63,2.0,alternating,7.0,0,0,AAABAAAABAAA,0,1,g158_g158,s158_d158_s158,sub,d158 g158 s158 sub,W=7.44u L=4.11u,M158
+159,nfet,nfet_03v3_pcells,3.3V,None,8.33,3.72,7.36,5.0,alternating,1.0,0,0,ABA,0,1,g159_g159_g159_g159_g159,s159_d159_s159_d159_s159_d159,sub,d159 g159 s159 sub,W=18.6u L=8.33u,M159
+160,nfet,nfet_03v3_pcells,3.3V,None,7.73,3.72,1.7,2.0,alternating,6.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g160_g160,s160_d160_s160,sub,d160 g160 s160 sub,W=7.44u L=7.73u,M160
+161,nfet,nfet_03v3_pcells,3.3V,None,7.73,2.49,0.65,4.0,alternating,6.0,0,0,AAABAAAABAAA,0,1,g161_g161_g161_g161,s161_d161_s161_d161_s161,sub,d161 g161 s161 sub,W=9.96u L=7.73u,M161
+162,nfet,nfet_03v3_pcells,3.3V,None,7.73,1.38,4.0,5.0,alternating,7.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g162_g162_g162_g162_g162,s162_d162_s162_d162_s162_d162,sub,d162 g162 s162 sub,W=6.9u L=7.73u,M162
+163,nfet,nfet_03v3_pcells,3.3V,None,4.03,1.38,6.01,1.0,alternating,5.0,0,0,ABA,0,1,g163,s163_d163,sub,d163 g163 s163 sub,W=1.38u L=4.03u,M163
+164,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.4,3.21,2.0,alternating,2.0,0,0,ABBA,0,1,g164_g164,s164_d164_s164,sub,d164 g164 s164 sub,W=6.8u L=2.29u,M164
+165,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.72,3.82,2.0,alternating,5.0,0,0,AAABAAAABAAA,0,1,g165_g165,s165_d165_s165,sub,d165 g165 s165 sub,W=7.44u L=2.29u,M165
+166,nfet,nfet_03v3_pcells,3.3V,None,1.55,6.6,3.16,3.0,alternating,7.0,0,0,ABA,0,1,g166_g166_g166,s166_d166_s166_d166,sub,d166 g166 s166 sub,W=19.8u L=1.55u,M166
+167,nfet,nfet_03v3_pcells,3.3V,None,7.73,1.38,3.16,4.0,alternating,7.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g167_g167_g167_g167,s167_d167_s167_d167_s167,sub,d167 g167 s167 sub,W=5.52u L=7.73u,M167
+168,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.35,3.16,2.0,alternating,3.0,0,0,AAAABBBCCDCCBBBAAAA,0,1,g168_g168,s168_d168_s168,sub,d168 g168 s168 sub,W=6.7u L=2.29u,M168
+169,nfet,nfet_03v3_pcells,3.3V,None,4.11,3.35,6.01,5.0,alternating,3.0,0,0,DCCBBCCAACCBBCCD,0,1,g169_g169_g169_g169_g169,s169_d169_s169_d169_s169_d169,sub,d169 g169 s169 sub,W=16.75u L=4.11u,M169
+170,nfet,nfet_03v3_pcells,3.3V,None,5.98,2.86,4.0,3.0,alternating,7.0,0,0,DAABAAACAEACAAABAAD,0,1,g170_g170_g170,s170_d170_s170_d170,sub,d170 g170 s170 sub,W=8.58u L=5.98u,M170
+171,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.86,0.65,5.0,alternating,4.0,0,0,AAABCDDCBAAA,0,1,g171_g171_g171_g171_g171,s171_d171_s171_d171_s171_d171,sub,d171 g171 s171 sub,W=14.3u L=6.32u,M171
+172,nfet,nfet_03v3_pcells,3.3V,None,0.78,2.86,1.7,1.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g172,s172_d172,sub,d172 g172 s172 sub,W=2.86u L=0.78u,M172
+173,nfet,nfet_03v3_pcells,3.3V,None,1.55,2.86,7.36,3.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g173_g173_g173,s173_d173_s173_d173,sub,d173 g173 s173 sub,W=8.58u L=1.55u,M173
+174,nfet,nfet_03v3_pcells,3.3V,None,4.03,2.86,4.63,2.0,alternating,4.0,0,0,AABCCDCCBAA,0,1,g174_g174,s174_d174_s174,sub,d174 g174 s174 sub,W=5.72u L=4.03u,M174
+175,nfet,nfet_03v3_pcells,3.3V,None,4.03,2.53,3.16,3.0,alternating,2.0,0,0,DAABAAACAEACAAABAAD,0,1,g175_g175_g175,s175_d175_s175_d175,sub,d175 g175 s175 sub,W=7.59u L=4.03u,M175
+176,nfet,nfet_03v3_pcells,3.3V,None,8.33,7.28,3.16,5.0,alternating,6.0,0,0,ABA,0,1,g176_g176_g176_g176_g176,s176_d176_s176_d176_s176_d176,sub,d176 g176 s176 sub,W=36.4u L=8.33u,M176
+177,nfet,nfet_03v3_pcells,3.3V,None,8.33,2.49,3.82,5.0,alternating,6.0,0,0,ABBA,0,1,g177_g177_g177_g177_g177,s177_d177_s177_d177_s177_d177,sub,d177 g177 s177 sub,W=12.45u L=8.33u,M177
+178,nfet,nfet_03v3_pcells,3.3V,None,6.89,2.49,3.82,2.0,alternating,2.0,0,0,ABCDDCBA,0,1,g178_g178,s178_d178_s178,sub,d178 g178 s178 sub,W=4.98u L=6.89u,M178
+179,nfet,nfet_03v3_pcells,3.3V,None,7.73,3.4,3.82,2.0,alternating,3.0,0,0,AAABCDDCBAAA,0,1,g179_g179,s179_d179_s179,sub,d179 g179 s179 sub,W=6.8u L=7.73u,M179
+180,nfet,nfet_03v3_pcells,3.3V,None,8.33,3.4,3.21,1.0,alternating,1.0,0,0,AAABCDDCBAAA,0,1,g180,s180_d180,sub,d180 g180 s180 sub,W=3.4u L=8.33u,M180
+181,nfet,nfet_03v3_pcells,3.3V,None,4.03,3.35,3.21,5.0,alternating,3.0,0,0,ABBAABBAABBA,0,1,g181_g181_g181_g181_g181,s181_d181_s181_d181_s181_d181,sub,d181 g181 s181 sub,W=16.75u L=4.03u,M181
+182,nfet,nfet_03v3_pcells,3.3V,None,4.03,6.6,4.63,2.0,alternating,4.0,0,0,AAABAAAABAAA,0,1,g182_g182,s182_d182_s182,sub,d182 g182 s182 sub,W=13.2u L=4.03u,M182
+183,nfet,nfet_03v3_pcells,3.3V,None,0.78,3.72,7.36,2.0,alternating,5.0,0,0,DCCBBCCAACCBBCCD,0,1,g183_g183,s183_d183_s183,sub,d183 g183 s183 sub,W=7.44u L=0.78u,M183
+184,nfet,nfet_03v3_pcells,3.3V,None,6.32,3.72,1.7,1.0,alternating,6.0,0,0,AABCCDCCBAA,0,1,g184,s184_d184,sub,d184 g184 s184 sub,W=3.72u L=6.32u,M184
+185,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.49,0.65,1.0,alternating,6.0,0,0,DCCBBCCAACCBBCCD,0,1,g185,s185_d185,sub,d185 g185 s185 sub,W=2.49u L=6.32u,M185
+186,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.28,4.0,1.0,alternating,3.0,0,0,AABCCDCCBAA,0,1,g186,s186_d186,sub,d186 g186 s186 sub,W=7.28u L=6.32u,M186
+187,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.53,6.01,4.0,alternating,3.0,0,0,DAABAAACAEACAAABAAD,0,1,g187_g187_g187_g187,s187_d187_s187_d187_s187,sub,d187 g187 s187 sub,W=10.12u L=6.32u,M187
+188,nfet,nfet_03v3_pcells,3.3V,None,5.98,1.38,6.84,2.0,alternating,1.0,0,0,ABBA,0,1,g188_g188,s188_d188_s188,sub,d188 g188 s188 sub,W=2.76u L=5.98u,M188
+189,nfet,nfet_03v3_pcells,3.3V,None,4.11,1.38,3.16,1.0,alternating,9.0,0,0,ABBAABBAABBA,0,1,g189,s189_d189,sub,d189 g189 s189 sub,W=1.38u L=4.11u,M189
+190,nfet,nfet_03v3_pcells,3.3V,None,2.29,7.12,3.16,5.0,alternating,7.0,0,0,AAABCDDCBAAA,0,1,g190_g190_g190_g190_g190,s190_d190_s190_d190_s190_d190,sub,d190 g190 s190 sub,W=35.6u L=2.29u,M190
+191,nfet,nfet_03v3_pcells,3.3V,None,2.29,7.12,3.82,3.0,alternating,2.0,0,0,DCCBBCCAACCBBCCD,0,1,g191_g191_g191,s191_d191_s191_d191,sub,d191 g191 s191 sub,W=21.36u L=2.29u,M191
+192,nfet,nfet_03v3_pcells,3.3V,None,6.89,7.12,3.82,4.0,alternating,3.0,0,0,DCCBBCCAACCBBCCD,0,1,g192_g192_g192_g192,s192_d192_s192_d192_s192,sub,d192 g192 s192 sub,W=28.48u L=6.89u,M192
+193,nfet,nfet_03v3_pcells,3.3V,None,1.55,7.12,3.21,2.0,alternating,6.0,0,0,AAABCDDCBAAA,0,1,g193_g193,s193_d193_s193,sub,d193 g193 s193 sub,W=14.24u L=1.55u,M193
+194,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,3.21,2.0,alternating,4.0,0,0,AABCCDCCBAA,0,1,g194_g194,s194_d194_s194,sub,d194 g194 s194 sub,W=14.24u L=6.32u,M194
+195,nfet,nfet_03v3_pcells,3.3V,None,2.29,7.12,3.21,3.0,alternating,3.0,0,0,AABCCDCCBAA,0,1,g195_g195_g195,s195_d195_s195_d195,sub,d195 g195 s195 sub,W=21.36u L=2.29u,M195
+196,nfet,nfet_03v3_pcells,3.3V,None,2.29,7.12,6.84,1.0,alternating,7.0,0,0,ABA,0,1,g196,s196_d196,sub,d196 g196 s196 sub,W=7.12u L=2.29u,M196
+197,nfet,nfet_03v3_pcells,3.3V,None,4.03,7.12,6.01,5.0,alternating,9.0,0,0,ABBAABBAABBA,0,1,g197_g197_g197_g197_g197,s197_d197_s197_d197_s197_d197,sub,d197 g197 s197 sub,W=35.6u L=4.03u,M197
+198,nfet,nfet_03v3_pcells,3.3V,None,7.73,7.12,6.01,2.0,alternating,9.0,0,0,ABCDDCBA,0,1,g198_g198,s198_d198_s198,sub,d198 g198 s198 sub,W=14.24u L=7.73u,M198
+199,nfet,nfet_03v3_pcells,3.3V,None,4.11,7.12,4.0,5.0,alternating,9.0,0,0,ABA,0,1,g199_g199_g199_g199_g199,s199_d199_s199_d199_s199_d199,sub,d199 g199 s199 sub,W=35.6u L=4.11u,M199
+200,nfet,nfet_03v3_pcells,3.3V,None,5.98,3.4,4.0,5.0,alternating,4.0,0,0,DCCBBCCAACCBBCCD,0,1,g200_g200_g200_g200_g200,s200_d200_s200_d200_s200_d200,sub,d200 g200 s200 sub,W=17.0u L=5.98u,M200
+201,nfet,nfet_03v3_pcells,3.3V,None,5.98,2.86,4.0,2.0,alternating,9.0,0,0,ABBAABBAABBA,0,1,g201_g201,s201_d201_s201,sub,d201 g201 s201 sub,W=5.72u L=5.98u,M201
+202,nfet,nfet_03v3_pcells,3.3V,None,5.98,3.72,0.65,4.0,alternating,4.0,0,0,ABBAABBAABBA,0,1,g202_g202_g202_g202,s202_d202_s202_d202_s202,sub,d202 g202 s202 sub,W=14.88u L=5.98u,M202
+203,nfet,nfet_03v3_pcells,3.3V,None,0.78,1.38,0.65,2.0,alternating,9.0,0,0,ABCDDCBA,0,1,g203_g203,s203_d203_s203,sub,d203 g203 s203 sub,W=2.76u L=0.78u,M203
+204,nfet,nfet_03v3_pcells,3.3V,None,0.78,6.6,1.7,2.0,alternating,7.0,0,0,ABA,0,1,g204_g204,s204_d204_s204,sub,d204 g204 s204 sub,W=13.2u L=0.78u,M204
+205,nfet,nfet_03v3_pcells,3.3V,None,0.78,3.35,7.36,3.0,alternating,6.0,0,0,ABA,0,1,g205_g205_g205,s205_d205_s205_d205,sub,d205 g205 s205 sub,W=10.05u L=0.78u,M205
+206,nfet,nfet_03v3_pcells,3.3V,None,0.78,2.53,4.63,2.0,alternating,7.0,0,0,AABCCDCCBAA,0,1,g206_g206,s206_d206_s206,sub,d206 g206 s206 sub,W=5.06u L=0.78u,M206
+207,nfet,nfet_03v3_pcells,3.3V,None,8.33,7.28,4.63,3.0,alternating,4.0,0,0,ABCDDCBA,0,1,g207_g207_g207,s207_d207_s207_d207,sub,d207 g207 s207 sub,W=21.84u L=8.33u,M207
+208,nfet,nfet_03v3_pcells,3.3V,None,1.55,2.49,4.63,2.0,alternating,3.0,0,0,AAABCDDCBAAA,0,1,g208_g208,s208_d208_s208,sub,d208 g208 s208 sub,W=4.98u L=1.55u,M208
+209,nfet,nfet_03v3_pcells,3.3V,None,6.89,7.12,4.63,2.0,alternating,9.0,0,0,ABA,0,1,g209_g209,s209_d209_s209,sub,d209 g209 s209 sub,W=14.24u L=6.89u,M209
+210,nfet,nfet_03v3_pcells,3.3V,None,6.89,7.12,3.16,5.0,alternating,4.0,0,0,AABCCDCCBAA,0,1,g210_g210_g210_g210_g210,s210_d210_s210_d210_s210_d210,sub,d210 g210 s210 sub,W=35.6u L=6.89u,M210
+211,nfet,nfet_03v3_pcells,3.3V,None,6.89,7.12,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g211_g211,s211_d211_s211,sub,d211 g211 s211 sub,W=14.24u L=6.89u,M211
+212,nfet,nfet_03v3_pcells,3.3V,None,6.89,2.86,3.21,5.0,alternating,7.0,0,0,AABCCDCCBAA,0,1,g212_g212_g212_g212_g212,s212_d212_s212_d212_s212_d212,sub,d212 g212 s212 sub,W=14.3u L=6.89u,M212
+213,nfet,nfet_03v3_pcells,3.3V,None,6.89,3.4,3.21,1.0,alternating,7.0,0,0,ABA,0,1,g213,s213_d213,sub,d213 g213 s213 sub,W=3.4u L=6.89u,M213
+214,nfet,nfet_03v3_pcells,3.3V,None,6.89,3.4,3.21,3.0,alternating,7.0,0,0,ABA,0,1,g214_g214_g214,s214_d214_s214_d214,sub,d214 g214 s214 sub,W=10.2u L=6.89u,M214
+215,nfet,nfet_03v3_pcells,3.3V,None,0.78,3.4,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g215_g215,s215_d215_s215,sub,d215 g215 s215 sub,W=6.8u L=0.78u,M215
+216,nfet,nfet_03v3_pcells,3.3V,None,0.78,3.72,3.21,5.0,alternating,7.0,0,0,ABA,0,1,g216_g216_g216_g216_g216,s216_d216_s216_d216_s216_d216,sub,d216 g216 s216 sub,W=18.6u L=0.78u,M216
+217,nfet,nfet_03v3_pcells,3.3V,None,0.78,3.35,3.82,4.0,alternating,7.0,0,0,ABBA,0,1,g217_g217_g217_g217,s217_d217_s217_d217_s217,sub,d217 g217 s217 sub,W=13.4u L=0.78u,M217
+218,nfet,nfet_03v3_pcells,3.3V,None,0.78,6.6,4.63,5.0,alternating,7.0,0,0,ABCDDCBA,0,1,g218_g218_g218_g218_g218,s218_d218_s218_d218_s218_d218,sub,d218 g218 s218 sub,W=33.0u L=0.78u,M218
+219,nfet,nfet_03v3_pcells,3.3V,None,0.78,1.38,4.63,2.0,alternating,9.0,0,0,ABBA,0,1,g219_g219,s219_d219_s219,sub,d219 g219 s219 sub,W=2.76u L=0.78u,M219
+220,nfet,nfet_03v3_pcells,3.3V,None,0.78,2.49,4.63,2.0,alternating,7.0,0,0,ABA,0,1,g220_g220,s220_d220_s220,sub,d220 g220 s220 sub,W=4.98u L=0.78u,M220
+221,nfet,nfet_03v3_pcells,3.3V,None,0.78,7.28,4.63,5.0,alternating,7.0,0,0,ABBAABBAABBA,0,1,g221_g221_g221_g221_g221,s221_d221_s221_d221_s221_d221,sub,d221 g221 s221 sub,W=36.4u L=0.78u,M221
+222,nfet,nfet_03v3_pcells,3.3V,None,0.78,2.53,4.63,4.0,alternating,7.0,0,0,ABA,0,1,g222_g222_g222_g222,s222_d222_s222_d222_s222,sub,d222 g222 s222 sub,W=10.12u L=0.78u,M222
+223,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,4.63,1.0,alternating,7.0,0,0,ABA,0,1,g223,s223_d223,sub,d223 g223 s223 sub,W=7.12u L=6.32u,M223
+224,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,4.0,3.0,alternating,7.0,0,0,ABA,0,1,g224_g224_g224,s224_d224_s224_d224,sub,d224 g224 s224 sub,W=21.36u L=6.32u,M224
+225,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,0.65,3.0,alternating,7.0,0,0,ABA,0,1,g225_g225_g225,s225_d225_s225_d225,sub,d225 g225 s225 sub,W=21.36u L=6.32u,M225
+226,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,6.01,4.0,alternating,7.0,0,0,ABA,0,1,g226_g226_g226_g226,s226_d226_s226_d226_s226,sub,d226 g226 s226 sub,W=28.48u L=6.32u,M226
+227,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,7.36,5.0,alternating,7.0,0,0,ABA,0,1,g227_g227_g227_g227_g227,s227_d227_s227_d227_s227_d227,sub,d227 g227 s227 sub,W=35.6u L=6.32u,M227
+228,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,1.7,2.0,alternating,7.0,0,0,ABA,0,1,g228_g228,s228_d228_s228,sub,d228 g228 s228 sub,W=14.24u L=6.32u,M228
+229,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,6.84,1.0,alternating,7.0,0,0,ABA,0,1,g229,s229_d229,sub,d229 g229 s229 sub,W=7.12u L=6.32u,M229
+230,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g230_g230,s230_d230_s230,sub,d230 g230 s230 sub,W=14.24u L=6.32u,M230
+231,nfet,nfet_03v3_pcells,3.3V,None,5.98,7.12,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g231_g231,s231_d231_s231,sub,d231 g231 s231 sub,W=14.24u L=5.98u,M231
+232,nfet,nfet_03v3_pcells,3.3V,None,5.98,3.4,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g232_g232,s232_d232_s232,sub,d232 g232 s232 sub,W=6.8u L=5.98u,M232
+233,nfet,nfet_03v3_pcells,3.3V,None,5.98,2.86,3.21,5.0,alternating,7.0,0,0,ABA,0,1,g233_g233_g233_g233_g233,s233_d233_s233_d233_s233_d233,sub,d233 g233 s233 sub,W=14.3u L=5.98u,M233
+234,nfet,nfet_03v3_pcells,3.3V,None,2.29,3.72,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g234_g234,s234_d234_s234,sub,d234 g234 s234 sub,W=7.44u L=2.29u,M234
+235,nfet,nfet_03v3_pcells,3.3V,None,7.73,3.72,3.21,3.0,alternating,7.0,0,0,ABA,0,1,g235_g235_g235,s235_d235_s235_d235,sub,d235 g235 s235 sub,W=11.16u L=7.73u,M235
+236,nfet,nfet_03v3_pcells,3.3V,None,4.03,3.72,3.21,1.0,alternating,7.0,0,0,ABA,0,1,g236,s236_d236,sub,d236 g236 s236 sub,W=3.72u L=4.03u,M236
+237,nfet,nfet_03v3_pcells,3.3V,None,8.33,3.72,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g237_g237,s237_d237_s237,sub,d237 g237 s237 sub,W=7.44u L=8.33u,M237
+238,nfet,nfet_03v3_pcells,3.3V,None,4.11,1.38,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g238_g238,s238_d238_s238,sub,d238 g238 s238 sub,W=2.76u L=4.11u,M238
+239,nfet,nfet_03v3_pcells,3.3V,None,4.11,6.6,3.21,3.0,alternating,2.0,0,0,ABBAABBAABBA,0,1,g239_g239_g239,s239_d239_s239_d239,sub,d239 g239 s239 sub,W=19.8u L=4.11u,M239
+240,nfet,nfet_03v3_pcells,3.3V,None,4.11,3.35,3.21,5.0,alternating,7.0,0,0,ABA,0,1,g240_g240_g240_g240_g240,s240_d240_s240_d240_s240_d240,sub,d240 g240 s240 sub,W=16.75u L=4.11u,M240
+241,nfet,nfet_03v3_pcells,3.3V,None,1.55,3.35,3.21,1.0,alternating,7.0,0,0,ABA,0,1,g241,s241_d241,sub,d241 g241 s241 sub,W=3.35u L=1.55u,M241
+242,nfet,nfet_03v3_pcells,3.3V,None,1.55,2.53,3.21,2.0,alternating,7.0,0,0,ABA,0,1,g242_g242,s242_d242_s242,sub,d242 g242 s242 sub,W=5.06u L=1.55u,M242
+243,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.53,3.21,3.0,alternating,7.0,0,0,ABA,0,1,g243_g243_g243,s243_d243_s243_d243,sub,d243 g243 s243 sub,W=7.59u L=6.32u,M243
+244,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.28,3.21,5.0,alternating,7.0,0,0,ABA,0,1,g244_g244_g244_g244_g244,s244_d244_s244_d244_s244_d244,sub,d244 g244 s244 sub,W=36.4u L=6.32u,M244
+245,nfet,nfet_03v3_pcells,3.3V,None,6.32,2.49,3.21,5.0,alternating,7.0,0,0,ABA,0,1,g245_g245_g245_g245_g245,s245_d245_s245_d245_s245_d245,sub,d245 g245 s245 sub,W=12.45u L=6.32u,M245
+246,nfet,nfet_03v3_pcells,3.3V,None,6.32,7.12,3.21,4.0,alternating,7.0,0,0,ABBAABBAABBA,0,1,g246_g246_g246_g246,s246_d246_s246_d246_s246,sub,d246 g246 s246 sub,W=28.48u L=6.32u,M246
