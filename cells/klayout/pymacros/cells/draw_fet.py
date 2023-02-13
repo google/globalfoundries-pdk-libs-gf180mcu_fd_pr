@@ -153,7 +153,6 @@ def alter_interdig(
                 m1 = c_inst.add_ref(
                     gf.components.rectangle(
                         size=(
-                            # poly_con.xmax - poly_con.xmin,
                             pc_x,
                             ((pc2.ymax + (i + 1) * (m2_spacing + m2_y)) - pc2.ymin),
                         ),
@@ -175,14 +174,7 @@ def alter_interdig(
                     via_spacing=via_spacing,
                 )
                 via1 = c_inst.add_ref(via1_dr)
-                # c_inst.add_label(
-                #     f"{pat_o[j]}",
-                #     position=(
-                #         (via1.xmax + via1.xmin) / 2,
-                #         (via1.ymax + via1.ymin) / 2,
-                #     ),
-                #     layer=layer["metal2_label"],
-                # )
+                
                 c_inst.add_ref(
                     labels_gen(
                         lbl_str="None",
@@ -230,7 +222,6 @@ def alter_interdig(
                 )
                 m1.xmin = pc1.xmin + j * (pc_spacing)
                 m1.ymin = -(m1.ymax - m1.ymin) + (pc1.ymax)
-                # m1.move(((sd_l- ((poly_con.xmax - poly_con.xmin - l)/2) + (2*j)*(l+inter_sd_l)), -(m1.ymax - m1.ymin) + (pc1.ymax-0.06)))
                 via1_dr = via_generator(
                     x_range=(m1.xmin, m1.xmax),
                     y_range=(
@@ -243,14 +234,6 @@ def alter_interdig(
                     via_spacing=via_spacing,
                 )
                 via1 = c_inst.add_ref(via1_dr)
-                # c_inst.add_label(
-                #     f"{pat_e[j]}",
-                #     position=(
-                #         (via1.xmax + via1.xmin) / 2,
-                #         (via1.ymax + via1.ymin) / 2,
-                #     ),
-                #     layer=layer["metal2_label"],
-                # )
 
                 c_inst.add_ref(
                     labels_gen(
@@ -293,7 +276,6 @@ def alter_interdig(
                 m2_join_b = c_inst.add_ref(
                     gf.components.rectangle(
                         size=(m2_y + sd_l + (i + 1) * (m3_spacing + m3_x), m2_y,),
-                        # size = (m2_arrb.xmin - sd_diff.xmin , m2_y),
                         layer=layer["metal2"],
                     ).move(
                         (
@@ -456,14 +438,6 @@ def interdigit(
                             via_spacing=via_spacing,
                         )
                         via1 = c_inst.add_ref(via1_dr)
-                        # c_inst.add_label(
-                        #     f"{pat[j]}",
-                        #     position=(
-                        #         (via1.xmax + via1.xmin) / 2,
-                        #         (via1.ymax + via1.ymin) / 2,
-                        #     ),
-                        #     layer=layer["metal2_label"],
-                        # )
 
                         c_inst.add_ref(
                             labels_gen(
@@ -536,14 +510,6 @@ def interdigit(
                             via_spacing=via_spacing,
                         )
                         via1 = c_inst.add_ref(via1_dr)
-                        # c_inst.add_label(
-                        #     f"{pat[j]}",
-                        #     position=(
-                        #         (via1.xmax + via1.xmin) / 2,
-                        #         (via1.ymax + via1.ymin) / 2,
-                        #     ),
-                        #     layer=layer["metal2_label"],
-                        # )
 
                         c_inst.add_ref(
                             labels_gen(
