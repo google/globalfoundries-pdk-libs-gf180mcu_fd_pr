@@ -59,6 +59,17 @@ def labels_gen(
 
 
 def get_patt_lbl(nl_b, nl, nt, nt_e, g_lbl, nl_u, nt_o):
+    """Returns list of odd,even gate label patterns for alternating gate connection
+
+    Args :
+        nl_b : number of bottom connected gates transistors
+        nl : number of transistor
+        nt : patterns of tansistor [with out redundency]
+        nt_e : number of transistor with even order
+        g_lbl : list of transistors gate label
+        nl_u :  number of upper connected gates transistors
+        nt_o : number of transistor with odd order
+    """
 
     g_lbl_e = []
     g_lbl_o = []
