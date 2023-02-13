@@ -1,3 +1,21 @@
+# Copyright 2022 GlobalFoundries PDK Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+########################################################################################################################
+## Pcells test Generators for Klayout of GF180MCU
+########################################################################################################################
+
 """
 Globalfoundries 180u PCells Generator.
 
@@ -30,6 +48,17 @@ DB_PERC = 1000
 
 
 def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
+    """
+    draws pcell using klayout pymacros
+
+    Args :
+        layout : layout object
+        top : layout top cell
+        lib : pcells library
+        patt_file : patterns csv file path
+        device_name : name of the device under test
+        device_space : device instances spacing
+    """
 
     # Read csv file of patterns
     df = pd.read_csv(patt_file)
@@ -61,8 +90,6 @@ def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
             param["g_lbl"] = param["g_lbl"].split("_")
             param["sd_lbl"] = param["sd_lbl"].split("_")
 
-        print(param)
-
         try:
             logging.info(f"Generating pcell for {device_name} with params : {param}")
             pcell_id = lib.layout().pcell_id(pcell_name)
@@ -75,18 +102,27 @@ def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
 
 
 def run_generation(target_device):
+    """
+    Runs generation of the device under test
+
+    Args :
+        target_device : category of device under test
+    """
 
     file_path = os.path.dirname(os.path.abspath(__file__))
     list_patt_files = glob.glob(
         os.path.join(file_path, "patterns", target_device, "*.csv")
     )
-    
+
     # === Read gf180mcu pcells ===
     lib = k.Library.library_by_name("gf180mcu")
 
     for p in list_patt_files:
+
+        # Get device_name
         device = p.split("/")[-1].split("_patt")[0]
-        print(device)
+
+        # Create output file
         os.makedirs(f"{file_path}/testcases", exist_ok=True)
         out_file = os.path.join(file_path, "testcases", f"{device}_pcells.gds")
 
@@ -96,9 +132,10 @@ def run_generation(target_device):
         # Create top cell
         top = layout.create_cell(f"{device}_pcells")
 
+        # Call draww_pcell
         draw_pcell(layout, top, lib, p, device, DEV_SPACES[target_device])
 
-        # flatten cell
+        # Flatten cell
         top.flatten(1)
 
         # Save the file
