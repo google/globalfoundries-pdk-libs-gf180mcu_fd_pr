@@ -58,6 +58,37 @@ def labels_gen(
     return c
 
 
+def get_patt_lbl(nl_b, nl, nt, nt_e, g_lbl, nl_u, nt_o):
+    """Returns list of odd,even gate label patterns for alternating gate connection
+
+    Args :
+        nl_b : number of bottom connected gates transistors
+        nl : number of transistor
+        nt : patterns of tansistor [with out redundency]
+        nt_e : number of transistor with even order
+        g_lbl : list of transistors gate label
+        nl_u :  number of upper connected gates transistors
+        nt_o : number of transistor with odd order
+    """
+
+    g_lbl_e = []
+    g_lbl_o = []
+
+    if nt == len(g_lbl):
+
+        for i in range(nl_b):
+            for j in range(nl):
+                if nt[j] == nt_e[i]:
+                    g_lbl_e.append(g_lbl[j])
+
+        for i in range(nl_u):
+            for j in range(nl):
+                if nt[j] == nt_o[i]:
+                    g_lbl_o.append(g_lbl[j])
+
+    return [g_lbl_e, g_lbl_o]
+
+
 @gf.cell
 def alter_interdig(
     sd_diff,
@@ -119,17 +150,7 @@ def alter_interdig(
     nl_b = len(nt_e)
     nl_u = len(nt_o)
 
-    g_lbl_e = []
-    for i in range(nl_b):
-        for j in range(nl):
-            if nt[j] == nt_e[i]:
-                g_lbl_e.append(g_lbl[j])
-
-    g_lbl_o = []
-    for i in range(nl_u):
-        for j in range(nl):
-            if nt[j] == nt_o[i]:
-                g_lbl_o.append(g_lbl[j])
+    g_lbl_e, g_lbl_o = get_patt_lbl(nl_b, nl, nt, nt_e, g_lbl, nl_u, nt_o)
 
     m2_y = via_size[1] + 2 * via_enc[1]
     m2 = gf.components.rectangle(
