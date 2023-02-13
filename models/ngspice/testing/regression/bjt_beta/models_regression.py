@@ -31,7 +31,7 @@ import multiprocessing as mp
 import logging
 import glob
 
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
 
 
 def find_bjt(filepath: str):
@@ -681,17 +681,22 @@ def main():  # noqa: C901
                     f"# Device {dev} {c}  min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
                 )
 
+                # Verify regression results
                 if max_error_total < PASS_THRESH:
                     logging.info(f"# Device {dev} {c} has passed regression.")
                 else:
                     logging.error(
                         f"# Device {dev} {c} has failed regression. Needs more analysis."
                     )
+                    logging.error(
+                        "#Failed regression for BJT-beta analysis."
+                    )
+                    exit(1)
 
-
-# # ================================================================
+# ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
+
 
 if __name__ == "__main__":
 

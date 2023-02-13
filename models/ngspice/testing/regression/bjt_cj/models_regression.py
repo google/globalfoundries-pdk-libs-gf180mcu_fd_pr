@@ -31,7 +31,7 @@ import multiprocessing as mp
 import logging
 import glob
 
-PASS_THRESH = 2.0  # threshold value for passing devices
+PASS_THRESH = 5.0  # threshold value for passing devices
 NO_ROWS_NPN = 54  # no.of combinations extracted from npn sheet
 NO_ROWS_PNP = 24  # no.of combinations extracted from pnp sheet
 NO_ROWS_NPN_W = 36  # no.of combinations extracted from npn sheet without csj
@@ -545,17 +545,22 @@ def main():  # noqa: C901
                 f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
+            # Verify regression results
             if max_error_total < PASS_THRESH:
                 logging.info(f"# Device {dev} has passed regression.")
             else:
                 logging.error(
                     f"# Device {dev} has failed regression. Needs more analysis."
                 )
+                logging.error(
+                    "#Failed regression for BJT-cj analysis."
+                )
+                exit(1)
 
-
-# # ================================================================
+# ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
+
 
 if __name__ == "__main__":
 

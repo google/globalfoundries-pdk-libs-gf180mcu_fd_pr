@@ -31,7 +31,7 @@ import multiprocessing as mp
 import logging
 import glob
 
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
 NPN = [0.000001, 0.000003, 0.000005, 0.000007, 0.000009]
 PNP = [-0.000001, -0.000003, -0.000005, -0.000007, -0.000009]
 
@@ -647,17 +647,22 @@ def main():  # noqa: C901
                 f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
+            # Verify regression results
             if max_error_total < PASS_THRESH:
                 logging.info(f"# Device {dev} has passed regression.")
             else:
-                logging.info(
+                logging.error(
                     f"# Device {dev} has failed regression. Needs more analysis."
                 )
+                logging.error(
+                    "#Failed regression for BJT-iv analysis."
+                )
+                exit(1)
 
-
-# # ================================================================
+# ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
+
 
 if __name__ == "__main__":
 

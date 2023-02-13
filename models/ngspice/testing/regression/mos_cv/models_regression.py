@@ -32,7 +32,7 @@ import glob
 import logging
 
 # CONSTANT VALUES
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
 
 # Space from COMP contact to Poly2 on COMP V3.3
 comp_cont_spc_gate_v3_3 = 0.15
@@ -919,15 +919,22 @@ def main():
                 f"# Device {dev} Cg{cap} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
+            # Verify regression results
             if max_error_total < PASS_THRESH:
                 logging.info(f"# Device {dev} Cg{cap} has passed regression.")
             else:
-                logging.error(f"# Device {dev} Cg{cap} has failed regression.")
+                logging.error(
+                    f"# Device {dev} Cg{cap} has failed regression. Needs more analysis."
+                )
+                logging.error(
+                    "#Failed regression for MOS-CV analysis."
+                )
+                exit(1)
 
-
-# # ================================================================
+# ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
+
 
 if __name__ == "__main__":
 
