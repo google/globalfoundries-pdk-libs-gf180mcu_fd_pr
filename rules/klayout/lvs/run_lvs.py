@@ -156,7 +156,7 @@ def main():
             exit()
 
         check_call(
-            f"klayout -b -r gf180mcu.lvs -rd input={path} -rd report={file_name[0]}.lyrdb -rd schematic={args['--net']} -rd target_netlist=extracted_netlist_{file_name[0]}.cir -rd thr={workers_count} {switches}",
+            f"klayout -b -r {run_lvs_full_path}/gf180mcu.lvs -rd input={path} -rd report={file_name[0]}.lyrdb -rd schematic={args['--net']} -rd target_netlist=extracted_netlist_{file_name[0]}.cir -rd thr={workers_count} {switches}",
             shell=True,
         )
 
@@ -177,9 +177,7 @@ if __name__ == "__main__":
     args = docopt(__doc__, version="LVS Checker: 0.1")
     workers_count = os.cpu_count() * 2 if args["--thr"] is None else int(args["--thr"])
 
-    # Env. variables
-    pdk_root = os.environ["PDK_ROOT"]
-    pdk = os.environ["PDK"]
+    run_lvs_full_path = os.path.dirname(os.path.abspath(__file__))
 
     # ========= Checking Klayout version =========
     klayout_v_ = os.popen("klayout -v").read()
