@@ -37,6 +37,26 @@ NO_ROWS_PNP = 24  # no.of combinations extracted from pnp sheet
 NO_ROWS_NPN_W = 36  # no.of combinations extracted from npn sheet without csj
 
 
+def check_ngspice_version():
+    """
+    check_ngspice_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+
+    if "ngspice-" not in ngspice_v_:
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    else:
+        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        logging.info(f"Your Klayout version is: ngspice {version}")
+        if version <= 37:
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
+            exit(1)
+
+
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
     Args:
@@ -403,22 +423,13 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
     return None
 
 
-def main():  # noqa: C901
-    """Main function applies all regression steps"""
-    # ======= Checking ngspice  =======
-    ngspice_v_ = os.popen("ngspice -v").read()
+def main():
+    """
+    Main function applies all regression steps
+    """
 
-    if "ngspice-" not in ngspice_v_:
-        logging.error("ngspice is not found. Please make sure ngspice is installed.")
-        exit(1)
-    else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
-        print(version)
-        if version <= 37:
-            logging.error(
-                "ngspice version is not supported. Please use ngspice version 38 or newer."
-            )
-            exit(1)
+    ## Check ngspice version
+    check_ngspice_version()
 
     # pandas setup
     pd.set_option("display.max_columns", None)

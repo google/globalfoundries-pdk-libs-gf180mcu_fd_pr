@@ -34,6 +34,26 @@ import glob
 PASS_THRESH = 5.0
 
 
+def check_ngspice_version():
+    """
+    check_ngspice_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+
+    if "ngspice-" not in ngspice_v_:
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    else:
+        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        logging.info(f"Your Klayout version is: ngspice {version}")
+        if version <= 37:
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
+            exit(1)
+
+
 def find_bjt(filepath: str):
     """Find bjt in csv files
     Args:
@@ -54,13 +74,10 @@ def call_simulator(file_name: str):
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def ext_npn_measured(
-    dev_data_path: str, device: str, devices: list[str], dev_path: str
-) -> pd.DataFrame:
+def ext_npn_measured(dev_data_path, devices, dev_path):
     """Extract measured values from excel file.
     Args:
         dev_data_path (str): Path to excel file.
-        device (str): Device name.
         devices (str): List of devices.
         dev_path (str): Path to device.
     Returns:
@@ -166,13 +183,10 @@ def ext_npn_measured(
     return df
 
 
-def ext_pnp_measured(
-    dev_data_path: str, device: str, devices: list[str], dev_path: str
-) -> pd.DataFrame:
+def ext_pnp_measured(dev_data_path, devices, dev_path):
     """Extract measured values from excel file.
     Args:
         dev_data_path (str): Path to excel file.
-        device (str): Device name.
         devices (str): List of devices.
         dev_path (str): Path to device.
     Returns:
@@ -415,22 +429,213 @@ def run_sims(
     return df
 
 
-def main():  # noqa: C901
-    """Main function applies all regression steps"""
-    # ======= Checking ngspice  =======
-    ngspice_v_ = os.popen("ngspice -v").read()
+def error_calculation(dev_path, char, list_dev, meas_df, sim_df):
+    """
+    error_calculation Calc error between measured and simulated data.
 
-    if "ngspice-" not in ngspice_v_:
-        logging.error("ngspice is not found. Please make sure ngspice is installed.")
-        exit(1)
-    else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
-        print(version)
-        if version <= 37:
-            logging.error(
-                "ngspice version is not supported. Please use ngspice version 38 or newer."
+    Parameters
+    ----------
+    dev_path : string
+        Path string to the location of the device data.
+    char : list
+        List of all characteristics used in this measurement.
+    list_dev: list
+        List of all bjt devices in the regression.
+    meas_df : pd.DataFrame
+        Dataframe that holds the information about all measured data.
+    sim_df : pd.DataFrame
+        Dataframe that holds the information about all simulated data.
+
+    Returns
+    -------
+    bool
+        If all regression passed, it returns true. If any of the rules failed it returns false.
+    """
+
+    merged_df = meas_df.merge(sim_df, on=["device", "temp"], how="left")
+
+    merged_all = []
+    for c in char:
+        # create a new dataframe for rms error
+        rms_df = pd.DataFrame(columns=["device", "temp", "corner", "rms_error"])
+
+        merged_dfs = []
+
+        for i in range(len(merged_df)):
+
+            measured_data = pd.read_csv(merged_df[f"{c}_measured"][i])
+            simulated_data = pd.read_csv(merged_df[f"beta_{c}_sim"][i])
+            measured_data["v-sweep"] = simulated_data["v-sweep"]
+            result_data = simulated_data.merge(measured_data, how="left")
+
+            ## We found that most of the curr are in the range of milli-Amps and most of the
+            ## error happens in the off mode of the BJT. And it causes large rmse for the values.
+            ## We will clip at 5nA for all currents to make sure that for small signal it works as expected.
+
+            # Clipping all the  values to lowest_curr
+            lowest_curr = 5.0e-9
+
+            result_data[f"simulated_{c}_vcp_step1"] = result_data[
+                f"simulated_{c}_vcp_step1"
+            ].clip(lower=lowest_curr)
+            result_data[f"simulated_{c}_vcp_step2"] = result_data[
+                f"simulated_{c}_vcp_step2"
+            ].clip(lower=lowest_curr)
+            result_data[f"simulated_{c}_vcp_step3"] = result_data[
+                f"simulated_{c}_vcp_step3"
+            ].clip(lower=lowest_curr)
+            result_data[f"measured_{c}_vcp_step1"] = result_data[
+                f"measured_{c}_vcp_step1"
+            ].clip(lower=lowest_curr)
+            result_data[f"measured_{c}_vcp_step2"] = result_data[
+                f"measured_{c}_vcp_step2"
+            ].clip(lower=lowest_curr)
+            result_data[f"measured_{c}_vcp_step3"] = result_data[
+                f"measured_{c}_vcp_step3"
+            ].clip(lower=lowest_curr)
+
+            result_data["corner"] = "typical"
+            result_data["device"] = (
+                merged_df[f"{c}_measured"][i]
+                .split("/")[-1]
+                .split("d_")[1]
+                .split("_t")[0]
             )
-            exit(1)
+            result_data["temp"] = (
+                merged_df[f"{c}_measured"][i]
+                .split("/")[-1]
+                .split("_")[3]
+                .split("t")[1]
+                .split(".")[0]
+            )
+
+            result_data["step1_error"] = (
+                np.abs(
+                    result_data[f"simulated_{c}_vcp_step1"]
+                    - result_data[f"measured_{c}_vcp_step1"]
+                )
+                * 100.0
+                / result_data[f"measured_{c}_vcp_step1"]
+            )
+
+            result_data["step2_error"] = (
+                np.abs(
+                    result_data[f"simulated_{c}_vcp_step2"]
+                    - result_data[f"measured_{c}_vcp_step2"]
+                )
+                * 100.0
+                / result_data[f"measured_{c}_vcp_step2"]
+            )
+
+            result_data["step3_error"] = (
+                np.abs(
+                    result_data[f"simulated_{c}_vcp_step3"]
+                    - result_data[f"measured_{c}_vcp_step3"]
+                )
+                * 100.0
+                / result_data[f"measured_{c}_vcp_step3"]
+            )
+
+            result_data["error"] = (
+                np.abs(
+                    result_data["step1_error"]
+                    + result_data["step2_error"]
+                    + result_data["step3_error"]
+                )
+                / 3
+            )
+            # get rms error
+            result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
+            # fill rms dataframe
+            rms_df.loc[i] = [
+                result_data["device"][0],
+                result_data["temp"][0],
+                result_data["corner"][0],
+                result_data["rms_error"][0],
+            ]
+
+            result_data = result_data[
+                [
+                    "device",
+                    "temp",
+                    "corner",
+                    "measured_base_volt",
+                    f"measured_{c}_vcp_step1",
+                    f"measured_{c}_vcp_step2",
+                    f"measured_{c}_vcp_step3",
+                    f"simulated_{c}_vcp_step1",
+                    f"simulated_{c}_vcp_step2",
+                    f"simulated_{c}_vcp_step3",
+                    "step1_error",
+                    "step2_error",
+                    "step3_error",
+                    "error",
+                ]
+            ]
+
+            merged_dfs.append(result_data)
+
+        merged_out = pd.concat(merged_dfs)
+
+        merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
+        rms_df.to_csv(f"{dev_path}/final_error_analysis_{c}.csv", index=False)
+        merged_all = rms_df
+        # calculating the error of each device and reporting it
+        for dev in list_dev:
+            min_error_total = float()
+            max_error_total = float()
+            error_total = float()
+            number_of_existance = int()
+
+            # number of rows in the final excel sheet
+            num_rows = merged_all["device"].count()
+
+            for n in range(num_rows):
+                if dev == merged_all["device"].iloc[n]:
+                    number_of_existance += 1
+                    error_total += merged_all["rms_error"].iloc[n]
+                    if merged_all["rms_error"].iloc[n] > max_error_total:
+                        max_error_total = merged_all["rms_error"].iloc[n]
+                    elif merged_all["rms_error"].iloc[n] < min_error_total:
+                        min_error_total = merged_all["rms_error"].iloc[n]
+            mean_error_total = error_total / number_of_existance
+
+            # Making sure that min, max, mean errors are not > 100%
+            if min_error_total > 100:
+                min_error_total = 100
+
+            if max_error_total > 100:
+                max_error_total = 100
+
+            if mean_error_total > 100:
+                mean_error_total = 100
+
+            # logging.infoing min, max, mean errors to the consol
+            logging.info(
+                f"# Device {dev} {c}  min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
+            )
+
+            # Verify regression results
+            if max_error_total < PASS_THRESH:
+                logging.info(f"# Device {dev} {c} has passed regression.")
+            else:
+                logging.error(
+                    f"# Device {dev} {c} has failed regression. Needs more analysis."
+                )
+                logging.error(
+                    "#Failed regression for BJT-beta analysis."
+                )
+                exit(1)
+
+
+def main():
+    """
+    Main function applies all regression steps
+    """
+
+    ## Check ngspice version
+    check_ngspice_version()
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -472,8 +677,6 @@ def main():  # noqa: C901
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        # for c in char :
-
         beta_data_files = glob.glob(
             f"../../180MCU_SPICE_DATA/BJT/bjt_{dev}_beta_f.nl_out.xlsx"
         )
@@ -491,12 +694,17 @@ def main():  # noqa: C901
         if dev == "npn":
             f = ext_npn_measured
             list_dev = npn_devices
+
         elif dev == "pnp":
             f = ext_pnp_measured
             list_dev = pnp_devices
 
+        else:
+            logging.error("Undefined device is selected, please recheck")
+            exit(1)
+
         if beta_file != "":
-            meas_df = f(beta_file, dev, list_dev, dev_path)
+            meas_df = f(beta_file, list_dev, dev_path)
         else:
             meas_df = []
 
@@ -517,181 +725,7 @@ def main():  # noqa: C901
         )
 
         # compare section
-
-        merged_df = meas_df.merge(sim_df, on=["device", "temp"], how="left")
-
-        merged_all = []
-        for c in char:
-            # create a new dataframe for rms error
-            rms_df = pd.DataFrame(columns=["device", "temp", "corner", "rms_error"])
-
-            merged_dfs = []
-
-            for i in range(len(merged_df)):
-
-                measured_data = pd.read_csv(merged_df[f"{c}_measured"][i])
-                simulated_data = pd.read_csv(merged_df[f"beta_{c}_sim"][i])
-                measured_data["v-sweep"] = simulated_data["v-sweep"]
-                result_data = simulated_data.merge(measured_data, how="left")
-
-                ## We found that most of the curr are in the range of milli-Amps and most of the
-                ## error happens in the off mode of the BJT. And it causes large rmse for the values.
-                ## We will clip at 5nA for all currents to make sure that for small signal it works as expected.
-
-                # Clipping all the  values to lowest_curr
-                lowest_curr = 5.0e-9
-
-                result_data[f"simulated_{c}_vcp_step1"] = result_data[
-                    f"simulated_{c}_vcp_step1"
-                ].clip(lower=lowest_curr)
-                result_data[f"simulated_{c}_vcp_step2"] = result_data[
-                    f"simulated_{c}_vcp_step2"
-                ].clip(lower=lowest_curr)
-                result_data[f"simulated_{c}_vcp_step3"] = result_data[
-                    f"simulated_{c}_vcp_step3"
-                ].clip(lower=lowest_curr)
-                result_data[f"measured_{c}_vcp_step1"] = result_data[
-                    f"measured_{c}_vcp_step1"
-                ].clip(lower=lowest_curr)
-                result_data[f"measured_{c}_vcp_step2"] = result_data[
-                    f"measured_{c}_vcp_step2"
-                ].clip(lower=lowest_curr)
-                result_data[f"measured_{c}_vcp_step3"] = result_data[
-                    f"measured_{c}_vcp_step3"
-                ].clip(lower=lowest_curr)
-
-                result_data["corner"] = "typical"
-                result_data["device"] = (
-                    merged_df[f"{c}_measured"][i]
-                    .split("/")[-1]
-                    .split("d_")[1]
-                    .split("_t")[0]
-                )
-                result_data["temp"] = (
-                    merged_df[f"{c}_measured"][i]
-                    .split("/")[-1]
-                    .split("_")[3]
-                    .split("t")[1]
-                    .split(".")[0]
-                )
-
-                result_data["step1_error"] = (
-                    np.abs(
-                        result_data[f"simulated_{c}_vcp_step1"]
-                        - result_data[f"measured_{c}_vcp_step1"]
-                    )
-                    * 100.0
-                    / result_data[f"measured_{c}_vcp_step1"]
-                )
-
-                result_data["step2_error"] = (
-                    np.abs(
-                        result_data[f"simulated_{c}_vcp_step2"]
-                        - result_data[f"measured_{c}_vcp_step2"]
-                    )
-                    * 100.0
-                    / result_data[f"measured_{c}_vcp_step2"]
-                )
-
-                result_data["step3_error"] = (
-                    np.abs(
-                        result_data[f"simulated_{c}_vcp_step3"]
-                        - result_data[f"measured_{c}_vcp_step3"]
-                    )
-                    * 100.0
-                    / result_data[f"measured_{c}_vcp_step3"]
-                )
-
-                result_data["error"] = (
-                    np.abs(
-                        result_data["step1_error"]
-                        + result_data["step2_error"]
-                        + result_data["step3_error"]
-                    )
-                    / 3
-                )
-                # get rms error
-                result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
-                # fill rms dataframe
-                rms_df.loc[i] = [
-                    result_data["device"][0],
-                    result_data["temp"][0],
-                    result_data["corner"][0],
-                    result_data["rms_error"][0],
-                ]
-
-                result_data = result_data[
-                    [
-                        "device",
-                        "temp",
-                        "corner",
-                        "measured_base_volt",
-                        f"measured_{c}_vcp_step1",
-                        f"measured_{c}_vcp_step2",
-                        f"measured_{c}_vcp_step3",
-                        f"simulated_{c}_vcp_step1",
-                        f"simulated_{c}_vcp_step2",
-                        f"simulated_{c}_vcp_step3",
-                        "step1_error",
-                        "step2_error",
-                        "step3_error",
-                        "error",
-                    ]
-                ]
-
-                merged_dfs.append(result_data)
-
-            merged_out = pd.concat(merged_dfs)
-
-            merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
-            rms_df.to_csv(f"{dev_path}/final_error_analysis_{c}.csv", index=False)
-            merged_all = rms_df
-            # calculating the error of each device and reporting it
-            for dev in list_dev:
-                min_error_total = float()
-                max_error_total = float()
-                error_total = float()
-                number_of_existance = int()
-
-                # number of rows in the final excel sheet
-                num_rows = merged_all["device"].count()
-
-                for n in range(num_rows):
-                    if dev == merged_all["device"].iloc[n]:
-                        number_of_existance += 1
-                        error_total += merged_all["rms_error"].iloc[n]
-                        if merged_all["rms_error"].iloc[n] > max_error_total:
-                            max_error_total = merged_all["rms_error"].iloc[n]
-                        elif merged_all["rms_error"].iloc[n] < min_error_total:
-                            min_error_total = merged_all["rms_error"].iloc[n]
-                mean_error_total = error_total / number_of_existance
-
-                # Making sure that min, max, mean errors are not > 100%
-                if min_error_total > 100:
-                    min_error_total = 100
-
-                if max_error_total > 100:
-                    max_error_total = 100
-
-                if mean_error_total > 100:
-                    mean_error_total = 100
-
-                # logging.infoing min, max, mean errors to the consol
-                logging.info(
-                    f"# Device {dev} {c}  min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
-                )
-
-                # Verify regression results
-                if max_error_total < PASS_THRESH:
-                    logging.info(f"# Device {dev} {c} has passed regression.")
-                else:
-                    logging.error(
-                        f"# Device {dev} {c} has failed regression. Needs more analysis."
-                    )
-                    logging.error(
-                        "#Failed regression for BJT-beta analysis."
-                    )
-                    exit(1)
+        error_calculation(dev_path, char, list_dev, meas_df, sim_df)
 
 # ================================================================
 # -------------------------- MAIN --------------------------------
