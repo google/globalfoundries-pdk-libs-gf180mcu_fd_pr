@@ -65,9 +65,9 @@ def lvs_check(table, files):
     pass_count = 0
     fail_count = 0
 
-    logging.info(f"================================================")
+    logging.info("================================================")
     logging.info("{:-^48}".format(table.upper()))
-    logging.info(f"================================================ \n")
+    logging.info("================================================ \n")
 
     # Get manual test cases
     x = os.popen("find man_testing/ -name *.gds").read()
@@ -286,7 +286,7 @@ def main():
         ["cap_mim_2f0_m4m5_noshield", "-rd mim_option=B -rd mim_cap=2"],
         ["cap_mim_1f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1"],
         ["cap_mim_1f5_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1.5"],
-        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"]        
+        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"]
     ]
 
     # MOS Capacitor
@@ -366,14 +366,14 @@ if __name__ == "__main__":
     arguments = docopt(__doc__, version="LVS REGRESSION: 0.1")
     workers_count = (
         os.cpu_count() * 2
-        if arguments["--num_cores"] == None
+        if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
 
     # logs format
     logging.basicConfig(
         level=logging.DEBUG,
-        format=f"%(asctime)s | %(levelname)-7s | %(message)s",
+        format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
