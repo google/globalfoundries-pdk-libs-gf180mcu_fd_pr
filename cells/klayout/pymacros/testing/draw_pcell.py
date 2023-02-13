@@ -25,7 +25,7 @@ import glob
 from cells import gf180mcu
 
 DEV_SPACES = dict()
-DEV_SPACES["fet"] = 250
+DEV_SPACES["fet"] = 450
 DB_PERC = 1000
 
 def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
@@ -58,8 +58,8 @@ def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
         param = row.to_dict()
         try:
             logging.info(f"Generating pcell for {device_name} with params : {param}")
-            pcell_id = lib.layout().pcell_id(device_name)
-            pc = layout.add_pcell_variant(lib, pcell_id, param)
+            # pcell_id = lib.layout().pcell_id(device_name)
+            pc = layout.add_pcell_variant(lib, device_name, param)
             top.insert(k.CellInstArray(pc, k.Trans(x_shift, y_shift)))
         except Exception as e:
             logging.error(f"Exception happened: {str(e)} for pattern {device_name} {param}")
@@ -67,7 +67,7 @@ def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
 def run_generation(target_device):
 
     file_path = os.path.dirname(os.path.abspath(__file__))
-    out_file = os.path.join(file_path, "testcases", f"{target_device}.gds")
+    list_patt_files = glob.glob(os.path.join(file_path, "patterns", target_device, "*.csv"))
 
     # Create new layout
     layout = k.Layout()
@@ -78,14 +78,18 @@ def run_generation(target_device):
     # === Read gf180mcu pcells ===
     lib = k.Library.library_by_name("gf180mcu")
 
-    list_patt_files = glob.glob(os.path.join(file_path, "patterns", target_device, "*.csv"))
-    for p in list_patt_files:
-        draw_pcell(layout, top, lib, p, target_device, DEV_SPACES[target_device])
+    
+    for i,p in enumerate(list_patt_files):
+        device = p.split("/")[-1].split("_patt")[0]
+        device_type = device.split("_")[0]
+        out_file = os.path.join(file_path, "testcases", f"{device}.gds")
 
-    # Save the file
-    options = k.SaveLayoutOptions()
-    options.write_context_info = False
-    layout.write(out_file, options)
+        draw_pcell(layout, top, lib, p, device_type, DEV_SPACES[target_device])
+
+        # Save the file
+        options = k.SaveLayoutOptions()
+        options.write_context_info = False
+        layout.write(out_file, options)
 
 
 if __name__ == "__main__":
