@@ -35,11 +35,22 @@ import os
 import glob
 
 
+def cdl_gen(df, device_name):
+    """
+    Generate cdl file from a given dataframe
 
-def cdl_gen(df, device_name, device_type):
+    Args :
+        df : dataframe of device data
+        device_name : name of device under test
+    """
 
+    # open cdl file for write
     cdl_f = open(f"../testcases/{device_name}_pcells.cdl", "w")
+
+    # reading top_cell name
     top_cell = df["netlist_name"][0]
+
+    # write header of cdl file
     cdl_f.write(
         f"""
 # Copyright 2022 GlobalFoundries PDK Authors
@@ -64,55 +75,54 @@ def cdl_gen(df, device_name, device_type):
         """
     )
 
-    for i,row in df.iterrows():
+    # reading netlist parameters (name,nets,type,values) for every pattern
+    for i, row in df.iterrows():
         nets = row["netlist_nets"].split("_")
         dev_name = row["dev_name"].split("_")
         param = row["netlists_param"].split("_")
         nl = len(nets)
-        
-        for j in range(nl) : 
+
+        for j in range(nl):
             cdl_f.write(
                 f"""
 {dev_name[j]} {nets[j]} {device_name} {param[j]}
                 """
             )
-    
-    cdl_f.write("""
+
+    # write the end of cdl file
+    cdl_f.write(
+        """
 .ENDS
-    """)
-    
+    """
+    )
 
 
 if __name__ == "__main__":
 
     # arguments
     arguments = docopt(__doc__, version="PCELLS Gen.: 0.1")
-
     device = arguments["--device"]
 
-    # No. of threads
-    thrCount = (
-        os.cpu_count() * 2 if arguments["--thr"] is None else int(arguments["--thr"])
-    )
-
+    # read patterns file
     file_path = os.path.dirname(os.path.abspath(__file__))
     patt_file_path = os.path.dirname(file_path)
-
     list_patt_files = glob.glob(
         os.path.join(patt_file_path, "patterns", device, "*.csv")
     )
 
-    for p in list_patt_files : 
+    for p in list_patt_files:
 
+        # Get device_name
         device_name = p.split("/")[-1].split("_patt")[0]
-        
+
         # Create output file
         os.makedirs(f"{patt_file_path}/testcases", exist_ok=True)
         out_file = os.path.join(file_path, "testcases", f"{device_name}_pcells.cdl")
-        
+
+        # read patterns file
         df = pd.read_csv(
             f"{patt_file_path}/patterns/{device}/{device_name}_patterns.csv"
         )
 
         # Calling cdl generation function
-        cdl_gen(df=df, device_name=device_name, device_type=device)
+        cdl_gen(df=df, device_name=device_name)
