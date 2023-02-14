@@ -48,8 +48,8 @@ lab=S}
 C {devices/code_shown.sym} 20 -160 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
-.include $::180MCU_MODELS/design.spice
-.lib $::180MCU_MODELS/sm141064.spice typical
+.include $::180MCU_MODELS/design.ngspice
+.lib $::180MCU_MODELS/sm141064.ngspice typical
 "}
 C {devices/lab_pin.sym} 50 -410 0 0 {name=l1 sig_type=std_logic lab=G}
 C {devices/lab_pin.sym} 130 -490 0 0 {name=l2 sig_type=std_logic lab=D}
@@ -68,7 +68,7 @@ write test_nmos_3p3_sab.raw
 .endc
 "}
 C {devices/title.sym} 160 -30 0 0 {name=l5 author="GlobalFoundries PDK Authors"}
-C {gf180mcu_fd_pr/nmos_3p3_sab.sym} 110 -410 0 0 {name=M1
+C {symbols/nmos_3p3_sab.sym} 110 -410 0 0 {name=M1
 L=0.28u
 W=0.22u
 nf=1
