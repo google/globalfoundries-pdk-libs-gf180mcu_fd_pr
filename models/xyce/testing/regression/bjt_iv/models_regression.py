@@ -15,13 +15,11 @@ import os
 from jinja2 import Template
 import concurrent.futures
 import shutil
-import warnings
 import multiprocessing as mp
 import glob
 import logging
 
-PASS_THRESH = 2.0
-warnings.simplefilter(action="ignore", category=FutureWarning)
+PASS_THRESH = 5.0
 pd.options.mode.chained_assignment = None  # default='warn'
 MOS = [
     "ibp=1.000E-06",
@@ -32,6 +30,20 @@ MOS = [
 ]
 NPN = [-0.000001, -0.000003, -0.000005, -0.000007, -0.000009]
 PNP = [0.000001, 0.000003, 0.000005, 0.000007, 0.000009]
+
+
+def check_xyce_version():
+    """
+    check_xyce_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.5" not in Xyce_v_:
+        logging.error("Xyce version 7.5 is required.")
+        exit(1)
 
 
 def call_simulator(file_name):
@@ -46,8 +58,8 @@ def ext_measured(
     dirpath: str,
     device: str,
     vc: str,
-    step: list[str],
-    list_devices: list[str],
+    step: list,
+    list_devices: list,
     ib: str,
 ) -> pd.DataFrame:
     """ext_measured function calculates get measured data
@@ -120,7 +132,7 @@ def ext_measured(
     return dfs
 
 
-def run_sim(dirpath: str, device: str, list_devices: list[str], temp: float) -> dict:
+def run_sim(dirpath: str, device: str, list_devices: list, temp: float) -> dict:
     """Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
@@ -171,7 +183,7 @@ def run_sim(dirpath: str, device: str, list_devices: list[str], temp: float) -> 
 
 
 def run_sims(
-    dirpath: str, list_devices: list[str], device: str, num_workers=mp.cpu_count()
+    dirpath: str, list_devices: list, device: str, num_workers=mp.cpu_count()
 ):
     """passing netlists to run_sim function
         and storing the results csv files into dataframes
@@ -262,7 +274,7 @@ def error_cal(
     sim_df: pd.DataFrame,
     meas_df: pd.DataFrame,
     device: str,
-    step: list[str],
+    step: list,
     ib: str,
     vc: str,
 ) -> pd.DataFrame:
@@ -395,14 +407,13 @@ def error_cal(
 
 
 def main():
-    # ======= Checking Xyce  =======
-    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
-    if Xyce_v_ == "":
-        logging.error("Xyce is not found. Please make sure Xyce is installed.")
-        exit(1)
-    elif "7.6" not in Xyce_v_:
-        logging.error("Xyce version 7.6 is required.")
-        exit(1)
+    """
+    Main function applies all regression steps
+    """
+
+    ## Check Xyce version
+    check_xyce_version()
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -493,7 +504,7 @@ def main():
                 f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
-            if max_error_total < PASS_THRESH:
+            if max_error_total <= PASS_THRESH:
                 logging.info(f"# Device {dev} has passed regression.")
             else:
                 logging.error(

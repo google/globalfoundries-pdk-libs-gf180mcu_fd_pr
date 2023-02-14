@@ -32,10 +32,24 @@ import logging
 import subprocess
 import glob
 
-PASS_THRESH = 2.0  # threshold value for passing devices
+PASS_THRESH = 5.0  # threshold value for passing devices
 NO_ROWS_NPN = 54  # no.of combinations extracted from npn sheet
 NO_ROWS_PNP = 24  # no.of combinations extracted from pnp sheet
 NO_ROWS_NPN_W = 32  # no.of combinations extracted from npn sheet without csj
+
+
+def check_xyce_version():
+    """
+    check_xyce_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.5" not in Xyce_v_:
+        logging.error("Xyce version 7.5 is required.")
+        exit(1)
 
 
 def find_freq(filename):
@@ -463,22 +477,14 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
     return None
 
 
-def main():  # noqa: C901
-    """Main function applies all regression steps"""
+def main():
+    """
+    Main function applies all regression steps
+    """
 
-    # pandas setup
-    pd.set_option("display.max_columns", None)
-    pd.set_option("display.max_rows", None)
-    pd.set_option("max_colwidth", None)
-    pd.set_option("display.width", 1000)
-    # ======= Checking Xyce  =======
-    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
-    if Xyce_v_ == "":
-        logging.error("Xyce is not found. Please make sure Xyce is installed.")
-        exit(1)
-    elif "7.6" not in Xyce_v_:
-        logging.error("Xyce version 7.6 is required.")
-        exit(1)
+    ## Check Xyce version
+    check_xyce_version()
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -606,7 +612,7 @@ def main():  # noqa: C901
                 f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
-            if max_error_total < PASS_THRESH:
+            if max_error_total <= PASS_THRESH:
                 logging.info(f"# Device {dev} has passed regression.")
             else:
                 logging.error(

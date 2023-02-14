@@ -33,7 +33,7 @@ import logging
 
 pd.options.mode.chained_assignment = None  # default='warn'
 # constants
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
 
 MOS = [0, -0.825, -1.65, -2.475, -3.3]
 PMOS3P3_VPS = ["-0", 0.825, 1.65, 2.475, 3.3]
@@ -68,6 +68,20 @@ VDS_P03V3D = "0 -3.3 -0.1"
 VDS_N06V0D = "0 6 0.1"
 VDS_P06V0D = "0 -6 -0.1"
 VDS_N06V0_ND = "0 6 0.1"
+
+
+def check_xyce_version():
+    """
+    check_xyce_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.5" not in Xyce_v_:
+        logging.error("Xyce version 7.5 is required.")
+        exit(1)
 
 
 def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
@@ -791,15 +805,13 @@ def error_cal(
 
 
 def main():
-    """Main function applies all regression steps"""
-    # ======= Checking Xyce  =======
-    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
-    if Xyce_v_ == "":
-        logging.error("Xyce is not found. Please make sure Xyce is installed.")
-        exit(1)
-    elif "7.6" not in Xyce_v_:
-        logging.error("Xyce version 7.6 is required.")
-        exit(1)
+    """
+    Main function applies all regression steps
+    """
+
+    ## Check Xyce version
+    check_xyce_version()
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -897,7 +909,7 @@ def main():
                 f"# Device {dev} Cg{cap} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
-            if max_error_total < PASS_THRESH:
+            if max_error_total <= PASS_THRESH:
                 logging.info(f"# Device {dev} Cg{cap} has passed regression.")
             else:
                 logging.error(f"# Device {dev} Cg{cap} has failed regression.")

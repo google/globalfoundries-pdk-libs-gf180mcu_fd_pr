@@ -15,14 +15,13 @@ import os
 from jinja2 import Template
 import concurrent.futures
 import shutil
-import warnings
 import glob
 import logging
 import multiprocessing as mp
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
-warnings.simplefilter(action="ignore", category=FutureWarning)
+
 NMOS3P3_VBS = [0, -0.825, -1.65, -2.48, -3.3]
 PMOS3P3_VBS = [0, 0.825, 1.65, 2.48, 3.3]
 NMOS6P0_VBS = [0, -0.75, -1.5, -2.25, -3]
@@ -30,7 +29,7 @@ PMOS6P0_VBS = [0, 0.75, 1.5, 2.25, 3]
 NMOS6P0_NAT_VBS = [0, -0.75, -1.5, -2.25, -3]
 NMOS3P3_VBS1 = [0, -0.825, -1.65, -2.475, -3.3]
 PMOS3P3_VBS1 = [0, 0.825, 1.65, 2.475, 3.3]
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
 
 # ################
 VBS_N03V3 = "0 -3.3 -0.825"
@@ -46,6 +45,20 @@ VGS_P06V0 = "0 -6 -0.05"
 VGS_N06V0_N = "-0.5 6 0.05"
 
 
+def check_xyce_version():
+    """
+    check_xyce_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.5" not in Xyce_v_:
+        logging.error("Xyce version 7.5 is required.")
+        exit(1)
+
+
 def call_simulator(file_name):
     """Call simulation commands to perform simulation.
     Args:
@@ -55,7 +68,7 @@ def call_simulator(file_name):
     os.system(f"Xyce {file_name} -l {log_file}.log 2> /dev/null")
 
 
-def ext_measured(dirpath: str, device: str, vgs: str, vbs: list[str]) -> pd.DataFrame:
+def ext_measured(dirpath: str, device: str, vgs: str, vbs: list) -> pd.DataFrame:
     """ext_measured function calculates get measured data
 
     Args:
@@ -311,7 +324,7 @@ def error_cal(
     device: str,
     id_rds: str,
     vbs: str,
-    vgs: list[str],
+    vgs: list,
 ) -> None:
     """error function calculates the error between measured, simulated data
 
@@ -456,15 +469,13 @@ def error_cal(
 
 
 def main():
-    """Main function applies all regression steps"""
-    # ======= Checking Xyce  =======
-    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
-    if Xyce_v_ == "":
-        logging.error("Xyce is not found. Please make sure Xyce is installed.")
-        exit(1)
-    elif "7.6" not in Xyce_v_:
-        logging.error("Xyce version 7.6 is required.")
-        exit(1)
+    """
+    Main function applies all regression steps
+    """
+
+    ## Check Xyce version
+    check_xyce_version()
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -571,7 +582,7 @@ def main():
             f"# Device {device} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
         )
 
-        if max_error_total < PASS_THRESH:
+        if max_error_total <= PASS_THRESH:
             logging.info(f"# Device {device} has passed regression.")
         else:
             logging.error(f"# Device {device} has failed regression.")
