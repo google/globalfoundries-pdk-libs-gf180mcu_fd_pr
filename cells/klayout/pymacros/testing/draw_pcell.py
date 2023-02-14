@@ -36,14 +36,15 @@ import klayout.db as k
 import pandas as pd
 import math
 import glob
+import json
 
 pcell_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, pcell_path)
 
-from cells import gf180mcu # noqa E402
+from cells import gf180mcu  # noqa E402
 
-DEV_SPACES = dict()
-DEV_SPACES["fet"] = 450
+# DEV_SPACES = dict()
+# DEV_SPACES["fet"] = 450
 DB_PERC = 1000
 
 
@@ -84,7 +85,15 @@ def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
             y_shift = 0 if i == 0 else y_shift + device_space * DB_PERC
 
         pcell_name = row["pcell_name"]
-        param = row.drop(labels=["pcell_name", "netlist_name","netlist_nets","netlists_param","dev_name"]).to_dict()
+        param = row.drop(
+            labels=[
+                "pcell_name",
+                "netlist_name",
+                "netlist_nets",
+                "netlists_param",
+                "dev_name",
+            ]
+        ).to_dict()
 
         if "fet" in device_name:
             param["g_lbl"] = param["g_lbl"].split("_")
@@ -126,6 +135,9 @@ def run_generation(target_device):
         os.makedirs(f"{file_path}/testcases", exist_ok=True)
         out_file = os.path.join(file_path, "testcases", f"{device}_pcells.gds")
 
+        # Read device setting
+        dev_setting = json.load(open(f"{file_path}/patterns/{target_device}.json"))
+
         # Create new layout
         layout = k.Layout()
 
@@ -133,7 +145,7 @@ def run_generation(target_device):
         top = layout.create_cell(f"{device}_pcells")
 
         # Call draww_pcell
-        draw_pcell(layout, top, lib, p, device, DEV_SPACES[target_device])
+        draw_pcell(layout, top, lib, p, device, dev_setting["spacing"])
 
         # Flatten cell
         top.flatten(1)
