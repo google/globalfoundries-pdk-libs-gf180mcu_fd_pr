@@ -84,7 +84,7 @@ def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
             y_shift = 0 if i == 0 else y_shift + device_space * DB_PERC
 
         pcell_name = row["pcell_name"]
-        param = row.drop(labels=["Unnamed: 0", "pcell_name", "netlist_name"]).to_dict()
+        param = row.drop(labels=["pcell_name", "netlist_name","netlist_nets","netlists_param","dev_name"]).to_dict()
 
         if "fet" in device_name:
             param["g_lbl"] = param["g_lbl"].split("_")
