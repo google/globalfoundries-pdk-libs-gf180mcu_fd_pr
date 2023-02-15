@@ -65,10 +65,10 @@ lab=M}
 C {devices/code_shown.sym} 20 -160 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
-.include $::180MCU_MODELS/design.spice
-.lib $::180MCU_MODELS/sm141064.spice typical
-.lib $::180MCU_MODELS/sm141064.spice res_typical
-* .lib $::180MCU_MODELS/sm141064.spice res_statistical
+.include $::180MCU_MODELS/design.ngspice
+.lib $::180MCU_MODELS/sm141064.ngspice typical
+.lib $::180MCU_MODELS/sm141064.ngspice res_typical
+* .lib $::180MCU_MODELS/sm141064.ngspice res_statistical
 "}
 C {devices/lab_pin.sym} 130 -490 0 0 {name=l2 sig_type=std_logic lab=P}
 C {devices/lab_pin.sym} 130 -310 0 0 {name=l3 sig_type=std_logic lab=M}
@@ -93,7 +93,7 @@ tclcommand="
 xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
 "
 }
-C {gf180mcu_fd_pr/pplus_u.sym} 130 -410 0 0 {name=R1
+C {symbols/pplus_u.sym} 130 -410 0 0 {name=R1
 W=5e-6
 L=5e-6
 model=pplus_u

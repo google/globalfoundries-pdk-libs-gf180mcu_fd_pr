@@ -49,12 +49,12 @@ lab=P}
 C {devices/code_shown.sym} 30 -200 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
-.include $::180MCU_MODELS/design.spice
-.lib $::180MCU_MODELS/sm141064.spice typical
-.lib $::180MCU_MODELS/sm141064.spice res_typical
-.lib $::180MCU_MODELS/sm141064.spice moscap_typical
-.lib $::180MCU_MODELS/sm141064.spice diode_typical
-* .lib $::180MCU_MODELS/sm141064.spice res_statistical
+.include $::180MCU_MODELS/design.ngspice
+.lib $::180MCU_MODELS/sm141064.ngspice typical
+.lib $::180MCU_MODELS/sm141064.ngspice res_typical
+.lib $::180MCU_MODELS/sm141064.ngspice moscap_typical
+.lib $::180MCU_MODELS/sm141064.ngspice diode_typical
+* .lib $::180MCU_MODELS/sm141064.ngspice res_statistical
 "}
 C {devices/code_shown.sym} 390 -450 0 0 {name=NGSPICE only_toplevel=true
 value="
@@ -75,7 +75,7 @@ xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]
 }
 C {devices/gnd.sym} 230 -290 0 0 {name=l2 lab=GND}
 C {devices/lab_pin.sym} 230 -490 0 1 {name=l3 sig_type=std_logic lab=P}
-C {gf180mcu_fd_pr/diode_pw2dw.sym} 230 -390 0 0 {name=D1
+C {symbols/diode_pw2dw.sym} 230 -390 0 0 {name=D1
 model=diode_pw2dw
 r_w=3u
 r_l=3u

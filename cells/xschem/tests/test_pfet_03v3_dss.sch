@@ -69,7 +69,7 @@ tclcommand="
 xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
 "
 }
-C {gf180mcu_fd_pr/pfet_03v3_dss.sym} 110 -410 0 0 {name=M1
+C {symbols/pfet_03v3_dss.sym} 110 -410 0 0 {name=M1
 L=0.28u
 W=0.22u
 nf=1
@@ -86,6 +86,6 @@ spiceprefix=X
 C {devices/code_shown.sym} 60 -170 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
-.include $::180MCU_MODELS/design.spice
-.lib $::180MCU_MODELS/sm141064.spice typical
+.include $::180MCU_MODELS/design.ngspice
+.lib $::180MCU_MODELS/sm141064.ngspice typical
 "}
