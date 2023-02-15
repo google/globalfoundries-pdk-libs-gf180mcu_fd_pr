@@ -255,13 +255,15 @@ if $schematic
   schematic($schematic, reader)
   logger.info("Netlist file: #{$schematic}")
 else
-  begin  
-    schematic("#{source.cell_name}.cdl", reader)
-    logger.info("Netlist file: #{source.cell_name}.cdl")
-  rescue 
-    puts "No schematic loaded , please add your netlist file"
-    logger.error("No schematic loaded , please add your netlist file")
-  end 
+  exts = ["spice", "cdl"]
+  candidates = exts.map{|ext| "#{source.cell_name}.#{ext}"}  
+  netlists = candidates.select{|f| File.exist?(f)}
+  if netlists.empty?
+    error("Netlist not found, tried: #{candidates}")
+  else
+    schematic(netlists[0], reader)
+    logger.info("Netlist file: #{netlists[0]}")
+  end
 end
 
 class BResistor < RBA::DeviceClassResistorWithBulk
