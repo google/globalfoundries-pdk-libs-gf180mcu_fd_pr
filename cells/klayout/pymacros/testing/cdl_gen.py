@@ -45,7 +45,7 @@ def cdl_gen(df, device_name):
     """
 
     # open cdl file for write
-    cdl_f = open(f"../testcases/{device_name}_pcells.cdl", "w")
+    cdl_f = open(f"testcases/{device_name}_pcells.cdl", "w")
 
     # reading top_cell name
     top_cell = df["netlist_name"][0]
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     device = arguments["--device"]
 
     # read patterns file
-    file_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.abspath(__file__)
     patt_file_path = os.path.dirname(file_path)
     list_patt_files = glob.glob(
         os.path.join(patt_file_path, "patterns", device, "*.csv")
