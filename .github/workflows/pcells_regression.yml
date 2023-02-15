@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: pcells lvs testing
+name: pcells regression
 
 on:
   pull_request:
@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  fet_test_lvs:
+  fet_pcells_testing:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 12
@@ -28,13 +28,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - name: fet gds generation
+      - name: fet pcells regression
         run: |
-          make fet_test-gds-pcells
-      - name: fet cdl generation
-        run: |
-          make fet_test-cdl-pcells
-      - name: fet lvs testing
-        run: |
-          make fet_test-LVS-pcells
+          make test-fet-pcells
+      
       

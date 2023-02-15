@@ -56,3 +56,12 @@ test-LVS-switch: | $(CONDA_ENV_PYTHON)
 # ngspice models regression
 test-ngspice-%: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) cd models/ngspice/testing/regression/$*/ && python3 models_regression.py
+
+################################################################################
+## PCells Regression section
+################################################################################
+# fet main testing
+test-fet-pcells: | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/lvs_test/ && pytest --device=fet pcell_reg_Pytest.py 
+
+
