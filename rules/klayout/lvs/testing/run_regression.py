@@ -51,16 +51,9 @@ def check_klayout_version():
     if len(klayout_v_list) < 1 or len(klayout_v_list) > 3:
         logging.error("Was not able to get klayout version properly.")
         exit(1)
-    elif len(klayout_v_list) == 2:
-        if klayout_v_list[1] <= 27:
-            logging.warning("Prerequisites at a minimum: KLayout 0.27.8")
-            logging.error(
-                "Using this klayout version has not been assesed in this development. Limits are unknown"
-            )
-            exit(1)
-    elif len(klayout_v_list) == 3:
-        if klayout_v_list[1] <= 27 and klayout_v_list[2] < 8:
-            logging.warning("Prerequisites at a minimum: KLayout 0.27.8")
+    elif len(klayout_v_list) >= 2 or len(klayout_v_list) <= 3:
+        if klayout_v_list[1] < 28:
+            logging.error("Prerequisites at a minimum: KLayout 0.28.0")
             logging.error(
                 "Using this klayout version has not been assesed in this development. Limits are unknown"
             )
@@ -241,16 +234,16 @@ def main():
 
     # Resistor
     resistor_files = [
-        # ["pplus_u"],
-        # ["nplus_s"],
-        # ["pplus_u_dw"],
-        # ["nplus_s_dw"],
-        # ["pplus_s"],
-        # ["pplus_s_dw"],
-        # ["nplus_u_dw"],
-        # ["nplus_u"],
-        # ["nwell"],
-        # ["pwell"],
+        ["pplus_u"],
+        ["nplus_s"],
+        ["pplus_u_dw"],
+        ["nplus_s_dw"],
+        ["pplus_s"],
+        ["pplus_s_dw"],
+        ["nplus_u_dw"],
+        ["nplus_u"],
+        ["nwell"],
+        ["pwell"],
         ["ppolyf_s"],
         ["ppolyf_u_3k", "-rd poly_res=3k"],
         ["ppolyf_s_dw"],
@@ -293,7 +286,7 @@ def main():
         ["cap_mim_2f0_m4m5_noshield", "-rd mim_option=B -rd mim_cap=2"],
         ["cap_mim_1f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1"],
         ["cap_mim_1f5_m5m6_noshield", "-rd mim_option=B -rd mim_cap=1.5"],
-        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"],
+        ["cap_mim_2f0_m5m6_noshield", "-rd mim_option=B -rd mim_cap=2"]
     ]
 
     # MOS Capacitor

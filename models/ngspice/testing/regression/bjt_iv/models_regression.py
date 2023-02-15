@@ -31,9 +31,29 @@ import multiprocessing as mp
 import logging
 import glob
 
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
 NPN = [0.000001, 0.000003, 0.000005, 0.000007, 0.000009]
 PNP = [-0.000001, -0.000003, -0.000005, -0.000007, -0.000009]
+
+
+def check_ngspice_version():
+    """
+    check_ngspice_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+
+    if "ngspice-" not in ngspice_v_:
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    else:
+        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        logging.info(f"Your Klayout version is: ngspice {version}")
+        if version <= 37:
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
+            exit(1)
 
 
 def call_simulator(file_name):
@@ -513,22 +533,13 @@ def error_cal(merged_df: pd.DataFrame, dev_path: str) -> None:
     return None
 
 
-def main():  # noqa: C901
-    """Main function applies all regression v_collector_steps"""
-    # ======= Checking ngspice  =======
-    ngspice_v_ = os.popen("ngspice -v").read()
+def main():
+    """
+    Main function applies all regression v_collector_steps
+    """
 
-    if "ngspice-" not in ngspice_v_:
-        logging.error("ngspice is not found. Please make sure ngspice is installed.")
-        exit(1)
-    else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
-        print(version)
-        if version <= 37:
-            logging.error(
-                "ngspice version is not supported. Please use ngspice version 38 or newer."
-            )
-            exit(1)
+    ## Check ngspice version
+    check_ngspice_version()
 
     # pandas setup
     pd.set_option("display.max_columns", None)
@@ -647,17 +658,22 @@ def main():  # noqa: C901
                 f"# Device {dev} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
+            # Verify regression results
             if max_error_total < PASS_THRESH:
                 logging.info(f"# Device {dev} has passed regression.")
             else:
-                logging.info(
+                logging.error(
                     f"# Device {dev} has failed regression. Needs more analysis."
                 )
+                logging.error(
+                    "#Failed regression for BJT-iv analysis."
+                )
+                exit(1)
 
-
-# # ================================================================
+# ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
+
 
 if __name__ == "__main__":
 

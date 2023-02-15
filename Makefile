@@ -53,13 +53,6 @@ test-LVS-switch: | $(CONDA_ENV_PYTHON)
 ################################################################################
 ## ngspice Regression section
 ################################################################################
-ngspice-regression: | $(CONDA_ENV_PYTHON)
-	@$(IN_CONDA_ENV) cd models/ngspice/testing/ && make all
-
-	
-
-
-
-
-
-	
+# ngspice models regression
+test-ngspice-%: | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) cd models/ngspice/testing/regression/$*/ && python3 models_regression.py
