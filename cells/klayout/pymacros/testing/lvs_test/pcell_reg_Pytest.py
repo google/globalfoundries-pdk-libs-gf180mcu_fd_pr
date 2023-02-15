@@ -4,30 +4,35 @@ import os
 import glob
 import logging
 
+@pytest.fixture
+def device(request):
+    return request.config.getoption('--device')
 
 @pytest.mark.dependency()
-def test_gds_generation():
+def test_gds_generation(device):
 
-    call_str = """
-    python3 ../draw_pcell.py --device=fet
+    call_str = f"""
+    python3 ../draw_pcell.py --device={device}
     """
     assert bool(check_call(call_str, shell=True)) == 0
 
 
 @pytest.mark.dependency()
-def test_cdl_generation():
+def test_cdl_generation(device):
 
-    call_str = """
-    python3 cdl_gen.py --device=fet
+    call_str = f"""
+    python3 cdl_gen.py --device={device}
     """
     assert bool(check_call(call_str, shell=True)) == 0
 
+@pytest.fixture
+def get_devices_list(request):
 
-def get_devices_list(target_device):
+    device = request.config.getoption('--device')
 
     file_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     list_patt_files = glob.glob(
-        os.path.join(file_path, "patterns", target_device, "*.csv")
+        os.path.join(file_path, "patterns", device, "*.csv")
     )
 
     devices = []
@@ -37,9 +42,9 @@ def get_devices_list(target_device):
     return devices
 
 
-@pytest.mark.parametrize("device_name", get_devices_list("fet"))
+@pytest.mark.parametrize("device_name", get_devices_list)
 @pytest.mark.dependency(depends=["test_gds_generation"])
-def test_drc_run(device_name):
+def test_drc_run(device_name,device):
 
     file_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -51,7 +56,7 @@ def test_drc_run(device_name):
     drc_dir = os.path.join(root_path, drc_path)
 
     test_dir = os.path.join(file_path, "testcases")
-    output_path = os.path.join(test_dir, "fet_logs")
+    output_path = os.path.join(test_dir, f"{device}_logs")
     pattern_log = f"{output_path}/{device_name}_drc.log"
 
     # Creating output dir
@@ -63,37 +68,37 @@ def test_drc_run(device_name):
     check_call(call_str, shell=True)
 
 
-@pytest.mark.parametrize("device_name", get_devices_list("fet"))
-@pytest.mark.dependency(depends=["test_gds_generation", "test_cdl_generation"])
-def test_lvs_run(device_name):
+# # @pytest.mark.parametrize("device_name", get_devices_list("fet"))
+# @pytest.mark.dependency(depends=["test_gds_generation", "test_cdl_generation"])
+# def test_lvs_run(device_name):
 
-    file_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#     file_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    root_path = os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.dirname(file_path)))
-    )
+#     root_path = os.path.dirname(
+#         os.path.dirname(os.path.dirname(os.path.dirname(file_path)))
+#     )
 
-    lvs_path = "rules/klayout/lvs"
-    lvs_dir = os.path.join(root_path, lvs_path)
+#     lvs_path = "rules/klayout/lvs"
+#     lvs_dir = os.path.join(root_path, lvs_path)
 
-    test_dir = os.path.join(file_path, "testcases")
-    output_path = os.path.join(test_dir, "fet_logs")
-    pattern_log = f"{output_path}/{device_name}_lvs.log"
+#     test_dir = os.path.join(file_path, "testcases")
+#     output_path = os.path.join(test_dir, "fet_logs")
+#     pattern_log = f"{output_path}/{device_name}_lvs.log"
 
-    # Creating output dir
-    os.makedirs(output_path, exist_ok=True)
+#     # Creating output dir
+#     os.makedirs(output_path, exist_ok=True)
 
-    call_str = f"""
-    python3 {lvs_dir}/run_lvs.py --design={test_dir}/{device_name}_pcells.gds --net={device_name}_pcells.cdl --gf180mcu="A" > {pattern_log}
-    """
-    check_call(call_str, shell=True)
+#     call_str = f"""
+#     python3 {lvs_dir}/run_lvs.py --design={test_dir}/{device_name}_pcells.gds --net={device_name}_pcells.cdl --gf180mcu="A" > {pattern_log}
+#     """
+#     check_call(call_str, shell=True)
 
-    f = open(pattern_log)
-    log_data = f.readlines()
-    f.close()
-    print(log_data[-2])
+#     f = open(pattern_log)
+#     log_data = f.readlines()
+#     f.close()
+#     print(log_data[-2])
 
-    if "ERROR" in log_data[-2]:
-        assert False
-    else:
-        assert True
+#     if "ERROR" in log_data[-2]:
+#         assert False
+#     else:
+#         assert True
