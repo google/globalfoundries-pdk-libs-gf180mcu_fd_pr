@@ -48,7 +48,7 @@ def test_cdl_generation(device):
 
 
 @pytest.mark.dependency(depends=["test_gds_generation"])
-def test_drc_run(device):
+def test_drc_run(device, device_name):
     """
     run drc testing for device under test testcases
 
@@ -56,7 +56,6 @@ def test_drc_run(device):
         device : name of the device under test
         device_name : name of device testcase to be tested
     """
-    device_name = "nfet_temp_pass"
     # get drc rule_deck path , testing dir path
 
     file_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
