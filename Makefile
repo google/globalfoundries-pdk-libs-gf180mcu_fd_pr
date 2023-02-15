@@ -62,6 +62,6 @@ test-ngspice-%: | $(CONDA_ENV_PYTHON)
 ################################################################################
 # fet main testing
 test-fet-pcells: | $(CONDA_ENV_PYTHON)
-	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/lvs_test/ && pytest --device=fet pcell_reg_Pytest.py 
+	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/ && pytest --device=fet pcell_reg_Pytest.py 
 
 
