@@ -58,8 +58,8 @@ pplus_u_w = 0.42
 nwell_l = 0.42
 nwell_w = 0.42
 
-pwell_l = 0.42
-pwell_w = 0.42
+pwell_l = 2.0
+pwell_w = 2.0
 
 npolyf_s_l = 0.42
 npolyf_s_w = 0.42
