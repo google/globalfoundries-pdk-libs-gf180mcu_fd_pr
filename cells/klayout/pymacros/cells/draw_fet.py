@@ -1097,24 +1097,39 @@ def add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, 
             )
         )
 
-def sd_m1_area_check(sd_con_area,m1_area,sd_con,c_inst,sd_l,nf,l_gate,inter_sd_l,pl_cmp_spacing):
 
-    if sd_con_area < m1_area : 
-        sd_con_m1 = gf.components.rectangle(size=(sd_con.size[0], m1_area/sd_con.size[1]),layer=layer["metal1"])
+def sd_m1_area_check(
+    sd_con_area, m1_area, sd_con, c_inst, sd_l, nf, l_gate, inter_sd_l, pl_cmp_spacing
+):
+
+    if sd_con_area < m1_area:
+        sd_con_m1 = gf.components.rectangle(
+            size=(sd_con.size[0], m1_area / sd_con.size[1]), layer=layer["metal1"]
+        )
         sd_m1_arr = c_inst.add_array(
             component=sd_con_m1,
             columns=2,
             rows=1,
-            spacing=(sd_l + nf * l_gate + (nf - 1) * inter_sd_l + 2 * (pl_cmp_spacing), 0,),
+            spacing=(
+                sd_l + nf * l_gate + (nf - 1) * inter_sd_l + 2 * (pl_cmp_spacing),
+                0,
+            ),
         )
-        sd_m1_arr.xmin = sd_con.xmin 
-        sd_m1_arr.ymin = sd_con.ymin - (sd_con_m1.size[1]-sd_con.size[1])/2
+        sd_m1_arr.xmin = sd_con.xmin
+        sd_m1_arr.ymin = sd_con.ymin - (sd_con_m1.size[1] - sd_con.size[1]) / 2
 
-def poly_con_m1_check(poly_con_area,m1_area,c_pc,poly_con,c_pl_con) :
-    if  poly_con_area < m1_area : 
-            m1_poly = c_pc.add_ref(gf.components.rectangle(size=(m1_area/poly_con.size[0],poly_con.size[1]),layer=layer["metal1"]))
-            m1_poly.xmin = c_pl_con.xmin - (m1_poly.size[0]-poly_con.size[0])/2
-            m1_poly.ymin = c_pl_con.ymin 
+
+def poly_con_m1_check(poly_con_area, m1_area, c_pc, poly_con, c_pl_con):
+    if poly_con_area < m1_area:
+        m1_poly = c_pc.add_ref(
+            gf.components.rectangle(
+                size=(m1_area / poly_con.size[0], poly_con.size[1]),
+                layer=layer["metal1"],
+            )
+        )
+        m1_poly.xmin = c_pl_con.xmin - (m1_poly.size[0] - poly_con.size[0]) / 2
+        m1_poly.ymin = c_pl_con.ymin
+
 
 # @gf.cell
 def draw_nfet(
@@ -1175,6 +1190,7 @@ def draw_nfet(
     con_size = 0.22
     con_sp = 0.28
     con_comp_enc = 0.07
+    con_pp_sp = 0.1 - con_comp_enc
     con_pl_enc = 0.07
     dg_enc_cmp = 0.24
     dg_enc_poly = 0.4
@@ -1182,7 +1198,10 @@ def draw_nfet(
     m1_area = 0.145
 
     sd_l_con = (
-        ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
+        ((sd_con_col) * con_size)
+        + ((sd_con_col - 1) * con_sp)
+        + 2 * con_comp_enc
+        + con_pp_sp
     )
     sd_l = sd_l_con
 
@@ -1206,9 +1225,11 @@ def draw_nfet(
 
     if w_gate <= con_size + 2 * con_comp_enc:
         cmpc_y = con_comp_enc + con_size + con_comp_enc
+        np_cmp_ency = comp_np_enc
 
     else:
         cmpc_y = w_gate
+        np_cmp_ency = gate_np_enc
 
     cmpc_size = (sd_l_con, cmpc_y)
 
@@ -1223,7 +1244,7 @@ def draw_nfet(
     sd_diff.ymin = sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
 
     sd_con = via_stack(
-        x_range=(sd_diff.xmin, sd_diff_intr.xmin),
+        x_range=(sd_diff.xmin, sd_diff_intr.xmin - con_pp_sp),
         y_range=(sd_diff.ymin, sd_diff.ymax),
         base_layer=layer["comp"],
         metal_level=1,
@@ -1235,9 +1256,19 @@ def draw_nfet(
         spacing=(sd_l + nf * l_gate + (nf - 1) * inter_sd_l + 2 * (pl_cmp_spacing), 0,),
     )
 
-    sd_con_area = sd_con.size[0]*sd_con.size[1]
+    sd_con_area = sd_con.size[0] * sd_con.size[1]
 
-    sd_m1_area_check(sd_con_area,m1_area,sd_con,c_inst,sd_l,nf,l_gate,inter_sd_l,pl_cmp_spacing)
+    sd_m1_area_check(
+        sd_con_area,
+        m1_area,
+        sd_con,
+        c_inst,
+        sd_l,
+        nf,
+        l_gate,
+        inter_sd_l,
+        pl_cmp_spacing,
+    )
 
     if con_bet_fin == 1 and nf > 1:
         inter_sd_con = via_stack(
@@ -1304,9 +1335,9 @@ def draw_nfet(
     )
     c_pl_con = c_pc.add_ref(poly_con)
 
-    poly_con_area = poly_con.size[0]*poly_con.size[1]
+    poly_con_area = poly_con.size[0] * poly_con.size[1]
 
-    poly_con_m1_check(poly_con_area,m1_area,c_pc,poly_con,c_pl_con)
+    poly_con_m1_check(poly_con_area, m1_area, c_pc, poly_con, c_pl_con)
 
     if nf == 1:
         poly = c_inst.add_ref(
@@ -1474,13 +1505,13 @@ def draw_nfet(
             gf.components.rectangle(
                 size=(
                     sd_diff.size[0] + 2 * comp_np_enc,
-                    sd_diff.size[1] + 2 * comp_np_enc,
+                    sd_diff.size[1] + 2 * np_cmp_ency,
                 ),
                 layer=layer["nplus"],
             )
         )
         nplus.xmin = sd_diff.xmin - comp_np_enc
-        nplus.ymin = sd_diff.ymin - comp_np_enc
+        nplus.ymin = sd_diff.ymin - np_cmp_ency
 
     elif bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
@@ -1494,7 +1525,7 @@ def draw_nfet(
             gf.components.rectangle(
                 size=(
                     sd_diff.xmax - sd_diff.xmin + comp_np_enc,
-                    sd_diff.size[1] + (2 * comp_np_enc)
+                    sd_diff.size[1] + (2 * np_cmp_ency)
                     # w_gate + 2 * gate_np_enc,
                 ),
                 layer=layer["nplus"],
@@ -1502,7 +1533,7 @@ def draw_nfet(
         )
         nsdm.xmin = sd_diff.xmin - comp_np_enc
         # nsdm.ymin = sd_diff_intr.ymin - gate_np_enc
-        nsdm.ymin = sd_diff.ymin - comp_np_enc
+        nsdm.ymin = sd_diff.ymin - np_cmp_ency
         psdm = c_inst.add_ref(
             gf.components.rectangle(
                 size=(
