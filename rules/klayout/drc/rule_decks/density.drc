@@ -47,7 +47,7 @@ if $report
     logger.info("GF180MCU Klayout density checks DRC runset output at: %s" % [$report])
     report("GF180 DENSITY DRC runset", $report)
 else
-    logger.info("GF180MCU Klayout density checks DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180mcu_density.lyrdb").path])
+    logger.info("GF180MCU Klayout density checks DRC runset output at default location." % [File.join(File.dirname(RBA::CellView::active.filename), "gf180mcu_density.lyrdb")])
     report("GF180 DRC runset", File.join(File.dirname(RBA::CellView::active.filename), "gf180mcu_density.lyrdb"))
 end
 
