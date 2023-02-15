@@ -255,7 +255,7 @@ if $schematic
   schematic($schematic, reader)
   logger.info("Netlist file: #{$schematic}")
 else
-  exts = ["ngspice", "spice", "cdl"]
+  exts = ["spice", "cdl"]
   candidates = exts.map{|ext| "#{source.cell_name}.#{ext}"}  
   netlists = candidates.select{|f| File.exist?(f)}
   if netlists.empty?
