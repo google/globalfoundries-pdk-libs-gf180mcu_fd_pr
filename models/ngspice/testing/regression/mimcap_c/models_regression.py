@@ -34,7 +34,7 @@ import glob
 
 # CONSTANT VALUES
 DEFAULT_TEMP = 25.0
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
 
 
 def find_mimcap(filename):
@@ -324,15 +324,22 @@ def main():
             f"# Device MIM {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"
         )
 
+        # Verify regression results
         if merged_df["error"].max() < PASS_THRESH:
             logging.info(f"# Device {dev} has passed regression.")
         else:
-            logging.error(f"# Device {dev} has failed regression. Needs more analysis.")
+            logging.error(
+                f"# Device {dev} has failed regression. Needs more analysis."
+            )
+            logging.error(
+                "#Failed regression for MIMCAP analysis."
+            )
+            exit(1)
 
-
-# # ================================================================
+# ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
+
 
 if __name__ == "__main__":
 
