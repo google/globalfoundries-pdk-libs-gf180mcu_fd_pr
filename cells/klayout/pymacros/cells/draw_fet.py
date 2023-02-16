@@ -616,6 +616,7 @@ def bulk_gr_gen(
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
     nw_enc_pcmp: float = 0.1,
+    m1_sp:float = 0.1
 ):
     """Returns guardring
 
@@ -642,13 +643,13 @@ def bulk_gr_gen(
     rect_bulk_in = c_temp.add_ref(
         gf.components.rectangle(
             size=(
-                (c_inst.xmax - c_inst.xmin) + 2 * comp_spacing,
-                (c_inst.ymax - c_inst.ymin) + 2 * poly2_comp_spacing,
+                (c_inst.xmax - c_inst.xmin) + 2 * m1_sp,
+                (c_inst.ymax - c_inst.ymin) + 2 * m1_sp,
             ),
             layer=layer["comp"],
         )
     )
-    rect_bulk_in.move((c_inst.xmin - comp_spacing, c_inst.ymin - poly2_comp_spacing))
+    rect_bulk_in.move((c_inst.xmin - m1_sp, c_inst.ymin - m1_sp))
     rect_bulk_out = c_temp.add_ref(
         gf.components.rectangle(
             size=(
@@ -1196,6 +1197,9 @@ def draw_nfet(
     dg_enc_poly = 0.4
     pl_cmp_spacing = 0.18
     m1_area = 0.145
+    m1_sp = 0.3
+    pl_cmpcon_sp = 0.15
+    m1_cmp_enc = 0.06
 
     sd_l_con = (
         ((sd_con_col) * con_size)
@@ -1249,7 +1253,7 @@ def draw_nfet(
         base_layer=layer["comp"],
         metal_level=1,
     )
-    c_inst.add_array(
+    sd_con_arr = c_inst.add_array(
         component=sd_con,
         columns=2,
         rows=1,
@@ -1273,8 +1277,8 @@ def draw_nfet(
     if con_bet_fin == 1 and nf > 1:
         inter_sd_con = via_stack(
             x_range=(
-                sd_diff_intr.xmin + con_comp_enc + l_gate,
-                sd_diff_intr.xmin + con_comp_enc + l_gate + inter_sd_l,
+                sd_diff_intr.xmin + pl_cmp_spacing + l_gate + pl_cmpcon_sp,
+                sd_diff_intr.xmin + pl_cmp_spacing + l_gate + inter_sd_l - pl_cmpcon_sp,
             ),
             y_range=(0, w_gate),
             base_layer=layer["comp"],
@@ -1546,7 +1550,7 @@ def draw_nfet(
         psdm.connect("e1", destination=nsdm.ports["e3"])
 
         bulk_con = via_stack(
-            x_range=(rect_bulk.xmin + 0.1, rect_bulk.xmax - 0.1),
+            x_range=(sd_con_arr.xmax + m1_sp, rect_bulk.xmax),
             y_range=(rect_bulk.ymin, rect_bulk.ymax),
             base_layer=layer["comp"],
             metal_level=1,
@@ -1593,6 +1597,7 @@ def draw_nfet(
             sub_lbl=sub_lbl,
             deepnwell=deepnwell,
             pcmpgr=pcmpgr,
+            m1_sp=m1_sp
         )
 
     # if bulk != "Guard Ring":
@@ -1754,6 +1759,7 @@ def draw_pfet(
     con_pl_enc = 0.07
     dg_enc_cmp = 0.24
     dg_enc_poly = 0.4
+    m1_sp = 0.3
 
     sd_l_con = (
         ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
@@ -2164,6 +2170,7 @@ def draw_pfet(
             deepnwell=deepnwell,
             pcmpgr=pcmpgr,
             nw_enc_pcmp=nw_enc_pcmp,
+            m1_sp=m1_sp
         )
         # bulk guardring
 
