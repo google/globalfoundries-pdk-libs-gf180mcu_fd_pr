@@ -89,7 +89,6 @@ def get_patt_lbl(nl_b, nl, nt, nt_e, g_lbl, nl_u, nt_o):
     return [g_lbl_e, g_lbl_o]
 
 
-@gf.cell
 def alter_interdig(
     sd_diff,
     pc1,
@@ -342,7 +341,6 @@ def alter_interdig(
     return c_inst
 
 
-@gf.cell
 def interdigit(
     sd_diff,
     pc1,
@@ -616,7 +614,7 @@ def bulk_gr_gen(
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
     nw_enc_pcmp: float = 0.1,
-    m1_sp:float = 0.1
+    m1_sp: float = 0.1,
 ):
     """Returns guardring
 
@@ -1132,6 +1130,26 @@ def poly_con_m1_check(poly_con_area, m1_area, c_pc, poly_con, c_pl_con):
         m1_poly.ymin = c_pl_con.ymin
 
 
+def inter_sd_m1_area_check(
+    inter_sd_con_area, m1_area, inter_sd_con, c_inst, l_gate, nf, inter_sd_l, sd_con
+):
+    if inter_sd_con_area < m1_area:
+        inter_sd_con_m1 = gf.components.rectangle(
+            size=(inter_sd_con.size[0], m1_area / inter_sd_con.size[1]),
+            layer=layer["metal1"],
+        )
+        inter_sd_m1_arr = c_inst.add_array(
+            component=inter_sd_con_m1,
+            columns=nf - 1,
+            rows=1,
+            spacing=(l_gate + inter_sd_l, 0),
+        )
+        inter_sd_m1_arr.xmin = inter_sd_con.xmin
+        inter_sd_m1_arr.ymin = (
+            inter_sd_con.ymin - (inter_sd_con_m1.size[1] - sd_con.size[1]) / 2
+        )
+
+
 # @gf.cell
 def draw_nfet(
     layout,
@@ -1199,7 +1217,6 @@ def draw_nfet(
     m1_area = 0.145
     m1_sp = 0.3
     pl_cmpcon_sp = 0.15
-    m1_cmp_enc = 0.06
 
     sd_l_con = (
         ((sd_con_col) * con_size)
@@ -1284,11 +1301,24 @@ def draw_nfet(
             base_layer=layer["comp"],
             metal_level=1,
         )
+
         c_inst.add_array(
             component=inter_sd_con,
             columns=nf - 1,
             rows=1,
             spacing=(l_gate + inter_sd_l, 0),
+        )
+
+        inter_sd_con_area = inter_sd_con.size[0] * inter_sd_con.size[1]
+        inter_sd_m1_area_check(
+            inter_sd_con_area,
+            m1_area,
+            inter_sd_con,
+            c_inst,
+            l_gate,
+            nf,
+            inter_sd_l,
+            sd_con,
         )
 
     ### adding source/drain labels
@@ -1597,7 +1627,7 @@ def draw_nfet(
             sub_lbl=sub_lbl,
             deepnwell=deepnwell,
             pcmpgr=pcmpgr,
-            m1_sp=m1_sp
+            m1_sp=m1_sp,
         )
 
     # if bulk != "Guard Ring":
@@ -1755,11 +1785,14 @@ def draw_pfet(
     con_size = 0.22
     con_sp = 0.28
     con_comp_enc = 0.07
+    con_pp_sp = 0.1 - con_comp_enc
     pl_cmp_spacing = 0.1
     con_pl_enc = 0.07
     dg_enc_cmp = 0.24
     dg_enc_poly = 0.4
     m1_sp = 0.3
+    m1_area = 0.145
+    pl_cmpcon_sp = 0.15
 
     sd_l_con = (
         ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
@@ -1803,7 +1836,7 @@ def draw_pfet(
     sd_diff.ymin = sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
 
     sd_con = via_stack(
-        x_range=(sd_diff.xmin, sd_diff_intr.xmin),
+        x_range=(sd_diff.xmin, sd_diff_intr.xmin - con_pp_sp),
         y_range=(sd_diff.ymin, sd_diff.ymax),
         base_layer=layer["comp"],
         metal_level=1,
@@ -1812,24 +1845,51 @@ def draw_pfet(
         component=sd_con,
         columns=2,
         rows=1,
-        spacing=(sd_l + nf * l_gate + (nf - 1) * inter_sd_l + 2 * (con_comp_enc), 0,),
+        spacing=(sd_l + nf * l_gate + (nf - 1) * inter_sd_l + 2 * (pl_cmp_spacing), 0,),
+    )
+
+    sd_con_area = sd_con.size[0] * sd_con.size[1]
+
+    sd_m1_area_check(
+        sd_con_area,
+        m1_area,
+        sd_con,
+        c_inst,
+        sd_l,
+        nf,
+        l_gate,
+        inter_sd_l,
+        pl_cmp_spacing,
     )
 
     if con_bet_fin == 1 and nf > 1:
         inter_sd_con = via_stack(
             x_range=(
-                sd_diff_intr.xmin + con_comp_enc + l_gate,
-                sd_diff_intr.xmin + con_comp_enc + l_gate + inter_sd_l,
+                sd_diff_intr.xmin + pl_cmp_spacing + l_gate + pl_cmpcon_sp,
+                sd_diff_intr.xmin + pl_cmp_spacing + l_gate + inter_sd_l - pl_cmpcon_sp,
             ),
             y_range=(0, w_gate),
             base_layer=layer["comp"],
             metal_level=1,
         )
+
         c_inst.add_array(
             component=inter_sd_con,
             columns=nf - 1,
             rows=1,
             spacing=(l_gate + inter_sd_l, 0),
+        )
+
+        inter_sd_con_area = inter_sd_con.size[0] * inter_sd_con.size[1]
+        inter_sd_m1_area_check(
+            inter_sd_con_area,
+            m1_area,
+            inter_sd_con,
+            c_inst,
+            l_gate,
+            nf,
+            inter_sd_l,
+            sd_con,
         )
 
     ### adding source/drain labels
@@ -2063,11 +2123,6 @@ def draw_pfet(
             )
         )
 
-        # dualgate generation
-
-        # c.add_ref(
-        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        # )
         hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     elif bulk == "Bulk Tie":
@@ -2125,7 +2180,7 @@ def draw_pfet(
         )
 
         # deep nwell generation
-
+        nw_enc_pcmp = 0.45 + comp_np_enc + psdm.ymax - nsdm.ymax
         c.add_ref(
             pfet_deep_nwell(
                 deepnwell=deepnwell,
@@ -2170,7 +2225,7 @@ def draw_pfet(
             deepnwell=deepnwell,
             pcmpgr=pcmpgr,
             nw_enc_pcmp=nw_enc_pcmp,
-            m1_sp=m1_sp
+            m1_sp=m1_sp,
         )
         # bulk guardring
 
