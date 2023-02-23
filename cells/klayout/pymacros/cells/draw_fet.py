@@ -574,7 +574,6 @@ def hv_gen(c, c_inst, volt, dg_encx: float = 0.1, dg_ency: float = 0.1):
         dg_encx : dualgate enclosure in x_direction
         dg_ency : dualgate enclosure in y_direction
     """
-    print(volt)
     # c = gf.Component()
 
     if volt == "5V" or volt == "6V":
@@ -786,6 +785,7 @@ def bulk_gr_gen(
                 inst_xmin=B.xmin,
                 inst_ymin=B.ymin,
                 grw=grw,
+                volt=volt,
             )
         )
     else:
@@ -949,6 +949,7 @@ def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
 
 @gf.cell
 def nfet_deep_nwell(
+    volt="3.3V",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
     inst_size: Float2 = (0.1, 0.1),
@@ -970,8 +971,10 @@ def nfet_deep_nwell(
     c = gf.Component()
 
     dn_enc_lvpwell = 2.5
-    lvpwell_enc_ncmp = 0.43
-    print(deepnwell)
+    lvpwell_enc_ncmp = 0.44
+    dg_enc_dn = 0.5
+    dg_enc_cmp = 0.24
+    dg_enc_poly = 0.4
 
     if deepnwell == 1:
 
@@ -1003,6 +1006,51 @@ def nfet_deep_nwell(
 
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=grw))
+
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        dn_rect.size[0] + (2 * dg_enc_dn),
+                        dn_rect.size[1] + (2 * dg_enc_dn),
+                    ),
+                    layer=layer["dualgate"],
+                )
+            )
+            dg.xmin = dn_rect.xmin - dg_enc_dn
+            dg.ymin = dn_rect.ymin - dg_enc_dn
+
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=layer["v5_xtor"]
+                    )
+                )
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
+
+    else:
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        inst_size[0] + (2 * dg_enc_cmp),
+                        inst_size[1] + (2 * dg_enc_poly),
+                    ),
+                    layer=layer["dualgate"],
+                )
+            )
+            dg.xmin = inst_xmin - dg_enc_cmp
+            dg.ymin = inst_ymin - dg_enc_poly
+
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=layer["v5_xtor"]
+                    )
+                )
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
 
     return c
 
@@ -1211,8 +1259,6 @@ def draw_nfet(
     con_comp_enc = 0.07
     con_pp_sp = 0.1 - con_comp_enc
     con_pl_enc = 0.07
-    dg_enc_cmp = 0.24
-    dg_enc_poly = 0.4
     pl_cmp_spacing = 0.18
     m1_area = 0.145
     m1_sp = 0.3
@@ -1641,7 +1687,7 @@ def draw_nfet(
         # c.add_ref(
         #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
         # )
-        hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
         c.add_ref(
             nfet_deep_nwell(
@@ -1651,6 +1697,7 @@ def draw_nfet(
                 inst_xmin=inst_xmin,
                 inst_ymin=inst_ymin,
                 grw=grw,
+                volt=volt,
             )
         )
 

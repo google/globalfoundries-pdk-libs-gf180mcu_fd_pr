@@ -20,6 +20,7 @@ from .draw_fet import draw_nfet, draw_nfet_06v0_nvt, draw_pfet
 
 fet_3p3_l = 0.28
 fet_3p3_w = 0.22
+fet_3p3_w_con = 0.36
 fet_5_6_w = 0.3
 
 nfet_05v0_l = 0.6
@@ -118,6 +119,10 @@ class nfet(pya.PCellDeclarationHelper):
                 self.l_gate = fet_3p3_l
             if (self.w_gate) < fet_3p3_w:
                 self.w_gate = fet_3p3_w
+
+            if self.con_bet_fin == 1:
+                if (self.w_gate) < fet_3p3_w_con:
+                    self.w_gate = fet_3p3_w_con
         elif self.volt == "5V":
             if (self.l_gate) < nfet_05v0_l:
                 self.l_gate = nfet_05v0_l
