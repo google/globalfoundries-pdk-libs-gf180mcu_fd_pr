@@ -233,7 +233,6 @@ def alter_interdig(
                 m1 = c_inst.add_ref(
                     gf.components.rectangle(
                         size=(
-                            # poly_con.xmax - poly_con.xmin,
                             pc_x,
                             ((pc1.ymax + (i + 1) * (m2_spacing + m2_y)) - pc1.ymin),
                         ),
@@ -432,7 +431,6 @@ def interdigit(
                             gf.components.rectangle(
                                 size=(
                                     pc_x,
-                                    # poly_con.xmax - poly_con.xmin,
                                     (
                                         (pc2.ymax + (i + 1) * (m2_spacing + m2_y))
                                         - ((1 - j % 2) * pc1.ymin)
@@ -503,7 +501,6 @@ def interdigit(
                         m1 = c_inst.add_ref(
                             gf.components.rectangle(
                                 size=(
-                                    # poly_con.xmax - poly_con.xmin,
                                     pc_x,
                                     (
                                         (pc1.ymax + (i + 1) * (m2_spacing + m2_y))
@@ -759,7 +756,6 @@ def bulk_gr_gen(
         )
     )  # metal1_gaurdring
 
-    # c.add_ref(hv_gen(c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp))
     hv_gen(c, c_inst=B, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_cmp)
 
     c.add_ref(
@@ -1552,8 +1548,6 @@ def draw_nfet(
             con_bet_fin,
         )
 
-        # add_gate_labels(c, g_lbl, pc1, c_pc, pc_spacing, nc1, nc2, pc2, lbl, layer, nf)
-
         if interdig == 1:
             c_inst.add_ref(
                 interdigit(
@@ -1606,14 +1600,12 @@ def draw_nfet(
             gf.components.rectangle(
                 size=(
                     sd_diff.xmax - sd_diff.xmin + comp_np_enc,
-                    sd_diff.size[1] + (2 * np_cmp_ency)
-                    # w_gate + 2 * gate_np_enc,
+                    sd_diff.size[1] + (2 * np_cmp_ency),
                 ),
                 layer=layer["nplus"],
             )
         )
         nsdm.xmin = sd_diff.xmin - comp_np_enc
-        # nsdm.ymin = sd_diff_intr.ymin - gate_np_enc
         nsdm.ymin = sd_diff.ymin - np_cmp_ency
         psdm = c_inst.add_ref(
             gf.components.rectangle(
@@ -1660,7 +1652,6 @@ def draw_nfet(
         nsdm.ymin = sd_diff_intr.ymin - gate_np_enc
         c.add_ref(c_inst)
 
-        # b_gr = c.add_ref(
         bulk_gr_gen(
             c,
             c_inst=c_inst,
@@ -1677,18 +1668,12 @@ def draw_nfet(
             m1_sp=m1_sp,
         )
 
-    # if bulk != "Guard Ring":
     else:
         c.add_ref(c_inst)
 
         inst_size = (c_inst.size[0], c_inst.size[1])
         inst_xmin = c_inst.xmin
         inst_ymin = c_inst.ymin
-
-        # c.add_ref(
-        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        # )
-        # hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
         c.add_ref(
             nfet_deep_nwell(
@@ -2290,12 +2275,6 @@ def draw_pfet(
             )
         )
 
-        # dualgate generation
-        # c.add_ref(
-        #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-        # )
-        # hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
-
     elif bulk == "Guard Ring":
 
         psdm = c_inst.add_ref(
@@ -2383,13 +2362,18 @@ def draw_nfet_06v0_nvt(
     con_size = 0.22
     con_sp = 0.28
     con_comp_enc = 0.07
+    con_pp_sp = 0.1 - con_comp_enc
     pl_cmp_spacing = 0.1
     con_pl_enc = 0.07
-    dg_enc_cmp = 0.24
-    dg_enc_poly = 0.4
+    pl_cmpcon_sp = 0.15
+    nvt_enc_cmp = 2
+    m1_sp = 0.3
 
     sd_l_con = (
-        ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
+        ((sd_con_col) * con_size)
+        + ((sd_con_col - 1) * con_sp)
+        + 2 * con_comp_enc
+        + con_pp_sp
     )
     sd_l = sd_l_con
 
@@ -2413,9 +2397,11 @@ def draw_nfet_06v0_nvt(
 
     if w_gate <= con_size + 2 * con_comp_enc:
         cmpc_y = con_comp_enc + con_size + con_comp_enc
+        np_cmp_ency = comp_np_enc
 
     else:
         cmpc_y = w_gate
+        np_cmp_ency = gate_np_enc
 
     cmpc_size = (sd_l_con, cmpc_y)
 
@@ -2430,28 +2416,29 @@ def draw_nfet_06v0_nvt(
     sd_diff.ymin = sd_diff_intr.ymin - (sd_diff.size[1] - sd_diff_intr.size[1]) / 2
 
     sd_con = via_stack(
-        x_range=(sd_diff.xmin, sd_diff_intr.xmin),
+        x_range=(sd_diff.xmin, sd_diff_intr.xmin - con_pp_sp),
         y_range=(sd_diff.ymin, sd_diff.ymax),
         base_layer=layer["comp"],
         metal_level=1,
     )
-    c_inst.add_array(
+    sd_con_arr = c_inst.add_array(
         component=sd_con,
         columns=2,
         rows=1,
-        spacing=(sd_l + nf * l_gate + (nf - 1) * inter_sd_l + 2 * (con_comp_enc), 0,),
+        spacing=(sd_l + nf * l_gate + (nf - 1) * inter_sd_l + 2 * (pl_cmp_spacing), 0,),
     )
 
     if con_bet_fin == 1 and nf > 1:
         inter_sd_con = via_stack(
             x_range=(
-                sd_diff_intr.xmin + con_comp_enc + l_gate,
-                sd_diff_intr.xmin + con_comp_enc + l_gate + inter_sd_l,
+                sd_diff_intr.xmin + pl_cmp_spacing + l_gate + pl_cmpcon_sp,
+                sd_diff_intr.xmin + pl_cmp_spacing + l_gate + inter_sd_l - pl_cmpcon_sp,
             ),
             y_range=(0, w_gate),
             base_layer=layer["comp"],
             metal_level=1,
         )
+
         c_inst.add_array(
             component=inter_sd_con,
             columns=nf - 1,
@@ -2675,6 +2662,7 @@ def draw_nfet_06v0_nvt(
         nplus.ymin = sd_diff_intr.ymin - gate_np_enc
 
     elif bulk == "Bulk Tie":
+
         rect_bulk = c_inst.add_ref(
             gf.components.rectangle(
                 size=(sd_l + con_sp, sd_diff.size[1]), layer=layer["comp"]
@@ -2686,13 +2674,13 @@ def draw_nfet_06v0_nvt(
             gf.components.rectangle(
                 size=(
                     sd_diff.xmax - sd_diff.xmin + comp_np_enc,
-                    w_gate + 2 * gate_np_enc,
+                    sd_diff.size[1] + (2 * np_cmp_ency),
                 ),
                 layer=layer["nplus"],
             )
         )
         nsdm.xmin = sd_diff.xmin - comp_np_enc
-        nsdm.ymin = sd_diff_intr.ymin - gate_np_enc
+        nsdm.ymin = sd_diff.ymin - np_cmp_ency
         psdm = c_inst.add_ref(
             gf.components.rectangle(
                 size=(
@@ -2705,7 +2693,7 @@ def draw_nfet_06v0_nvt(
         psdm.connect("e1", destination=nsdm.ports["e3"])
 
         bulk_con = via_stack(
-            x_range=(rect_bulk.xmin + 0.1, rect_bulk.xmax - 0.1),
+            x_range=(sd_con_arr.xmax + m1_sp, rect_bulk.xmax),
             y_range=(rect_bulk.ymin, rect_bulk.ymax),
             base_layer=layer["comp"],
             metal_level=1,
@@ -2761,7 +2749,7 @@ def draw_nfet_06v0_nvt(
             )
         )
         rect_bulk_out.move((rect_bulk_in.xmin - grw, rect_bulk_in.ymin - grw))
-        B = c.add_ref(
+        c.add_ref(
             gf.geometry.boolean(
                 A=rect_bulk_out, B=rect_bulk_in, operation="A-B", layer=layer["comp"],
             )
@@ -2883,12 +2871,15 @@ def draw_nfet_06v0_nvt(
 
         dg = c.add_ref(
             gf.components.rectangle(
-                size=(B.size[0] + (2 * dg_enc_cmp), B.size[1] + (2 * dg_enc_cmp),),
+                size=(
+                    sd_diff.size[0] + (2 * nvt_enc_cmp),
+                    sd_diff.size[1] + (2 * nvt_enc_cmp),
+                ),
                 layer=layer["dualgate"],
             )
         )
-        dg.xmin = B.xmin - dg_enc_cmp
-        dg.ymin = B.ymin - dg_enc_cmp
+        dg.xmin = sd_diff.xmin - nvt_enc_cmp
+        dg.ymin = sd_diff.ymin - nvt_enc_cmp
 
     if bulk != "Guard Ring":
         c.add_ref(c_inst)
@@ -2896,14 +2887,14 @@ def draw_nfet_06v0_nvt(
         dg = c.add_ref(
             gf.components.rectangle(
                 size=(
-                    c_inst.size[0] + (2 * dg_enc_cmp),
-                    c_inst.size[1] + (2 * dg_enc_poly),
+                    c_inst.size[0] + (2 * nvt_enc_cmp),
+                    c_inst.size[1] + (2 * nvt_enc_cmp),
                 ),
                 layer=layer["dualgate"],
             )
         )
-        dg.xmin = c_inst.xmin - dg_enc_cmp
-        dg.ymin = c_inst.ymin - dg_enc_poly
+        dg.xmin = c_inst.xmin - nvt_enc_cmp
+        dg.ymin = c_inst.ymin - nvt_enc_cmp
 
     # generating native layer
     nat = c.add_ref(
@@ -2921,8 +2912,6 @@ def draw_nfet_06v0_nvt(
 
     return layout.cell(cell_name)
 
-
-#     # return c
 
 if __name__ == "__main__":
     pass
