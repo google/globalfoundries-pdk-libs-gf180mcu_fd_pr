@@ -798,6 +798,7 @@ def bulk_gr_gen(
                 enc_ymin=B.ymin,
                 nw_enc_pcmp=nw_enc_pcmp,
                 grw=grw,
+                volt=volt,
             )
         )
 
@@ -1712,6 +1713,7 @@ def draw_nfet(
 
 @gf.cell
 def pfet_deep_nwell(
+    volt="3.3V",
     deepnwell: bool = 0,
     pcmpgr: bool = 0,
     enc_size: Float2 = (0.1, 0.1),
@@ -1735,6 +1737,7 @@ def pfet_deep_nwell(
     c = gf.Component()
 
     dnwell_enc_pcmp = 1.1
+    dg_enc_dn = 0.5
 
     if deepnwell == 1:
         dn_rect = c.add_ref(
@@ -1753,6 +1756,28 @@ def pfet_deep_nwell(
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=grw))
 
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(
+                        dn_rect.size[0] + (2 * dg_enc_dn),
+                        dn_rect.size[1] + (2 * dg_enc_dn),
+                    ),
+                    layer=layer["dualgate"],
+                )
+            )
+            dg.xmin = dn_rect.xmin - dg_enc_dn
+            dg.ymin = dn_rect.ymin - dg_enc_dn
+
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=layer["v5_xtor"]
+                    )
+                )
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
+
     else:
 
         # nwell generation
@@ -1767,6 +1792,25 @@ def pfet_deep_nwell(
         )
         nw.xmin = enc_xmin - nw_enc_pcmp
         nw.ymin = enc_ymin - nw_enc_pcmp
+
+        if volt == "5V" or volt == "6V":
+            dg = c.add_ref(
+                gf.components.rectangle(
+                    size=(nw.size[0] + (2 * dg_enc_dn), nw.size[1] + (2 * dg_enc_dn),),
+                    layer=layer["dualgate"],
+                )
+            )
+            dg.xmin = nw.xmin - dg_enc_dn
+            dg.ymin = nw.ymin - dg_enc_dn
+
+            if volt == "5V":
+                v5x = c.add_ref(
+                    gf.components.rectangle(
+                        size=(dg.size[0], dg.size[1]), layer=layer["v5_xtor"]
+                    )
+                )
+                v5x.xmin = dg.xmin
+                v5x.ymin = dg.ymin
 
     return c
 
@@ -1985,7 +2029,11 @@ def draw_pfet(
         metal_level=1,
         li_enc_dir="H",
     )
-    c_pc.add_ref(poly_con)
+    c_pl_con = c_pc.add_ref(poly_con)
+
+    poly_con_area = poly_con.size[0] * poly_con.size[1]
+
+    poly_con_m1_check(poly_con_area, m1_area, c_pc, poly_con, c_pl_con)
 
     if nf == 1:
         poly = c_inst.add_ref(
@@ -2167,6 +2215,7 @@ def draw_pfet(
                 enc_ymin=sd_diff.ymin,
                 nw_enc_pcmp=nw_enc_pcmp,
                 grw=grw,
+                volt=volt,
             )
         )
 
@@ -2237,6 +2286,7 @@ def draw_pfet(
                 enc_ymin=sd_diff.ymin,
                 nw_enc_pcmp=nw_enc_pcmp,
                 grw=grw,
+                volt=volt,
             )
         )
 
@@ -2244,7 +2294,7 @@ def draw_pfet(
         # c.add_ref(
         #     hv_gen(c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
         # )
-        hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
+        # hv_gen(c, c_inst=c_inst, volt=volt, dg_encx=dg_enc_cmp, dg_ency=dg_enc_poly)
 
     elif bulk == "Guard Ring":
 
