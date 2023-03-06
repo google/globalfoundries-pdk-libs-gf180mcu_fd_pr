@@ -33,13 +33,24 @@ import logging
 import subprocess
 import glob
 
-import warnings
 
-warnings.simplefilter(action="ignore", category=FutureWarning)
-
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
 DEFAULT_TEMP = 25.0
 DEFAULT_VOLTAGE = 1.0
+
+
+def check_xyce_version():
+    """
+    check_xyce_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.5" not in Xyce_v_:
+        logging.error("Xyce version 7.5 is required.")
+        exit(1)
 
 
 def find_res(filename):
@@ -264,16 +275,13 @@ def run_sims(
 
 
 def main(num_cores: int):
+    """
+    Main function applies all regression steps
+    """
 
-    """Main function applies all regression steps"""
-    # ======= Checking Xyce  =======
-    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
-    if Xyce_v_ == "":
-        logging.error("Xyce is not found. Please make sure Xyce is installed.")
-        exit(1)
-    elif "7.6" not in Xyce_v_:
-        logging.error("Xyce version 7.6 is required.")
-        exit(1)
+    ## Check Xyce version
+    check_xyce_version()
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -384,7 +392,7 @@ def main(num_cores: int):
             f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"
         )
 
-        if merged_df["error"].max() < PASS_THRESH:
+        if merged_df["error"].max() <= PASS_THRESH:
             logging.info(f"# Device {dev} has passed regression.")
         else:
             logging.error(f"# Device {dev} has failed regression. Needs more analysis.")

@@ -14,9 +14,6 @@ import os
 from jinja2 import Template
 import concurrent.futures
 import datetime
-import warnings
-
-warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
 def call_simulator(file_name):

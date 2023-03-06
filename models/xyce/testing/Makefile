@@ -18,7 +18,7 @@
 
 SHELL := /bin/bash
 Testing_DIR ?= $(shell pwd)
-run_folder  := $(shell date +'run_%Y_%m_%d_%H:%M:%S')
+run_folder  := $(shell date +'run_%Y_%m_%d_%H_%M_%S')
 
 
 .DEFAULT_GOAL := all
@@ -174,7 +174,7 @@ help:
 	@echo "\n ==== The following are some of the valid targets for this Makefile ====\n"
 	@echo "... all                  (the default if no target is provided  )"
 	@echo "... smoke-test           (To run smoke test for an inverter     )"
-	@echo "... models-xyce       (To run regression for all      devices)"
+	@echo "... models-xyce          (To run regression for all      devices)"
 	@echo "... models-diode         (To run regression for diode    devices)"
 	@echo "... models-MOSCAP        (To run regression for MOSCAP   devices)"
 	@echo "... models-MIMCAP        (To run regression for MIMCAP   devices)"

@@ -64,7 +64,7 @@
 *********** Default mc switches **********
 **
 .PARAM
-+ SW_STAT_GLOBAL=1 SW_STAT_MISMATCH=1 MC_SKEW=3 RES_MC_SKEW=3 CAP_MC_SKEW=3 FNOICOR=0
++ SW_STAT_GLOBAL=0 SW_STAT_MISMATCH=0 MC_SKEW=3 RES_MC_SKEW=3 CAP_MC_SKEW=3 FNOICOR=0
 **
 ********* Default mc skew value *********
 **

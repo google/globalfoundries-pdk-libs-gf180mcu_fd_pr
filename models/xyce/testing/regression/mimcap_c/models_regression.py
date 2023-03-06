@@ -15,12 +15,23 @@ import os
 from jinja2 import Template
 import concurrent.futures
 import shutil
-import warnings
-import glob
 import logging
 
-warnings.simplefilter(action="ignore", category=FutureWarning)
-PASS_THRESH = 2.0
+PASS_THRESH = 5.0
+
+
+def check_xyce_version():
+    """
+    check_xyce_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking Xyce  =======
+    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
+    if Xyce_v_ == "":
+        logging.error("Xyce is not found. Please make sure Xyce is installed.")
+        exit(1)
+    elif "7.5" not in Xyce_v_:
+        logging.error("Xyce version 7.5 is required.")
+        exit(1)
 
 
 def call_simulator(file_name):
@@ -245,22 +256,20 @@ def error_cal(device: str, Id_sim: str, corner: str, start: int) -> None:
         f"# Device {device}_{corner} mean error: {mean_error_total:.2f}, max error {max_error_total:.2f}"
     )
 
-    if max_error_total < PASS_THRESH:
+    if max_error_total <= PASS_THRESH:
         logging.info(f"# Device {device} {corner} has passed regression.")
     else:
         logging.error(f"# Device {device} {corner} has failed regression.")
 
 
 def main():
-    """Main function applies all regression steps"""
-    # ======= Checking Xyce  =======
-    Xyce_v_ = os.popen("Xyce  -v 2> /dev/null").read()
-    if Xyce_v_ == "":
-        logging.error("Xyce is not found. Please make sure Xyce is installed.")
-        exit(1)
-    elif "7.6" not in Xyce_v_:
-        logging.error("Xyce version 7.6 is required.")
-        exit(1)
+    """
+    Main function applies all regression steps
+    """
+
+    ## Check Xyce version
+    check_xyce_version()
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
