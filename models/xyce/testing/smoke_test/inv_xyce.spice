@@ -17,9 +17,9 @@ X1 Vdd Vout Vin 0 INV
 
 
 .subckt INV  VDD Vout Vin GND
-XM1 Vout Vin GND GND nmos_3p3 W={{width}}u L={{length}}u 
-*ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
-XM2 Vout Vin VDD VDD pmos_3p3 W={{width_p}}u L={{length}}u 
+XM1 Vout Vin GND GND nmos_3p3 W={{width}}u L={{length}}u
+*ad={{AD}}p pd={{PD}}u as={{AS}}p ps={{PS}}u
+XM2 Vout Vin VDD VDD pmos_3p3 W={{width_p}}u L={{length}}u
 *ad={{AD_p}}u pd={{PD_p}}u as={{AD_p}}u ps={{PD_p}}u
 .ends
 
