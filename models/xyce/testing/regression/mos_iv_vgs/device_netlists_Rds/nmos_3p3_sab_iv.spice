@@ -10,7 +10,7 @@ Vds D_tn 0 dc 3.3
 Vgs G_tn 0 dc 3.3
 
 
-xmn1 D_tn G_tn 0 0 nmos_3p3_sab W={{width}}u L={{length}}u ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+xmn1 D_tn G_tn 0 0 nmos_3p3_sab W={{width}}u L={{length}}u ad={{AD}}p pd={{PD}}u as={{AS}}p ps={{PS}}u
 
 
 
