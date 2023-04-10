@@ -53,7 +53,7 @@ set dircolor(devices$) red
 #### Start without a design if no filename given on command line:
 #### To avoid absolute paths, use a path that is relative to one of the
 #### XSCHEM_LIBRARY_PATH directories. Default: empty
-set XSCHEM_START_WINDOW {gf180mcu_tests/0_top.sch}
+set XSCHEM_START_WINDOW {tests/0_top.sch}
 
 ###########################################################################
 #### DIRECTORY WHERE SIMULATIONS, NETLIST AND SIMULATOR OUTPUTS ARE PLACED
@@ -318,14 +318,14 @@ if { [info exists env(PDK_ROOT)] && $env(PDK_ROOT) ne {} } {
   ## not existing or empty. 
   puts stderr "Warning: PDK_ROOT env. var. not found or empty, trying to find a pdk install"
   if {[file isdir [pwd]/..]} {
-    set PDK_ROOT [file normalize [pwd]/..]
+    set PDK_ROOT [file normalize [pwd]/../..]
   } else {
     puts stderr {No pdk installation found, set PDK_ROOT env. var. and restart xschem}
   }
 }
 
 if {[info exists PDK_ROOT]} {
-  set 180MCU_MODELS ${PDK_ROOT}/ngspice/models
+  set 180MCU_MODELS ${PDK_ROOT}/models/ngspice
   puts stderr "pdk installation: using $PDK_ROOT"
   puts stderr "180MCU_MODELS: $180MCU_MODELS"
 }

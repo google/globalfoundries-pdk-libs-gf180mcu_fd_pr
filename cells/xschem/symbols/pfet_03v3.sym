@@ -1,4 +1,4 @@
-v {xschem version=3.0.0 file_version=1.2
+v {xschem version=3.1.0 file_version=1.2
 
 * Copyright 2022 GlobalFoundries PDK Authors
 *
@@ -54,7 +54,6 @@ B 5 19.921875 -0.078125 20.078125 0.078125 {name=B dir=in}
 A 4 -2.5 0 5 180 360 {}
 P 4 4 12.5 -20 7.5 -17.5 12.5 -15 12.5 -20 {fill=true}
 P 5 4 15 -2.5 20 0 15 2.5 15 -2.5 {fill=true}
-T {@name} 5 -30 0 1 0.2 0.2 {}
 T {D} 22.5 17.5 0 0 0.15 0.15 {layer=7}
 T {S} 22.5 -17.5 2 1 0.15 0.15 {layer=7}
 T {B} 20 -10 0 0 0.15 0.15 {layer=7}
@@ -66,3 +65,4 @@ T {tcleval(gm=[ngspice::get_node [subst -nocommand \{\\@m.$\{path\}@spiceprefix@
 hide=true}
 T {tcleval(id=[ngspice::get_node [subst -nocommand \{i(\\@m.$\{path\}@spiceprefix@name\\.msky130_fd_pr__@model\\[id])\}]] )} 32.5 -30 0 0 0.15 0.15 {layer=15
 hide=true}
+T {@spiceprefix@name} 5 -30 0 1 0.2 0.2 {}
