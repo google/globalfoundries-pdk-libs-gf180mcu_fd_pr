@@ -1,4 +1,4 @@
-v {xschem version=3.0.0 file_version=1.2
+v {xschem version=3.1.0 file_version=1.2
 
 * Copyright 2022 GlobalFoundries PDK Authors
 *
@@ -73,11 +73,12 @@ N 50 -310 230 -310 {
 lab=GND}
 N 50 -430 50 -390 {
 lab=IN}
-C {devices/code_shown.sym} 30 -200 0 0 {name=MODELS only_toplevel=true
+C {devices/code_shown.sym} 30 -240 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
 .include $::180MCU_MODELS/design.ngspice
 .lib $::180MCU_MODELS/sm141064.ngspice typical
+.lib $::180MCU_MODELS/sm141064.ngspice cap_mim
 .lib $::180MCU_MODELS/sm141064.ngspice res_typical
 .lib $::180MCU_MODELS/sm141064.ngspice moscap_typical
 .lib $::180MCU_MODELS/sm141064.ngspice mimcap_typical
@@ -102,7 +103,7 @@ xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]
 C {symbols/cap_mim_2p0fF.sym} 230 -390 0 0 {name=C1
 W=10e-6
 L=10e-6
-model=cap_mim_2p0fF
+model=cap_mim_2f0fF
 spiceprefix=X
 m=1}
 C {devices/vsource.sym} 50 -360 0 0 {name=V1 value="pwl 0 0 200n 3.3"}

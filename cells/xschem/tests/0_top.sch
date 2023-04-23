@@ -59,5 +59,5 @@ C {test_cap_nmos_06v0.sym} 530 -110 0 0 {name=x18}
 C {test_cap_pmos_06v0.sym} 530 -160 0 0 {name=x20}
 C {test_diode_pw2dw.sym} 1210 -160 0 0 {name=x21}
 C {test_rm1.sym} 1550 -260 0 0 {name=x22}
-C {test_cap_mim_2p0fF.sym} 530 -310 0 0 {name=x23}
+C {test_cap_mim_2f0fF.sym} 530 -310 0 0 {name=x23}
 C {test_nfet_05v0.sym} 190 -210 0 0 {name=x19}
