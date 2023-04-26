@@ -1,6 +1,0 @@
-.SUBCKT gf180mcu_fd_io__asig_5p0 ASIG5V DVDD DVSS VDD VSS
-D0 DVSS DVDD diode_nd2ps_06v0 m=4.0 AREA=40e-12 PJ=82e-6
-C1 DVDD DVSS $[cap_nmos_06v0] m=36.0 l=15e-6 w=15e-6
-D2 DVSS ASIG5V diode_nd2ps_06v0 m=4.0 AREA=150e-12 PJ=106e-6
-D3 ASIG5V DVDD diode_pd2nw_06v0 m=4.0 AREA=150e-12 PJ=106e-6
-.ENDS
