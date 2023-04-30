@@ -89,7 +89,7 @@ value="
 .control
 save all
 tran 0.1n 200n
-write test_cap_mim_2p0fF.raw
+write test_cap_mim_2f0fF.raw
 .endc
 "}
 C {devices/title.sym} 160 -30 0 0 {name=l5 author="GlobalFoundries PDK Authors"}
