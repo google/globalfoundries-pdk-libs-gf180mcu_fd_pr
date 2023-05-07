@@ -48,10 +48,8 @@ def call_simulator(file_name):
 def get_sizes(models_path):
     with open(models_path, "r") as f:
         device_model = f.read()
-        dimensions = re.findall(
-            "\.model  nfet_03v3.*\n.*\n\+lmin.*= (.*\S).*\n.*\n\+wmin.*= (.*\S)",
-            device_model,
-        )
+        find_str = '\.model  nfet_03v3.*\n.*\n\+lmin.*= (.*\S).*\n.*\n\+wmin.*= (.*\S)'  # noqa: W605
+        dimensions = re.findall(find_str, device_model)
     return dimensions[0:16]
 
 
@@ -112,7 +110,7 @@ def main():
 
     sizes = get_sizes(models_path)
     results = []
-    
+
     all_combs = list(itertools.product(sizes, temps, corners))
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers_count) as executor:

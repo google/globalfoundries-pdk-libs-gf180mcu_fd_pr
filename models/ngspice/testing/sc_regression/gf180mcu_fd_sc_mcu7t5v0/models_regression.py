@@ -53,8 +53,8 @@ def ext_simulated(device, processes, volts, temps, dev_netlists, dev_meas, dev_s
                 ) as f:
                     tmpl = Template(f.read())
                 with open(netlist_path, "w") as netlist:
-                    netlist.write(tmpl.render(process=process, 
-                                              volt=volt, 
+                    netlist.write(tmpl.render(process=process,
+                                              volt=volt,
                                               temp=temp,
                                               dev_sim=dev_sim))
 
