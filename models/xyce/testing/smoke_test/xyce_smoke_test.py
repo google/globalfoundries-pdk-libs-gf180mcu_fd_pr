@@ -1,3 +1,17 @@
+# Copyright 2022 Efabless Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 Usage:
   smoke_test.py [--num_cores=<num>]
@@ -13,7 +27,7 @@ import pandas as pd
 import os
 from jinja2 import Template
 import concurrent.futures
-import datetime
+from datetime import datetime
 
 
 def call_simulator(file_name):
@@ -33,7 +47,7 @@ def get_sizes(models_path):
             data = device_model.split(f".MODEL nfet_03v3.{i} NMOS")
             data = data[1].split("+ LEVEL=14")
             dimensions = re.findall(
-                "LMAX=([0-9e.-]+)[/w+/s=.{}-]+LMIN=([0-9e.-]+)[/w+/s=.{}-]+WMAX=([0-9e.-]+)[/w+/s=.{}-]+WMIN=([0-9e.-]+)[/w+/s=.{}-]+",
+                "LMAX=([0-9e.-]+)[\w+\s=.{}-]+LMIN=([0-9e.-]+)[\w+\s=.{}-]+WMAX=([0-9e.-]+)[\w+\s=.{}-]+WMIN=([0-9e.-]+)[\w+\s=.{}-]+",
                 data[0],
             )
             sizes.append(dimensions)
@@ -95,8 +109,7 @@ def main():
     temps = ["25", "-40", "125"]
     corners = ["typical", "ff", "ss", "fs", "sf"]  # ,"stat"]
 
-    time = f"{datetime.datetime.now()}".replace(" ", "_")
-    run_path = f"../run_smoke_{time}"
+    run_path = datetime.utcnow().strftime("run_smoke_%Y_%m_%d_%H_%M_%S")
     os.makedirs(run_path, exist_ok=True)
 
     sizes = get_sizes(models_path)

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """
 Usage:
   smoke_test.py [--num_cores=<num>]
@@ -27,11 +28,8 @@ import os
 from jinja2 import Template
 import concurrent.futures
 import itertools
-import datetime
-import warnings
+from datetime import datetime
 import subprocess
-
-warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
 def call_simulator(file_name):
@@ -51,7 +49,7 @@ def get_sizes(models_path):
     with open(models_path, "r") as f:
         device_model = f.read()
         dimensions = re.findall(
-            "/.model  nfet_03v3.*/n.*/n/+lmin.*= (.*/S).*/n.*/n/+wmin.*= (.*/S)",
+            "\.model  nfet_03v3.*\n.*\n\+lmin.*= (.*\S).*\n.*\n\+wmin.*= (.*\S)",
             device_model,
         )
     return dimensions[0:16]
@@ -109,13 +107,12 @@ def main():
     temps = ["25", "-40", "125"]
     corners = ["typical", "ff", "ss", "fs", "sf"]  # ,"stat"]
 
-    time = f"{datetime.datetime.now()}".replace(" ", "_")
-    run_path = f"../run_smoke_{time}"
+    run_path = datetime.utcnow().strftime("run_smoke_%Y_%m_%d_%H_%M_%S")
     os.makedirs(run_path, exist_ok=True)
 
     sizes = get_sizes(models_path)
     results = []
-
+    
     all_combs = list(itertools.product(sizes, temps, corners))
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers_count) as executor:

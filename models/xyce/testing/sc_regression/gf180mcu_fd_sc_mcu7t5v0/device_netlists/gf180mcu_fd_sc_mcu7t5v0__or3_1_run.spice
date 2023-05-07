@@ -41,8 +41,8 @@ wrdata or3/or3_simulated.csv {o0} {o1} {o2} {o3} {o4} {o5} {o6} {o7}
 .endc
 
 * Libraries calling
-.include "../../../../design.xyce"
-.lib "../../../../sm141064.xyce" typical
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" typical
 
 .SUBCKT gf180mcu_fd_sc_mcu7t5v0__or3_1 A1 A2 A3 Z VDD VNW VPW VSS
 M_i_2 VSS A1 Z_neg VPW nfet_06v0 W=4e-07 L=6e-07

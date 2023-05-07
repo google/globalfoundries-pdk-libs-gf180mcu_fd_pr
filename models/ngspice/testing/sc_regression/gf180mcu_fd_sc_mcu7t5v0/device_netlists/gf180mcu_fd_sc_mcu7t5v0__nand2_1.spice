@@ -32,7 +32,7 @@ meas tran o1  FIND V(ZN) AT=400p
 meas tran o2 FIND V(ZN) AT=600p
 meas tran o3  FIND V(ZN) AT=800p
 
-wrdata nand2/simulated/nand2_{{process}}_{{temp}}c_{{volt}}v.csv {o0} {o1} {o2} {o3}
+wrdata {{dev_sim}}/nand2_{{process}}_{{temp}}c_{{volt}}v.csv {o0} {o1} {o2} {o3}
 .endc
 
 * Libraries calling

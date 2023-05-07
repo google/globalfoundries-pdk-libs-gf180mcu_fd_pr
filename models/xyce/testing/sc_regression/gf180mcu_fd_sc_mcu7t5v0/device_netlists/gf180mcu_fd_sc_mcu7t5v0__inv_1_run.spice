@@ -30,8 +30,8 @@ X1 I ZN VDD VDD 0 0 gf180mcu_fd_sc_mcu7t5v0__inv_1
 
 
 * Libraries calling
-.include "../../../../design.xyce"
-.lib "../../../../sm141064.xyce" typical
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" typical
 
 .SUBCKT gf180mcu_fd_sc_mcu7t5v0__inv_1 I ZN VDD VNW VPW VSS
 xM_i_0 ZN I VSS VPW nfet_06v0 W=8.2e-07 L=6e-07
