@@ -29,7 +29,7 @@ tran 1p 200p
 meas tran high_in FIND V(ZN) AT=100p
 meas tran low_in  FIND V(ZN) AT=200p
 
-wrdata inv/simulated/inv_{{process}}_{{temp}}c_{{volt}}v.csv {high_in} {low_in}
+wrdata {{dev_sim}}/inv_{{process}}_{{temp}}c_{{volt}}v.csv {high_in} {low_in}
 
 .endc
 

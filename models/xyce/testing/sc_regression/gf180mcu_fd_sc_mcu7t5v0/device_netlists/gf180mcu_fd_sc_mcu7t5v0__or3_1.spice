@@ -34,12 +34,12 @@ X1 I1 I2 I3 ZN VDD VDD 0 0 gf180mcu_fd_sc_mcu7t5v0__or3_1
 .meas tran o5 FIND V(ZN) AT=1200p
 .meas tran o6 FIND V(ZN) AT=1400p
 .meas tran o7 FIND V(ZN) AT=1600p
-.print TRAN FORMAT=CSV file=or3/simulated/or3_{{process}}_{{temp}}c_{{volt}}v.csv o0 o1 o2 o3 o4 o5 o6 o7
+.print TRAN FORMAT=CSV file={{dev_sim}}/or3_{{process}}_{{temp}}c_{{volt}}v.csv o0 o1 o2 o3 o4 o5 o6 o7
 
 
 * Libraries calling
-.include "../../../../../design.xyce"
-.lib "../../../../../sm141064.xyce" {{process}}
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" {{process}}
 
 .SUBCKT gf180mcu_fd_sc_mcu7t5v0__or3_1 A1 A2 A3 Z VDD VNW VPW VSS
 M_i_2 VSS A1 Z_neg VPW nfet_06v0 W=4e-07 L=6e-07

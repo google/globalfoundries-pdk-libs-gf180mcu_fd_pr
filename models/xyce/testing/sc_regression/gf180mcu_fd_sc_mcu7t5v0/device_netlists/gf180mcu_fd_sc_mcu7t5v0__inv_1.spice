@@ -27,12 +27,12 @@ X1 I ZN VDD VDD 0 0 gf180mcu_fd_sc_mcu7t5v0__inv_1
 .meas tran high_in FIND V(ZN) AT=100p
 .meas tran low_in  FIND V(ZN) AT=200p
 
-.print TRAN FORMAT=CSV file=inv/simulated/inv_{{process}}_{{temp}}c_{{volt}}v.csv high_in low_in
+.print TRAN FORMAT=CSV file={{dev_sim}}/inv_{{process}}_{{temp}}c_{{volt}}v.csv high_in low_in
 
 
 * Libraries calling
-.include "../../../../../design.xyce"
-.lib "../../../../../sm141064.xyce" {{process}}
+.include "../../../design.xyce"
+.lib "../../../sm141064.xyce" {{process}}
 
 .SUBCKT gf180mcu_fd_sc_mcu7t5v0__inv_1 I ZN VDD VNW VPW VSS
 xM_i_0 ZN I VSS VPW nfet_06v0 W=8.2e-07 L=6e-07

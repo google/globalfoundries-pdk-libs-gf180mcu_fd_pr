@@ -18,7 +18,7 @@
 
 SHELL := /bin/bash
 Testing_DIR ?= $(shell pwd)
-run_folder  := $(shell date +'run_%Y_%m_%d_%H_%M_%S')
+run_folder  := $(shell date +'models_run_%Y_%m_%d_%H_%M_%S')
 
 
 .DEFAULT_GOAL := all
@@ -44,6 +44,7 @@ Add_run-dir:
 smoke-test:
 	@echo "========== Runing models_xyce SMOKE TEST regression =========="
 	@cd $(Testing_DIR)/smoke_test
+	@python3 xyce_smoke_test.py 
 
 #================================
 # ---------- models-MOS----------
@@ -162,7 +163,7 @@ models-RES: Add_run-dir
 .ONESHELL:
 clean: 
 	@cd $(Testing_DIR)
-	@rm -rf $(Testing_DIR)/run_*
+	@rm -rf $(Testing_DIR)/models_run_*
 	@echo "==== Cleaning all runs is done ===="
 
 #==========================

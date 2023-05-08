@@ -37,7 +37,7 @@ meas tran o5 FIND V(ZN) AT=1200p
 meas tran o6 FIND V(ZN) AT=1400p
 meas tran o7 FIND V(ZN) AT=1600p
 
-wrdata or3/simulated/or3_{{process}}_{{temp}}c_{{volt}}v.csv {o0} {o1} {o2} {o3} {o4} {o5} {o6} {o7}
+wrdata {{dev_sim}}/or3_{{process}}_{{temp}}c_{{volt}}v.csv {o0} {o1} {o2} {o3} {o4} {o5} {o6} {o7}
 .endc
 
 * Libraries calling
