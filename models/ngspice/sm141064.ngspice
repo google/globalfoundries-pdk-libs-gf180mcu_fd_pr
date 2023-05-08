@@ -38082,17 +38082,17 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 .model  diode_nd2ps_03v3  d  level = 3  
 +tref    = 25            
-+is      = '2.2959e-007 * jsa'   
-+jsw     = '2.1207e-013 * jsa'  
-+ik      = 300000        
-+bv      = 11.0             
++is      = '2.2959e-007 * jsa'
++jsw     = '2.1207e-013 * jsa'
++ik      = 300000
++bv      = 11
 +ibv     = 0.001         
 +n       = 1.01          
 +rs      = '2e-010 * rsa'  
 +jtun    = 1.1223e-005   
 +jtunsw  = 6.4125e-012   
 +ntun    = 10            
-+cj      = '0.00096797* cja'    
++cjo     = '0.00096797* cja'    
 +cjp     = '1.5663e-010* cjswa'   
 +pb      = 0.70172       
 +php     = 0.8062          
@@ -38121,7 +38121,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 +jtun    = 5.4028e-005   
 +jtunsw  = 9.8419e-011   
 +ntun    = 60            
-+cj      = '0.00094344* cja'    
++cjo     = '0.00094344* cja'    
 +cjp     = '1.5078e-010* cjswa'   
 +pb      = 0.69939       
 +php     = 0.8022        
@@ -38143,7 +38143,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 +is      = '6.88e-007 * jsa'      jsw     = '4.88e-013 * jsa'      ik      = 229000        
 +bv      = 11              ibv     = 0.001           ikr     = 1e-030        
 +n       = 1.0541          rs      = '2e-010 * rsa'   
-+cj      = '0.00095 * cja'        cjp     = '1.33e-010 * cjswa'      pb      = 0.606         
++cjo     = '0.00095 * cja'        cjp     = '1.33e-010 * cjswa'      pb      = 0.606         
 +php     = 0.48            mj      = 0.296           mjsw    = 0.01          
 +tlev    = 1               tlevc   = 1               trs     = 0.0001        
 +xti     = 5               cta     = 0.000825        ctp     = 0.0018        
@@ -38153,12 +38153,13 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 +tref    = 25           
 +is      = '2.0867e-007 * jsa'  jsw     = '1.6088e-013 * jsa'  ik      = 253800                   
 +ikr     = 0               n       = 1.0058          rs      = '2.0e-010 * rsa'    
-+cj      = '0.000912 * cja'  cjsw    = '1.4649e-010 * cjswa'    pb      = 0.76836         php     = 0.5           
++cjo     = '0.000912 * cja'  cjsw    = '1.4649e-010 * cjswa'    pb      = 0.76836         php     = 0.5           
 +mj      = 0.32713         mjsw    = 0.056777   
 +tlev    = 1               tlevc   = 1               trs     = 0.00168         xti     = 3             
 +cta     = 0.001           ctp     = 0.00071888      tpb     = 0.0019314       tphp    = 0.0017642     
 +eg      = 1.17            bv=10.5
 *
+
 .model  diode_nw2ps_03v3  d  level = 3
 +area    = 1.6e-009      
 +pj      = 0.00016       
@@ -38166,16 +38167,16 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 +is      = '1.5654e-006 * jsa'  
 +jsw     = '1.6912e-012 * jsa'  
 +ik      = 300000        
-+bv      = 0             
-+ibv     = 0.001         
++bv      = 11
++ibv     = 0.001                    
 +n       = 1.01          
 +rs      = '2e-010 * rsa'  
 +jtun    = 0.00037353    
 +jtunsw  = 3.0737e-011   
 +ntun    = 22            
-+cj      = '0.00014917* cja'    
++cjo      = '0.00014917* cja'    
 +cjp     = '5.8113e-010*cjswa'   
-+pb      = 0.5755        
++vj      = 0.5755        
 +php     = 0.55456       
 +mj      = 0.33979       
 +mjsw    = 0.2257        
@@ -38194,7 +38195,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 +tref    = 25            
 +is      = '1.6119e-006 * jsa' jsw   = '2e-012 * jsa'         ik      = 100000        
 +ikr     = 0               n       = 1              rs      = '2e-010 * rsa'          
-+cj      = '0.00014914 * cja' cjsw   = '5.8719e-010 * cjswa' pb      = 0.43905   php     = 0.48991       
++cjo     = '0.00014914 * cja' cjsw   = '5.8719e-010 * cjswa' pb      = 0.43905   php     = 0.48991       
 +mj      = 0.30525         mjsw    = 0.21757       
 +tlev    = 1               tlevc   = 1              trs     = 0               xti     = 3             
 +cta     = 0.0028626       ctp     = 0.00091707     tpb     = 0.0024779       tphp    = 0.00125       
@@ -38202,30 +38203,31 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 *
 .model  diode_pw2dw  d  level = 3
 +tref    = 25            
-+is      = '5.2139e-007* jsa'     jsw     = '0* jsa'               ik      = 711930          vb      = 14.732        
++is      = '5.2139e-007* jsa'     jsw     = '0* jsa'               ik      = 711930          bv      = 14.732        
 +ibv     = 0.001           ikr     = 0               n       = 0.98            rs      = '2e-010* rsa'   
-+cj      = '0.00032124* cja'      cjp     = '5.4659e-010* cjswa'     pb      = 0.63391         php     = 0.77752       
++cjo     = '0.00032124* cja'      cjp     = '5.4659e-010* cjswa'     pb      = 0.63391         php     = 0.77752       
 +mj      = 0.31113         mjsw    = 0.39816       
 +tlev    = 1               tlevc   = 1               trs     = 0.0002207       xti     = 3             
 +cta     = 0.0012922       ctp     = 0.0010772       tpb     = 0.0019819       tphp    = 0.0016567     
 +eg      = 1.17
 *
 .model  diode_dw2ps  d  level = 3
-+tref    = 25            
-+is      = '2e-006* jsa'     jsw     = '1e-12* jsa'               ik      = 229050          vb      = 30.48         
++tref    = 25
++is      = '2e-006* jsa'     jsw     = '1e-12* jsa'               ik      = 229050          bv      = 30.48         
 +ibv     = 0.001           ikr     = 0               n       = 0.99335         rs      = '2e-010* rsa'   
-+cj      = '0.00022998* cja'      cjp     = '7.2369e-010* cjswa'     pb      = 0.35175         php     = 0.37806       
++cjo     = '0.00022998* cja'      cjp     = '7.2369e-010* cjswa'     pb      = 0.35175         php     = 0.37806       
 +mj      = 0.14716         mjsw    = 0.19821       
 +tlev    = 1               tlevc   = 1               trs     = 0.0026028       xti     = 3             
 +cta     = 0.0012309       ctp     = 0.0012111       tpb     = 0.0019414       tphp    = 0.0017152     
 +eg      = 1.17
+
 *       
 .model  sc_diode  d  level = 3
 +tref    = 25
-+js      = '8.16*10**jsa_sc'          jsw     = 0               ik      = 4e+010          vb      = '17 + vba_sc'
++js      = '8.16*10**jsa_sc'          jsw     = 0               ik      = 4e+010          bv      = '17 + vba_sc'
 +ibv     = 9.92e-005       ikr     = 4e+008          n       = 1.0553          rs      = '2.768e-009*rs_sc'
 +jtun    = '1048.7*10**jtuna_sc'          jtunsw  = 0               ntun    = 72.211
-+cj      = '0.00176*cja_sc'         cjp     = 0               pb      = 0.14256         php     = 0.93627
++cjo     = '0.00176*cja_sc'         cjp     = 0               pb      = 0.14256         php     = 0.93627
 +mj      = 0.02604         mjsw    = 0.1545
 +tlev    = 1               tlevc   = 1               tcv     = -5e-005         trs     = 0.0022143
 +xti     = 3               xtitun  = -12.347         cta     = 6.2962e-005     ctp     = 0
@@ -38312,7 +38314,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + tc2=1.75E-6
 + tnom=25
 * model for substrate capacitor
-.model diode_nd2ps_03v3 d
+.model diode_nd2ps_03v3_r d
 + Level=3
 + Cj=0.00096797    
 + Mj=0.32071       
@@ -38329,12 +38331,12 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 *-------------------
 * terminal 1
 rt1 1 11 nplus_u_t   l='s*1u' w=r_w dtemp=dtemp
-d1  3 1  diode_nd2ps_03v3  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
+d1  3 1  diode_nd2ps_03v3_r  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
 * body
 rb  11 21 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)*(1+mis_r*sw_stat_mismatch)'
 * terminal 2
 rt2 21 2 nplus_u_t   l='s*1u' w=r_w dtemp=dtemp
-d2  3 2  diode_nd2ps_03v3  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
+d2  3 2  diode_nd2ps_03v3_r  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
 *-------------------
 .ends nplus_u
 *******************************************************************************************************
@@ -38418,7 +38420,7 @@ d2  2 3  diode_pd2nw_03v3  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
 + tc2=-0.27E-6
 + tnom=25
 * model for substrate capacitor
-.model diode_nd2ps_03v3 d
+.model diode_nd2ps_03v3_r d
 + Level=3
 + Cj=0.00096797    
 + Mj=0.32071       
@@ -38435,12 +38437,12 @@ d2  2 3  diode_pd2nw_03v3  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
 *-------------------
 * terminal 1
 rt1 1 11 nplus_s_t   l='s*1u' w=r_w dtemp=dtemp
-d1  3 1  diode_nd2ps_03v3  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
+d1  3 1  diode_nd2ps_03v3_r  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
 * body
 rb  11 21 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(11,21))/r_n+r_vc2*abs(v(11,21))*abs(v(11,21))/r_n/r_n)'
 * terminal 2
 rt2 21 2 nplus_s_t   l='s*1u' w=r_w dtemp=dtemp
-d2  3 2  diode_nd2ps_03v3  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
+d2  3 2  diode_nd2ps_03v3_r  area='r_w*r_l/2' pj='r_w+2*r_l/2' dtemp=dtemp
 *-------------------
 .ends nplus_s
 *******************************************************************************************************
