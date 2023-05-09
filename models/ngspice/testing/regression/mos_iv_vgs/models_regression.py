@@ -716,15 +716,15 @@ def main():
     main_regr_dir = "mos_iv_regr"
 
     devices = [
-        # "nfet_03v3",
+        "nfet_03v3",
         "pfet_03v3",
-        # "nfet_06v0",
-        # "pfet_06v0",
-        # "nfet_06v0_nvt",
-        # "nfet_03v3_dss",
-        # "pfet_03v3_dss",
-        # "nfet_06v0_dss",
-        # "pfet_06v0_dss",
+        "nfet_06v0",
+        "pfet_06v0",
+        "nfet_06v0_nvt",
+        "nfet_03v3_dss",
+        "pfet_03v3_dss",
+        "nfet_06v0_dss",
+        "pfet_06v0_dss",
     ]
 
     for i, dev in enumerate(devices):
