@@ -30,7 +30,6 @@ import shutil
 import multiprocessing as mp
 import glob
 import logging
-from datetime import datetime
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -38,12 +37,12 @@ pd.options.mode.chained_assignment = None  # default='warn'
 ## TODO: Updating PASS_THRESH value after fixing simulation issues.
 PASS_THRESH = 100.0
 
-MOS = [0.8, 1.3, 1.8, 2.3, 2.8, 3.3]
+MOS_VGS = [0.8, 1.3, 1.8, 2.3, 2.8, 3.3]
 PMOS3P3_VGS = [-0.8, -1.3, -1.8, -2.3, -2.8, -3.3]
 NMOS6P0_VGS = [1, 2, 3, 4, 5, 6]
 PMOS6P0_VGS = [-1, -2, -3, -4, -5, -6]
 NMOS6P0_VGS_N = [0.25, 1.4, 2.55, 3.7, 4.85, 6]
-# #######################
+
 VDS_N03V3 = "0 3.3 0.05"
 VDS_P03V3 = "-0 -3.3 -0.05"
 VDS_N06V0 = "0 6.6 0.05"
@@ -57,92 +56,113 @@ VGS_P06V0 = "-1 -6 -1"
 VGS_N06V0_N = "0.25 6 1.15"
 
 
-def ext_measured(dev_data_path, device):
-    """Extracting the measured data of  devices from excel sheet
+def check_ngspice_version():
+    """
+    check_ngspice_version checks ngspice version and makes sure it would work with the models.
+    """
+    # ======= Checking ngspice  =======
+    ngspice_v_ = os.popen("ngspice -v").read()
+
+    if "ngspice-" not in ngspice_v_:
+        logging.error("ngspice is not found. Please make sure ngspice is installed.")
+        exit(1)
+    else:
+        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        logging.info(f"Your Klayout version is: ngspice {version}")
+        if version <= 37:
+            logging.error(
+                "ngspice version is not supported. Please use ngspice version 38 or newer."
+            )
+            exit(1)
+
+
+def ext_measured(dev_path, data_file, device):
+    """
+    Extracting the measured data of  devices from excel sheet
 
     Args:
-         dev_data_path(str): path to the data sheet
-         devices(str):  undertest device
+        dev_path (str): Path of device regression results
+        data_file (str): Xlsx file contains measurement data
+        device (str): Device under test
 
     Returns:
          dfs(pd.DataFrame): A data frame contains all extracted data
-
     """
 
     # Read Data
-    read_file = pd.read_excel(dev_data_path)
-    read_file.to_csv(f"mos_iv_regr/{device}/{device}.csv", index=False, header=True)
-    df = pd.read_csv(f"mos_iv_regr/{device}/{device}.csv")
+    read_file = pd.read_excel(data_file)
+
+    data_file_path = os.path.join(dev_path, f"{device}.csv")
+    read_file.to_csv(data_file_path, index=False, header=True)
+    df = pd.read_csv(data_file_path)
+
     loops = df["L (um)"].count()
     all_dfs = []
 
+    # Voltages setup
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
-        mos = PMOS3P3_VGS
+        mos_vgs = PMOS3P3_VGS
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
-        mos = PMOS6P0_VGS
+        mos_vgs = PMOS6P0_VGS
     elif device == "nfet_06v0" or device == "nfet_06v0_dss":
-        mos = NMOS6P0_VGS
+        mos_vgs = NMOS6P0_VGS
     elif device == "nfet_06v0_nvt":
-        mos = NMOS6P0_VGS_N
+        mos_vgs = NMOS6P0_VGS_N
     else:
-        mos = MOS
+        mos_vgs = MOS_VGS
 
     width = df["W (um)"].iloc[0]
     length = df["L (um)"].iloc[0]
-    # for pmos
-    if device in [
-        "pfet_03v3",
-        "pfet_06v0",
-        "pfet_03v3_dss",
-        "pfet_06v0_dss",
-    ]:
+
+    ## PMOS
+    if "pfet" in device:
         idf = df[
             [
                 "-Id (A)",
                 "-vds (V)",
-                f"vgs ={mos[0]}",
-                f"vgs ={mos[1]}",
-                f"vgs ={mos[2]}",
-                f"vgs ={mos[3]}",
-                f"vgs ={mos[4]}",
-                f"vgs ={mos[5]}",
+                f"vgs ={mos_vgs[0]}",
+                f"vgs ={mos_vgs[1]}",
+                f"vgs ={mos_vgs[2]}",
+                f"vgs ={mos_vgs[3]}",
+                f"vgs ={mos_vgs[4]}",
+                f"vgs ={mos_vgs[5]}",
             ]
         ].copy()
         idf.rename(
             columns={
                 "-vds (V)": "vds",
-                f"vgs ={mos[0]}": f"measured_vgs0 ={mos[0]}",
-                f"vgs ={mos[1]}": f"measured_vgs0 ={mos[1]}",
-                f"vgs ={mos[2]}": f"measured_vgs0 ={mos[2]}",
-                f"vgs ={mos[3]}": f"measured_vgs0 ={mos[3]}",
-                f"vgs ={mos[4]}": f"measured_vgs0 ={mos[4]}",
-                f"vgs ={mos[5]}": f"measured_vgs0 ={mos[5]}",
+                f"vgs ={mos_vgs[0]}": f"measured_vgs0 ={mos_vgs[0]}",
+                f"vgs ={mos_vgs[1]}": f"measured_vgs0 ={mos_vgs[1]}",
+                f"vgs ={mos_vgs[2]}": f"measured_vgs0 ={mos_vgs[2]}",
+                f"vgs ={mos_vgs[3]}": f"measured_vgs0 ={mos_vgs[3]}",
+                f"vgs ={mos_vgs[4]}": f"measured_vgs0 ={mos_vgs[4]}",
+                f"vgs ={mos_vgs[5]}": f"measured_vgs0 ={mos_vgs[5]}",
             },
             inplace=True,
         )
     else:
-        # for nmos
+        ## NMOS
         idf = df[
             [
                 "Id (A)",
                 "vds (V)",
-                f"vgs ={mos[0]}",
-                f"vgs ={mos[1]}",
-                f"vgs ={mos[2]}",
-                f"vgs ={mos[3]}",
-                f"vgs ={mos[4]}",
-                f"vgs ={mos[5]}",
+                f"vgs ={mos_vgs[0]}",
+                f"vgs ={mos_vgs[1]}",
+                f"vgs ={mos_vgs[2]}",
+                f"vgs ={mos_vgs[3]}",
+                f"vgs ={mos_vgs[4]}",
+                f"vgs ={mos_vgs[5]}",
             ]
         ].copy()
         idf.rename(
             columns={
-                "-vds (V)": "vds",
-                f"vgs ={mos[0]}": f"measured_vgs0 ={mos[0]}",
-                f"vgs ={mos[1]}": f"measured_vgs0 ={mos[1]}",
-                f"vgs ={mos[2]}": f"measured_vgs0 ={mos[2]}",
-                f"vgs ={mos[3]}": f"measured_vgs0 ={mos[3]}",
-                f"vgs ={mos[4]}": f"measured_vgs0 ={mos[4]}",
-                f"vgs ={mos[5]}": f"measured_vgs0 ={mos[5]}",
+                "vds (V)": "vds",
+                f"vgs ={mos_vgs[0]}": f"measured_vgs0 ={mos_vgs[0]}",
+                f"vgs ={mos_vgs[1]}": f"measured_vgs0 ={mos_vgs[1]}",
+                f"vgs ={mos_vgs[2]}": f"measured_vgs0 ={mos_vgs[2]}",
+                f"vgs ={mos_vgs[3]}": f"measured_vgs0 ={mos_vgs[3]}",
+                f"vgs ={mos_vgs[4]}": f"measured_vgs0 ={mos_vgs[4]}",
+                f"vgs ={mos_vgs[5]}": f"measured_vgs0 ={mos_vgs[5]}",
             },
             inplace=True,
         )
@@ -153,12 +173,14 @@ def ext_measured(dev_data_path, device):
     idf["temp"] = 25
 
     all_dfs.append(idf)
-    # temperature
 
+    # Temp setup
     temp_range = int(2 * loops / 3)
+
     for i in range(2 * loops - 1):
         width = df["W (um)"].iloc[int(0.5 * i)]
         length = df["L (um)"].iloc[int(0.5 * i)]
+
         if i in range(0, temp_range):
             temp = 25
         elif i in range(temp_range, 2 * temp_range):
@@ -166,29 +188,29 @@ def ext_measured(dev_data_path, device):
         else:
             temp = 125
 
-        if device[0] == "p":
+        if "pfet" in device:
             if i == 0:
                 idf = df[
                     [
                         "-vds (V)",
-                        f"vgs ={mos[0]}.{i+1}",
-                        f"vgs ={mos[1]}.{i+1}",
-                        f"vgs ={mos[2]}.{i+1}",
-                        f"vgs ={mos[3]}.{i+1}",
-                        f"vgs ={mos[4]}.{i+1}",
-                        f"vgs ={mos[5]}.{i+1}",
+                        f"vgs ={mos_vgs[0]}.{i+1}",
+                        f"vgs ={mos_vgs[1]}.{i+1}",
+                        f"vgs ={mos_vgs[2]}.{i+1}",
+                        f"vgs ={mos_vgs[3]}.{i+1}",
+                        f"vgs ={mos_vgs[4]}.{i+1}",
+                        f"vgs ={mos_vgs[5]}.{i+1}",
                     ]
                 ].copy()
 
                 idf.rename(
                     columns={
                         "-vds (V)": "vds",
-                        f"vgs ={mos[0]}.{i+1}": f"measured_vgs{i+1} ={mos[0]}",
-                        f"vgs ={mos[1]}.{i+1}": f"measured_vgs{i+1} ={mos[1]}",
-                        f"vgs ={mos[2]}.{i+1}": f"measured_vgs{i+1} ={mos[2]}",
-                        f"vgs ={mos[3]}.{i+1}": f"measured_vgs{i+1} ={mos[3]}",
-                        f"vgs ={mos[4]}.{i+1}": f"measured_vgs{i+1} ={mos[4]}",
-                        f"vgs ={mos[5]}.{i+1}": f"measured_vgs{i+1} ={mos[5]}",
+                        f"vgs ={mos_vgs[0]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[0]}",
+                        f"vgs ={mos_vgs[1]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[1]}",
+                        f"vgs ={mos_vgs[2]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[2]}",
+                        f"vgs ={mos_vgs[3]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[3]}",
+                        f"vgs ={mos_vgs[4]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[4]}",
+                        f"vgs ={mos_vgs[5]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[5]}",
                     },
                     inplace=True,
                 )
@@ -196,24 +218,24 @@ def ext_measured(dev_data_path, device):
                 idf = df[
                     [
                         f"-vds (V).{i}",
-                        f"vgs ={mos[0]}.{i+1}",
-                        f"vgs ={mos[1]}.{i+1}",
-                        f"vgs ={mos[2]}.{i+1}",
-                        f"vgs ={mos[3]}.{i+1}",
-                        f"vgs ={mos[4]}.{i+1}",
-                        f"vgs ={mos[5]}.{i+1}",
+                        f"vgs ={mos_vgs[0]}.{i+1}",
+                        f"vgs ={mos_vgs[1]}.{i+1}",
+                        f"vgs ={mos_vgs[2]}.{i+1}",
+                        f"vgs ={mos_vgs[3]}.{i+1}",
+                        f"vgs ={mos_vgs[4]}.{i+1}",
+                        f"vgs ={mos_vgs[5]}.{i+1}",
                     ]
                 ].copy()
 
                 idf.rename(
                     columns={
                         f"-vds (V).{i}": "vds",
-                        f"vgs ={mos[0]}.{i+1}": f"measured_vgs{i+1} ={mos[0]}",
-                        f"vgs ={mos[1]}.{i+1}": f"measured_vgs{i+1} ={mos[1]}",
-                        f"vgs ={mos[2]}.{i+1}": f"measured_vgs{i+1} ={mos[2]}",
-                        f"vgs ={mos[3]}.{i+1}": f"measured_vgs{i+1} ={mos[3]}",
-                        f"vgs ={mos[4]}.{i+1}": f"measured_vgs{i+1} ={mos[4]}",
-                        f"vgs ={mos[5]}.{i+1}": f"measured_vgs{i+1} ={mos[5]}",
+                        f"vgs ={mos_vgs[0]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[0]}",
+                        f"vgs ={mos_vgs[1]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[1]}",
+                        f"vgs ={mos_vgs[2]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[2]}",
+                        f"vgs ={mos_vgs[3]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[3]}",
+                        f"vgs ={mos_vgs[4]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[4]}",
+                        f"vgs ={mos_vgs[5]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[5]}",
                     },
                     inplace=True,
                 )
@@ -222,24 +244,24 @@ def ext_measured(dev_data_path, device):
                 idf = df[
                     [
                         "vds (V)",
-                        f"vgs ={mos[0]}.{i+1}",
-                        f"vgs ={mos[1]}.{i+1}",
-                        f"vgs ={mos[2]}.{i+1}",
-                        f"vgs ={mos[3]}.{i+1}",
-                        f"vgs ={mos[4]}.{i+1}",
-                        f"vgs ={mos[5]}.{i+1}",
+                        f"vgs ={mos_vgs[0]}.{i+1}",
+                        f"vgs ={mos_vgs[1]}.{i+1}",
+                        f"vgs ={mos_vgs[2]}.{i+1}",
+                        f"vgs ={mos_vgs[3]}.{i+1}",
+                        f"vgs ={mos_vgs[4]}.{i+1}",
+                        f"vgs ={mos_vgs[5]}.{i+1}",
                     ]
                 ].copy()
 
                 idf.rename(
                     columns={
                         "vds (V)": "vds",
-                        f"vgs ={mos[0]}.{i+1}": f"measured_vgs{i+1} ={mos[0]}",
-                        f"vgs ={mos[1]}.{i+1}": f"measured_vgs{i+1} ={mos[1]}",
-                        f"vgs ={mos[2]}.{i+1}": f"measured_vgs{i+1} ={mos[2]}",
-                        f"vgs ={mos[3]}.{i+1}": f"measured_vgs{i+1} ={mos[3]}",
-                        f"vgs ={mos[4]}.{i+1}": f"measured_vgs{i+1} ={mos[4]}",
-                        f"vgs ={mos[5]}.{i+1}": f"measured_vgs{i+1} ={mos[5]}",
+                        f"vgs ={mos_vgs[0]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[0]}",
+                        f"vgs ={mos_vgs[1]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[1]}",
+                        f"vgs ={mos_vgs[2]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[2]}",
+                        f"vgs ={mos_vgs[3]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[3]}",
+                        f"vgs ={mos_vgs[4]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[4]}",
+                        f"vgs ={mos_vgs[5]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[5]}",
                     },
                     inplace=True,
                 )
@@ -247,27 +269,28 @@ def ext_measured(dev_data_path, device):
                 idf = df[
                     [
                         f"vds (V).{i}",
-                        f"vgs ={mos[0]}.{i+1}",
-                        f"vgs ={mos[1]}.{i+1}",
-                        f"vgs ={mos[2]}.{i+1}",
-                        f"vgs ={mos[3]}.{i+1}",
-                        f"vgs ={mos[4]}.{i+1}",
-                        f"vgs ={mos[5]}.{i+1}",
+                        f"vgs ={mos_vgs[0]}.{i+1}",
+                        f"vgs ={mos_vgs[1]}.{i+1}",
+                        f"vgs ={mos_vgs[2]}.{i+1}",
+                        f"vgs ={mos_vgs[3]}.{i+1}",
+                        f"vgs ={mos_vgs[4]}.{i+1}",
+                        f"vgs ={mos_vgs[5]}.{i+1}",
                     ]
                 ].copy()
 
                 idf.rename(
                     columns={
                         f"vds (V).{i}": "vds",
-                        f"vgs ={mos[0]}.{i+1}": f"measured_vgs{i+1} ={mos[0]}",
-                        f"vgs ={mos[1]}.{i+1}": f"measured_vgs{i+1} ={mos[1]}",
-                        f"vgs ={mos[2]}.{i+1}": f"measured_vgs{i+1} ={mos[2]}",
-                        f"vgs ={mos[3]}.{i+1}": f"measured_vgs{i+1} ={mos[3]}",
-                        f"vgs ={mos[4]}.{i+1}": f"measured_vgs{i+1} ={mos[4]}",
-                        f"vgs ={mos[5]}.{i+1}": f"measured_vgs{i+1} ={mos[5]}",
+                        f"vgs ={mos_vgs[0]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[0]}",
+                        f"vgs ={mos_vgs[1]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[1]}",
+                        f"vgs ={mos_vgs[2]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[2]}",
+                        f"vgs ={mos_vgs[3]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[3]}",
+                        f"vgs ={mos_vgs[4]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[4]}",
+                        f"vgs ={mos_vgs[5]}.{i+1}": f"measured_vgs{i+1} ={mos_vgs[5]}",
                     },
                     inplace=True,
                 )
+
         idf["W (um)"] = width
         idf["L (um)"] = length
         idf["temp"] = temp
@@ -277,19 +300,23 @@ def ext_measured(dev_data_path, device):
 
     dfs = pd.concat(all_dfs, axis=1)
     dfs.drop_duplicates(inplace=True)
+
     return dfs
 
 
 def call_simulator(file_name):
-    """Call simulation commands to perform simulation.
+    """
+    Call simulation commands to perform simulation.
     Args:
         file_name (str): Netlist file name.
     """
+
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
 def run_sim(dirpath, device, id_rds, width, length, temp=25):
-    """Run simulation at specific information and corner
+    """
+    Run simulation at specific information and corner
     Args:
         dirpath(str): path to the file where we write data
         device(str): the device instance will be simulated
@@ -302,13 +329,14 @@ def run_sim(dirpath, device, id_rds, width, length, temp=25):
         info(dict): results are stored in,
         and passed to the run_sims function to extract data
     """
-    if device[0] == "n":
+
+    if "nfet" in device:
         device1 = "nmos"
-        if device[-1] == "s" and id_rds == "Rds":
+        if "dss" in device and id_rds == "Rds":
             device1 = "nmos_dss"
     else:
         device1 = "pmos"
-        if device[-1] == "s" and id_rds == "Rds":
+        if "dss" in device and id_rds == "Rds":
             device1 = "pmos_dss"
 
     vds = VDS_N03V3
@@ -329,7 +357,7 @@ def run_sim(dirpath, device, id_rds, width, length, temp=25):
     # string to list
     vgs1 = vgs.split(" ")
 
-    netlist_tmp = f"device_netlists_{id_rds}/{device1}.spice"
+    netlist_tmp = os.path.join(f"device_netlists_{id_rds}", f"{device1}.spice")
 
     info = {}
     info["device"] = device
@@ -341,13 +369,17 @@ def run_sim(dirpath, device, id_rds, width, length, temp=25):
     length_str = length
     temp_str = temp
 
-    s = f"netlist_w{width_str}_l{length_str}_t{temp_str}.spice"
-    netlist_path = f"{dirpath}/{device}_netlists_{id_rds}/{s}"
-    s = f"T{temp}_simulated_W{width_str}_L{length_str}.csv"
-    result_path = f"{dirpath}/{device}_netlists_{id_rds}/{s}"
+    dev_netlists_path = os.path.join(dirpath, f"{device}_netlists_{id_rds}")
+    os.makedirs(dev_netlists_path, exist_ok=True)
+
+    sp_file_name = f"netlist_w{width_str}_l{length_str}_t{temp_str}.spice"
+    netlist_path = os.path.join(dev_netlists_path, sp_file_name)
+
+    sim_file_name = f"T{temp}_simulated_W{width_str}_L{length_str}.csv"
+    result_path = os.path.join(dev_netlists_path, sim_file_name)
+
     with open(netlist_tmp) as f:
         tmpl = Template(f.read())
-        os.makedirs(f"{dirpath}/{device}_netlists_{id_rds}", exist_ok=True)
         with open(netlist_path, "w") as netlist:
             netlist.write(
                 tmpl.render(
@@ -385,7 +417,8 @@ def run_sim(dirpath, device, id_rds, width, length, temp=25):
 
 
 def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
-    """passing netlists to run_sim function
+    """
+    passing netlists to run_sim function
         and storing the results csv files into dataframes
 
     Args:
@@ -397,6 +430,7 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
     Returns:
         df(pd.DataFrame): dataframe contains simulated results
     """
+
     loops = df["L (um)"].count()
     temp_range = int(loops / 3)
     df["temp"] = 25
@@ -436,18 +470,22 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
     elif device == "nfet_06v0_nvt":
         mos = NMOS6P0_VGS_N
     else:
-        mos = MOS
+        mos = MOS_VGS
+
     # sweeping on all generated cvs files
     for i in range(len(sf)):
         df = pd.read_csv(
             sf[i],
             delimiter=r"\s+",
         )
+
         if id_rds == "Id":
             v_gs = "v(G_tn)"
             i_vds = "-i(Vds)"
-            if device[0] == "p":
+
+            if "pfet" in device:
                 i_vds = "i(Vds)"
+
             sdf = df.pivot(index="v-sweep", columns=(v_gs), values=i_vds)
 
         else:
@@ -455,8 +493,10 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
             df.drop(df.loc[df["v-sweep"] == "v-sweep"].index, inplace=True)
             df = df.reset_index(drop=True)
             df = df.astype(float)
+
             # use the first column as index
             df = df.set_index("v-sweep")
+
             if device in ["nfet_06v0", "pfet_06v0", "nfet_06v0_dss", "pfet_06v0_dss"]:
                 # reciprocal the column values
                 df["Rds"] = df["Rds"].apply(np.reciprocal)
@@ -476,7 +516,7 @@ def run_sims(df, dirpath, device, id_rds, num_workers=mp.cpu_count()):
             },
             inplace=True,
         )
-        if device[0] == "p":
+        if "pfet" in device:
             # reverse the rows
             sdf = sdf.iloc[::-1]
 
@@ -493,7 +533,8 @@ def error_cal(
     device: str,
     id_rds: str,
 ) -> None:
-    """error function calculates the error between measured, simulated data
+    """
+    error function calculates the error between measured, simulated data
 
     Args:
         df(pd.DataFrame): Dataframe contains devices and csv files
@@ -504,9 +545,9 @@ def error_cal(
         id_rds(str): select id or rds
 
     """
-    id_rd = 0
-    if id_rds == "Rds":
-        id_rd = 1
+
+    id_rd = 1 if id_rds == "Rds" else 0
+
     # adding error columns to the merged dataframe
     merged_dfs = list()
     loops = df["L (um)"].count()
@@ -514,6 +555,7 @@ def error_cal(
     df["temp"] = 25
     df["temp"][temp_range : 2 * temp_range] = -40
     df["temp"][2 * temp_range : 3 * temp_range] = 125
+
     if device == "pfet_03v3" or device == "pfet_03v3_dss":
         mos = PMOS3P3_VGS
     elif device == "pfet_06v0" or device == "pfet_06v0_dss":
@@ -523,7 +565,7 @@ def error_cal(
     elif device == "nfet_06v0_nvt":
         mos = NMOS6P0_VGS_N
     else:
-        mos = MOS
+        mos = MOS_VGS
 
     # create a new dataframe for rms error
     rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
@@ -532,8 +574,9 @@ def error_cal(
         length = df["L (um)"].iloc[int(i)]
         w = df["W (um)"].iloc[int(i)]
         t = df["temp"].iloc[int(i)]
-        s = f"T{t}_simulated_W{w}_L{length}.csv"
-        sim_path = f"mos_iv_regr/{device}/{device}_netlists_{id_rds}/{s}"
+
+        sim_file_name = f"T{t}_simulated_W{w}_L{length}.csv"
+        sim_path = os.path.join("mos_iv_regr", device, f"{device}_netlists_{id_rds}", sim_file_name)
 
         simulated_data = pd.read_csv(sim_path)
 
@@ -547,6 +590,7 @@ def error_cal(
                 f"measured_vgs{2*i+id_rd} ={mos[5]}",
             ]
         ].copy()
+
         measured_data.rename(
             columns={
                 f"measured_vgs{2*i+id_rd} ={mos[0]}": "measured_vgs1",
@@ -560,6 +604,7 @@ def error_cal(
         )
         measured_data["v-sweep"] = simulated_data["v-sweep"]
         result_data = simulated_data.merge(measured_data, how="left")
+
         if id_rds == "Id":
             # clipping all the  values to lowest_curr
             lowest_curr = 5e-12
@@ -588,6 +633,7 @@ def error_cal(
             result_data["vb5"] = result_data["vb5"].clip(lower=lowest_curr)
             result_data["vb6"] = result_data["vb6"].clip(lower=lowest_curr)
 
+        # Error calc
         result_data["vds_step1_error"] = (
             np.abs(result_data["measured_vgs1"] - result_data["vb1"])
             * 100.0
@@ -621,6 +667,7 @@ def error_cal(
         result_data["length"] = length
         result_data["width"] = w
         result_data["temp"] = t
+
         # fill nan values with 0
         result_data.fillna(0, inplace=True)
         result_data["error"] = (
@@ -643,27 +690,22 @@ def error_cal(
         merged_out = pd.concat(merged_dfs)
 
         merged_out.fillna(0, inplace=True)
-        merged_out.to_csv(f"{dev_path}/error_analysis_{id_rds}.csv", index=False)
-        rms_df.to_csv(f"{dev_path}/final_error_analysis_{id_rds}.csv", index=False)
+        err_analysis_path = os.path.join(dev_path, f"error_analysis_{id_rds}.csv")
+        merged_out.to_csv(err_analysis_path, index=False)
+
+        rmse_path = os.path.join(dev_path, f"final_error_analysis_{id_rds}.csv")
+        rms_df.to_csv(rmse_path, index=False)
+
     return None
 
 
 def main():
-    """Main function applies all regression vds_steps"""
-    # ======= Checking ngspice  =======
-    ngspice_v_ = os.popen("ngspice -v").read()
+    """
+    Main function applies all regression vds_steps
+    """
 
-    if "ngspice-" not in ngspice_v_:
-        logging.error("ngspice is not found. Please make sure ngspice is installed.")
-        exit(1)
-    else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
-        print(version)
-        if version <= 37:
-            logging.error(
-                "ngspice version is not supported. Please use ngspice version 38 or newer."
-            )
-            exit(1)
+    ## Check ngspice version
+    check_ngspice_version()
 
     # pandas setup
     pd.set_option("display.max_columns", None)
@@ -686,17 +728,18 @@ def main():
     ]
 
     for i, dev in enumerate(devices):
-        dev_path = f"{main_regr_dir}/{dev}"
+        dev_path = os.path.join(main_regr_dir, dev)
 
         if os.path.exists(dev_path) and os.path.isdir(dev_path):
             shutil.rmtree(dev_path)
 
-        os.makedirs(f"{dev_path}", exist_ok=False)
+        os.makedirs(dev_path, exist_ok=False)
 
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
         data_files = glob.glob(f"../../180MCU_SPICE_DATA/MOS/{dev}_iv.nl_out.xlsx")
+
         if len(data_files) < 1:
             logging.info(f"# Can't find file for device: {dev}")
             file = ""
@@ -706,7 +749,7 @@ def main():
         logging.info(f"#  data points file : {file}")
 
         if file != "":
-            meas_df = ext_measured(file, dev)
+            meas_df = ext_measured(dev_path, file, dev)
         else:
             meas_df = []
 
@@ -733,14 +776,13 @@ def main():
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
-
         error_cal(df, sim_df_id, meas_df, dev_path, dev, "Id")
         error_cal(df, sim_df_id, meas_df, dev_path, dev, "Rds")
 
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
-        for s in ["Id", "Rds"]:
-            merged_all = pd.read_csv(f"{dev_path}/final_error_analysis_{s}.csv")
+        for sim in ["Id", "Rds"]:
+            merged_all = pd.read_csv(f"{dev_path}/final_error_analysis_{sim}.csv")
 
             # calculating the error of each device and reporting it
             min_error_total = float()
@@ -749,27 +791,23 @@ def main():
             min_error_total = merged_all["rms_error"].min()
             max_error_total = merged_all["rms_error"].max()
             mean_error_total = merged_all["rms_error"].mean()
+
             # Making sure that min, max, mean errors are not > 100%
-            if min_error_total > 100:
-                min_error_total = 100
-
-            if max_error_total > 100:
-                max_error_total = 100
-
-            if mean_error_total > 100:
-                mean_error_total = 100
+            min_error_total = 100 if min_error_total > 100 else min_error_total
+            max_error_total = 100 if max_error_total > 100 else max_error_total
+            mean_error_total = 100 if mean_error_total > 100 else mean_error_total
 
             # logging.infoing min, max, mean errors to the consol
             logging.info(
-                f"# Device {dev} {s} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
+                f"# Device {dev} {sim} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
             )
 
             # Verify regression results
             if max_error_total <= PASS_THRESH:
-                logging.info(f"# Device {dev} {s} has passed regression.")
+                logging.info(f"# Device {dev} {sim} has passed regression.")
             else:
                 logging.error(
-                    f"# Device {dev} {s} has failed regression. Needs more analysis."
+                    f"# Device {dev} {sim} has failed regression. Needs more analysis."
                 )
                 logging.error(
                     "#Failed regression for MOS-iv-vgs analysis."

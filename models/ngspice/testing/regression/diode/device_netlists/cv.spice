@@ -16,19 +16,18 @@
 * limitations under the License.
 Vn n 0 dc 1
 
-
 .temp {{temp}}
-.options tnom={{temp}}
-      
+.options tnom={{temp}} 
 
 dn n 0 {{device}} AREA = {{area}}p PJ = {{perim}}u 
 
 .control
 set filetype=ascii
+listing r
 
 let vn_min  = 0
 let vn_step = -0.2
-let vn_max  = -3.2
+let vn_max  = {{vn_max_cap}}
 
 option TEMP={{temp}}
 

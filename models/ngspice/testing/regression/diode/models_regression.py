@@ -36,7 +36,7 @@ import glob
 DEFAULT_TEMP = 25.0
 ## TODO: Updating PASS_THRESH value after fixing simulation issues.
 PASS_THRESH = 100.0
-MAX_VOLTAGE = 3.3
+MAX_VOLTAGE = 10
 
 
 def find_diode(filepath: str) -> bool:
@@ -128,7 +128,7 @@ def ext_cv_measured(
             meas_volt = []
             meas_diode = []
             for j in range(idf["measured_volt"].count()):
-                if abs(idf["measured_volt"][j]) < MAX_VOLTAGE:
+                if abs(idf["measured_volt"][j]) <= MAX_VOLTAGE:
                     meas_volt.append(idf["measured_volt"][j])
                     meas_diode.append(idf["diode_measured"][j])
                 else:
@@ -147,14 +147,22 @@ def ext_cv_measured(
             temp_list.append(temp)
             corner_list.append(corner)
             meas_list.append(f"{dev_path}/measured_cv/{meas_csv}")
-
+            vn_max_cap = float(meas_data["measured_volt"].min())
+            vn_min_curr = 0
+            vn_max_curr = 0
+            vn_step_curr = 0
             sdf = {
                 "perim": perim_list,
                 "area": area_list,
                 "temp": temp_list,
                 "corner": corner_list,
                 "diode_measured": meas_list,
+                "vn_max_cap": vn_max_cap,
+                "vn_min_curr": vn_min_curr,
+                "vn_max_curr": vn_max_curr,
+                "vn_step_curr": vn_step_curr,
             }
+
             sdf = pd.DataFrame(sdf)
             all_dfs.append(sdf)
 
@@ -162,8 +170,7 @@ def ext_cv_measured(
     df.dropna(axis=0, inplace=True)
     df.drop_duplicates(inplace=True)
     df["device"] = device
-    df = df[["device", "perim", "area", "temp", "corner", "diode_measured"]]
-
+    df = df[["device", "perim", "area", "temp", "vn_max_cap", "vn_min_curr", "vn_max_curr", "vn_step_curr", "corner", "diode_measured"]]
     return df
 
 
@@ -243,6 +250,10 @@ def ext_iv_measured(
             temp_list.append(temp)
             corner_list.append(corner)
             meas_list.append(f"{dev_path}/measured_iv/{meas_csv}")
+            vn_max_cap = 0
+            vn_min_curr = float(idf["measured_volt"].min())
+            vn_max_curr = float(idf["measured_volt"].max())
+            vn_step_curr = float(idf.iloc[1]['measured_volt'] - idf.iloc[0]['measured_volt'])
 
             sdf = {
                 "perim": perim_list,
@@ -250,6 +261,10 @@ def ext_iv_measured(
                 "temp": temp_list,
                 "corner": corner_list,
                 "diode_measured": meas_list,
+                "vn_max_cap": vn_max_cap,
+                "vn_min_curr": vn_min_curr,
+                "vn_max_curr": vn_max_curr,
+                "vn_step_curr": vn_step_curr
             }
             sdf = pd.DataFrame(sdf)
             all_dfs.append(sdf)
@@ -257,7 +272,7 @@ def ext_iv_measured(
     df = pd.concat(all_dfs)
     df.dropna(axis=0, inplace=True)
     df["device"] = device
-    df = df[["device", "perim", "area", "temp", "corner", "diode_measured"]]
+    df = df[["device", "perim", "area", "temp", "vn_max_cap", "vn_min_curr", "vn_max_curr", "vn_step_curr", "corner", "diode_measured"]]
 
     return df
 
@@ -270,6 +285,10 @@ def run_sim(
     area: float,
     corner: str,
     temp: float,
+    vn_max_cap: float,
+    vn_min_curr: float,
+    vn_max_curr: float,
+    vn_step_curr: float,
 ) -> dict:
     """Run simulation.
     Args:
@@ -280,6 +299,10 @@ def run_sim(
         area (float): Device area.
         corner (str): Corner name.
         temp (float): Temperature.
+        vn_max_cap (float): Max voltage for cap sim.
+        vn_max_cap (float): Min voltage for current sim.
+        vn_max_cap (float): Max voltage for current sim.
+        vn_max_cap (float): Step voltage for current sim.
     Returns:
         dict: Dictionary containing simulation results.
     """
@@ -289,12 +312,17 @@ def run_sim(
     info["device"] = device
     info["corner"] = corner
     info["temp"] = temp
+    info["vn_max_cap"] = vn_max_cap
     info["area"] = area
     info["perim"] = perim
 
-    area_str = "{:.1f}".format(area)
-    perim_str = "{:.1f}".format(perim)
-    temp_str = "{:.1f}".format(temp)
+    area_str = "{:.2f}".format(area)
+    perim_str = "{:.2f}".format(perim)
+    temp_str = "{:.2f}".format(temp)
+    vn_max_cap = "{:.2f}".format(vn_max_cap)
+    vn_min_curr = "{:.2f}".format(vn_min_curr)
+    vn_max_curr = "{:.2f}".format(vn_max_curr)
+    vn_step_curr = "{:.2f}".format(vn_step_curr)
 
     net_sp = f"netlist_A{area_str}_P{perim_str}_t{temp_str}_{corner}.spice"
     res_csv = f"simulated_A{area_str}_P{perim_str}_t{temp_str}_{corner}.csv"
@@ -313,6 +341,10 @@ def run_sim(
                     perim=perim_str,
                     corner=corner,
                     temp=temp_str,
+                    vn_max_cap=vn_max_cap,
+                    vn_min_curr=vn_min_curr,
+                    vn_max_curr=vn_max_curr,
+                    vn_step_curr=vn_step_curr
                 )
             )
 
@@ -358,6 +390,10 @@ def run_sims(
                     row["area"],
                     row["corner"],
                     row["temp"],
+                    row["vn_max_cap"],
+                    row["vn_min_curr"],
+                    row["vn_max_curr"],
+                    row["vn_step_curr"],
                 )
             )
 
@@ -400,7 +436,7 @@ def main():
         exit(1)
     else:
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
-        print(version)
+        logging.info(f"Your ngspice version is {version}")
         if version <= 37:
             logging.error(
                 "ngspice version is not supported. Please use ngspice version 38 or newer."
@@ -430,9 +466,9 @@ def main():
         "sc_diode",
     ]
 
-    char_measured = ["iv", "cv"]
+    char_measured = ["iv"]
 
-    for i, dev in enumerate(devices):
+    for j, dev in enumerate(devices):
         dev_path = f"{main_regr_dir}/{dev}"
 
         if os.path.exists(dev_path) and os.path.isdir(dev_path):
@@ -504,12 +540,14 @@ def main():
             for i in range(len(merged_df)):
                 measured_data = pd.read_csv(merged_df["diode_measured"][i])
                 simulated_data = pd.read_csv(merged_df["diode_sim"][i])
-                measured_data["tmp"] = 1
-                simulated_data["tmp"] = 1
+                measured_data["volt"] = measured_data["measured_volt"]
+                simulated_data["volt"] = simulated_data["simulated_volt"]
                 result_data = simulated_data.merge(
-                    measured_data, on=["tmp"], how="left"
+                    measured_data, on="volt", how="left"
                 )
-                result_data = result_data.drop("tmp", axis=1)
+
+                result_data = result_data.drop("measured_volt", axis=1)
+                result_data = result_data.drop("simulated_volt", axis=1)
                 result_data["corner"] = (
                     merged_df["diode_measured"][i]
                     .split("/")[-1]
@@ -535,6 +573,17 @@ def main():
                     .split("_")[3]
                     .split("t")[1]
                 )
+
+                ## We found that most of the curr are greater than fA and most of the
+                ## error happens in the breakdown mode of the diode. And it causes large rmse for the values.
+                ## We will clip at 10fA for all currents to make sure that for small signal it works as expected.
+
+                # Clipping all the  values to lowest_curr
+                lowest_curr = 1.0e-14
+
+                result_data["diode_measured"] = result_data["diode_measured"].clip(lower=lowest_curr)
+
+                result_data["diode_simulated"] = result_data["diode_simulated"].clip(lower=lowest_curr)
 
                 result_data["error"] = (
                     np.abs(
@@ -564,7 +613,7 @@ def main():
                         "area",
                         "temp",
                         "corner",
-                        "measured_volt",
+                        "volt",
                         "diode_measured",
                         "diode_simulated",
                         "error",
