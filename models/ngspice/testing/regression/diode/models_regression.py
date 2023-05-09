@@ -160,7 +160,7 @@ def ext_cv_measured(
                 "vn_max_cap": vn_max_cap,
                 "vn_min_curr": vn_min_curr,
                 "vn_max_curr": vn_max_curr,
-                "vn_step_curr": vn_step_curr                
+                "vn_step_curr": vn_step_curr,
             }
 
             sdf = pd.DataFrame(sdf)
@@ -543,7 +543,7 @@ def main():
                 measured_data["volt"] = measured_data["measured_volt"]
                 simulated_data["volt"] = simulated_data["simulated_volt"]
                 result_data = simulated_data.merge(
-                    measured_data, on = "volt", how="left"
+                    measured_data, on="volt", how="left"
                 )
 
                 result_data = result_data.drop("measured_volt", axis=1)
@@ -581,13 +581,9 @@ def main():
                 # Clipping all the  values to lowest_curr
                 lowest_curr = 1.0e-14
 
-                result_data[f"diode_measured"] = result_data[
-                    f"diode_measured"
-                ].clip(lower=lowest_curr)
+                result_data["diode_measured"] = result_data["diode_measured"].clip(lower=lowest_curr)
 
-                result_data[f"diode_simulated"] = result_data[
-                    f"diode_simulated"
-                ].clip(lower=lowest_curr)
+                result_data["diode_simulated"] = result_data["diode_simulated"].clip(lower=lowest_curr)
 
                 result_data["error"] = (
                     np.abs(
