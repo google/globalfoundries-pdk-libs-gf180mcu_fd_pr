@@ -32,7 +32,7 @@ set wr_singlescale
 set wr_vecnames
 dc Vgs {{vgs}} Vbs {{vbs}} 
 
-wrdata mos_iv_regr/{{device}}/{{device}}_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv -i(Vds) v(B_tn) v(G_tn)
+wrdata mos_iv_regr/{{device}}/{{device}}_netlists/T{{temp}}_simulated_W{{width}}_L{{length}}.csv -i(Vds) v(B_tn) v(G_tn)
 .endc
 
 
