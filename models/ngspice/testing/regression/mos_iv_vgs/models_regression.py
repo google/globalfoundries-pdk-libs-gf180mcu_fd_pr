@@ -354,6 +354,9 @@ def run_sim(dirpath: str, device: str, id_rds: str, width: float, length: float,
         vgs = VGS_N06V0_N
         vds = VDS_N06V0_N
 
+    # string to list
+    vgs1 = vgs.split(" ")
+
     netlist_tmp = os.path.join(f"device_netlists_{id_rds}", f"{device1}.spice")
 
     info = {}
@@ -386,6 +389,9 @@ def run_sim(dirpath: str, device: str, id_rds: str, width: float, length: float,
                     temp=temp_str,
                     vds=vds,
                     vgs=vgs,
+                    vgs1=vgs1[0],
+                    vgs2=vgs1[1],
+                    vgs3=vgs1[2],
                 )
             )
 
