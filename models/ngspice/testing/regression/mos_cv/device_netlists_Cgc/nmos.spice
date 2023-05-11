@@ -33,7 +33,7 @@ vbs S_tn 0 dc=0
 
 
 * circuit
-mn 0 G_tn 0 S_tn {{device}} W = {{width}}u L = {{length}}u nf={{nf}} ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+mn D_tn G_tn 0 S_tn {{device}} W = {{width}}u L = {{length}}u nf={{nf}} ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
 
 .control
 set filetype=ascii
@@ -51,7 +51,7 @@ foreach t 25
         option TEMP=25
         alter vbs = vbs_vector[vbs_counter]
 
-        save all @mn[vs] @mn[vgs] @mn[id] @mn[cgs] @mn[cgd] @mn[cgb] 
+        save @mn[vbs] @mn[cgs] @mn[cgd]
         *******************
         ** simulation part
         *******************

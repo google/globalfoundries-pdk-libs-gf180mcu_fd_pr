@@ -544,24 +544,28 @@ def run_sims(
                 # Writing final simulated data 1
                 sdf.rename(
                     columns={
-                        0: "vb1",
-                        mos[1]: "vb2",
-                        mos[2]: "vb3",
-                        mos[3]: "vb4",
+                        0: "simulated_vb1",
+                        mos[1]: "simulated_vb2",
+                        mos[2]: "simulated_vb3",
+                        mos[3]: "simulated_vb4",
                     },
                     inplace=True,
                 )
                 if len(mos) == 5:
                     sdf.rename(
                         columns={
-                            mos[4]: "vb5",
+                            mos[4]: "simulated_vb5",
                         },
                         inplace=True,
                     )
             else:
                 # Writing final simulated data 1
                 sdf.rename(
-                    columns={0: "vgs1", mos[1]: "vgs2", mos[2]: "vgs3", mos[3]: "vgs4"},
+                    columns={0: "simulated_vgs1",
+                             mos[1]: "simulated_vgs2",
+                             mos[2]: "simulated_vgs3",
+                             mos[3]: "simulated_vgs4"
+                             },
                     inplace=True,
                 )
             if device[0] == "p":
@@ -705,22 +709,22 @@ def error_cal(
             if cap == "c":
 
                 result_data["step1_error"] = (
-                    np.abs(result_data["measured_v1"] - result_data["vb1"])
+                    np.abs(result_data["measured_v1"] - result_data["simulated_vb1"])
                     * 100.0
                     / (result_data["measured_v1"])
                 )
                 result_data["step2_error"] = (
-                    np.abs(result_data["measured_v2"] - result_data["vb2"])
+                    np.abs(result_data["measured_v2"] - result_data["simulated_vb2"])
                     * 100.0
                     / (result_data["measured_v2"])
                 )
                 result_data["step3_error"] = (
-                    np.abs(result_data["measured_v3"] - result_data["vb3"])
+                    np.abs(result_data["measured_v3"] - result_data["simulated_vb3"])
                     * 100.0
                     / (result_data["measured_v3"])
                 )
                 result_data["step4_error"] = (
-                    np.abs(result_data["measured_v4"] - result_data["vb4"])
+                    np.abs(result_data["measured_v4"] - result_data["simulated_vb4"])
                     * 100.0
                     / (result_data["measured_v4"])
                 )
@@ -731,7 +735,7 @@ def error_cal(
                     "pfet_03v3_dss",
                 ]:
                     result_data["step5_error"] = (
-                        np.abs(result_data["measured_v5"] - result_data["vb5"])
+                        np.abs(result_data["measured_v5"] - result_data["simulated_vb5"])
                         * 100.0
                         / (result_data["measured_v5"])
                     )
@@ -759,22 +763,22 @@ def error_cal(
 
             else:
                 result_data["step1_error"] = (
-                    np.abs(result_data["measured_v1"] - result_data["vgs1"])
+                    np.abs(result_data["measured_v1"] - result_data["simulated_vgs1"])
                     * 100.0
                     / (result_data["measured_v1"])
                 )
                 result_data["step2_error"] = (
-                    np.abs(result_data["measured_v2"] - result_data["vgs2"])
+                    np.abs(result_data["measured_v2"] - result_data["simulated_vgs2"])
                     * 100.0
                     / (result_data["measured_v2"])
                 )
                 result_data["step3_error"] = (
-                    np.abs(result_data["measured_v3"] - result_data["vgs3"])
+                    np.abs(result_data["measured_v3"] - result_data["simulated_vgs3"])
                     * 100.0
                     / (result_data["measured_v3"])
                 )
                 result_data["step4_error"] = (
-                    np.abs(result_data["measured_v4"] - result_data["vgs4"])
+                    np.abs(result_data["measured_v4"] - result_data["simulated_vgs4"])
                     * 100.0
                     / (result_data["measured_v4"])
                 )
@@ -842,20 +846,19 @@ def main():
         "pfet_06v0_dss",
         "nfet_06v0_nvt",
     ]
-    measured_data = ["3p3_cv", "6p0_cv", "3p3_sab_cv", "6p0_sab_cv", "6p0_nat_cv"]
+
     if os.path.exists(main_regr_dir) and os.path.isdir(main_regr_dir):
         shutil.rmtree(main_regr_dir)
 
-    for i, dev in enumerate(devices):
-        dev_path = f"{main_regr_dir}/{dev}"
-
-        os.makedirs(f"{dev_path}", exist_ok=False)
-
+    for dev in devices:
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
+        dev_path = os.path.join(main_regr_dir, dev)
+        os.makedirs(dev_path, exist_ok=False)
+
         data_files = glob.glob(
-            f"../../180MCU_SPICE_DATA/MOS/{measured_data[int(i*0.5)]}.nl_out.xlsx"
+            f"../../180MCU_SPICE_DATA/MOS/{dev[1:]}_cv.nl_out.xlsx"
         )
         if len(data_files) < 1:
             logging.erorr(f"# Can't find file for device: {dev}")
@@ -871,7 +874,7 @@ def main():
             meas_df2 = []
             meas_df3 = []
 
-        df1 = pd.read_csv(f"mos_cv_regr/{dev}/{dev}.csv")
+        df1 = pd.read_csv(f"{dev_path}/{dev}.csv")
         df2 = df1[["L (um)", "W (um)"]].copy()
         df2.dropna(inplace=True)
         loops = int(0.5 * df2["L (um)"].count())

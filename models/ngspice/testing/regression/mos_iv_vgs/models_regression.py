@@ -31,7 +31,7 @@ import multiprocessing as mp
 import glob
 import logging
 
-# CONSTANTS VALUES
+# CONSTANT VALUES
 ## TODO: Updating PASS_THRESH value after fixing simulation issues.
 PASS_THRESH = 100.0
 
@@ -74,7 +74,7 @@ def check_ngspice_version():
             exit(1)
 
 
-def ext_measured(dev_path, data_file, device)-> pd.DataFrame:
+def ext_measured(dev_path, data_file, device) -> pd.DataFrame:
     """
     Extracting the measured data of  devices from excel sheet
 
@@ -314,7 +314,7 @@ def call_simulator(file_name: str) -> int:
     return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
 
 
-def run_sim(dirpath: str, device: str, id_rds: str, width: float, length: float, temp=25)-> dict:
+def run_sim(dirpath: str, device: str, id_rds: str, width: float, length: float, temp=25) -> dict:
     """
     Run simulation at specific information and corner
     Args:
@@ -353,9 +353,6 @@ def run_sim(dirpath: str, device: str, id_rds: str, width: float, length: float,
     elif device == "nfet_06v0_nvt":
         vgs = VGS_N06V0_N
         vds = VDS_N06V0_N
-
-    # string to list
-    vgs1 = vgs.split(" ")
 
     netlist_tmp = os.path.join(f"device_netlists_{id_rds}", f"{device1}.spice")
 
@@ -667,7 +664,7 @@ def error_cal(
         result_data.fillna(0, inplace=True)
         result_data["error"] = (
             np.abs(
-                  result_data[f"err_vgs={mos_vgs[0]}"]
+                result_data[f"err_vgs={mos_vgs[0]}"]
                 + result_data[f"err_vgs={mos_vgs[1]}"]
                 + result_data[f"err_vgs={mos_vgs[2]}"]
                 + result_data[f"err_vgs={mos_vgs[3]}"]
@@ -814,6 +811,7 @@ def main():
 # # ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
+
 
 if __name__ == "__main__":
 

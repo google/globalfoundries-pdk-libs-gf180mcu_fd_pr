@@ -77,7 +77,7 @@ def check_ngspice_version():
             exit(1)
 
 
-def ext_measured(dev_path, data_file, device)-> pd.DataFrame:
+def ext_measured(dev_path, data_file, device) -> pd.DataFrame:
     """
     Extracting the measured data of  devices from excel sheet
 
@@ -337,7 +337,6 @@ def run_sim(dirpath: str, device: str, width: float, length: float, temp=25) -> 
     elif device == "nfet_06v0_nvt":
         vgs = VGS_N06V0_N
         vbs = VBS_N06V0_N
-
 
     netlist_tmp = os.path.join("device_netlists_Id", f"{device1}.spice")
 
@@ -612,10 +611,10 @@ def error_cal(
         merged_out = pd.concat(merged_dfs)
 
         merged_out.fillna(0, inplace=True)
-        err_analysis_path = os.path.join(dev_path, f"error_analysis.csv")
+        err_analysis_path = os.path.join(dev_path, "error_analysis.csv")
         merged_out.to_csv(err_analysis_path, index=False)
 
-        rmse_path = os.path.join(dev_path, f"final_error_analysis.csv")
+        rmse_path = os.path.join(dev_path, "final_error_analysis.csv")
         rms_df.to_csv(rmse_path, index=False)
 
     return None
