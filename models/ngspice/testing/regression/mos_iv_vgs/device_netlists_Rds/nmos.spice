@@ -48,7 +48,7 @@ foreach t {{temp}}
         option TEMP=$t
         alter vgs = vgs_vector[vgs_counter]
 
-        save  @mn[vds] @mn[vgs] @mn[vth] @mn[id] @mn[gm] @mn[gmbs] @mn[gds] @mn[cgg] @mn[cgs] @mn[cgd] @mn[cdd] @mn[cdb] @mn[cgb] @mn[csb]
+        save @mn[vgs] @mn[gds]
         *******************
         ** simulation part
         *******************

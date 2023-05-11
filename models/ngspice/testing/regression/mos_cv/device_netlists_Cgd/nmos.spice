@@ -26,13 +26,13 @@
 * power supply
 vds D_tn 0 dc=3.3
 vgs G_tn 0 dc=3.3
-vs S_tn 0 dc=0
+
 .temp 25
 .options tnom=25
 
 
 * circuit
-mn D_tn G_tn S_tn S_tn {{device}} W = {{width}}u L = {{length}}u nf={{nf}} ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
+mn D_tn G_tn 0 0 {{device}} W = {{width}}u L = {{length}}u nf={{nf}} ad={{AD}}u pd={{PD}}u as={{AS}}u ps={{PS}}u
 
 .control
 set filetype=ascii
@@ -50,7 +50,7 @@ foreach t 25
         option TEMP=25
         alter vgs = vgs_vector[vgs_counter]
 
-        save  @mn[vds] @mn[vgs] @mn[id] @mn[cgd]
+        save @mn[vgs] @mn[cgd]
         *******************
         ** simulation part
         *******************

@@ -1,5 +1,5 @@
 ***************************
-** nfet_03v3_t_id
+** pfet_03v3_t_id
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -22,7 +22,7 @@ Vbs B_tn 0 dc=0
 .options tnom={{temp}}
  
 
-xmn1 D_tn G_tn 0 B_tn {{device}} W = {{width}}u L = {{length}}u 
+xmp1 D_tn G_tn 0 B_tn {{device}} W = {{width}}u L = {{length}}u 
 
 **** begin architecture code
 
@@ -33,7 +33,7 @@ set wr_singlescale
 set wr_vecnames
 dc Vgs {{vgs}} Vbs {{vbs}} 
 
-wrdata mos_iv_regr/{{device}}/{{device}}_netlists/T{{temp}}_simulated_L{{length}}_W{{width}}.csv i(Vds) v(B_tn) v(G_tn) 
+wrdata mos_iv_regr/{{device}}/{{device}}_netlists/T{{temp}}_simulated_W{{width}}_L{{length}}.csv i(Vds) v(B_tn) v(G_tn) 
 .endc
 
 
