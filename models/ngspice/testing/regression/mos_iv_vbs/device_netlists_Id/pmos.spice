@@ -19,13 +19,10 @@ Vgs G_tn 0 dc=-6
 Vbs B_tn 0 dc=0
 
 .temp {{temp}}
-.options tnom={{temp}}
  
-
 xmp1 D_tn G_tn 0 B_tn {{device}} W = {{width}}u L = {{length}}u 
 
 **** begin architecture code
-
 
 .control
 set filetype=ascii
@@ -36,13 +33,10 @@ dc Vgs {{vgs}} Vbs {{vbs}}
 wrdata mos_iv_regr/{{device}}/{{device}}_netlists/T{{temp}}_simulated_W{{width}}_L{{length}}.csv i(Vds) v(B_tn) v(G_tn) 
 .endc
 
-
-
 ** library calling
 
 .include "../../../design.ngspice"
 .lib "../../../sm141064.ngspice" typical
-
 
 **** end architecture code
 

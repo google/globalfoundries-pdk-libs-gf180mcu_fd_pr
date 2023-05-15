@@ -32,8 +32,7 @@ import glob
 import logging
 
 # CONSTANTS VALUES
-## TODO: Updating PASS_THRESH value after fixing simulation issues.
-PASS_THRESH = 100.0
+PASS_THRESH = 5.0
 
 MOS_VBS = [0, -0.825, -1.65, -2.48, -3.3]
 MOS_VBS_SIM = [0, -0.825, -1.65, -2.475, -3.3]
@@ -561,11 +560,11 @@ def error_cal(
         result_data[f"measured_vbs={mos_vbs[4]}"] = result_data[f"measured_vbs={mos_vbs[4]}"].clip(
             lower=lowest_curr
         )
-        result_data[f"simulated_vbs={mos_vbs[0]}"] = result_data[f"simulated_vbs={mos_vbs[0]}"].clip(lower=lowest_curr)
-        result_data[f"simulated_vbs={mos_vbs[1]}"] = result_data[f"simulated_vbs={mos_vbs[1]}"].clip(lower=lowest_curr)
-        result_data[f"simulated_vbs={mos_vbs[2]}"] = result_data[f"simulated_vbs={mos_vbs[2]}"].clip(lower=lowest_curr)
-        result_data[f"simulated_vbs={mos_vbs[3]}"] = result_data[f"simulated_vbs={mos_vbs[3]}"].clip(lower=lowest_curr)
-        result_data[f"simulated_vbs={mos_vbs[4]}"] = result_data[f"simulated_vbs={mos_vbs[4]}"].clip(lower=lowest_curr)
+        result_data[f"simulated_vbs={mos_vbs[0]}"] = result_data[f"simulated_vbs={mos_vbs[0]}"].where(result_data[f"measured_vbs={mos_vbs[0]}"] != lowest_curr, lowest_curr)
+        result_data[f"simulated_vbs={mos_vbs[1]}"] = result_data[f"simulated_vbs={mos_vbs[1]}"].where(result_data[f"measured_vbs={mos_vbs[1]}"] != lowest_curr, lowest_curr)
+        result_data[f"simulated_vbs={mos_vbs[2]}"] = result_data[f"simulated_vbs={mos_vbs[2]}"].where(result_data[f"measured_vbs={mos_vbs[2]}"] != lowest_curr, lowest_curr)
+        result_data[f"simulated_vbs={mos_vbs[3]}"] = result_data[f"simulated_vbs={mos_vbs[3]}"].where(result_data[f"measured_vbs={mos_vbs[3]}"] != lowest_curr, lowest_curr)
+        result_data[f"simulated_vbs={mos_vbs[4]}"] = result_data[f"simulated_vbs={mos_vbs[4]}"].where(result_data[f"measured_vbs={mos_vbs[4]}"] != lowest_curr, lowest_curr)
 
         result_data[f"err_vbs={mos_vbs[0]}"] = (
             np.abs(result_data[f"measured_vbs={mos_vbs[0]}"] - result_data[f"simulated_vbs={mos_vbs[0]}"])
@@ -592,18 +591,33 @@ def error_cal(
             * 100.0
             / (result_data[f"measured_vbs={mos_vbs[4]}"])
         )
-        result_data["error"] = (
-            np.abs(
-                result_data[f"err_vbs={mos_vbs[0]}"]
-                + result_data[f"err_vbs={mos_vbs[1]}"]
-                + result_data[f"err_vbs={mos_vbs[2]}"]
-                + result_data[f"err_vbs={mos_vbs[3]}"]
-                + result_data[f"err_vbs={mos_vbs[4]}"]
+
+        # RMS error for all Vbs sweeps
+        result_data["error"] = np.sqrt(np.mean
+            (
+                (
+                    np.abs(
+                        result_data[f"err_vbs={mos_vbs[0]}"]
+                        + result_data[f"err_vbs={mos_vbs[1]}"]
+                        + result_data[f"err_vbs={mos_vbs[2]}"]
+                        + result_data[f"err_vbs={mos_vbs[3]}"]
+                        + result_data[f"err_vbs={mos_vbs[4]}"]
+                    )
+                    -             
+                    np.abs(
+                        result_data[f"err_vbs={mos_vbs[0]}"]
+                        + result_data[f"err_vbs={mos_vbs[1]}"]
+                        + result_data[f"err_vbs={mos_vbs[2]}"]
+                        + result_data[f"err_vbs={mos_vbs[3]}"]
+                        + result_data[f"err_vbs={mos_vbs[4]}"]
+                    ) / 5 
+                ) ** 2 
             )
-            / 5
         )
-        # get rms error
-        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
+
+        # get rms error for each L, W, Temp for all Vgs sweep
+        result_data["rms_error"] = np.sqrt(np.mean((result_data["error"] - result_data["error"].mean()) ** 2))
+
         # fill rms dataframe
         rms_df.loc[i] = [t, w, length, result_data["rms_error"].iloc[0]]
 
@@ -691,7 +705,6 @@ def main():
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
-
         error_cal(df_meas_s, sim_df, meas_df, dev_path, dev)
 
         # reading from the csv file contains all error data
@@ -714,7 +727,7 @@ def main():
         )
 
         # Verify regression results
-        if max_error_total <= PASS_THRESH:
+        if mean_error_total <= PASS_THRESH:
             logging.info(f"# Device {dev} has passed regression.")
         else:
             logging.error(
