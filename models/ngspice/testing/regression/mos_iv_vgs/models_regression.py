@@ -32,8 +32,7 @@ import glob
 import logging
 
 # CONSTANT VALUES
-## TODO: Updating PASS_THRESH value after fixing simulation issues.
-PASS_THRESH = 100.0
+PASS_THRESH = 5.0
 
 MOS_VGS = [0.8, 1.3, 1.8, 2.3, 2.8, 3.3]
 PMOS3P3_VGS = [-0.8, -1.3, -1.8, -2.3, -2.8, -3.3]
@@ -98,13 +97,13 @@ def ext_measured(dev_path, data_file, device) -> pd.DataFrame:
     all_dfs = []
 
     # Voltages setup
-    if device == "pfet_03v3" or device == "pfet_03v3_dss":
+    if "pfet_03v3" in device:
         mos_vgs = PMOS3P3_VGS
-    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+    elif "pfet_06v0" in device:
         mos_vgs = PMOS6P0_VGS
-    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
+    elif "nfet_06v0" in device and "nvt" not in device:
         mos_vgs = NMOS6P0_VGS
-    elif device == "nfet_06v0_nvt":
+    elif "nfet_06v0_nvt" in device:
         mos_vgs = NMOS6P0_VGS_N
     else:
         mos_vgs = MOS_VGS
@@ -330,32 +329,23 @@ def run_sim(dirpath: str, device: str, id_rds: str, width: float, length: float,
         and passed to the run_sims function to extract data
     """
 
-    if "nfet" in device:
-        device1 = "nmos"
-        if "dss" in device and id_rds == "Rds":
-            device1 = "nmos_dss"
-    else:
-        device1 = "pmos"
-        if "dss" in device and id_rds == "Rds":
-            device1 = "pmos_dss"
+    device1 = "nmos" if "nfet" in device else "pmos"
 
-    vds = VDS_N03V3
-    vgs = VGS_N03V3
-    if device == "pfet_03v3" or device == "pfet_03v3_dss":
+    if "pfet_03v3" in device:
         vgs = VGS_P03V3
         vds = VDS_P03V3
-    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+    elif "pfet_06v0" in device:
         vgs = VGS_P06V0
         vds = VDS_P06V0
-    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
+    elif "nfet_06v0" in device and "nvt" not in device:
         vgs = VGS_N06V0
         vds = VDS_N06V0
-    elif device == "nfet_06v0_nvt":
+    elif "nfet_06v0_nvt" in device:
         vgs = VGS_N06V0_N
         vds = VDS_N06V0_N
-
-    # string to list
-    vgs1 = vgs.split(" ")
+    else:
+        vds = VDS_N03V3
+        vgs = VGS_N03V3
 
     netlist_tmp = os.path.join(f"device_netlists_{id_rds}", f"{device1}.spice")
 
@@ -389,9 +379,6 @@ def run_sim(dirpath: str, device: str, id_rds: str, width: float, length: float,
                     temp=temp_str,
                     vds=vds,
                     vgs=vgs,
-                    vgs1=vgs1[0],
-                    vgs2=vgs1[1],
-                    vgs3=vgs1[2],
                 )
             )
 
@@ -459,13 +446,13 @@ def run_sims(
                 logging.info("Test case generated an exception: %s" % (exc))
 
     sf = glob.glob(f"{dirpath}/{device}_netlists_{id_rds}/*.csv")
-    if device == "pfet_03v3" or device == "pfet_03v3_dss":
+    if "pfet_03v3" in device:
         mos_vgs = PMOS3P3_VGS
-    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+    elif "pfet_06v0" in device:
         mos_vgs = PMOS6P0_VGS
-    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
+    elif "nfet_06v0" in device and "nvt" not in device:
         mos_vgs = NMOS6P0_VGS
-    elif device == "nfet_06v0_nvt":
+    elif "nfet_06v0_nvt" in device:
         mos_vgs = NMOS6P0_VGS_N
     else:
         mos_vgs = MOS_VGS
@@ -554,13 +541,13 @@ def error_cal(
     df["temp"][temp_range : 2 * temp_range] = -40
     df["temp"][2 * temp_range : 3 * temp_range] = 125
 
-    if device == "pfet_03v3" or device == "pfet_03v3_dss":
+    if "pfet_03v3" in device:
         mos_vgs = PMOS3P3_VGS
-    elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+    elif "pfet_06v0" in device:
         mos_vgs = PMOS6P0_VGS
-    elif device == "nfet_06v0" or device == "nfet_06v0_dss":
+    elif "nfet_06v0" in device and "nvt" not in device:
         mos_vgs = NMOS6P0_VGS
-    elif device == "nfet_06v0_nvt":
+    elif "nfet_06v0_nvt" in device:
         mos_vgs = NMOS6P0_VGS_N
     else:
         mos_vgs = MOS_VGS
@@ -679,6 +666,10 @@ def error_cal(
             )
             / 6
         )
+
+        # Drop last voltage row as its derivative for Rds is high [No points after it]
+        result_data = result_data.iloc[:-1, :]
+
         # get rms error
         result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
         # fill rms dataframe
@@ -783,7 +774,7 @@ def main():
 
         # reading from the csv file contains all error data
         # merged_all contains all simulated, measured, error data
-        for sim in ["Id"]:  # ["Id", "Rds"] #TODO: Add Rds check
+        for sim in ["Id", "Rds"]:
             merged_all = pd.read_csv(f"{dev_path}/final_error_analysis_{sim}.csv")
 
             # calculating the error of each device and reporting it
@@ -802,7 +793,7 @@ def main():
             )
 
             # Verify regression results
-            if max_error_total <= PASS_THRESH:
+            if mean_error_total <= PASS_THRESH:
                 logging.info(f"# Device {dev} {sim} has passed regression.")
             else:
                 logging.error(

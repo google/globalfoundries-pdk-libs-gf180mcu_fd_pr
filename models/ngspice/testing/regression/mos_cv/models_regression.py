@@ -499,28 +499,20 @@ def run_sims(
     for cap in caps:
         sf = glob.glob(f"{dirpath}/{device}_netlists_Cg{cap}/*.csv")
         if cap == "c":
-            if device == "pfet_03v3" or device == "pfet_03v3_dss":
+            if "pfet_03v3" in device:
                 mos = PMOS3P3_VBS
-            elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+            elif "pfet_06v0" in device:
                 mos = PMOS6P0_VBS
-            elif (
-                device == "nfet_06v0"
-                or device == "nfet_06v0_dss"
-                or device == "nfet_06v0_nvt"
-            ):
+            elif "nfet_06v0" in device:
                 mos = NMOS6P0_VBS
             else:
                 mos = MOS
         else:
-            if device == "pfet_03v3" or device == "pfet_03v3_dss":
+            if "pfet_03v3" in device:
                 mos = PMOS3P3_VBS1
-            elif device == "pfet_06v0" or device == "pfet_06v0_dss":
+            elif "pfet_06v0" in device:
                 mos = PMOS6P0_VBS1
-            elif (
-                device == "nfet_06v0"
-                or device == "nfet_06v0_dss"
-                or device == "nfet_06v0_nvt"
-            ):
+            elif "nfet_06v0" in device:
                 mos = NMOS6P0_VBS1
             else:
                 mos = MOS1
@@ -535,11 +527,18 @@ def run_sims(
             df.drop(df.loc[df["v-sweep"] == "v-sweep"].index, inplace=True)
             df = df.reset_index(drop=True)
             df = df.astype(float)
+
             # use the first column as index
             df = df.set_index("v-sweep")
-            v_gs = "Vg"
-            i_vds = "Cap"
-            sdf = df.pivot(columns=(v_gs), values=i_vds)
+
+            if cap == 'c':
+                v_sweep = "Vbs"
+            else:
+                v_sweep = "Vgs"
+
+            sdf = df.pivot(columns=v_sweep, values="Cap")
+            # print(sdf)
+            # exit()
             if cap == "c":
                 # Writing final simulated data 1
                 sdf.rename(
@@ -568,7 +567,7 @@ def run_sims(
                              },
                     inplace=True,
                 )
-            if device[0] == "p":
+            if "pfet" in device:
                 # reverse the rows
                 sdf = sdf.iloc[::-1]
             sdf.to_csv(sf[i], index=True, header=True, sep=",")
