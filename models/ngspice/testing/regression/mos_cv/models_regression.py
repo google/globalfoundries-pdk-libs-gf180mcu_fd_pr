@@ -532,7 +532,7 @@ def run_sims(
             df = df.set_index("v-sweep")
 
             if cap == 'c':
-                v_sweep = "Vbs"            
+                v_sweep = "Vbs"
             else:
                 v_sweep = "Vgs"
 
