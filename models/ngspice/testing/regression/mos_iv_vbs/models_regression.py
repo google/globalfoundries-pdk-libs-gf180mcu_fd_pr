@@ -593,26 +593,20 @@ def error_cal(
         )
 
         # RMS error for all Vbs sweeps
-        result_data["error"] = np.sqrt(np.mean
-            (
-                (
-                    np.abs(
-                        result_data[f"err_vbs={mos_vbs[0]}"]
-                        + result_data[f"err_vbs={mos_vbs[1]}"]
-                        + result_data[f"err_vbs={mos_vbs[2]}"]
-                        + result_data[f"err_vbs={mos_vbs[3]}"]
-                        + result_data[f"err_vbs={mos_vbs[4]}"]
-                    )
-                    -             
-                    np.abs(
-                        result_data[f"err_vbs={mos_vbs[0]}"]
-                        + result_data[f"err_vbs={mos_vbs[1]}"]
-                        + result_data[f"err_vbs={mos_vbs[2]}"]
-                        + result_data[f"err_vbs={mos_vbs[3]}"]
-                        + result_data[f"err_vbs={mos_vbs[4]}"]
-                    ) / 5 
-                ) ** 2 
-            )
+        result_data["error"] = np.sqrt(np.mean((
+            np.abs(
+                result_data[f"err_vbs={mos_vbs[0]}"]
+                + result_data[f"err_vbs={mos_vbs[1]}"]
+                + result_data[f"err_vbs={mos_vbs[2]}"]
+                + result_data[f"err_vbs={mos_vbs[3]}"]
+                + result_data[f"err_vbs={mos_vbs[4]}"]
+            ) - np.abs(
+                result_data[f"err_vbs={mos_vbs[0]}"]
+                + result_data[f"err_vbs={mos_vbs[1]}"]
+                + result_data[f"err_vbs={mos_vbs[2]}"]
+                + result_data[f"err_vbs={mos_vbs[3]}"]
+                + result_data[f"err_vbs={mos_vbs[4]}"]
+            ) / 5) ** 2)
         )
 
         # get rms error for each L, W, Temp for all Vgs sweep
