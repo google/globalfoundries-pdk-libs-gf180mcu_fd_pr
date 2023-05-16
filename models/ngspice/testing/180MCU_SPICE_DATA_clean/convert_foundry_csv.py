@@ -45,7 +45,7 @@ def parse_dp_id_vgs_vbs(sub_df, dev_name):
     sub_df : pd.DataFrame
         DataFrame that holds sub measurement information per each variation.
     dev_name : str
-        Device we want to extract data for.        
+        Device we want to extract data for.
     """
 
     ## Id Vs Vgs [Vbs sweep]
@@ -70,7 +70,7 @@ def parse_dp_id_vgs_vbs(sub_df, dev_name):
     )
 
     if "pfet" in dev_name:
-        df_id_vgs_vbs["vgs"] = df_id_vgs_vbs["vgs"].apply(lambda x: x*-1)
+        df_id_vgs_vbs["vgs"] = df_id_vgs_vbs["vgs"].apply(lambda x: x * -1)
 
     vgs_min_val = df_id_vgs_vbs["vgs"].min()
     vgs_max_val = df_id_vgs_vbs["vgs"].max()
@@ -117,7 +117,7 @@ def parse_dp_id_vds_vgs(sub_df, dev_name):
     sub_df : pd.DataFrame
         DataFrame that holds sub measurement information per each variation.
     dev_name : str
-        Device we want to extract data for.        
+        Device we want to extract data for.
     """
 
     ## Id Vs Vds [Vgs sweep]
@@ -132,7 +132,7 @@ def parse_dp_id_vds_vgs(sub_df, dev_name):
         vgs_col_name = "vds (V)"
     else:
         vgs_col_name = "-vds (V)"
-    
+
     vds_step_val = abs(df_id_vds_vgs[vgs_col_name][1] - df_id_vds_vgs[vgs_col_name][0])
 
     df_id_vds_vgs = (
@@ -144,7 +144,7 @@ def parse_dp_id_vds_vgs(sub_df, dev_name):
     )
 
     if "pfet" in dev_name:
-        df_id_vds_vgs["vds"] = df_id_vds_vgs["vds"].apply(lambda x: x*-1)
+        df_id_vds_vgs["vds"] = df_id_vds_vgs["vds"].apply(lambda x: x * -1)
 
     vds_min_val = df_id_vds_vgs["vds"].min()
     vds_max_val = df_id_vds_vgs["vds"].max()
@@ -217,7 +217,7 @@ def parse_dp_rds_vds_vgs(sub_df, dev_name):
     )
 
     if "pfet" in dev_name:
-        df_rds_vds_vgs["vds"] = df_rds_vds_vgs["vds"].apply(lambda x: x*-1)
+        df_rds_vds_vgs["vds"] = df_rds_vds_vgs["vds"].apply(lambda x: x * -1)
 
     vds_min_val = df_rds_vds_vgs["vds"].min()
     vds_max_val = df_rds_vds_vgs["vds"].max()
@@ -266,7 +266,7 @@ def parse_dp_sweeps(sub_df, dev_name):
     sub_df : pd.DataFrame
         DataFrame that holds sub measurement information per each variation.
     dev_name : str
-        Device we want to extract data for.        
+        Device we want to extract data for.
     """
 
     ## Id Vs Vgs [Vbs sweep]
