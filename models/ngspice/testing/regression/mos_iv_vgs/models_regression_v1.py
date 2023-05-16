@@ -34,7 +34,7 @@ from sklearn.metrics import mean_squared_error
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0
-CLIP_CURR = 5e-12 # lowest curr to clip on
+CLIP_CURR = 5e-12  # lowest curr to clip on
 
 MOS_VGS = [0.8, 1.3, 1.8, 2.3, 2.8, 3.3]
 PMOS3P3_VGS = [-0.8, -1.3, -1.8, -2.3, -2.8, -3.3]
@@ -561,19 +561,11 @@ def error_cal(
             },
             inplace=True,
         )
-        measured_data["v-sweep"] = simulated_data["v-sweep"]        
+        measured_data["v-sweep"] = simulated_data["v-sweep"]
 
-        measured_data = (measured_data.set_index(["v-sweep"])
-            .stack()
-            .reset_index(name=f'{id_rds}_meas')
-            .rename(columns={'level_1':'Vgs'})
-            .rename(columns={'v-sweep':'Vds'}))
+        measured_data = (measured_data.set_index(["v-sweep"]).stack().reset_index(name=f'{id_rds}_meas').rename(columns={'level_1': 'Vgs'}).rename(columns={'v-sweep': 'Vds'}))
 
-        simulated_data = (simulated_data.set_index(["v-sweep", "width", "length", "temp"])
-            .stack()
-            .reset_index(name=f'{id_rds}_sim')
-            .rename(columns={'level_4':'Vgs'})
-            .rename(columns={'v-sweep':'Vds'}))
+        simulated_data = (simulated_data.set_index(["v-sweep", "width", "length", "temp"]).stack().reset_index(name=f'{id_rds}_sim').rename(columns={'level_4': 'Vgs'}).rename(columns={'v-sweep': 'Vds'}))
 
         measured_data = measured_data.astype(float)
         simulated_data = simulated_data.astype(float)
@@ -594,50 +586,50 @@ def error_cal(
         # create a new dataframe for rms error
         rms_df = pd.DataFrame(columns=["temp", "W (um)", "L (um)", "rms_error"])
 
-        # # RMS Error calc for each Vgs sweep
-        # result_data[f"err_vgs={mos_vgs[0]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[0]}"], result_data[f"measured_vgs={mos_vgs[0]}"]))
-        # result_data[f"err_vgs={mos_vgs[1]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[1]}"], result_data[f"measured_vgs={mos_vgs[1]}"]))
-        # result_data[f"err_vgs={mos_vgs[2]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[2]}"], result_data[f"measured_vgs={mos_vgs[2]}"]))
-        # result_data[f"err_vgs={mos_vgs[3]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[3]}"], result_data[f"measured_vgs={mos_vgs[3]}"]))
-        # result_data[f"err_vgs={mos_vgs[4]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[4]}"], result_data[f"measured_vgs={mos_vgs[4]}"]))
-        # result_data[f"err_vgs={mos_vgs[5]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[5]}"], result_data[f"measured_vgs={mos_vgs[5]}"]))
+        # RMS Error calc for each Vgs sweep
+        result_data[f"err_vgs={mos_vgs[0]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[0]}"], result_data[f"measured_vgs={mos_vgs[0]}"]))
+        result_data[f"err_vgs={mos_vgs[1]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[1]}"], result_data[f"measured_vgs={mos_vgs[1]}"]))
+        result_data[f"err_vgs={mos_vgs[2]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[2]}"], result_data[f"measured_vgs={mos_vgs[2]}"]))
+        result_data[f"err_vgs={mos_vgs[3]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[3]}"], result_data[f"measured_vgs={mos_vgs[3]}"]))
+        result_data[f"err_vgs={mos_vgs[4]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[4]}"], result_data[f"measured_vgs={mos_vgs[4]}"]))
+        result_data[f"err_vgs={mos_vgs[5]}"] = np.sqrt(mean_squared_error(result_data[f"simulated_vgs={mos_vgs[5]}"], result_data[f"measured_vgs={mos_vgs[5]}"]))
 
-        # result_data["length"] = length
-        # result_data["width"] = w
-        # result_data["temp"] = t
+        result_data["length"] = length
+        result_data["width"] = width
+        result_data["temp"] = temp
 
-        # # fill nan values with 0
-        # result_data.fillna(0, inplace=True)
-        # result_data["error"] = (
-        #     np.abs(
-        #         result_data[f"err_vgs={mos_vgs[0]}"]
-        #         + result_data[f"err_vgs={mos_vgs[1]}"]
-        #         + result_data[f"err_vgs={mos_vgs[2]}"]
-        #         + result_data[f"err_vgs={mos_vgs[3]}"]
-        #         + result_data[f"err_vgs={mos_vgs[4]}"]
-        #         + result_data[f"err_vgs={mos_vgs[5]}"]
-        #     )
-        #     / 6
-        # )
+        # fill nan values with 0
+        result_data.fillna(0, inplace=True)
+        result_data["error"] = (
+            np.abs(
+                result_data[f"err_vgs={mos_vgs[0]}"]
+                + result_data[f"err_vgs={mos_vgs[1]}"]
+                + result_data[f"err_vgs={mos_vgs[2]}"]
+                + result_data[f"err_vgs={mos_vgs[3]}"]
+                + result_data[f"err_vgs={mos_vgs[4]}"]
+                + result_data[f"err_vgs={mos_vgs[5]}"]
+            )
+            / 6
+        )
 
-        # # Drop last voltage row as its derivative for Rds is high [No points after it]
-        # result_data = result_data.iloc[:-1, :]
+        # Drop last voltage row as its derivative for Rds is high [No points after it]
+        result_data = result_data.iloc[:-1, :]
 
-        # # get avg of rmse for all voltage sweep
-        # result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
-        # # fill rms dataframe
-        # rms_df.loc[i] = [t, w, length, result_data["rms_error"].iloc[0]]
+        # get avg of rmse for all voltage sweep
+        result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
+        # fill rms dataframe
+        rms_df.loc[i] = [temp, width, length, result_data["rms_error"].iloc[0]]
 
         merged_dfs.append(result_data)
         merged_out = pd.concat(merged_dfs)
 
         merged_out.to_csv("merged_res.csv", index=False)
-        # merged_out.fillna(0, inplace=True)
-        # err_analysis_path = os.path.join(dev_path, f"error_analysis_{id_rds}.csv")
-        # merged_out.to_csv(err_analysis_path, index=False)
+        merged_out.fillna(0, inplace=True)
+        err_analysis_path = os.path.join(dev_path, f"error_analysis_{id_rds}.csv")
+        merged_out.to_csv(err_analysis_path, index=False)
 
-        # rmse_path = os.path.join(dev_path, f"final_error_analysis_{id_rds}.csv")
-        # rms_df.to_csv(rmse_path, index=False)
+        rmse_path = os.path.join(dev_path, f"final_error_analysis_{id_rds}.csv")
+        rms_df.to_csv(rmse_path, index=False)
 
     return None
 
@@ -661,14 +653,14 @@ def main():
 
     devices = [
         "nfet_03v3",
-        # "pfet_03v3",
-        # "nfet_06v0",
-        # "pfet_06v0",
-        # "nfet_06v0_nvt",
-        # "nfet_03v3_dss",
-        # "pfet_03v3_dss",
-        # "nfet_06v0_dss",
-        # "pfet_06v0_dss",
+        "pfet_03v3",
+        "nfet_06v0",
+        "pfet_06v0",
+        "nfet_06v0_nvt",
+        "nfet_03v3_dss",
+        "pfet_03v3_dss",
+        "nfet_06v0_dss",
+        "pfet_06v0_dss",
     ]
 
     for dev in devices:
@@ -704,7 +696,7 @@ def main():
         df_meas_s.dropna(inplace=True)
 
         sim_df_id = run_sims(df_meas_s, dev_path, dev, "Id")
-        # sim_df_rds = run_sims(df_meas_s, dev_path, dev, "Rds")
+        sim_df_rds = run_sims(df_meas_s, dev_path, dev, "Rds")
 
         logging.info(
             f"# Device {dev} number of measured_datapoints for Id : {len(sim_df_id) * len(meas_df)}"
@@ -714,16 +706,16 @@ def main():
             f"# Device {dev} number of simulated datapoints for Id : {len(sim_df_id) * len(meas_df)} "
         )
 
-        # logging.info(
-        #     f"# Device {dev} number of measured_datapoints for Rds : {len(sim_df_rds) * len(meas_df)}"
-        # )
-        # logging.info(
-        #     f"# Device {dev} number of simulated datapoints for Rds : {len(sim_df_rds) * len(meas_df)}"
-        # )
+        logging.info(
+            f"# Device {dev} number of measured_datapoints for Rds : {len(sim_df_rds) * len(meas_df)}"
+        )
+        logging.info(
+            f"# Device {dev} number of simulated datapoints for Rds : {len(sim_df_rds) * len(meas_df)}"
+        )
 
         # passing dataframe to the error_calculation function
         # calling error function for creating statistical csv file
-        # error_cal(sim_df_id, meas_df, dev_path, dev, "Id")
+        error_cal(sim_df_id, meas_df, dev_path, dev, "Id")
         error_cal(sim_df_id, meas_df, dev_path, dev, "Rds")
 
         # reading from the csv file contains all error data

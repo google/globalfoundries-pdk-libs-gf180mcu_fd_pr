@@ -16,7 +16,7 @@ Usage:
   convert_foundry_csv.py --excel_path=<path> --device_type=<device_type>
 
   --excel_path=<path>             Excel path for measured data
-  --device_type=<device_type>     Name of device for extracted data 
+  --device_type=<device_type>     Name of device for extracted data
   -h, --help                      Show help text.
   -v, --version                   Show version.
 """
@@ -57,7 +57,7 @@ def parse_dp_id_vgs_vbs(sub_df):
     df_id_vgs_vbs = (
         df_id_vgs_vbs.set_index(["vgs "])
         .stack()
-        .reset_index(name=f"id")
+        .reset_index(name="id")
         .rename(columns={"level_1": "vbs"})
         .rename(columns={"vgs ": "vgs"})
     )
@@ -120,7 +120,7 @@ def parse_dp_id_vds_vgs(sub_df):
     df_id_vds_vgs = (
         df_id_vds_vgs.set_index(["vds (V)"])
         .stack()
-        .reset_index(name=f"id")
+        .reset_index(name="id")
         .rename(columns={"level_1": "vgs"})
         .rename(columns={"vds (V)": "vds"})
     )
@@ -183,7 +183,7 @@ def parse_dp_rds_vds_vgs(sub_df):
     df_rds_vds_vgs = (
         df_rds_vds_vgs.set_index(["vds (V).1"])
         .stack()
-        .reset_index(name=f"rds")
+        .reset_index(name="rds")
         .rename(columns={"level_1": "vgs"})
         .rename(columns={"vds (V).1": "vds"})
     )
@@ -390,7 +390,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(
         level=logging.DEBUG,
-        handlers=[logging.StreamHandler(),],
+        handlers=[logging.StreamHandler(), ],
         format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
