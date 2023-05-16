@@ -34,7 +34,7 @@ NUM_COLS_MEAS_VBS = 7
 NUM_COLS_MEAS_VGS = 8
 
 
-def parse_dp_id_vgs_vbs(sub_df):
+def parse_dp_id_vgs_vbs(sub_df, dev_name):
     """
     Function to parse measurement data for Ids Vs Vgs with Vbs sweep to be used in simulation.
 
@@ -42,6 +42,8 @@ def parse_dp_id_vgs_vbs(sub_df):
     ----------
     sub_df : pd.DataFrame
         DataFrame that holds sub measurement information per each variation.
+    dev_name : str
+        Device we want to extract data for.        
     """
 
     ## Id Vs Vgs [Vbs sweep]
@@ -50,17 +52,26 @@ def parse_dp_id_vgs_vbs(sub_df):
     df_id_vgs_vbs.drop(columns=df_id_vgs_vbs.columns[0], inplace=True)
 
     # Get vgs sweep values
-    vgs_min_val = df_id_vgs_vbs["vgs "].min()
-    vgs_max_val = df_id_vgs_vbs["vgs "].max()
-    vgs_step_val = abs(df_id_vgs_vbs["vgs "][1] - df_id_vgs_vbs["vgs "][0])
+    if "nfet" in dev_name:
+        vgs_col_name = "vgs "
+    else:
+        vgs_col_name = "-vgs "
+
+    vgs_step_val = abs(df_id_vgs_vbs[vgs_col_name][1] - df_id_vgs_vbs[vgs_col_name][0])
 
     df_id_vgs_vbs = (
-        df_id_vgs_vbs.set_index(["vgs "])
+        df_id_vgs_vbs.set_index([vgs_col_name])
         .stack()
         .reset_index(name="id")
         .rename(columns={"level_1": "vbs"})
-        .rename(columns={"vgs ": "vgs"})
+        .rename(columns={vgs_col_name: "vgs"})
     )
+
+    if "pfet" in dev_name:
+        df_id_vgs_vbs["vgs"] = df_id_vgs_vbs["vgs"].apply(lambda x: x*-1)
+
+    vgs_min_val = df_id_vgs_vbs["vgs"].min()
+    vgs_max_val = df_id_vgs_vbs["vgs"].max()
 
     df_id_vgs_vbs["vbs"] = df_id_vgs_vbs["vbs"].apply(lambda x: x.split("=")[1])
     df_id_vgs_vbs["vbs"] = df_id_vgs_vbs["vbs"].astype(float)
@@ -95,7 +106,7 @@ def parse_dp_id_vgs_vbs(sub_df):
     return df_id_vgs_vbs
 
 
-def parse_dp_id_vds_vgs(sub_df):
+def parse_dp_id_vds_vgs(sub_df, dev_name):
     """
     Function to parse measurement data for Ids Vs Vds with Vgs sweep to be used in simulation.
 
@@ -103,6 +114,8 @@ def parse_dp_id_vds_vgs(sub_df):
     ----------
     sub_df : pd.DataFrame
         DataFrame that holds sub measurement information per each variation.
+    dev_name : str
+        Device we want to extract data for.        
     """
 
     ## Id Vs Vds [Vgs sweep]
@@ -113,17 +126,26 @@ def parse_dp_id_vds_vgs(sub_df):
     df_id_vds_vgs.drop(columns=df_id_vds_vgs.columns[0], inplace=True)
 
     # Get vds sweep values
-    vds_min_val = df_id_vds_vgs["vds (V)"].min()
-    vds_max_val = df_id_vds_vgs["vds (V)"].max()
-    vds_step_val = abs(df_id_vds_vgs["vds (V)"][1] - df_id_vds_vgs["vds (V)"][0])
+    if "nfet" in dev_name:
+        vgs_col_name = "vds (V)"
+    else:
+        vgs_col_name = "-vds (V)"
+    
+    vds_step_val = abs(df_id_vds_vgs[vgs_col_name][1] - df_id_vds_vgs[vgs_col_name][0])
 
     df_id_vds_vgs = (
-        df_id_vds_vgs.set_index(["vds (V)"])
+        df_id_vds_vgs.set_index([vgs_col_name])
         .stack()
         .reset_index(name="id")
         .rename(columns={"level_1": "vgs"})
-        .rename(columns={"vds (V)": "vds"})
+        .rename(columns={vgs_col_name: "vds"})
     )
+
+    if "pfet" in dev_name:
+        df_id_vds_vgs["vds"] = df_id_vds_vgs["vds"].apply(lambda x: x*-1)
+
+    vds_min_val = df_id_vds_vgs["vds"].min()
+    vds_max_val = df_id_vds_vgs["vds"].max()
 
     df_id_vds_vgs["vgs"] = df_id_vds_vgs["vgs"].apply(lambda x: x.split("=")[1])
     df_id_vds_vgs["vgs"] = df_id_vds_vgs["vgs"].astype(float)
@@ -158,7 +180,7 @@ def parse_dp_id_vds_vgs(sub_df):
     return df_id_vds_vgs
 
 
-def parse_dp_rds_vds_vgs(sub_df):
+def parse_dp_rds_vds_vgs(sub_df, dev_name):
     """
     Function to parse measurement data for Rds Vs Vds with Vgs sweep to be used in simulation.
 
@@ -166,6 +188,8 @@ def parse_dp_rds_vds_vgs(sub_df):
     ----------
     sub_df : pd.DataFrame
         DataFrame that holds sub measurement information per each variation.
+    dev_name : str
+        Device we want to extract data for.
     """
 
     ## Rds Vs Vds [Vgs sweep]
@@ -175,17 +199,26 @@ def parse_dp_rds_vds_vgs(sub_df):
     df_rds_vds_vgs.drop(columns=df_rds_vds_vgs.columns[0], inplace=True)
 
     # Get vds sweep values
-    vds_min_val = df_rds_vds_vgs["vds (V).1"].min()
-    vds_max_val = df_rds_vds_vgs["vds (V).1"].max()
-    vds_step_val = abs(df_rds_vds_vgs["vds (V).1"][1] - df_rds_vds_vgs["vds (V).1"][0])
+    if "nfet" in dev_name:
+        vgs_col_name = "vds (V).1"
+    else:
+        vgs_col_name = "-vds (V).1"
+
+    vds_step_val = abs(df_rds_vds_vgs[vgs_col_name][1] - df_rds_vds_vgs[vgs_col_name][0])
 
     df_rds_vds_vgs = (
-        df_rds_vds_vgs.set_index(["vds (V).1"])
+        df_rds_vds_vgs.set_index([vgs_col_name])
         .stack()
         .reset_index(name="rds")
         .rename(columns={"level_1": "vgs"})
-        .rename(columns={"vds (V).1": "vds"})
+        .rename(columns={vgs_col_name: "vds"})
     )
+
+    if "pfet" in dev_name:
+        df_rds_vds_vgs["vds"] = df_rds_vds_vgs["vds"].apply(lambda x: x*-1)
+
+    vds_min_val = df_rds_vds_vgs["vds"].min()
+    vds_max_val = df_rds_vds_vgs["vds"].max()
 
     df_rds_vds_vgs["vgs"] = df_rds_vds_vgs["vgs"].apply(
         lambda x: ".".join(x.split("=")[1].split(".")[:2])
@@ -222,7 +255,7 @@ def parse_dp_rds_vds_vgs(sub_df):
     return df_rds_vds_vgs
 
 
-def parse_dp_sweeps(sub_df):
+def parse_dp_sweeps(sub_df, dev_name):
     """
     Function to parse measurement data to be used in simulation.
 
@@ -230,16 +263,18 @@ def parse_dp_sweeps(sub_df):
     ----------
     sub_df : pd.DataFrame
         DataFrame that holds sub measurement information per each variation.
+    dev_name : str
+        Device we want to extract data for.        
     """
 
     ## Id Vs Vgs [Vbs sweep]
-    df_id_vgs_vbs = parse_dp_id_vgs_vbs(sub_df)
+    df_id_vgs_vbs = parse_dp_id_vgs_vbs(sub_df, dev_name)
 
     ## Id Vs Vds [Vgs sweep]
-    df_id_vds_vgs = parse_dp_id_vds_vgs(sub_df)
+    df_id_vds_vgs = parse_dp_id_vds_vgs(sub_df, dev_name)
 
     ## Rds Vs Vds [Vgs sweep]
-    df_rds_vds_vgs = parse_dp_rds_vds_vgs(sub_df)
+    df_rds_vds_vgs = parse_dp_rds_vds_vgs(sub_df, dev_name)
 
     df_dp_sweeps = pd.concat([df_id_vgs_vbs, df_id_vds_vgs, df_rds_vds_vgs])
 
@@ -298,7 +333,7 @@ def fet_meas_extraction(df, dev_name):
     for i in range(0, len(df.columns), num_data_col_per_dp):
         sub_df = df[df.columns[i : i + num_data_col_per_dp]].copy()
         sub_df.columns = orig_col_names
-        parsed_df = parse_dp_sweeps(sub_df)
+        parsed_df = parse_dp_sweeps(sub_df, dev_name)
         for c in dp_df.columns:
             parsed_df[c] = dp_df.loc[len(all_dfs), c]
         all_dfs.append(parsed_df)
