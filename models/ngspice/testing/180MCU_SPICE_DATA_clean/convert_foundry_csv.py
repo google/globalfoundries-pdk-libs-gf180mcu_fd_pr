@@ -155,7 +155,6 @@ def parse_dp_id_vds_vgs(sub_df):
     ]
     df_id_vds_vgs = df_id_vds_vgs.reindex(columns=cols_order_group)
 
-    df_id_vds_vgs.to_csv("df_id_vds_vgs.csv")
     return df_id_vds_vgs
 
 
