@@ -29,7 +29,9 @@ import glob
 import logging
 
 # CONSTANTS
-NUM_DP_PER_TEMP = 25
+NUM_DP_PER_TEMP_FET_03V3 = 25
+NUM_DP_PER_TEMP_FET_06V0_NVT = 12
+NUM_DP_PER_TEMP_FET_06V0 = 20
 NUM_COLS_MEAS_VBS = 7
 NUM_COLS_MEAS_VGS = 8
 
@@ -303,8 +305,18 @@ def fet_meas_extraction(df, dev_name):
     logging.info(f"No of variations are {variations_count}")
     logging.info(f"Length of data points is {len(df.columns)}")
 
-    # There are 75 variations = 25*3 [For each temp] and all variations are extracted at tt corner
+    # For Fets 03v3, There are 75 variations = 25*3 [For each temp] and all variations are extracted at tt corner
+    # For Fets 06v0, There are 60 variations = 20*3 [For each temp] and all variations are extracted at tt corner
+    # For Fets 06v0_nvt, There are 36 variations = 12*3 [For each temp] and all variations are extracted at tt corner
     ## Please note that the temp variation wasn't included in dataset so we will have to add that new column
+
+    if "03v3" in dev_name:
+        NUM_DP_PER_TEMP = NUM_DP_PER_TEMP_FET_03V3
+    elif "06v0_nvt" in dev_name:
+        NUM_DP_PER_TEMP = NUM_DP_PER_TEMP_FET_06V0_NVT
+    else:
+        NUM_DP_PER_TEMP = NUM_DP_PER_TEMP_FET_06V0
+
     all_temp = (
         [25] * NUM_DP_PER_TEMP + [-40] * NUM_DP_PER_TEMP + [125] * NUM_DP_PER_TEMP
     )
