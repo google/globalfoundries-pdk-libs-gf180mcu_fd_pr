@@ -1,7 +1,7 @@
 ***************************
-** nfet_03v3_t_id
+** pfet_03v3_t_id
 ***************************
-* Copyright 2022 Efabless Corporation
+* Copyright 2023 Efabless Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-Vds D_tn 0 dc 3.3
-Vgs G_tn 0 3.3
+vds D_tn 0 dc={{vds_val}}
+vgs G_tn 0 dc=-3.3
+Vbs B_tn 0 dc={{vbs_val}}
 
 .temp {{temp}}
 
@@ -27,9 +28,15 @@ xmn1 D_tn G_tn 0 0 {{device}} W = {{width}}u L = {{length}}u
 set filetype=ascii
 set wr_singlescale
 set wr_vecnames
-dc Vds {{vds}} Vgs {{vgs}}
+dc {{sweeps}}
 
-wrdata mos_iv_regr/{{device}}/{{device}}_netlists_Id/T{{temp}}_simulated_W{{width}}_L{{length}}.csv -i(Vds) v(G_tn) v(D_tn) 
+** Get all voltages and currrent
+let vds = v(D_tn)
+let vgs = v(G_tn)
+let vbs = v(B_tn)
+let id = -i(Vds)
+
+wrdata mos_iv_regr/{{device}}/{{device}}_netlists/simulated_w{{width}}_l{{length}}_t{{temp}}_{{const_var}}{{const_var_val}}_{{meas_out_result}}.csv vds vgs vbs id
 .endc
 
 ** library calling
@@ -40,3 +47,4 @@ wrdata mos_iv_regr/{{device}}/{{device}}_netlists_Id/T{{temp}}_simulated_W{{widt
 **** end architecture code
 
 .end
+

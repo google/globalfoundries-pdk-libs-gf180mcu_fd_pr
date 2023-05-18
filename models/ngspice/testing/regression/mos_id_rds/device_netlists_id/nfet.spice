@@ -1,7 +1,7 @@
 ***************************
-** pfet_03v3_t_id
+** nfet_03v3_t_id
 ***************************
-* Copyright 2022 Efabless Corporation
+* Copyright 2023 Efabless Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -14,37 +14,37 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-Vds D_tn 0 dc=-0.05
-Vgs G_tn 0 dc=-6
-Vbs B_tn 0 dc=0
+vds D_tn 0 dc={{vds_val}}
+vgs G_tn 0 dc=3.3
+Vbs B_tn 0 dc={{vbs_val}}
 
 .temp {{temp}}
-.options tnom={{temp}}
- 
 
-xmp1 D_tn G_tn 0 B_tn {{device}} W = {{width}}u L = {{length}}u 
+xmn1 D_tn G_tn 0 0 {{device}} W = {{width}}u L = {{length}}u
 
 **** begin architecture code
-
 
 .control
 set filetype=ascii
 set wr_singlescale
 set wr_vecnames
-dc Vgs {{vgs}} Vbs {{vbs}} 
+dc {{sweeps}}
 
-wrdata mos_iv_regr/{{device}}/{{device}}_netlists/T{{temp}}_simulated_W{{width}}_L{{length}}.csv i(Vds) v(B_tn) v(G_tn) 
+** Get all voltages and currrent
+let vds = v(D_tn)
+let vgs = v(G_tn)
+let vbs = v(B_tn)
+let id = -i(Vds)
+
+wrdata mos_iv_regr/{{device}}/{{device}}_netlists/simulated_w{{width}}_l{{length}}_t{{temp}}_{{const_var}}{{const_var_val}}_{{meas_out_result}}.csv vds vgs vbs id
 .endc
-
-
 
 ** library calling
 
 .include "../../../design.ngspice"
 .lib "../../../sm141064.ngspice" typical
 
-
 **** end architecture code
 
-
 .end
+

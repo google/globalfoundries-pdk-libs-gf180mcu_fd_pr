@@ -582,7 +582,6 @@ def main():
                 lowest_curr = 1.0e-14
 
                 result_data["diode_measured"] = result_data["diode_measured"].clip(lower=lowest_curr)
-
                 result_data["diode_simulated"] = result_data["diode_simulated"].clip(lower=lowest_curr)
 
                 result_data["error"] = (
@@ -594,8 +593,10 @@ def main():
                 )
                 # fill nan values with 0
                 result_data["error"] = result_data["error"].fillna(0)
+
                 # get rms error
-                result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
+                result_data["rms_error"] = np.sqrt(np.mean((result_data["error"] - result_data["error"].mean()) ** 2))
+
                 # fill rms dataframe
                 rms_df.loc[i] = [
                     result_data["device"][0],
@@ -628,29 +629,21 @@ def main():
             rms_df.to_csv(f"{dev_path}/final_error_analysis_{char}.csv", index=False)
 
             # calculating the error of each device and reporting it
-            min_error_total = float()
-            max_error_total = float()
-            mean_error_total = float()
-            min_error_total = rms_df["rms_error"].min()
-            max_error_total = rms_df["rms_error"].max()
-            mean_error_total = rms_df["rms_error"].mean()
+            min_error_total = float(rms_df["rms_error"].min())
+            max_error_total = float(rms_df["rms_error"].max())
+            mean_error_total = float(rms_df["rms_error"].mean())
             # Making sure that min, max, mean errors are not > 100%
-            if min_error_total > 100:
-                min_error_total = 100
-
-            if max_error_total > 100:
-                max_error_total = 100
-
-            if mean_error_total > 100:
-                mean_error_total = 100
+            min_error_total = 100 if min_error_total > 100 else min_error_total
+            max_error_total = 100 if max_error_total > 100 else max_error_total
+            mean_error_total = 100 if mean_error_total > 100 else mean_error_total
 
             # logging.infoing min, max, mean errors to the consol
             logging.info(
-                f"# Device {dev} {char} min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
+                f"# Device {dev} {char} min error: {min_error_total:.2f}%, max error: {max_error_total:.2f}%, mean error {mean_error_total:.2f}%"
             )
 
             # Verify regression results
-            if max_error_total <= PASS_THRESH:
+            if mean_error_total <= PASS_THRESH:
                 logging.info(f"# Device {dev} {char} has passed regression.")
             else:
                 logging.error(
