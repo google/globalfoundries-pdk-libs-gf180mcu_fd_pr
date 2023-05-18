@@ -634,7 +634,7 @@ def moscap_meas_extraction(df: str, dev_name: str) -> pd.DataFrame:
         "Cj",
     ]
     all_dfs = all_dfs.reindex(columns=all_dfs_cols)
-    
+
     # Writing final dataframe that holds all clean data
     all_dfs.drop_duplicates(inplace=True)
     all_dfs.to_csv(f"{dev_name}_meas_cv.csv", index=False)
