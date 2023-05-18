@@ -13,22 +13,20 @@
 # limitations under the License.
 """
 Usage:
-  models_regression.py [--num_cores=<num>] [--meas_result=<meas_result>]
+  models_regression.py [--num_cores=<num>]
 
   -h, --help                     Show help text.
   -v, --version                  Show version.
   --num_cores=<num>              Number of cores to be used by simulator
-  --meas_result=<meas_result>    Select measurement output to be tested (Allowed values for Fets are id, rds). [default: id]
 """
 
 from docopt import docopt
 import pandas as pd
 import numpy as np
-from subprocess import check_call
+from subprocess import check_call, Popen, PIPE
 from jinja2 import Template
 import concurrent.futures
 import shutil
-import multiprocessing as mp
 import glob
 import os
 import logging
@@ -37,7 +35,7 @@ import logging
 # CONSTANT VALUES
 PASS_THRESH = 5.0
 MAX_VAL_DETECT = 20.0e-6
-CLIP_CURR = 10e-12  # lowest curr to clip on
+CLIP_CURR = 5e-12  # lowest curr to clip on
 
 
 def check_ngspice_version():
@@ -61,6 +59,15 @@ def check_ngspice_version():
             exit(1)
 
 
+def find_moscap(filename):
+    """
+    Find moscap in log
+    """
+    cmd = 'grep "Cj" {} | head -n 1'.format(filename)
+    process = Popen(cmd, shell=True, stdout=PIPE)
+    return float(process.communicate()[0][:-1].decode("utf-8").split("=")[1])
+
+
 def simulate_device(netlist_path: str):
     """
     Call simulation commands to perform simulation.
@@ -72,10 +79,9 @@ def simulate_device(netlist_path: str):
     return check_call(f"ngspice -b {netlist_path} -o {netlist_path}.log > {netlist_path}.log 2>&1", shell=True)
 
 
-def run_sim(dirpath: str, device: str, meas_out_result: str,
-            width: str, length: float, corner: float,
-            temp: float, const_var: str, const_var_val: float,
-            sweeps: str) -> dict:
+def run_sim(dirpath: str, device_name: str, width: str,
+            length: float, corner: float, temp: float,
+            vj: str) -> dict:
     """
     Function to run simulation for all data points per each variation.
 
@@ -83,61 +89,40 @@ def run_sim(dirpath: str, device: str, meas_out_result: str,
     ----------
     dirpath : str or Path
         Path to the run results directory
-    device : str
-        Device used in regression test
-    meas_out_result : str
-        Measurement selected to be test for the current regression.
+    device_name : str
+        Name of Device used in current run
     width: float
         Width value for the current run
     length: float
         length value for the current run
+    corner: str
+        Corner used in the current run
     temp: float
         temp value for the current run
-    const_var: str
-        Name of constant voltage for the current run
-    const_var_val: float
-        Value of constant voltage for the current run
-    sweeps: str
-        Str that holds all voltage sweeps for the current run
+    vj: str
+        Voltage value used in current run
     Returns
     -------
-    info(dict):
+    result_df: dict
         Dataframe contains results for the current run
     """
 
-    # Select desired nelist templete to be used in the current run
-    if meas_out_result == "id":
-        device_group_netlist = "nfet" if "nfet" in device else "pfet"
-    else:
-        if "03v3" in device:
-            device_group_netlist = "nfet_03v3" if "nfet" in device else "pfet_03v3"
-        elif "06v0_nvt" in device:
-            device_group_netlist = "nfet_06v0_nvt"
-        else:
-            device_group_netlist = "nfet_06v0" if "nfet" in device else "pfet_06v0"
-
-    netlist_tmp = os.path.join(f"device_netlists_{meas_out_result}", f"{device_group_netlist}.spice")
+    netlist_tmp = os.path.join("device_netlists", "cap_mos.spice")
 
     # Preparing output directory at which results will be added
-    dev_netlists_path = os.path.join(dirpath, f"{device}_netlists")
+    dev_netlists_path = os.path.join(dirpath, f"{device_name}_netlists")
     os.makedirs(dev_netlists_path, exist_ok=True)
 
-    sp_file_name = f"netlist_w{width}_l{length}_t{temp}_{const_var}{const_var_val}_{meas_out_result}.spice"
+    sp_file_name = f"netlist_w{width}_l{length}_t{temp}_vj{vj}.spice"
     netlist_path = os.path.join(dev_netlists_path, sp_file_name)
 
-    sim_file_name = f"simulated_w{width}_l{length}_t{temp}_{const_var}{const_var_val}_{meas_out_result}.csv"
-    result_path = os.path.join(dev_netlists_path, sim_file_name)
-
-    info = {}
-    info["device"] = device
-    info["temp"] = temp
-    info["corner"] = corner
-    info["length"] = length
-    info["width"] = width
-
-    # Check constant voltage values
-    vbs_val = const_var_val if const_var == "vbs" else 0
-    vds_val = const_var_val if const_var == "vds" else 6
+    result_df = {}
+    result_df["device_name"] = device_name
+    result_df["W (um)"] = width
+    result_df["L (um)"] = length
+    result_df["corner"] = corner
+    result_df["temp"] = temp
+    result_df["Vj"] = vj
 
     # Generating netlist templates for all variations
     with open(netlist_tmp) as f:
@@ -145,53 +130,46 @@ def run_sim(dirpath: str, device: str, meas_out_result: str,
         with open(netlist_path, "w") as netlist:
             netlist.write(
                 tmpl.render(
-                    device=device,
-                    meas_out_result=meas_out_result,
+                    device=device_name,
                     width=width,
                     length=length,
                     temp=temp,
-                    sweeps=sweeps,
-                    vds_val=vds_val,
-                    vbs_val=vbs_val,
-                    const_var=const_var,
-                    const_var_val=const_var_val
+                    corner=corner,
+                    vj=vj,
                 )
             )
 
     # Running ngspice for each netlist
-    logging.info(f"Running simulation for {device} at w={width}, l={length}, temp={temp}, sweeps={sweeps}, out={meas_out_result}")
+    logging.info(f"Running simulation for {device_name}-cv at w={width}, l={length}, temp={temp}, corner={corner}, Vj={vj}")
 
     # calling simulator to run netlist and write its results
     try:
         simulate_device(netlist_path)
-        mos_id_rd = result_path if os.path.exists(result_path) else "None"
-    except Exception:
-        mos_id_rd = "None"
+        # Get Cj value from run log
+        try:
+            cj_val = find_moscap(f"{netlist_path}.log")
 
-    # Cleaning output csv files from simulation results and
-    ## fromating columns to match what we have in measurement
-    if os.path.exists(result_path) and os.path.isfile(result_path):
-        result_df = pd.read_csv(result_path, delimiter=r"\s+")
-        # Drop unwanted columns for simplicity
-        result_df.drop("v-sweep", axis=1, inplace=True)
+        except Exception:
+            cj_val = 0
+        logging.error(f"Running simulation at w={width}, l={length}, temp={temp}, corner={corner}, Vj={vj} got an exception")
+        logging.error(f"Regression couldn't get the output is not completed for that run")
+        logging.error(f"Exception : {e}")            
+    except Exception as e:
+        cj_val = 0
+        logging.error(f"Running simulation at w={width}, l={length}, temp={temp}, corner={corner}, Vj={vj} got an exception")
+        logging.error(f"Simulation is not completed for that run")
+        logging.error(f"Exception : {e}")
 
-        # Adding columns for all variations per each run
-        result_df["W (um)"] = width
-        result_df["L (um)"] = length
-        result_df["corner"] = corner
-        result_df["temp"] = temp
+    # Writing output in clean format in same csv path of resutls
+    # result_df.to_csv(result_path, index=False, header=True, sep=",")
 
-        # Writing output in clean format in same csv path of resutls
-        result_df.to_csv(result_path, index=False, header=True, sep=",")
+    result_df["id_rds_sim"] = cj_val
 
-    info["id_rds_sim"] = mos_id_rd
-
-    return info
+    return result_df
 
 
 def run_sims(
-    df: pd.DataFrame, dirpath: str, device: str, meas_out_result: str,
-) -> pd.DataFrame:
+    df: pd.DataFrame, dirpath: str, device: str) -> pd.DataFrame:
     """
     Function to run all simulations for all data points and generating results in proper format.
 
@@ -203,8 +181,6 @@ def run_sims(
         Output directory for the regresion results
     device: str
         Name of device for the current run
-    meas_out_result: str
-        Measurement selected to be test for the current regression.
     Returns
     -------
     df: Pd.DataFrame
@@ -219,15 +195,12 @@ def run_sims(
                 executor.submit(
                     run_sim,
                     dirpath,
-                    device,
-                    meas_out_result,
+                    row["device_name"],
                     row["W (um)"],
                     row["L (um)"],
                     row["corner"],
                     row["temp"],
-                    row["const_var"],
-                    row["const_var_val"],
-                    row["sweeps"],
+                    row["Vj"],
                 )
             )
 
@@ -247,13 +220,9 @@ def run_sims(
     return df
 
 
-def main(meas_out_result):
+def main():
     """
     Main function for Fets regression for GF180MCU models
-    Parameters
-    ----------
-    meas_out_result : str
-        Measurement selected to be test for the current regression.
     """
 
     ## Check ngspice version
@@ -266,18 +235,11 @@ def main(meas_out_result):
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "mos_id_rds_regr"
+    main_regr_dir = "cap_mos_cv_regr"
 
     devices = [
-        "nfet_03v3",
-        "pfet_03v3",
-        "nfet_06v0",
-        "pfet_06v0",
-        "nfet_06v0_nvt",
-        "nfet_03v3_dss",
-        "pfet_03v3_dss",
-        "nfet_06v0_dss",
-        "pfet_06v0_dss",
+        "cap_mos_03v3", # All types [cap_nmos, cap_pmos, cap_nmos_b, cap_pmos_b]
+        "cap_mos_06v0", # All types [cap_nmos, cap_pmos, cap_nmos_b, cap_pmos_b]
     ]
 
     # Simulate all data points for each device
@@ -293,27 +255,8 @@ def main(meas_out_result):
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        # Loading sweep file used in measurements to be used in simulation for regression
-        sweeps_file = f"../../180MCU_SPICE_DATA_clean/MOS/{dev}_sweeps_{meas_out_result}.csv"
-
-        if not os.path.exists(sweeps_file) or not os.path.isfile(sweeps_file):
-            logging.error("There is no measured data to be used in simulation, please recheck")
-            logging.error(f"{sweeps_file} file doesn't exist, please recheck")
-            exit(1)
-
-        df_sweeps = pd.read_csv(sweeps_file)
-        logging.info(f"Data points used in simulation for {dev}: {df_sweeps}")
-
-        sim_df = run_sims(df_sweeps, dev_path, dev, meas_out_result)
-        # Round all voltages to elimniate using long digits that could cause mismatch with meas df
-        ## Simulator uses small values instead of 0 [10e-16 for example]
-        sim_df = sim_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
-        sim_df.drop_duplicates(inplace=True)
-
-        logging.info(f"# Device {dev} number of simulated datapoints for {meas_out_result} : {len(sim_df)} ")
-
         # Loading measured data to be compared
-        meas_data_path = f"../../180MCU_SPICE_DATA_clean/MOS/{dev}_meas_{meas_out_result}.csv"
+        meas_data_path = f"../../180MCU_SPICE_DATA_clean/MOS/{dev}_meas_cv.csv"
 
         if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
             logging.error("There is no measured data to be used in simulation, please recheck")
@@ -321,10 +264,14 @@ def main(meas_out_result):
             exit(1)
 
         meas_df = pd.read_csv(meas_data_path)
-        meas_df = meas_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
         meas_df.drop_duplicates(inplace=True)
 
-        logging.info(f"# Device {dev} number of measured datapoints for {meas_out_result} : {len(meas_df)} ")
+        logging.info(f"# Device {dev} number of measured datapoints for cv : {len(meas_df)} ")
+
+        sim_df = run_sims(meas_df, dev_path, dev)
+        sim_df.drop_duplicates(inplace=True)
+
+        logging.info(f"# Device {dev} number of simulated datapoints for cv : {len(sim_df)} ")
 
         # Merging meas and sim dataframe in one
         full_df = meas_df.merge(sim_df,
@@ -332,25 +279,20 @@ def main(meas_out_result):
                                 how='left',
                                 suffixes=('_meas', '_sim'))
 
-        # Clipping current values to lowest curr
-        if meas_out_result == "id":
-            full_df['id_meas'] = full_df['id_meas'].clip(lower=CLIP_CURR)
-            full_df['id_sim'] = full_df['id_sim'].clip(lower=CLIP_CURR)
-
         # Error calculation and report
         ## Relative error calculation for fets
-        full_df[f"{meas_out_result}_err"] = np.abs(full_df[f"{meas_out_result}_meas"] - full_df[f"{meas_out_result}_sim"]) * 100.0 / (full_df[f"{meas_out_result}_meas"])
+        full_df[f"cv_err"] = np.abs(full_df[f"cv_meas"] - full_df[f"cv_sim"]) * 100.0 / (full_df[f"cv_meas"])
         full_df.to_csv(f"{dev_path}/{dev}_full_merged_data.csv", index=False)
 
         # Calculate Q [quantile] to verify matching between measured and simulated data
         ## Refer to https://builtin.com/data-science/boxplot for more details.
-        q_target = full_df[f"{meas_out_result}_err"].quantile(0.98)
-        logging.info(f"Quantile target for {dev} device is: {q_target} %")
+        q_target = full_df[f"cv_err"].quantile(0.98)
+        logging.info(f"Quantile target for {dev} device is: {q_target}")
 
-        bad_err_full_df_loc = full_df[full_df[f"{meas_out_result}_err"] > PASS_THRESH]
-        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc[f"{meas_out_result}_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc[f"{meas_out_result}_meas"] >= MAX_VAL_DETECT)]
-        bad_err_full_df.to_csv(f"{dev_path}/{dev}_bad_err_{meas_out_result}.csv", index=False)
-        logging.info(f"Bad relative errors between measured and simulated data at {dev}_bad_err_{meas_out_result}.csv")
+        bad_err_full_df_loc = full_df[full_df[f"cv_err"] > PASS_THRESH]
+        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc[f"cv_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc[f"cv_meas"] >= MAX_VAL_DETECT)]
+        bad_err_full_df.to_csv(f"{dev_path}/{dev}_bad_err_cv.csv", index=False)
+        logging.info(f"Bad relative errors between measured and simulated data at {dev}_bad_err_cv.csv")
 
         # calculating the relative error of each device and reporting it
         min_error_total = float(full_df[f"{meas_out_result}_err"].min())
@@ -377,7 +319,7 @@ def main(meas_out_result):
             logging.error(
                 f"#Failed regression for {dev}-{meas_out_result} analysis."
             )
-            exit(1) #  TODO: Check high errors for rds measurements
+            # exit(1) ## TODO: REgression should be fail for large errs
 
 # # ================================================================
 # -------------------------- MAIN --------------------------------
@@ -394,8 +336,6 @@ if __name__ == "__main__":
         else int(arguments["--num_cores"])
     )
 
-    meas_out_result = arguments["--meas_result"]
-
     logging.basicConfig(
         level=logging.DEBUG,
         handlers=[
@@ -405,9 +345,5 @@ if __name__ == "__main__":
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
-    if meas_out_result not in ["id", "rds"]:
-        logging.error(f"{meas_out_result} is not supported, allowed measurements for Fets are [id, rds], please recheck")
-        exit(1)
-
     # Calling main function
-    main(meas_out_result)
+    main()

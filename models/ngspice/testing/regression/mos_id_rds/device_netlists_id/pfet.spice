@@ -20,7 +20,7 @@ Vbs B_tn 0 dc={{vbs_val}}
 
 .temp {{temp}}
 
-xmn1 D_tn G_tn 0 0 {{device}} W = {{width}}u L = {{length}}u
+xmp1 D_tn G_tn 0 B_tn {{device}} W = {{width}}u L = {{length}}u
 
 **** begin architecture code
 
@@ -34,9 +34,9 @@ dc {{sweeps}}
 let vds = v(D_tn)
 let vgs = v(G_tn)
 let vbs = v(B_tn)
-let id = -i(Vds)
+let id = i(Vds)
 
-wrdata mos_iv_regr/{{device}}/{{device}}_netlists/simulated_w{{width}}_l{{length}}_t{{temp}}_{{const_var}}{{const_var_val}}_{{meas_out_result}}.csv vds vgs vbs id
+wrdata mos_id_rds_regr/{{device}}/{{device}}_netlists/simulated_w{{width}}_l{{length}}_t{{temp}}_{{const_var}}{{const_var_val}}_{{meas_out_result}}.csv vds vgs vbs id
 .endc
 
 ** library calling
