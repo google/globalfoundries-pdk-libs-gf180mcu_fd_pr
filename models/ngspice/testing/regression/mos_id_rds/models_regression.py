@@ -106,7 +106,16 @@ def run_sim(dirpath: str, device: str, meas_out_result: str,
     """
 
     # Select desired nelist templete to be used in the current run
-    device_group_netlist = "nmos" if "nfet" in device else "pmos"
+    if meas_out_result == "id":
+        device_group_netlist = "nfet" if "nfet" in device else "pfet"
+    else:
+        if "03v3" in device:
+            device_group_netlist = "nfet_03v3" if "nfet" in device else "pfet_03v3"
+        elif "06v0_nvt" in device:
+            device_group_netlist = "nfet_06v0_nvt"
+        else:
+            device_group_netlist = "nfet_06v0" if "nfet" in device else "pfet_06v0"
+
     netlist_tmp = os.path.join(f"device_netlists_{meas_out_result}", f"{device_group_netlist}.spice")
 
     # Preparing output directory at which results will be added
@@ -261,7 +270,7 @@ def main(meas_out_result):
 
     devices = [
         "nfet_03v3",
-        # "pfet_03v3",
+        "pfet_03v3",
         # "nfet_06v0",
         # "pfet_06v0",
         # "nfet_06v0_nvt",
