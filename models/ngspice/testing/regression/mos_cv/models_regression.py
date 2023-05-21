@@ -35,8 +35,8 @@ import logging
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0
-MAX_VAL_DETECT = 10 # 10fF
-CLIP_CURR = 10e-12  # lowest curr to clip on
+MAX_VAL_DETECT = 10  # 10fF
+CLIP_CURR = 10e-12   # lowest curr to clip on
 TOLE = 0.001
 
 
@@ -73,7 +73,7 @@ def simulate_device(netlist_path: str):
 
 
 def run_sim(dirpath: str, device: str, cap: str,
-            width: str, length: float, nf:int,
+            width: str, length: float, nf: int,
             corner: float, temp: float, const_var: str,
             const_var_val: float, sweeps: str) -> dict:
     """
@@ -86,13 +86,13 @@ def run_sim(dirpath: str, device: str, cap: str,
     device : str
         Device used in regression test
     cap: str
-        Measured capacitance for the current regression.        
+        Measured capacitance for the current regression.
     width: float
         Width value for the current run
     length: float
         length value for the current run
    nf: int
-        Number of fingers for FETs used in the current run        
+        Number of fingers for FETs used in the current run
     temp: float
         temp value for the current run
     const_var: str
@@ -108,7 +108,7 @@ def run_sim(dirpath: str, device: str, cap: str,
     """
 
     # Select desired nelist templete to be used in the current run
-    netlist_tmp = os.path.join(f"device_netlists", f"fet_{cap}.spice")
+    netlist_tmp = os.path.join("device_netlists", f"fet_{cap}.spice")
 
     # Preparing output directory at which results will be added
     dev_path = os.path.join(dirpath, device)
