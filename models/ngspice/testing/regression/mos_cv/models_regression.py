@@ -284,7 +284,7 @@ def main():
         "fet_03v3_dss",  # For both types [nfet, pfet]
         "fet_06v0",      # For both types [nfet, pfet]
         "fet_06v0_dss",  # For both types [nfet, pfet]
-        "fet_03v3_nvt",  # For both types [nfet, pfet]
+        "fet_06v0_nvt",  # For one types [nfet]
     ]
 
     # Types of measured parasitic caps
@@ -323,7 +323,7 @@ def main():
             ## Simulator uses small values instead of 0 [10e-16 for example]
             sim_df = sim_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
             sim_df.drop_duplicates(inplace=True)
-            sim_df.to_csv("test.csv", index=False)
+
             logging.info(f"# Device {dev} number of simulated datapoints for {cap} : {len(sim_df)} ")
 
             # Loading measured data to be compared
