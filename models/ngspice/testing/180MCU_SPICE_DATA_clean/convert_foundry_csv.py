@@ -25,17 +25,19 @@ from docopt import docopt
 import pandas as pd
 import numpy as np
 import os
-import glob
 import logging
 
 # CONSTANT VALUES
 ## These values are manually selected after some analysis
 ## for provided measuremnet data.
+# === FETS ===
 NUM_DP_PER_TEMP_FET_03V3 = 25
 NUM_DP_PER_TEMP_FET_06V0_NVT = 12
 NUM_DP_PER_TEMP_FET_06V0 = 20
 NUM_COLS_MEAS_VBS = 7
 NUM_COLS_MEAS_VGS = 8
+# === CAP_MOS ===
+NUM_DP_PER_TEMP_MOSCAP_03V3 = 16
 
 
 def parse_dp_id_vgs_vbs(sub_df, dev_name):
@@ -266,6 +268,33 @@ def parse_dp_sweeps(sub_df, dev_name):
     return df_dp_sweeps
 
 
+def get_orig_col_names(df, variations_count):
+    """
+    Function to get original columns names for dataframe and number of columns per variation.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame we need to extract some info from it
+    variations_count: int
+        Number of variation in the dataframe
+    Returns
+    -------
+        num_data_col_per_dp: Number of data columns per variation
+        orig_col_names: Original column names of dataframe per variation
+    """
+
+    # Get number of columns that holds measurement data for each variation
+    num_data_col_per_dp = int(len(df.columns) / variations_count)
+    # Get columns names that holds data for each variation
+    orig_col_names = df.columns[:num_data_col_per_dp]
+
+    logging.info(f" No of data columns per variation: {num_data_col_per_dp}")
+    logging.info(f" Original columns per variation:\n {orig_col_names}")
+
+    return num_data_col_per_dp, orig_col_names
+
+
 def generate_fets_variations(df, dp_df, dev_name, variations_count):
     """
     Function to generate full data frame of measured data with all variations.
@@ -286,14 +315,10 @@ def generate_fets_variations(df, dp_df, dev_name, variations_count):
     """
 
     # Get number of columns that holds measurement data for each variation
-    num_data_col_per_dp = int(len(df.columns) / variations_count)
     # Get columns names that holds data for each variation
-    orig_col_names = df.columns[:num_data_col_per_dp]
+    num_data_col_per_dp, orig_col_names = get_orig_col_names(df, variations_count)
 
-    logging.info(f" No of data columns per variation:\n {num_data_col_per_dp}")
-    logging.info(f" Original columns per variation:\n {orig_col_names}")
-
-    # Generating all data points per each varation and combining all data in one DF
+    # Generating all data points per each variation and combining all data in one DF
     all_dfs = []
     for i in range(0, len(df.columns), num_data_col_per_dp):
         sub_df = df[df.columns[i : i + num_data_col_per_dp]].copy()
@@ -378,6 +403,83 @@ def generate_fets_sweeps(all_dfs, dev_name):
     logging.info(f"Sweep csv file for {dev_name} at : {sweeps_df}_sweeps.csv")
 
 
+def dataframe_cleanup(df, unwanted_cols):
+    """
+    Function to clean data frame from unwanted cols.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame we want to clean it
+    unwanted_cols: list
+        List of unwanted columns you need to remove
+    Returns
+    -------
+    df : pd.DataFrame
+        Output dataFrame after removing unwanted cols.
+    """
+
+    # Get the columns with only NaN values
+    nan_columns = df.columns[df.isna().all()]
+    # Drop the columns with only NaN values
+    df.drop(columns=nan_columns, inplace=True)
+    df.drop(columns=unwanted_cols, inplace=True)
+
+    return df
+
+
+def get_variation_count(df, col_name):
+    """
+    Function to extract measurement data for Fets.
+
+    Parameters
+    ----------
+    df : pd.dataframe
+        Data frame for measured data to get variaitons from it
+    col_name : str
+        Name of column we will use to count it as a variation.
+    Returns
+    -------
+        variation_count: Number of variations in the provided dataframe
+    """
+    # Get num of variations for fets depending on length values in data
+    variations_count = df[col_name].count()
+
+    logging.info(f"No of variations are {variations_count}")
+    logging.info(f"Length of data points is {len(df.columns)}")
+
+    return variations_count
+
+
+def stack_df_cols(sub_df, col_untouched, stacked_col_name, stacked_col_index):
+    """
+    Function to stack dataframe columns in new column with column index.
+
+    Parameters
+    ----------
+    sub_df : pd.DataFrame
+        DataFrame that we need to stack columns in it.
+    col_untouched : str
+       Name of column that we need to keep it untouched while stacking other columns.
+    stacked_col_name : str
+       Name of column we stack all data of other columns in it.
+    stacked_col_index : str
+        Name of column that contains index of stacked columns.
+    Returns
+    -------
+        stack_df_cols: Reshaped dataframe that contains stacked columns with column index.
+    """
+
+    sub_df = (
+        sub_df.set_index([col_untouched])
+        .stack()
+        .reset_index(name=stacked_col_index)
+        .rename(columns={"level_1": stacked_col_name})
+    )
+
+    return sub_df
+
+
 def fet_meas_extraction(df, dev_name):
     """
     Function to extract measurement data for Fets.
@@ -393,21 +495,21 @@ def fet_meas_extraction(df, dev_name):
         None
     """
 
-    # Get the columns with only NaN values
-    nan_columns = df.columns[df.isna().all()]
-    # Drop the columns with only NaN values
-    df.drop(columns=nan_columns, inplace=True)
-    # Get num of variations for fets depending on length values in data
-    variations_count = df["L (um)"].count()
+    # Drop any unwanted columns
+    id_cols = [c for c in df.columns if "Id (A)" in c]
+    rd_cols = [c for c in df.columns if "Rds" in c]
+    unwanted_cols = ["Unnamed: 2", "Ids"] + id_cols + rd_cols
 
-    logging.info(f"No of variations are {variations_count}")
-    logging.info(f"Length of data points is {len(df.columns)}")
+    # Cleanup dataframe from unwanted columns we don't use
+    df = dataframe_cleanup(df, unwanted_cols)
+
+    # Get num of variations for fets depending on length values in data
+    variations_count = get_variation_count(df, "L (um)")
 
     # For Fets 03v3, There are 75 variations = 25*3 [For each temp] and all variations are extracted at tt corner
     ## For Fets 06v0, There are 60 variations = 20*3 [For each temp] and all variations are extracted at tt corner
     ## For Fets 06v0_nvt, There are 36 variations = 12*3 [For each temp] and all variations are extracted at tt corner
     ## Please note that the temp variation wasn't included in dataset so we will have to add that new column
-
     if "03v3" in dev_name:
         NUM_DP_PER_TEMP = NUM_DP_PER_TEMP_FET_03V3
     elif "06v0_nvt" in dev_name:
@@ -419,14 +521,7 @@ def fet_meas_extraction(df, dev_name):
         [25] * NUM_DP_PER_TEMP + [-40] * NUM_DP_PER_TEMP + [125] * NUM_DP_PER_TEMP
     )
 
-    # Drop any unwanted columns we don't use
-    ## TODO: This variable will need to be changed based on device type
-    id_cols = [c for c in df.columns if "Id (A)" in c]
-    rd_cols = [c for c in df.columns if "Rds" in c]
-    unwanted_cols = ["Unnamed: 2", "Ids"] + id_cols + rd_cols
-    df.drop(columns=unwanted_cols, inplace=True)
-
-    # Define new data frame that holds all varations
+    # Define new data frame that holds all variations
     dp_cols = ["W (um)", "L (um)", "corners"]
     dp_df = df[dp_cols].iloc[:variations_count].copy()
     dp_df["temp"] = all_temp
@@ -450,6 +545,102 @@ def fet_meas_extraction(df, dev_name):
     logging.info(f"Full extracted measurement data for {dev_name}: {all_dfs}")
     logging.info(
         f"Full extracted measurement data for {dev_name} at: {dev_name}_meas.csv"
+    )
+
+
+def moscap_meas_extraction(df: str, dev_name: str) -> pd.DataFrame:
+    """
+    Function to extract measurement data for Fets.
+
+    Parameters
+    ----------
+    df : pd.dataframe
+        Data frame for measured data provided by foundry
+    dev_name : str
+        Device we want to extract data for.
+    Returns
+    -------
+       None
+    """
+
+    # Drop any unwanted columns
+    dummy_cols = [c for c in df.columns if "dummy_" in c]
+    cj_cols = [c for c in df.columns if "Cj (fF)" in c]
+    unwanted_cols = ['w', 'l', 'CV (fF)'] + dummy_cols + cj_cols
+
+    # Cleanup dataframe from unwanted columns we don't use
+    df = dataframe_cleanup(df, unwanted_cols)
+
+    # For CAP_MOS 03v3/06v0, There are 144 variations = 4*4*3*3 [For device_type * W_L_variation * corners * temp]
+    ## We have 4 types of CAP_MOS 03v3 [cap_nmos, cap_pmos, cap_nmos_b, cap_pmos_b]
+    ## We have 4 W&L combination [(50, 50), (1, 1), (50, 1), (1, 50) um]
+    ## We have 3 corners [typical, ff, ss]
+    ## We have 3 temperature [25, -40, 175]
+
+    all_temp = (
+        [25] * NUM_DP_PER_TEMP_MOSCAP_03V3 + [-40] * NUM_DP_PER_TEMP_MOSCAP_03V3 + [175] * NUM_DP_PER_TEMP_MOSCAP_03V3
+    )
+
+    # Define new data frame that holds all variations
+    dp_df = pd.DataFrame({'temp': all_temp})
+
+    # "Unnamed: 2" cols: This column holds some info related to each device [name, W&L]
+    ## Example nmoscap_3p3 (50u x50u )
+    dp_df["device_name"] = df["Unnamed: 2"].apply(lambda x: x.split("\n")[0])
+    dp_df["W (um)"] = df["Unnamed: 2"].apply(lambda x: x.split("\n")[1].split("x")[0].replace("(", "").replace("u", ""))
+    dp_df["L (um)"] = df["Unnamed: 2"].apply(lambda x: x.split("\n")[1].split("x")[1].replace(")", "").replace("u", ""))
+    dp_df["W (um)"] = dp_df["W (um)"].astype(float)
+    dp_df["L (um)"] = dp_df["L (um)"].astype(float)
+
+    # Cleanup dataframe from unwanted columns we don't use
+    unwanted_cols = ['Unnamed: 2', 'corners']
+    df = dataframe_cleanup(df, unwanted_cols)
+
+    # Get number of columns that holds measurement data for each variation
+    # Get columns names that holds data for each variation
+    ## Using NUM_DP_PER_TEMP_MOSCAP_03V3 * 3: As data is all 3 corners are combined in one table
+    variations_count = NUM_DP_PER_TEMP_MOSCAP_03V3 * 3
+    num_data_col_per_dp, orig_col_names = get_orig_col_names(df, variations_count)
+
+    # Generating all data points per each variation and combining all data in one DF
+    all_dfs = []
+    col_untouched = 'Vj'           # Name of column we don't need to touch it while stacking other columns
+    stacked_col_name = 'corner'    # Name of new column in which we stacked other columns
+    stacked_col_index = 'Cj'       # Name of column that holds all values of stacked columns
+
+    for i in range(0, len(df.columns), num_data_col_per_dp):
+        sub_df = df[df.columns[i : i + num_data_col_per_dp]].copy()
+        sub_df.columns = orig_col_names
+        stacked_corner_df = stack_df_cols(sub_df, col_untouched, stacked_col_name, stacked_col_index)
+        for c in dp_df.columns:
+            stacked_corner_df[c] = dp_df.loc[len(all_dfs), c]
+        all_dfs.append(stacked_corner_df)
+
+    all_dfs = pd.concat(all_dfs)
+    all_dfs.drop_duplicates(inplace=True)
+
+    # Cleaning some columns and values to match latest version of GF180MCU models
+    all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("nmoscap", "cap_nmos").replace("pmoscap", "cap_pmos"))
+    all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("3p3", "03v3").replace("6p0", "06v0"))
+
+    ## Re-arranging columns of final data file
+    all_dfs_cols = [
+        "device_name",
+        "W (um)",
+        "L (um)",
+        "corner",
+        "temp",
+        "Vj",
+        "Cj",
+    ]
+    all_dfs = all_dfs.reindex(columns=all_dfs_cols)
+
+    # Writing final dataframe that holds all clean data
+    all_dfs.drop_duplicates(inplace=True)
+    all_dfs.to_csv(f"{dev_name}_meas_cv.csv", index=False)
+    logging.info(f"Full extracted measurement data for {dev_name}:\n {all_dfs}")
+    logging.info(
+        f"Full extracted measurement data for {dev_name} at: {dev_name}_meas_cv.csv"
     )
 
 
@@ -477,13 +668,17 @@ def main(args):
         )
         exit(1)
 
-    # Checking that selected device is supported
+    # Checking that selected device is supported.
     if "fet" in dev_type:
         df = pd.read_excel(excel_path)
         logging.info(f"Starting data extraction from {excel_path} sheet for {dev_type} device")
         fet_meas_extraction(df, dev_type)
+    elif "cap_mos" in dev_type:
+        df = pd.read_excel(excel_path)
+        logging.info(f"Starting data extraction from {excel_path} sheet for {dev_type} device")
+        moscap_meas_extraction(df, dev_type)
     else:
-        logging.error("Suported devices are: Fets")
+        logging.error("Suported devices are: Fets, MOSCAP")
         exit(1)
 
 

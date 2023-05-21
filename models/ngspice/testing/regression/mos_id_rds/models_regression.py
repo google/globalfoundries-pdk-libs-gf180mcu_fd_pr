@@ -37,7 +37,7 @@ import logging
 # CONSTANT VALUES
 PASS_THRESH = 5.0
 MAX_VAL_DETECT = 20.0e-6
-CLIP_CURR = 5e-12  # lowest curr to clip on
+CLIP_CURR = 10e-12  # lowest curr to clip on
 
 
 def check_ngspice_version():
@@ -137,7 +137,7 @@ def run_sim(dirpath: str, device: str, meas_out_result: str,
 
     # Check constant voltage values
     vbs_val = const_var_val if const_var == "vbs" else 0
-    vds_val = const_var_val if const_var == "vds" else 3.3
+    vds_val = const_var_val if const_var == "vds" else 6
 
     # Generating netlist templates for all variations
     with open(netlist_tmp) as f:
@@ -266,18 +266,18 @@ def main(meas_out_result):
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "mos_iv_regr"
+    main_regr_dir = "mos_id_rds_regr"
 
     devices = [
         "nfet_03v3",
         "pfet_03v3",
-        # "nfet_06v0",
-        # "pfet_06v0",
-        # "nfet_06v0_nvt",
-        # "nfet_03v3_dss",
-        # "pfet_03v3_dss",
-        # "nfet_06v0_dss",
-        # "pfet_06v0_dss",
+        "nfet_06v0",
+        "pfet_06v0",
+        "nfet_06v0_nvt",
+        "nfet_03v3_dss",
+        "pfet_03v3_dss",
+        "nfet_06v0_dss",
+        "pfet_06v0_dss",
     ]
 
     # Simulate all data points for each device
@@ -345,7 +345,7 @@ def main(meas_out_result):
         # Calculate Q [quantile] to verify matching between measured and simulated data
         ## Refer to https://builtin.com/data-science/boxplot for more details.
         q_target = full_df[f"{meas_out_result}_err"].quantile(0.98)
-        logging.info(f"Quantile target for {dev} device is: {q_target}")
+        logging.info(f"Quantile target for {dev} device is: {q_target} %")
 
         bad_err_full_df_loc = full_df[full_df[f"{meas_out_result}_err"] > PASS_THRESH]
         bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc[f"{meas_out_result}_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc[f"{meas_out_result}_meas"] >= MAX_VAL_DETECT)]
@@ -377,9 +377,9 @@ def main(meas_out_result):
             logging.error(
                 f"#Failed regression for {dev}-{meas_out_result} analysis."
             )
-            # exit(1) ## TODO: REgression should be fail for large errs
+            exit(1)  # TODO: Check high errors for rds measurements
 
-# # ================================================================
+# ================================================================
 # -------------------------- MAIN --------------------------------
 # ================================================================
 

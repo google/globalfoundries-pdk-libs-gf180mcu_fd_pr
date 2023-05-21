@@ -1,7 +1,7 @@
-***************************
-** cap
-***************************
-* Copyright 2022 Efabless Corporation
+****************
+** cap_mos_cv **
+****************
+* Copyright 2023 Efabless Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,21 +18,20 @@
 
 Ich 0 p dc 10u
 
-.temp 25
-.options tnom=25
-      
+.temp {{temp}}
+
 xcn p 0 {{device}} c_length={{length}}u c_width={{width}}u
 
-.ic v(p)=0.0
+.ic v(p)={{vj}}
 .tran 10ns 100us
 
 * .print tran v(p) cj=par('10.0e-6  * time / v(p)')
 
-.meas tran CV FIND par('(10.0e-6  * time / v(p))*1.0e15') AT=100us
+.meas tran Cj FIND par('(10.0e-6  * time / v(p))*1.0e15') AT=100us
 
 ** library calling
 
 .include "../../../design.ngspice"
-.lib "../../../sm141064.ngspice" moscap_{{corner}}
+.lib "../../../sm141064.ngspice" {{corner}}
 .end
 

@@ -45,6 +45,16 @@ models_ext-MOS:
 	@rm -rf MOS/ && mkdir -p MOS/
 	@mv -f *fet*.csv MOS/
 
+
+.ONESHELL:
+models_ext-MOSCAP:
+	@cd $(Testing_DIR)
+	@echo "========== Runing models_ext-MOSCAP ==========" |& tee -a ../run_log.log 
+	@python3 convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/moscap_cv_3p3.nl_out.xlsx --device_type=cap_mos_03v3 |& tee -a ../run_log.log
+	@python3 convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/moscap_cv_6p0.nl_out.xlsx --device_type=cap_mos_06v0 |& tee -a ../run_log.log
+	@rm -rf MOSCAP/ && mkdir -p MOSCAP/
+	@mv -f *cap_mos*.csv MOSCAP/
+
 #==========================
 # --------- HELP ----------
 #==========================
@@ -54,5 +64,6 @@ help:
 	@echo "\n ==== The following are some of the valid targets for this Makefile ====\n"
 	@echo "... all                  (the default if no target is provided  )"
 	@echo "... models_ext-MOS       (To extract measured data for MOS devices)"
+	@echo "... models_ext-MOSCAP    (To extract measured data for MOSCAP devices)"
 
 .PHONY : help
