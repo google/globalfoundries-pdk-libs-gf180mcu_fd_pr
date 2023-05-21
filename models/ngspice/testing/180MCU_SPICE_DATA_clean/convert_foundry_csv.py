@@ -620,7 +620,7 @@ def moscap_meas_extraction(df: str, dev_name: str) -> pd.DataFrame:
     all_dfs.drop_duplicates(inplace=True)
 
     # Cleaning some columns and values to match latest version of GF180MCU models
-    all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("nmoscap", "cap_nmos").replace("nmoscap", "cap_pmos"))
+    all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("nmoscap", "cap_nmos").replace("pmoscap", "cap_pmos"))
     all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("3p3", "03v3").replace("6p0", "06v0"))
 
     ## Re-arranging columns of final data file

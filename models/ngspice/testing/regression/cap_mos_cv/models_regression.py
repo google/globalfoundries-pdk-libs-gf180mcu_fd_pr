@@ -36,7 +36,7 @@ import logging
 PASS_THRESH = 5.0
 MAX_VAL_DETECT = 20.0e-6
 CLIP_CURR = 5e-12  # lowest curr to clip on
-
+QUANTILE_RATIO = 0.98  # quantile ratio used for regression test
 
 def check_ngspice_version():
     """
@@ -63,7 +63,7 @@ def find_moscap(filename):
     """
     Find moscap in log
     """
-    cmd = 'grep "Cj" {} | head -n 1'.format(filename)
+    cmd = 'grep "cj" {} | head -n 1'.format(filename)
     process = Popen(cmd, shell=True, stdout=PIPE)
     return float(process.communicate()[0][:-1].decode("utf-8").split("=")[1])
 
@@ -113,7 +113,7 @@ def run_sim(dirpath: str, device_name: str, width: str,
     dev_netlists_path = os.path.join(dirpath, f"{device_name}_netlists")
     os.makedirs(dev_netlists_path, exist_ok=True)
 
-    sp_file_name = f"netlist_w{width}_l{length}_t{temp}_vj{vj}.spice"
+    sp_file_name = f"netlist_w{width}_l{length}_t{temp}_{corner}_vj{vj}.spice"
     netlist_path = os.path.join(dev_netlists_path, sp_file_name)
 
     result_df = {}
@@ -150,20 +150,15 @@ def run_sim(dirpath: str, device_name: str, width: str,
             cj_val = find_moscap(f"{netlist_path}.log")
 
         except Exception:
-            cj_val = 0
-        logging.error(f"Running simulation at w={width}, l={length}, temp={temp}, corner={corner}, Vj={vj} got an exception")
-        logging.error(f"Regression couldn't get the output is not completed for that run")
-        logging.error(f"Exception : {e}")            
-    except Exception as e:
-        cj_val = 0
+            cj_val = np.nan
+            logging.error(f"Running simulation at w={width}, l={length}, temp={temp}, corner={corner}, Vj={vj} got an exception")
+            logging.error(f"Regression couldn't get the output from {netlist_path}.log")
+    except Exception:
+        cj_val = np.nan
         logging.error(f"Running simulation at w={width}, l={length}, temp={temp}, corner={corner}, Vj={vj} got an exception")
         logging.error(f"Simulation is not completed for that run")
-        logging.error(f"Exception : {e}")
 
-    # Writing output in clean format in same csv path of resutls
-    # result_df.to_csv(result_path, index=False, header=True, sep=",")
-
-    result_df["id_rds_sim"] = cj_val
+    result_df["Cj"] = cj_val
 
     return result_df
 
@@ -210,14 +205,10 @@ def run_sims(
                 results.append(data)
             except Exception as exc:
                 logging.info("Test case generated an exception: %s" % (exc))
+    
+    sim_df = pd.DataFrame(results)
 
-    # Get all simulation generated csv files
-    results_path = os.path.join(dirpath, f"{device}_netlists")
-    run_results_csv = glob.glob(f"{results_path}/*.csv")
-
-    # Merging all simulation results in one dataframe
-    df = pd.concat([pd.read_csv(f) for f in run_results_csv], ignore_index=True)
-    return df
+    return sim_df
 
 
 def main():
@@ -256,7 +247,7 @@ def main():
         logging.info(f"# Checking Device {dev}")
 
         # Loading measured data to be compared
-        meas_data_path = f"../../180MCU_SPICE_DATA_clean/MOS/{dev}_meas_cv.csv"
+        meas_data_path = f"../../180MCU_SPICE_DATA_clean/MOSCAP/{dev}_meas_cv.csv"
 
         if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
             logging.error("There is no measured data to be used in simulation, please recheck")
@@ -275,29 +266,29 @@ def main():
 
         # Merging meas and sim dataframe in one
         full_df = meas_df.merge(sim_df,
-                                on=['W (um)', 'L (um)', 'corner', 'temp', 'vds', 'vgs', 'vbs'],
+                                on=['device_name', 'W (um)', 'L (um)', 'corner', 'temp', 'Vj'],
                                 how='left',
                                 suffixes=('_meas', '_sim'))
 
         # Error calculation and report
         ## Relative error calculation for fets
-        full_df[f"cv_err"] = np.abs(full_df[f"cv_meas"] - full_df[f"cv_sim"]) * 100.0 / (full_df[f"cv_meas"])
+        full_df[f"Cj_err"] = np.abs(full_df[f"Cj_meas"] - full_df[f"Cj_sim"]) * 100.0 / (full_df[f"Cj_meas"])
         full_df.to_csv(f"{dev_path}/{dev}_full_merged_data.csv", index=False)
 
         # Calculate Q [quantile] to verify matching between measured and simulated data
         ## Refer to https://builtin.com/data-science/boxplot for more details.
-        q_target = full_df[f"cv_err"].quantile(0.98)
+        q_target = full_df[f"Cj_err"].quantile(QUANTILE_RATIO)
         logging.info(f"Quantile target for {dev} device is: {q_target}")
 
-        bad_err_full_df_loc = full_df[full_df[f"cv_err"] > PASS_THRESH]
-        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc[f"cv_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc[f"cv_meas"] >= MAX_VAL_DETECT)]
+        bad_err_full_df_loc = full_df[full_df[f"Cj_err"] > PASS_THRESH]
+        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc[f"Cj_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc[f"Cj_meas"] >= MAX_VAL_DETECT)]
         bad_err_full_df.to_csv(f"{dev_path}/{dev}_bad_err_cv.csv", index=False)
         logging.info(f"Bad relative errors between measured and simulated data at {dev}_bad_err_cv.csv")
 
         # calculating the relative error of each device and reporting it
-        min_error_total = float(full_df[f"{meas_out_result}_err"].min())
-        max_error_total = float(full_df[f"{meas_out_result}_err"].max())
-        mean_error_total = float(full_df[f"{meas_out_result}_err"].mean())
+        min_error_total = float(full_df[f"Cj_err"].min())
+        max_error_total = float(full_df[f"Cj_err"].max())
+        mean_error_total = float(full_df[f"Cj_err"].mean())
 
         # Cliping relative error at 100%
         min_error_total = 100 if min_error_total > 100 else min_error_total
@@ -306,20 +297,20 @@ def main():
 
         # logging relative error
         logging.info(
-            f"# Device {dev} {meas_out_result} min error: {min_error_total:.2f} %, max error: {max_error_total:.2f} %, mean error {mean_error_total:.2f} %"
+            f"# Device {dev}-cv min error: {min_error_total:.2f} %, max error: {max_error_total:.2f} %, mean error {mean_error_total:.2f} %"
         )
 
         # Verify regression results
         if q_target <= PASS_THRESH:
-            logging.info(f"# Device {dev} for {meas_out_result} simulation has passed regression.")
+            logging.info(f"# Device {dev} for CV simulation has passed regression.")
         else:
             logging.error(
-                f"# Device {dev} {meas_out_result} simulation has failed regression. Needs more analysis."
+                f"# Device {dev} CV simulation has failed regression. Needs more analysis."
             )
             logging.error(
-                f"#Failed regression for {dev}-{meas_out_result} analysis."
+                f"#Failed regression for {dev}-CV analysis."
             )
-            # exit(1) ## TODO: REgression should be fail for large errs
+            exit(1)
 
 # # ================================================================
 # -------------------------- MAIN --------------------------------

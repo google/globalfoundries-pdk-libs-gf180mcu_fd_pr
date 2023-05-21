@@ -19,7 +19,7 @@
 Ich 0 p dc 10u
 
 .temp {{temp}}
-      
+
 xcn p 0 {{device}} c_length={{length}}u c_width={{width}}u
 
 .ic v(p)={{vj}}
