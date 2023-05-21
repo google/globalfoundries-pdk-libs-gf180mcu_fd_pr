@@ -38,6 +38,7 @@ MAX_VAL_DETECT = 20.0e-6
 CLIP_CURR = 5e-12  # lowest curr to clip on
 QUANTILE_RATIO = 0.98  # quantile ratio used for regression test
 
+
 def check_ngspice_version():
     """
     check_ngspice_version checks ngspice version and makes sure it would work with the models.
@@ -156,15 +157,14 @@ def run_sim(dirpath: str, device_name: str, width: str,
     except Exception:
         cj_val = np.nan
         logging.error(f"Running simulation at w={width}, l={length}, temp={temp}, corner={corner}, Vj={vj} got an exception")
-        logging.error(f"Simulation is not completed for that run")
+        logging.error("Simulation is not completed for this run")
 
     result_df["Cj"] = cj_val
 
     return result_df
 
 
-def run_sims(
-    df: pd.DataFrame, dirpath: str, device: str) -> pd.DataFrame:
+def run_sims(df: pd.DataFrame, dirpath: str) -> pd.DataFrame:
     """
     Function to run all simulations for all data points and generating results in proper format.
 
@@ -174,8 +174,6 @@ def run_sims(
         Data frame contains all sweep points will be used in simulation
     dirpath : str or Path
         Output directory for the regresion results
-    device: str
-        Name of device for the current run
     Returns
     -------
     df: Pd.DataFrame
@@ -205,7 +203,7 @@ def run_sims(
                 results.append(data)
             except Exception as exc:
                 logging.info("Test case generated an exception: %s" % (exc))
-    
+
     sim_df = pd.DataFrame(results)
 
     return sim_df
@@ -229,8 +227,8 @@ def main():
     main_regr_dir = "cap_mos_cv_regr"
 
     devices = [
-        "cap_mos_03v3", # All types [cap_nmos, cap_pmos, cap_nmos_b, cap_pmos_b]
-        "cap_mos_06v0", # All types [cap_nmos, cap_pmos, cap_nmos_b, cap_pmos_b]
+        "cap_mos_03v3",  # All types [cap_nmos, cap_pmos, cap_nmos_b, cap_pmos_b]
+        "cap_mos_06v0",  # All types [cap_nmos, cap_pmos, cap_nmos_b, cap_pmos_b]
     ]
 
     # Simulate all data points for each device
@@ -259,7 +257,7 @@ def main():
 
         logging.info(f"# Device {dev} number of measured datapoints for cv : {len(meas_df)} ")
 
-        sim_df = run_sims(meas_df, dev_path, dev)
+        sim_df = run_sims(meas_df, dev_path)
         sim_df.drop_duplicates(inplace=True)
 
         logging.info(f"# Device {dev} number of simulated datapoints for cv : {len(sim_df)} ")
@@ -272,23 +270,23 @@ def main():
 
         # Error calculation and report
         ## Relative error calculation for fets
-        full_df[f"Cj_err"] = np.abs(full_df[f"Cj_meas"] - full_df[f"Cj_sim"]) * 100.0 / (full_df[f"Cj_meas"])
+        full_df["Cj_err"] = np.abs(full_df["Cj_meas"] - full_df["Cj_sim"]) * 100.0 / (full_df["Cj_meas"])
         full_df.to_csv(f"{dev_path}/{dev}_full_merged_data.csv", index=False)
 
         # Calculate Q [quantile] to verify matching between measured and simulated data
         ## Refer to https://builtin.com/data-science/boxplot for more details.
-        q_target = full_df[f"Cj_err"].quantile(QUANTILE_RATIO)
+        q_target = full_df["Cj_err"].quantile(QUANTILE_RATIO)
         logging.info(f"Quantile target for {dev} device is: {q_target}")
 
-        bad_err_full_df_loc = full_df[full_df[f"Cj_err"] > PASS_THRESH]
-        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc[f"Cj_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc[f"Cj_meas"] >= MAX_VAL_DETECT)]
+        bad_err_full_df_loc = full_df[full_df["Cj_err"] > PASS_THRESH]
+        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc["Cj_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc["Cj_meas"] >= MAX_VAL_DETECT)]
         bad_err_full_df.to_csv(f"{dev_path}/{dev}_bad_err_cv.csv", index=False)
         logging.info(f"Bad relative errors between measured and simulated data at {dev}_bad_err_cv.csv")
 
         # calculating the relative error of each device and reporting it
-        min_error_total = float(full_df[f"Cj_err"].min())
-        max_error_total = float(full_df[f"Cj_err"].max())
-        mean_error_total = float(full_df[f"Cj_err"].mean())
+        min_error_total = float(full_df["Cj_err"].min())
+        max_error_total = float(full_df["Cj_err"].max())
+        mean_error_total = float(full_df["Cj_err"].mean())
 
         # Cliping relative error at 100%
         min_error_total = 100 if min_error_total > 100 else min_error_total
