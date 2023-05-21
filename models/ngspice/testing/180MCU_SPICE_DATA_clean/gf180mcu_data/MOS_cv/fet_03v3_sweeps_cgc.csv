@@ -1,0 +1,9 @@
+device_name,W (um),L (um),nf,corner,temp,const_var,const_var_val,sweeps
+nfet_03v3,200.0,0.28,20,typical,25,vds,0.0,vgs -3.3 3.3 0.1 vbs -3.3 0.0 0.825
+nfet_03v3,100.0,10.0,1,typical,25,vds,0.0,vgs -3.3 3.3 0.1 vbs -3.3 0.0 0.825
+nfet_03v3,0.22,0.28,1,typical,25,vds,0.0,vgs -3.3 3.3 0.1 vbs -3.3 0.0 0.825
+nfet_03v3,0.22,10.0,1,typical,25,vds,0.0,vgs -3.3 3.3 0.1 vbs -3.3 0.0 0.825
+pfet_03v3,200.0,0.28,20,typical,25,vds,0.0,vgs -3.3 3.3 0.1 vbs -3.3 0.0 0.825
+pfet_03v3,100.0,10.0,1,typical,25,vds,0.0,vgs -3.3 3.3 0.1 vbs -3.3 0.0 0.825
+pfet_03v3,0.22,0.28,1,typical,25,vds,0.0,vgs -3.3 3.3 0.1 vbs -3.3 0.0 0.825
+pfet_03v3,0.22,10.0,1,typical,25,vds,0.0,vgs -3.3 3.3 0.1 vbs -3.3 0.0 0.825

@@ -64,7 +64,7 @@ Also, you could use Makefile to extract all data for all devices in same group, 
 Example:
 
 ```bash
-    make models_ext-MOS
+    make models_ext-MOS-iv
 ```
 
 To check all valid target in Makefile, you could run the following command:
