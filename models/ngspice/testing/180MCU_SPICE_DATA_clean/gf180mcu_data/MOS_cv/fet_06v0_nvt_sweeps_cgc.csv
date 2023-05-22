@@ -1,0 +1,5 @@
+device_name,W (um),L (um),nf,corner,temp,const_var,const_var_val,sweeps
+nfet_06v0_nvt,200.0,1.8,20,typical,25,vds,0.0,vgs -6.0 6.0 0.1 vbs -3.0 0.0 1.0
+nfet_06v0_nvt,100.0,10.0,1,typical,25,vds,0.0,vgs -6.0 6.0 0.1 vbs -3.0 0.0 1.0
+nfet_06v0_nvt,0.8,1.8,1,typical,25,vds,0.0,vgs -6.0 6.0 0.1 vbs -3.0 0.0 1.0
+nfet_06v0_nvt,0.8,10.0,1,typical,25,vds,0.0,vgs -6.0 6.0 0.1 vbs -3.0 0.0 1.0
