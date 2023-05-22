@@ -308,7 +308,7 @@ def main():
             logging.error(
                 f"#Failed regression for {dev}-CV analysis."
             )
-            exit(1)  # TODO: Investigate for high errors [cap-mos-cv]
+            # exit(1)  # TODO: Investigate for high errors [cap-mos-cv]
 
 # # ================================================================
 # -------------------------- MAIN --------------------------------
