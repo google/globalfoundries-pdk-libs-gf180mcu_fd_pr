@@ -35,7 +35,7 @@ dc {{sweeps}}
 let vds = v(D_tn)
 let vgs = v(G_tn)
 let vbs = v(B_tn)
-let rds = deriv(i(Vds))
+let rds = abs(deriv(i(Vds)))
 
 wrdata mos_id_rds_regr/{{device}}/{{device}}_netlists/simulated_w{{width}}_l{{length}}_t{{temp}}_{{const_var}}{{const_var_val}}_{{meas_out_result}}.csv vds vgs vbs rds
 .endc

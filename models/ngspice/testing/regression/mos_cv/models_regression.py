@@ -387,7 +387,7 @@ def main():
                 logging.error(
                     f"#Failed regression for {dev}-{cap} analysis."
                 )
-                # exit(1)  # TODO: Check high errors for Caps measurements
+                # exit(1)  # TODO: Check high errors for Caps measurements [Cgs, Cgd, Cgg]
 
 # ================================================================
 # -------------------------- MAIN --------------------------------

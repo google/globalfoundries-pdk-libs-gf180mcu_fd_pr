@@ -245,7 +245,7 @@ def main():
         logging.info(f"# Checking Device {dev}")
 
         # Loading measured data to be compared
-        meas_data_path = f"../../180MCU_SPICE_DATA_clean/MOSCAP/{dev}_meas_cv.csv"
+        meas_data_path = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOSCAP_cv/{dev}_meas_cv.csv"
 
         if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
             logging.error("There is no measured data to be used in simulation, please recheck")
@@ -308,7 +308,7 @@ def main():
             logging.error(
                 f"#Failed regression for {dev}-CV analysis."
             )
-            exit(1)
+            exit(1)  # TODO: Investigate for high errors [cap-mos-cv]
 
 # # ================================================================
 # -------------------------- MAIN --------------------------------

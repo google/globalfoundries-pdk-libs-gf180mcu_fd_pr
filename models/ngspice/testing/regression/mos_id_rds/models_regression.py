@@ -294,7 +294,7 @@ def main(meas_out_result):
         logging.info(f"# Checking Device {dev}")
 
         # Loading sweep file used in measurements to be used in simulation for regression
-        sweeps_file = f"../../180MCU_SPICE_DATA_clean/MOS/{dev}_sweeps_{meas_out_result}.csv"
+        sweeps_file = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_iv/{dev}_sweeps_{meas_out_result}.csv"
 
         if not os.path.exists(sweeps_file) or not os.path.isfile(sweeps_file):
             logging.error("There is no measured data to be used in simulation, please recheck")
@@ -313,7 +313,7 @@ def main(meas_out_result):
         logging.info(f"# Device {dev} number of simulated datapoints for {meas_out_result} : {len(sim_df)} ")
 
         # Loading measured data to be compared
-        meas_data_path = f"../../180MCU_SPICE_DATA_clean/MOS/{dev}_meas_{meas_out_result}.csv"
+        meas_data_path = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_iv/{dev}_meas_{meas_out_result}.csv"
 
         if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
             logging.error("There is no measured data to be used in simulation, please recheck")
