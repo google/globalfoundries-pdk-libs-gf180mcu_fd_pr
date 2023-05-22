@@ -205,7 +205,7 @@ def parse_dp_rds_vds_vgs(sub_df, dev_name):
 
     # Adding columns for all voltage sweeps and output
     df_rds_vds_vgs["vgs"] = df_rds_vds_vgs["vgs"].apply(
-        lambda x: ".".join(x.split("=")[1].split(".")[:2])
+        lambda x: ".".join(x.split("=")[1].split(".")[:-1])
     )
     df_rds_vds_vgs["vgs"] = df_rds_vds_vgs["vgs"].astype(float)
     df_rds_vds_vgs["vbs"] = vbs_df_rds_vds_vgs

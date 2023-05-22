@@ -36,8 +36,13 @@ import logging
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0
-MAX_VAL_DETECT = 20.0e-6
+# === ID MEAS ===
+MAX_VAL_DETECT_ID = 20.0e-6
 CLIP_CURR = 10e-12  # lowest curr to clip on
+QUANTILE_ID = 0.98
+# === RDS MEAS ===
+MAX_VAL_DETECT_RDS = 10e3
+QUANTILE_RDS = 0.95
 
 
 def check_ngspice_version():
@@ -302,7 +307,7 @@ def main(meas_out_result):
             exit(1)
 
         df_sweeps = pd.read_csv(sweeps_file)
-        logging.info(f"Data points used in simulation for {dev}: {df_sweeps}")
+        logging.info(f"Data points used in simulation for {dev}:\n {df_sweeps}")
 
         sim_df = run_sims(df_sweeps, dev_path, dev, meas_out_result)
         # Round all voltages to elimniate using long digits that could cause mismatch with meas df
@@ -337,6 +342,18 @@ def main(meas_out_result):
             full_df['id_meas'] = full_df['id_meas'].clip(lower=CLIP_CURR)
             full_df['id_sim'] = full_df['id_sim'].clip(lower=CLIP_CURR)
 
+        # Droping first/last row for Rds measurement [first/last simulation point]
+        ## as we have measured Rds as a partial derivative of vds to ids.
+        ## As each point is related to next point, so last point have no next point so its calculated value isn't correct.
+        if meas_out_result == 'rds':
+            full_df = full_df[~full_df['vds'].isin([0.0, -0.0])]  # Either nfet or pfet
+            if '03v3' in dev:
+                # Last simlulation points for 03v3 devices for Rds measurements at Vds = 3.3V
+                full_df = full_df[~full_df['vds'].isin([3.3, -3.3])]  # Either nfet or pfet
+            else:
+                # Last simlulation points for 03v3 devices for Rds measurements at Vds = 6.6V
+                full_df = full_df[~full_df['vds'].isin([6.6, -6.6])]  # Either nfet or pfet
+
         # Error calculation and report
         ## Relative error calculation for fets
         full_df[f"{meas_out_result}_err"] = np.abs(full_df[f"{meas_out_result}_meas"] - full_df[f"{meas_out_result}_sim"]) * 100.0 / (full_df[f"{meas_out_result}_meas"])
@@ -344,11 +361,14 @@ def main(meas_out_result):
 
         # Calculate Q [quantile] to verify matching between measured and simulated data
         ## Refer to https://builtin.com/data-science/boxplot for more details.
-        q_target = full_df[f"{meas_out_result}_err"].quantile(0.98)
+        quantile_val = QUANTILE_ID if meas_out_result == 'id' else QUANTILE_RDS
+        max_val_detect = MAX_VAL_DETECT_ID if meas_out_result == 'id' else MAX_VAL_DETECT_RDS
+
+        q_target = full_df[f"{meas_out_result}_err"].quantile(quantile_val)
         logging.info(f"Quantile target for {dev} device is: {q_target} %")
 
         bad_err_full_df_loc = full_df[full_df[f"{meas_out_result}_err"] > PASS_THRESH]
-        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc[f"{meas_out_result}_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc[f"{meas_out_result}_meas"] >= MAX_VAL_DETECT)]
+        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc[f"{meas_out_result}_sim"] >= max_val_detect) | (bad_err_full_df_loc[f"{meas_out_result}_meas"] >= max_val_detect)]
         bad_err_full_df.to_csv(f"{dev_path}/{dev}_bad_err_{meas_out_result}.csv", index=False)
         logging.info(f"Bad relative errors between measured and simulated data at {dev}_bad_err_{meas_out_result}.csv")
 
@@ -377,7 +397,7 @@ def main(meas_out_result):
             logging.error(
                 f"#Failed regression for {dev}-{meas_out_result} analysis."
             )
-            exit(1)  # TODO: Check high errors for rds measurements
+            exit(1)
 
 # ================================================================
 # -------------------------- MAIN --------------------------------
