@@ -82,6 +82,26 @@ models_ext-MIMCAP:
 	@rm -rf gf180mcu_data/MIMCAP_cv/ && mkdir -p gf180mcu_data/MIMCAP_cv/
 	@mv -f *cap_mim*.csv gf180mcu_data/MIMCAP_cv/
 
+#===============================
+# ------ models_ext-diode ------
+#===============================
+
+.ONESHELL:
+models_ext-DIODE-iv:
+	@cd $(Testing_DIR)
+	@echo "========== Runing models_ext-DIODE-iv ==========" |& tee -a ../run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_dw2ps_iv.nl_out.xlsx --device_type=diode_dw2ps |& tee -a ../run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nd2ps_03v3_iv.nl_out.xlsx --device_type=diode_nd2ps_03v3 |& tee -a ../run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nd2ps_06v0_iv.nl_out.xlsx --device_type=diode_nd2ps_06v0 |& tee -a ../run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nw2ps_03v3_iv.nl_out.xlsx --device_type=diode_nw2ps_03v3 |& tee -a ../run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nw2ps_06v0_iv.nl_out.xlsx --device_type=diode_nw2ps_06v0 |& tee -a ../run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pd2nw_03v3_iv.nl_out.xlsx --device_type=diode_pd2nw_03v3 |& tee -a ../run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pd2nw_06v0_iv.nl_out.xlsx --device_type=diode_pd2nw_06v0 |& tee -a ../run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pw2dw_iv.nl_out.xlsx --device_type=diode_pw2dw |& tee -a ../run_log.log
+	@rm -rf gf180mcu_data/diode_iv/ && mkdir -p gf180mcu_data/diode_iv/
+	@mv -f *diode*_iv*.csv gf180mcu_data/diode_iv/
+
+
 #==========================
 # --------- HELP ----------
 #==========================
@@ -94,5 +114,6 @@ help:
 	@echo "... models_ext-MOS-cv    (To extract measured data for MOS-cv devices)"
 	@echo "... models_ext-MOSCAP    (To extract measured data for MOSCAP devices)"
 	@echo "... models_ext-MIMCAP    (To extract measured data for MIMCAP devices)"
+	@echo "... models_ext-DIODE-iv  (To extract measured data for MIMCAP devices)"
 
 .PHONY : help
