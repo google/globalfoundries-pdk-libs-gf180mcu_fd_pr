@@ -28,7 +28,7 @@ import os
 import logging
 from fets_iv_extraction import fet_iv_meas_extraction
 from fets_cv_extraction import fet_cv_meas_extraction
-from moscap_cv_extraction import moscap_meas_extraction
+from cap_cv_extraction import cap_meas_extraction
 
 
 def main(args):
@@ -67,11 +67,12 @@ def main(args):
             # Extracting data for FETs-CV measurement
             fet_cv_meas_extraction(df, dev_type)
 
-    elif "cap_mos" in dev_type:
+    elif "cap_mos" in dev_type or "cap_mim" in dev_type:
         df = pd.read_excel(excel_path)
         logging.info(f"Starting data extraction from {excel_path} sheet for {dev_type} device")
-        # Extracting data for MOSCAP devices for CV measurement
-        moscap_meas_extraction(df, dev_type)
+        # Extracting data for MOSCAP/MIMCAP devices for CV measurement
+        cap_meas_extraction(df, dev_type)
+
     else:
         logging.error("Suported devices are: Fets, MOSCAP")
         exit(1)

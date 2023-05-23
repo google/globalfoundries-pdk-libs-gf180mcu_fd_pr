@@ -21,9 +21,11 @@ from utils import dataframe_cleanup, get_orig_col_names, stack_df_cols
 ## for provided measuremnet data.
 # === CAP_MOS ===
 NUM_DP_PER_TEMP_MOSCAP = 16
+# === CAP_MIM ===
+NUM_DP_PER_TEMP_MIMCAP = 12
 
 
-def moscap_meas_extraction(df: pd.DataFrame, dev_name: str):
+def cap_meas_extraction(df: pd.DataFrame, dev_name: str):
     """
     Function to extract measurement data for MOSCAP.
 
@@ -52,8 +54,15 @@ def moscap_meas_extraction(df: pd.DataFrame, dev_name: str):
     ## We have 3 corners [typical, ff, ss]
     ## We have 3 temperature [25, -40, 175]
 
+    # For CAP_MIM, There are 108 variations = 3*4*3*3 [For device_type * W_L_variation * corners * temp]
+    ## We have 4 types of CAP_MIM [mim_1p5fF, mim_1p0fF, mim_2p0fF]
+    ## We have 4 W&L combination [(100, 100), (5, 5), (100, 5), (5, 100) um]
+    ## We have 3 corners [ss, typical, ff]
+    ## We have 3 temperature [25, -40, 175]
+    NUM_DP_PER_TEMP_CAP = NUM_DP_PER_TEMP_MIMCAP if 'mim' in dev_name else NUM_DP_PER_TEMP_MOSCAP
+
     all_temp = (
-        [25] * NUM_DP_PER_TEMP_MOSCAP + [-40] * NUM_DP_PER_TEMP_MOSCAP + [175] * NUM_DP_PER_TEMP_MOSCAP
+        [25] * NUM_DP_PER_TEMP_CAP + [-40] * NUM_DP_PER_TEMP_CAP + [175] * NUM_DP_PER_TEMP_CAP
     )
 
     # Define new data frame that holds all variations
@@ -73,8 +82,8 @@ def moscap_meas_extraction(df: pd.DataFrame, dev_name: str):
 
     # Get number of columns that holds measurement data for each variation
     # Get columns names that holds data for each variation
-    ## Using NUM_DP_PER_TEMP_MOSCAP * 3: As data is all 3 corners are combined in one table
-    variations_count = NUM_DP_PER_TEMP_MOSCAP * 3
+    ## Using NUM_DP_PER_TEMP_CAP * 3: As data is all 3 corners are combined in one table
+    variations_count = NUM_DP_PER_TEMP_CAP * 3
     num_data_col_per_dp, orig_col_names = get_orig_col_names(df, variations_count)
 
     # Generating all data points per each variation and combining all data in one DF
@@ -95,8 +104,12 @@ def moscap_meas_extraction(df: pd.DataFrame, dev_name: str):
     all_dfs.drop_duplicates(inplace=True)
 
     # Cleaning some columns and values to match latest version of GF180MCU models
-    all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("nmoscap", "cap_nmos").replace("pmoscap", "cap_pmos"))
-    all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("3p3", "03v3").replace("6p0", "06v0"))
+    if 'mim' in dev_name:
+        all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("mim", "cap_mim").replace("1p5fF", "1f5"))
+        all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("1p0fF", "1f0").replace("2p0fF", "2f0"))
+    else:
+        all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("nmoscap", "cap_nmos").replace("pmoscap", "cap_pmos"))
+        all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("3p3", "03v3").replace("6p0", "06v0"))
 
     ## Re-arranging columns of final data file
     all_dfs_cols = [

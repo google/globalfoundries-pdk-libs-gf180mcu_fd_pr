@@ -70,6 +70,18 @@ models_ext-MOSCAP:
 	@rm -rf gf180mcu_data/MOSCAP_cv/ && mkdir -p gf180mcu_data/MOSCAP_cv/
 	@mv -f *cap_mos*.csv gf180mcu_data/MOSCAP_cv/
 
+#===============================
+# ------ models_ext-MIMCAP------
+#===============================
+
+.ONESHELL:
+models_ext-MIMCAP:
+	@cd $(Testing_DIR)
+	@echo "========== Runing models_ext-MIMCAP ==========" |& tee -a ../run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx --device_type=cap_mim |& tee -a ../run_log.log
+	@rm -rf gf180mcu_data/MIMCAP_cv/ && mkdir -p gf180mcu_data/MIMCAP_cv/
+	@mv -f *cap_mim*.csv gf180mcu_data/MIMCAP_cv/
+
 #==========================
 # --------- HELP ----------
 #==========================
@@ -81,5 +93,6 @@ help:
 	@echo "... models_ext-MOS-iv    (To extract measured data for MOS-iv devices)"
 	@echo "... models_ext-MOS-cv    (To extract measured data for MOS-cv devices)"
 	@echo "... models_ext-MOSCAP    (To extract measured data for MOSCAP devices)"
+	@echo "... models_ext-MIMCAP    (To extract measured data for MIMCAP devices)"
 
 .PHONY : help
