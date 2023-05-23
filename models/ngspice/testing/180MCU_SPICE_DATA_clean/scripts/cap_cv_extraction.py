@@ -96,6 +96,7 @@ def cap_meas_extraction(df: pd.DataFrame, dev_name: str):
         sub_df = df[df.columns[i : i + num_data_col_per_dp]].copy()
         sub_df.columns = orig_col_names
         stacked_corner_df = stack_df_cols(sub_df, col_untouched, stacked_col_name, stacked_col_index)
+        stacked_corner_df['cj_max'] = stacked_corner_df['Cj'].max()
         for c in dp_df.columns:
             stacked_corner_df[c] = dp_df.loc[len(all_dfs), c]
         all_dfs.append(stacked_corner_df)
@@ -110,6 +111,10 @@ def cap_meas_extraction(df: pd.DataFrame, dev_name: str):
     else:
         all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("nmoscap", "cap_nmos").replace("pmoscap", "cap_pmos"))
         all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("3p3", "03v3").replace("6p0", "06v0"))
+
+    # Generiting sweep file for MOSCAP devices
+    if 'cap_mos' in dev_name:
+        gen_moscap_sweeps(all_dfs, dev_name)
 
     ## Re-arranging columns of final data file
     all_dfs_cols = [
@@ -130,3 +135,45 @@ def cap_meas_extraction(df: pd.DataFrame, dev_name: str):
     logging.info(
         f"Full extracted measurement data for {dev_name} at: {dev_name}_meas_cv.csv"
     )
+
+
+def gen_moscap_sweeps(df: pd.DataFrame, dev_name: str):
+    """
+    Function to generate sweeps for MOSCAP devices.
+
+    Parameters
+    ----------
+    df : pd.dataframe
+        Data frame for all extracted measured data points.
+    dev_name : str
+        Device we want to extract data for.
+    Returns
+    -------
+       None
+    """
+
+    sweeps_df = df.copy()
+    min_volt_val = sweeps_df['Vj'].min()
+    max_volt_val = sweeps_df['Vj'].max()
+    step_volt_val = round(sweeps_df['Vj'].diff().max(), 2)
+    sweeps_df.drop(['Vj', 'Cj'], axis=1, inplace=True)
+    sweeps_df.drop_duplicates(inplace=True)
+    sweeps_df['sweep'] = f'Vj {min_volt_val} {max_volt_val} {step_volt_val}'
+
+    ## Re-arranging columns of final data file
+    sweeps_df_cols = [
+        "device_name",
+        "W (um)",
+        "L (um)",
+        "corner",
+        "temp",
+        "sweep",
+        "cj_max",
+    ]
+    sweeps_df = sweeps_df.reindex(columns=sweeps_df_cols)
+
+    # Writing final dataframe that holds all clean data
+    sweeps_df.to_csv(f"{dev_name}_sweeps_cv.csv", index=False)
+    logging.info(f"Sweep data points for {dev_name}:\n {sweeps_df}")
+    logging.info(f"Number of sweep points for {dev_name}: {len(sweeps_df)}")
+    logging.info(f"Extracted sweep measurement data for {dev_name} at : {dev_name}_sweeps.csv")
