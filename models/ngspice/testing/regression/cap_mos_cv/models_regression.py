@@ -36,6 +36,7 @@ import warnings
 RES_MOSCAP = 100   # We will use this res (kohm) in RC circuit for MOSCAP measurement
 PASS_THRESH = 5.0  # Threshold value that will be used to test our regression
 MAX_VAL_DETECT = 10.0e-15
+CLIP_CAP = 200e-15  # lowest curr to clip on
 QUANTILE_RATIO = 0.95  # quantile ratio used for regression test
 
 
@@ -158,17 +159,17 @@ def run_sim(dirpath: str, device_name: str, width: str,
     if not os.path.exists(result_path_pos) or not os.path.isfile(result_path_pos):
         logging.error(f"Running simulation for {device_name}-cv at w={width}, l={length}, temp={temp}, corner={corner} got an exception")
         logging.error("Simulation is not completed for this run")
-        exit(1)    
+        exit(1)
 
     # check if neg sim data is generated
     if not os.path.exists(result_path_neg) or not os.path.isfile(result_path_neg):
         logging.error(f"Running simulation for {device_name}-cv at w={width}, l={length}, temp={temp}, corner={corner} got an exception")
         logging.error("Simulation is not completed for this run")
-        exit(1) 
+        exit(1)
 
     # Cleaning simulated data and handling its format to be like measured one
-    pos_df = pd.read_table(result_path_pos, sep="\s+", names=["time", "Vj", "time_1", "q_t"])
-    neg_df = pd.read_table(result_path_neg, sep="\s+", names=["time", "Vj", "time_1", "q_t"])
+    pos_df = pd.read_table(result_path_pos, sep=r"\s+", names=["time", "Vj", "time_1", "q_t"])
+    neg_df = pd.read_table(result_path_neg, sep=r"\s+", names=["time", "Vj", "time_1", "q_t"])
     pos_df.drop(columns=["time_1"], inplace=True)
     neg_df.drop(columns=["time_1"], inplace=True)
     full_df = pd.concat([pos_df, neg_df])
@@ -179,7 +180,7 @@ def run_sim(dirpath: str, device_name: str, width: str,
     full_df = full_df[full_df['Vj'] >= min_volt_sweep]
     full_df.sort_values(by='Vj', inplace=True)
     full_df.drop(columns=['time', 'q_t'], inplace=True)
-    
+
     # Construct final simulated data frame
     sim_df = pd.DataFrame()
     sim_df['Vj'] = np.arange(min_volt_sweep, max_volt_sweep + step_volt_sweep, step_volt_sweep)
@@ -238,7 +239,7 @@ def run_sims(df: pd.DataFrame, dirpath: str) -> pd.DataFrame:
                 logging.info("Test case generated an exception: %s" % (exc))
 
     # Get all simulation generated csv files
-    results_path = os.path.join(dirpath, f"*_netlists")
+    results_path = os.path.join(dirpath, "*_netlists")
     run_results_csv = glob.glob(f"{results_path}/*.csv")
 
     # Merging all simulation results in one dataframe
@@ -359,7 +360,7 @@ def main():
             logging.error(
                 f"#Failed regression for {dev}-CV analysis."
             )
-            # exit(1)  # TODO: Investigate for high errors [cap-mos-cv]
+            exit(1)
 
 # # ================================================================
 # -------------------------- MAIN --------------------------------
@@ -375,7 +376,7 @@ if __name__ == "__main__":
         if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
-    
+
     warnings.simplefilter(action='ignore', category=RuntimeWarning)
 
     logging.basicConfig(
