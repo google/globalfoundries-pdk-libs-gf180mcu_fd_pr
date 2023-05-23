@@ -18,21 +18,17 @@
 
 Ich 0 p dc 1n
 
-.temp 25
-.options tnom=25
+.temp {{temp}}
       
 xcn p 0 {{device}} c_length={{length}}u c_width={{width}}u
 
 .ic v(p)=0.0
-.tran 0.1ns 10ns
+.tran 1ns 10ns
 
-* .print tran v(p) cj=par('10.0e-6  * time / v(p)')
-
-.meas tran CV FIND par('(1.0e-9  * time / v(p))*1.0e15') AT=10ns
+.meas tran cj FIND par('(1.0e-9  * time / v(p))*1.0e15') AT=10ns
 
 ** library calling
 
 .include "../../../design.ngspice"
-.lib "../../../sm141064.ngspice" mimcap_{{corner}}
+.lib "../../../sm141064.ngspice" {{corner}}
 .end
-
