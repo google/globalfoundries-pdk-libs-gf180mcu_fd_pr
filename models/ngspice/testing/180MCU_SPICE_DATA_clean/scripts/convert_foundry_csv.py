@@ -29,6 +29,7 @@ import glob
 from fets_iv_extraction import fet_iv_meas_extraction
 from fets_cv_extraction import fet_cv_meas_extraction
 from cap_cv_extraction import cap_meas_extraction
+from diode_iv_extraction import diode_iv_meas_extraction
 from res_r_extraction import ext_temp_corners, ext_const_temp_corners
 from bjt_iv_extraction import bjt_iv_meas_extraction
 
@@ -75,6 +76,14 @@ def main(args):
         logging.info(f"Starting data extraction from {excel_path} sheet for {dev_type} device")
         # Extracting data for MOSCAP/MIMCAP devices for CV measurement
         cap_meas_extraction(df, dev_type)
+
+    elif "diode" in dev_type:
+        df = pd.read_excel(excel_path)
+        logging.info(f"Starting data extraction from {excel_path} sheet for {dev_type} device")
+
+        if 'iv' in excel_path:
+            # Extracting data for FETs-IV measurement
+            diode_iv_meas_extraction(df, dev_type)
 
     elif "RES" in excel_path:
         df = pd.read_excel(excel_path)
