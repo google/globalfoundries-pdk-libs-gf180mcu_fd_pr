@@ -23,12 +23,13 @@ Usage:
 
 from docopt import docopt
 import pandas as pd
-import numpy as np
 import os
 import logging
+import glob
 from fets_iv_extraction import fet_iv_meas_extraction
 from fets_cv_extraction import fet_cv_meas_extraction
 from cap_cv_extraction import cap_meas_extraction
+from res_r_extraction import ext_temp_corners, ext_const_temp_corners
 
 
 def main(args):
@@ -46,6 +47,7 @@ def main(args):
 
     # Assign some args to variables to be used later
     excel_path = args["--excel_path"]
+    excel_path = glob.glob(excel_path)[0]
     dev_type = args["--device_type"]
 
     # Verify the measurement data file is exist or no
@@ -73,8 +75,20 @@ def main(args):
         # Extracting data for MOSCAP/MIMCAP devices for CV measurement
         cap_meas_extraction(df, dev_type)
 
+    elif "RES" in excel_path:
+        excel_path = glob.glob(excel_path)[0]
+        df = pd.read_excel(excel_path)
+        logging.info(f"Starting data extraction from {excel_path} sheet for {dev_type} device")
+        # Extracting data for RES devices for R measurement
+        if 'temp' in excel_path:
+            # Extracting data for RES-R with temp variations measurement
+            ext_temp_corners(df, dev_type)
+        else:
+            # Extracting data for RES-R with W&L variations measurement
+            ext_const_temp_corners(df, dev_type)
+
     else:
-        logging.error("Suported devices are: Fets, MOSCAP")
+        logging.error("Suported devices are: Fets, MOSCAP, MIMCAP, RES")
         exit(1)
 
 
