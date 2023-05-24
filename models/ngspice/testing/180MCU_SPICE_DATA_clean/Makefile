@@ -149,10 +149,7 @@ help:
 	@echo "... models_ext-MOS-cv    (To extract measured data for MOS-cv devices)"
 	@echo "... models_ext-MOSCAP    (To extract measured data for MOSCAP devices)"
 	@echo "... models_ext-MIMCAP    (To extract measured data for MIMCAP devices)"
-<<<<<<< HEAD
 	@echo "... models_ext-DIODE-iv  (To extract measured data for MIMCAP devices)"
-=======
 	@echo "... models_ext-RES       (To extract measured data for RES devices)"
->>>>>>> bfbad8216b0d80f01ae6d42af7c136598b2cceb6
 
 .PHONY : help
