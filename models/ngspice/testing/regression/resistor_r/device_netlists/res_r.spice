@@ -19,7 +19,6 @@ Vin top GND {{voltage}}
 XR1 top {{terminals}} {{device}} r_width={{width}}u r_length={{length}}u m=1
 
 .temp {{temp}}
-.options tnom={{temp}}
 
 .control
 op
