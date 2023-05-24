@@ -322,7 +322,7 @@ def main():
 
         # Error calculation and report
         ## Relative error calculation for fets
-        full_df["Cj_err"] = np.abs(full_df["Cj_meas"] - full_df["Cj_sim"]) * 100.0 / (full_df["Cj_meas"])
+        full_df["Cj_err"] = np.abs((full_df["Cj_meas"] - full_df["Cj_sim"]) * 100.0 / (full_df["Cj_meas"]))
         full_df.to_csv(f"{dev_path}/{dev}_full_merged_data.csv", index=False)
 
         # Calculate Q [quantile] to verify matching between measured and simulated data

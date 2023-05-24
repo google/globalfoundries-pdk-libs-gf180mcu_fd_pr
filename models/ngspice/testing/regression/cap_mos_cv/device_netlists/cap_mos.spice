@@ -26,12 +26,12 @@ xcn cc 0 {{device}} c_length={{length}}u c_width={{width}}u
 
 .control
     ** unset askquit
-    tran 50ps {{sim_run_time}}ps uic
+    tran 30ps {{sim_run_time}}ps uic
     let q_t = integ(-i(vinp))
     wrdata {{result_path_pos}} v(cc) q_t
 
     alter vinp dc=-{{supp_val}}
-    tran 50ps {{sim_run_time}}ps uic
+    tran 30ps {{sim_run_time}}ps uic
     let q_t = integ(-i(vinp))
     wrdata {{result_path_neg}} v(cc) q_t
 .endc

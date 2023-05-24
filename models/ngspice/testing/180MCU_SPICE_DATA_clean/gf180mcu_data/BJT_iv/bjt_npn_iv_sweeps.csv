@@ -1,0 +1,25 @@
+device_name,corner,temp,sweep
+npn_10p00x10p00,bjt_typical,25,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_05p00x05p00,bjt_typical,25,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x16p00,bjt_typical,25,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x08p00,bjt_typical,25,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x04p00,bjt_typical,25,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x02p00,bjt_typical,25,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_10p00x10p00,bjt_typical,-40,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_05p00x05p00,bjt_typical,-40,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x16p00,bjt_typical,-40,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x08p00,bjt_typical,-40,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x04p00,bjt_typical,-40,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x02p00,bjt_typical,-40,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_10p00x10p00,bjt_typical,125,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_05p00x05p00,bjt_typical,125,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x16p00,bjt_typical,125,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x08p00,bjt_typical,125,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x04p00,bjt_typical,125,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x02p00,bjt_typical,125,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_10p00x10p00,bjt_typical,175,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_05p00x05p00,bjt_typical,175,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x16p00,bjt_typical,175,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x08p00,bjt_typical,175,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x04p00,bjt_typical,175,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
+npn_00p54x02p00,bjt_typical,175,Vcp 0.0 6.0 0.1 Ib 1e-06 9e-06 2e-06
