@@ -16,22 +16,28 @@
 * limitations under the License.
 .options noacct
 
-Ich 0 p dc 10u
+.ic v(cc)=0.0
 
 .temp {{temp}}
 
-xcn p 0 {{device}} c_length={{length}}u c_width={{width}}u
+Vinp inp 0 dc={{supp_val}}
+R1 inp cc {{res_val}}k
+xcn cc 0 {{device}} c_length={{length}}u c_width={{width}}u
 
-.ic v(p)={{vj}}
-.tran 10ns 100us
+.control
+    ** unset askquit
+    tran 50ps {{sim_run_time}}ps uic
+    let q_t = integ(-i(vinp))
+    wrdata {{result_path_pos}} v(cc) q_t
 
-* .print tran v(p) cj=par('10.0e-6  * time / v(p)')
-
-.meas tran Cj FIND par('(10.0e-6  * time / v(p))*1.0e15') AT=100us
+    alter vinp dc=-{{supp_val}}
+    tran 50ps {{sim_run_time}}ps uic
+    let q_t = integ(-i(vinp))
+    wrdata {{result_path_neg}} v(cc) q_t
+.endc
 
 ** library calling
 
 .include "../../../design.ngspice"
 .lib "../../../sm141064.ngspice" {{corner}}
 .end
-

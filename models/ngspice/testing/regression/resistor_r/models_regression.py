@@ -1,4 +1,4 @@
-# Copyright 2022 GlobalFoundries PDK Authors
+# Copyright 2023 GlobalFoundries PDK Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,246 +15,33 @@
 Usage:
   models_regression.py [--num_cores=<num>]
 
-  -h, --help             Show help text.
-  -v, --version          Show version.
-  --num_cores=<num>      Number of cores to be used by simulator
+  -h, --help                     Show help text.
+  -v, --version                  Show version.
+  --num_cores=<num>              Number of cores to be used by simulator
 """
 
-from unittest.mock import DEFAULT
 from docopt import docopt
 import pandas as pd
 import numpy as np
-import os
+from subprocess import check_call, Popen, PIPE
 from jinja2 import Template
 import concurrent.futures
 import shutil
-import multiprocessing as mp
-import logging
-import subprocess
 import glob
+import os
+import logging
 
+
+# CONSTANT VALUES
 PASS_THRESH = 5.0
-DEFAULT_TEMP = 25.0
-DEFAULT_VOLTAGE = 1.0
+# === RES-R ===
+MAX_VAL_DETECT = 1  # Max value to detect bad errors above it
+QUANTILE_RATIO = 0.98
 
 
-def find_res(filename: str) -> float:
+def check_ngspice_version():
     """
-    Find res in log
-    """
-    cmd = 'grep "res = " {} | head -n 1'.format(filename)
-    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    return float(process.communicate()[0][:-1].decode("utf-8").split(" ")[2])
-
-
-def call_simulator(file_name: str) -> int:
-    """Call simulation commands to perform simulation.
-    Args:
-        file_name (str): Netlist file name.
-    """
-    return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
-
-
-def ext_const_temp_corners(
-    dev_data_path: str, device: str, corners: str
-) -> pd.DataFrame:
-    """Extract constant temperature corners from excel file
-    Args:
-        dev_data_path (str): Path to excel file
-        device (str): Device name
-        corners (list): List of corners
-    Returns:
-        pd.DataFrame: Dataframe with extracted data
-    """
-    # Read Data
-    df = pd.read_excel(dev_data_path)
-
-    all_dfs = []
-    for corner in corners:
-        idf = df[["l (um)", "w (um)", f"res_{corner} Rev9 "]].copy()
-        idf.rename(
-            columns={
-                f"res_{corner} Rev9 ": "res_measured",
-                "l (um)": "length",
-                "w (um)": "width",
-            },
-            inplace=True,
-        )
-        idf["corner"] = corner
-        all_dfs.append(idf)
-
-    df = pd.concat(all_dfs)
-    df["temp"] = DEFAULT_TEMP
-    df["device"] = device
-    df["voltage"] = DEFAULT_VOLTAGE
-    df.dropna(axis=0, inplace=True)
-    df = df[["device", "corner", "length", "width", "voltage", "temp", "res_measured"]]
-    df.drop_duplicates(inplace=True)
-    return df
-
-
-def ext_temp_corners(dev_data_path: str, device: str, corners: str) -> pd.DataFrame:
-    """Extract temperature corners from excel file
-    Args:
-        dev_data_path (str): Path to excel file
-        device (str): Device name
-        corners (list): List of corners
-    Returns:
-        pd.DataFrame: Dataframe with extracted data
-    """
-    # Read Data
-    df = pd.read_excel(dev_data_path)
-
-    all_dfs = []
-    for corner in corners:
-        idf = df[
-            ["Temperature (C)", "l (um)", "Unnamed: 2", f"res_{corner} Rev9 "]
-        ].copy()
-        idf.rename(
-            columns={
-                f"res_{corner} Rev9 ": "res_measured",
-                "l (um)": "length",
-                "Unnamed: 2": "info",
-                "Temperature (C)": "temp",
-            },
-            inplace=True,
-        )
-        idf["corner"] = corner
-        all_dfs.append(idf)
-
-    df = pd.concat(all_dfs)
-    df["width"] = df["info"].str.extract("w=([/d/.]+)").astype(float)
-    df["device"] = device
-    df["voltage"] = DEFAULT_VOLTAGE
-    df.dropna(axis=0, inplace=True)
-    df = df[["device", "corner", "length", "width", "voltage", "temp", "res_measured"]]
-    df.drop_duplicates(inplace=True)
-    return df
-
-
-def run_sim(
-    dirpath: str,
-    device: str,
-    length: float,
-    width: float,
-    corner: str,
-    voltage: str,
-    temp=25,
-) -> dict:
-    """Run simulation for a given device, corner, voltage and temperature
-    Args:
-        dirpath (str): Path to directory where netlists are stored
-        device (str): Device name
-        length (float): Device length
-        width (float): Device width
-        corner (str): Corner
-        voltage (str): Voltage
-        temp (float, optional): Temperature. Defaults to 25.
-    Returns:
-        dict: Dictionary with simulation results
-    """
-    netlist_tmp = "./device_netlists/res_op_analysis.spice"
-
-    if "rm" in device or "tm" in device:
-        terminals = "GND"
-    else:
-        terminals = "GND GND"
-
-    info = {}
-    info["device"] = device
-    info["corner"] = corner
-    info["temp"] = temp
-    info["width"] = width
-    info["length"] = length
-    info["voltage"] = voltage
-
-    width_str = "{:.3f}".format(width)
-    length_str = "{:.3f}".format(length)
-    temp_str = "{:.1f}".format(temp)
-    voltage_str = "{:.2f}".format(voltage)
-
-    netlist_path = f"{dirpath}/{device}_netlists/netlist_w{width_str}_l{length_str}_t{temp_str}_{corner}.spice"
-
-    with open(netlist_tmp) as f:
-        tmpl = Template(f.read())
-        os.makedirs(f"{dirpath}/{device}_netlists", exist_ok=True)
-
-        with open(netlist_path, "w") as netlist:
-            netlist.write(
-                tmpl.render(
-                    device=device,
-                    width=width_str,
-                    length=length_str,
-                    corner=corner,
-                    terminals=terminals,
-                    temp=temp_str,
-                    voltage=voltage_str,
-                )
-            )
-
-    # Running ngspice for each netlist
-    try:
-        call_simulator(netlist_path)
-        # Find res in log
-        try:
-            res = find_res(f"{netlist_path}.log")
-        except Exception:
-            res = 0.0
-    except Exception:
-        res = 0.0
-
-    info["res_sim_unscaled"] = res
-
-    return info
-
-
-def run_sims(
-    df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()
-) -> pd.DataFrame:
-    """Run simulations for all devices in dataframe
-    Args:
-        df (pd.DataFrame): Dataframe
-        dirpath (str): Path to directory where netlists are stored
-        num_workers (int, optional): Number of workers. Defaults to mp.cpu_count().
-    Returns:
-        pd.DataFrame: Dataframe with simulation results
-    """
-    results = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
-        futures_list = []
-        for j, row in df.iterrows():
-            futures_list.append(
-                executor.submit(
-                    run_sim,
-                    dirpath,
-                    row["device"],
-                    row["length"],
-                    row["width"],
-                    row["corner"],
-                    row["voltage"],
-                    row["temp"],
-                )
-            )
-
-        for future in concurrent.futures.as_completed(futures_list):
-            try:
-                data = future.result()
-                results.append(data)
-            except Exception as exc:
-                logging.info(f"Test case generated an exception: {exc}")
-
-    df = pd.DataFrame(results)
-    df = df[
-        ["device", "corner", "length", "width", "voltage", "temp", "res_sim_unscaled"]
-    ]
-    df["res_sim"] = df["res_sim_unscaled"] * df["width"] / df["length"]
-    return df
-
-
-def main(num_cores):
-    """Main function
-    Args:
-        num_cores (int): Number of cores to use
+    check_ngspice_version checks ngspice version and makes sure it would work with the models.
     """
     # ======= Checking ngspice  =======
     ngspice_v_ = os.popen("ngspice -v").read()
@@ -264,22 +51,197 @@ def main(num_cores):
         exit(1)
     else:
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
-        print(version)
+        logging.info(f"Your Klayout version is: ngspice {version}")
+
         if version <= 37:
             logging.error(
                 "ngspice version is not supported. Please use ngspice version 38 or newer."
             )
             exit(1)
+
+
+def simulate_device(netlist_path: str):
+    """
+    Call simulation commands to perform simulation.
+    Args:
+        file_name (str): Netlist cir for run.
+    Returns:
+        int: Return code of the simulation. 0 if success.  Non-zero if failed.
+    """
+    return os.system(f"ngspice -b {netlist_path} -o {netlist_path}.log > {netlist_path}.log 2>&1")
+
+
+def find_res(filename: str) -> float:
+    """
+    Find res in log
+    """
+    cmd = 'grep "res = " {} | head -n 1'.format(filename)
+    process = Popen(cmd, shell=True, stdout=PIPE)
+    return float(process.communicate()[0][:-1].decode("utf-8").split(" ")[2])
+
+
+def run_sim(dirpath: str, device: str, width: str, length: float,
+            corner: float, temp: float, voltage: str) -> dict:
+    """
+    Function to run simulation for all data points per each variation.
+
+    Parameters
+    ----------
+    dirpath : str or Path
+        Path to the run results directory
+    device : str
+        Device used in regression test
+    meas_out_result : str
+        Measurement selected to be test for the current regression.
+    width: float
+        Width value for the current run
+    length: float
+        length value for the current run
+    temp: float
+        temp value for the current run
+    voltage: float
+        voltage value for the current run
+    Returns
+    -------
+    result_df: dict
+        Dataframe contains results for the current run
+    """
+
+    # Select desired nelist templete to be used in the current run
+    netlist_tmp = os.path.join("device_netlists", "res_r.spice")
+
+    # Preparing output directory at which results will be added
+    dev_netlists_path = os.path.join(dirpath, f"{device}_netlists")
+    os.makedirs(dev_netlists_path, exist_ok=True)
+
+    sp_file_name = f"netlist_w{width}_l{length}_t{temp}_{corner}_v{voltage}.spice"
+    netlist_path = os.path.join(dev_netlists_path, sp_file_name)
+
+    result_df = {}
+    result_df["device"] = device
+    result_df["width"] = width
+    result_df["length"] = length
+    result_df["temp"] = temp
+    result_df["corner"] = corner
+    result_df["voltage"] = voltage
+
+    # Differientiate between 2 or 3 terminal res
+    if "rm" in device or "tm" in device:
+        terminals = "GND"
+    else:
+        terminals = "GND GND"
+
+    # Generating netlist templates for all variations
+    with open(netlist_tmp) as f:
+        tmpl = Template(f.read())
+        with open(netlist_path, "w") as netlist:
+            netlist.write(
+                tmpl.render(
+                    device=device,
+                    terminals=terminals,
+                    width=width,
+                    length=length,
+                    temp=temp,
+                    corner=corner,
+                    voltage=voltage,
+                )
+            )
+
+    # Running ngspice for each netlist
+    logging.info(f"Running simulation for {device}-R at w={width}, l={length}, temp={temp}, corner={corner}, voltage={voltage}")
+
+    # calling simulator to run netlist and write its results
+    try:
+        simulate_device(netlist_path)
+        # Get res value from run log
+        try:
+            res_val = find_res(f"{netlist_path}.log")
+
+        except Exception:
+            res_val = np.nan
+            logging.error(
+                f"Running simulation at w={width}, l={length}, temp={temp}, corner={corner} got an exception"
+            )
+            logging.error(f"Regression couldn't get the output from {netlist_path}.log")
+    except Exception:
+        res_val = np.nan
+        logging.error(
+            f"Running simulation at w={width}, l={length}, temp={temp}, corner={corner} got an exception"
+        )
+        logging.error("Simulation is not completed for this run")
+
+    result_df["res_unscaled"] = res_val
+
+    return result_df
+
+
+def run_sims(df: pd.DataFrame, dirpath: str, device: str) -> pd.DataFrame:
+    """
+    Function to run all simulations for all data points and generating results in proper format.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data frame contains all points will be used in simulation
+    dirpath : str or Path
+        Output directory for the regresion results
+    device: str
+        Name of device for the current run
+    Returns
+    -------
+    df: Pd.DataFrame
+        Dataframe contains all simulation results
+    """
+
+    results = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers_count) as executor:
+        futures_list = []
+        for j, row in df.iterrows():
+            futures_list.append(
+                executor.submit(
+                    run_sim,
+                    dirpath,
+                    device,
+                    row["width"],
+                    row["length"],
+                    row["corner"],
+                    row["temp"],
+                    row["voltage"],
+                )
+            )
+
+        for future in concurrent.futures.as_completed(futures_list):
+            try:
+                data = future.result()
+                results.append(data)
+            except Exception as exc:
+                logging.info("Test case generated an exception: %s" % (exc))
+
+    df = pd.DataFrame(results)
+    df = df[
+        ["device", "corner", "length", "width", "voltage", "temp", "res_unscaled"]
+    ]
+    df["res"] = df["res_unscaled"] * df["width"] / df["length"]
+
+    return df
+
+
+def main():
+    """
+    Main function for Fets regression for GF180MCU models
+    """
+
+    ## Check ngspice version
+    check_ngspice_version()
+
     # pandas setup
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
     pd.set_option("max_colwidth", None)
     pd.set_option("display.width", 1000)
+    pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "res_regr"
-
-    # res W&L var.
-    corners = ["typical", "ff", "ss"]
+    main_regr_dir = "res_r_regr"
 
     devices = [
         "nplus_u",
@@ -305,90 +267,91 @@ def main(num_cores):
         "nwell",
     ]
 
-    for i, dev in enumerate(devices):
-        dev_path = f"{main_regr_dir}/{dev}"
+    # Simulate all data points for each device
+    for dev in devices:
+        dev_path = os.path.join(main_regr_dir, dev)
 
+        # Making sure to remove old runs
         if os.path.exists(dev_path) and os.path.isdir(dev_path):
             shutil.rmtree(dev_path)
 
-        os.makedirs(f"{dev_path}", exist_ok=False)
+        os.makedirs(dev_path, exist_ok=False)
 
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        wl_data_files = glob.glob(
-            f"../../180MCU_SPICE_DATA/Resistor/RES*-wl-{dev}.nl*.xlsx"
-        )
-        if len(wl_data_files) < 1:
-            logging.info(f"# Can't find wl file for device: {dev}")
-            wl_file = ""
-        else:
-            wl_file = os.path.abspath(wl_data_files[0])
-        logging.info(f"# W/L data points file : {wl_file}")
+        # Loading measured data to be compared
+        meas_data_path_wl = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/RES_r/{dev}_res_wl_meas.csv"
+        meas_data_path_temp = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/RES_r/{dev}_res_temp_meas.csv"
 
-        temp_data_files = glob.glob(
-            f"../../180MCU_SPICE_DATA/Resistor/RES*-temp-{dev}.nl*.xlsx"
-        )
-        if len(temp_data_files) < 1:
-            logging.error(f"# Can't find temperature file for device: {dev}")
-            temp_file = ""
-        else:
-            temp_file = os.path.abspath(temp_data_files[0])
-        logging.info(f"# Temperature data points file : {temp_file}")
+        if not os.path.exists(meas_data_path_wl) or not os.path.isfile(meas_data_path_wl):
+            logging.error("There is no measured data to be used in simulation, please recheck")
+            logging.error(f"{meas_data_path_wl} file doesn't exist, please recheck")
+            exit(1)
 
-        if wl_file == "" and temp_file == "":
-            logging.info(f"# No datapoints available for validation for device {dev}")
-            continue
+        if not os.path.exists(meas_data_path_temp) or not os.path.isfile(meas_data_path_temp):
+            logging.error("There is no measured data to be used in simulation, please recheck")
+            logging.error(f"{meas_data_path_temp} file doesn't exist, please recheck")
+            exit(1)
 
-        if wl_file != "":
-            meas_df_room_temp = ext_const_temp_corners(wl_file, dev, corners)
-        else:
-            meas_df_room_temp = []
+        meas_df_wl = pd.read_csv(meas_data_path_wl)
+        meas_df_temp = pd.read_csv(meas_data_path_temp)
+        meas_df = pd.concat([meas_df_wl, meas_df_temp])
+        meas_df.drop_duplicates(inplace=True)
 
-        if temp_file != "":
-            temperature_corners_df = ext_temp_corners(temp_file, dev, corners)
-        else:
-            temperature_corners_df = []
+        logging.info(f"# Device {dev} number of measured datapoints: {len(meas_df)} ")
 
-        if len(meas_df_room_temp) > 0 and len(temperature_corners_df) > 0:
-            meas_df = pd.concat([meas_df_room_temp, temperature_corners_df])
-        elif len(meas_df_room_temp) > 0 and len(temperature_corners_df) < 1:
-            meas_df = meas_df_room_temp
-        elif len(meas_df_room_temp) < 1 and len(temperature_corners_df) > 0:
-            meas_df = temperature_corners_df
+        # Simulating all data points
+        sim_df = run_sims(meas_df, dev_path, dev)
+        sim_df.drop_duplicates(inplace=True)
 
-        logging.info(f"# Device {dev} number of measured_datapoints : {len(meas_df)}")
+        logging.info(f"# Device {dev} number of simulated datapoints: {len(sim_df)} ")
 
-        sim_df = run_sims(meas_df, dev_path, num_cores)
-        logging.info(f"# Device {dev} number of simulated datapoints : {len(sim_df)}")
+        # Merging meas and sim dataframe in one
+        full_df = meas_df.merge(sim_df,
+                                on=['device', 'corner', 'length', 'width', 'voltage', 'temp'],
+                                how='left',
+                                suffixes=('_meas', '_sim'))
 
-        merged_df = meas_df.merge(
-            sim_df, on=["device", "corner", "length", "width", "temp"], how="left"
-        )
-        merged_df["error"] = (
-            np.abs(merged_df["res_sim"] - merged_df["res_measured"])
-            * 100.0
-            / merged_df["res_measured"]
-        )
+        # Error calculation and report
+        ## Relative error calculation for RES-r
+        full_df["res_err"] = np.abs(full_df["res_meas"] - full_df["res_sim"]) * 100.0 / (full_df["res_meas"])
+        full_df.to_csv(f"{dev_path}/{dev}_full_merged_data.csv", index=False)
 
-        merged_df.to_csv(f"{dev_path}/error_analysis.csv", index=False)
-        m1 = merged_df["error"].min()
-        m2 = merged_df["error"].max()
-        m3 = merged_df["error"].mean()
+        # Calculate Q [quantile] to verify matching between measured and simulated data
+        ## Refer to https://builtin.com/data-science/boxplot for more details.
+        q_target = full_df["res_err"].quantile(QUANTILE_RATIO)
+        logging.info(f"Quantile target for {dev} device is: {q_target} %")
 
+        bad_err_full_df_loc = full_df[full_df["res_err"] > PASS_THRESH]
+        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc["res_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc["res_err"] >= MAX_VAL_DETECT)]
+        bad_err_full_df.to_csv(f"{dev_path}/{dev}_r_bad_err.csv", index=False)
+        logging.info(f"Bad relative errors between measured and simulated data at {dev}_r_bad_err.csv")
+
+        # calculating the relative error of each device and reporting it
+        min_error_total = float(full_df["res_err"].min())
+        max_error_total = float(full_df["res_err"].max())
+        mean_error_total = float(full_df["res_err"].mean())
+
+        # Cliping relative error at 100%
+        min_error_total = 100 if min_error_total > 100 else min_error_total
+        max_error_total = 100 if max_error_total > 100 else max_error_total
+        mean_error_total = 100 if mean_error_total > 100 else mean_error_total
+
+        # logging relative error
         logging.info(
-            f"# Device {dev} min error: {m1:.2f} , max error: {m2:.2f}, mean error {m3:.2f}"
+            f"# Device {dev} R min error: {min_error_total:.2f} %, max error: {max_error_total:.2f} %, mean error {mean_error_total:.2f} %"
         )
 
         # Verify regression results
-        if m2 < PASS_THRESH:
-            logging.info(f"# Device {dev} has passed regression.")
+        if q_target <= PASS_THRESH:
+            logging.info(f"# Device {dev} for R simulation has passed regression.")
         else:
             logging.error(
-                f"# Device {dev} has failed regression. Needs more analysis."
+                f"# Device {dev}-R simulation has failed regression. Needs more analysis."
             )
             logging.error(
-                "#Failed regression for resistor analysis."
+                f"#Failed regression for {dev}-R analysis."
             )
             exit(1)
 
@@ -400,18 +363,21 @@ def main(num_cores):
 if __name__ == "__main__":
 
     # Args
-    arguments = docopt(__doc__, version="comparator: 0.1")
+    arguments = docopt(__doc__, version="MODELS-REGRESSION: 0.2")
     workers_count = (
         os.cpu_count() * 2
         if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
+
     logging.basicConfig(
         level=logging.DEBUG,
-        handlers=[logging.StreamHandler()],
+        handlers=[
+            logging.StreamHandler(),
+        ],
         format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%d-%b-%Y %H:%M:%S",
     )
 
     # Calling main function
-    main(workers_count)
+    main()

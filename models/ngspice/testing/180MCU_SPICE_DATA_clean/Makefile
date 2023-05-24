@@ -101,12 +101,47 @@ models_ext-DIODE-iv:
 	@rm -rf gf180mcu_data/diode_iv/ && mkdir -p gf180mcu_data/diode_iv/
 	@mv -f *diode*_iv*.csv gf180mcu_data/diode_iv/
 
+#============================
+# ------ models_ext-RES------
+#============================
+
+res_devices = \
+	nplus_u \
+	pplus_u \
+	nplus_s \
+	pplus_s \
+	npolyf_u \
+	ppolyf_u \
+	npolyf_s \
+	ppolyf_s \
+	ppolyf_u_1k \
+	ppolyf_u_2k \
+	ppolyf_u_1k_6p0 \
+	ppolyf_u_2k_6p0 \
+	ppolyf_u_3k \
+	rm1 \
+	rm2 \
+	rm3 \
+	tm6k \
+	tm9k \
+	tm11k \
+	tm30k \
+	nwell
+
+.ONESHELL:
+models_ext-RES:
+	@for res in $(res_devices); do \
+		python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Resistor/RES*a-wl-$$res.nl_out.xlsx --device_type=$$res |& tee -a ../run_log.log ; \
+		python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Resistor/RES*b-temp-$$res.nl_out.xlsx --device_type=$$res |& tee -a ../run_log.log ; \
+	done
+	@rm -rf gf180mcu_data/RES_r/ && mkdir -p gf180mcu_data/RES_r/
+	@mv -f *res*.csv gf180mcu_data/RES_r/
+
 
 #==========================
 # --------- HELP ----------
 #==========================
 
-# Help Target
 help:
 	@echo "\n ==== The following are some of the valid targets for this Makefile ====\n"
 	@echo "... all                  (the default if no target is provided  )"
@@ -114,6 +149,10 @@ help:
 	@echo "... models_ext-MOS-cv    (To extract measured data for MOS-cv devices)"
 	@echo "... models_ext-MOSCAP    (To extract measured data for MOSCAP devices)"
 	@echo "... models_ext-MIMCAP    (To extract measured data for MIMCAP devices)"
+<<<<<<< HEAD
 	@echo "... models_ext-DIODE-iv  (To extract measured data for MIMCAP devices)"
+=======
+	@echo "... models_ext-RES       (To extract measured data for RES devices)"
+>>>>>>> bfbad8216b0d80f01ae6d42af7c136598b2cceb6
 
 .PHONY : help
