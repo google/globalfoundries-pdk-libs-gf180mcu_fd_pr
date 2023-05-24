@@ -355,8 +355,8 @@ def main(meas_out_result):
                 full_df = full_df[~full_df['vds'].isin([6.6, -6.6])]  # Either nfet or pfet
 
         # Error calculation and report
-        ## Relative error calculation for fets
-        full_df[f"{meas_out_result}_err"] = np.abs(full_df[f"{meas_out_result}_meas"] - full_df[f"{meas_out_result}_sim"]) * 100.0 / (full_df[f"{meas_out_result}_meas"])
+        ## Relative error calculation for FETs
+        full_df[f"{meas_out_result}_err"] = np.abs((full_df[f"{meas_out_result}_meas"] - full_df[f"{meas_out_result}_sim"]) * 100.0 / full_df[f"{meas_out_result}_meas"])
         full_df.to_csv(f"{dev_path}/{dev}_full_merged_data.csv", index=False)
 
         # Calculate Q [quantile] to verify matching between measured and simulated data

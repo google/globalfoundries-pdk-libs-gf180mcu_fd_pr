@@ -32,28 +32,28 @@ models-extract: models_ext-MOS
 .ONESHELL:
 models_ext-MOS-iv:
 	@cd $(Testing_DIR)
-	@echo "========== Runing models_ext-MOS-iv ==========" |& tee -a ../run_log.log 
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_03v3_iv.nl_out.xlsx --device_type=nfet_03v3 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_03v3_dss_iv.nl_out.xlsx --device_type=nfet_03v3_dss |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/pfet_03v3_iv.nl_out.xlsx --device_type=pfet_03v3 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/pfet_03v3_dss_iv.nl_out.xlsx --device_type=pfet_03v3_dss |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_06v0_iv.nl_out.xlsx --device_type=nfet_06v0 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_06v0_dss_iv.nl_out.xlsx --device_type=nfet_06v0_dss |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_06v0_nvt_iv.nl_out.xlsx --device_type=nfet_06v0_nvt |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/pfet_06v0_iv.nl_out.xlsx --device_type=pfet_06v0 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/pfet_06v0_dss_iv.nl_out.xlsx --device_type=pfet_06v0_dss |& tee -a ../run_log.log
+	@echo "========== Runing models_ext-MOS-iv ==========" |& tee -a run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_03v3_iv.nl_out.xlsx --device_type=nfet_03v3 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_03v3_dss_iv.nl_out.xlsx --device_type=nfet_03v3_dss |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/pfet_03v3_iv.nl_out.xlsx --device_type=pfet_03v3 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/pfet_03v3_dss_iv.nl_out.xlsx --device_type=pfet_03v3_dss |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_06v0_iv.nl_out.xlsx --device_type=nfet_06v0 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_06v0_dss_iv.nl_out.xlsx --device_type=nfet_06v0_dss |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/nfet_06v0_nvt_iv.nl_out.xlsx --device_type=nfet_06v0_nvt |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/pfet_06v0_iv.nl_out.xlsx --device_type=pfet_06v0 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/pfet_06v0_dss_iv.nl_out.xlsx --device_type=pfet_06v0_dss |& tee -a run_log.log
 	@rm -rf gf180mcu_data/MOS_iv/ && mkdir -p gf180mcu_data/MOS_iv/
 	@mv -f *fet*.csv gf180mcu_data/MOS_iv/
 
 .ONESHELL:
 models_ext-MOS-cv:
 	@cd $(Testing_DIR)
-	@echo "========== Runing models_ext-MOS-cv ==========" |& tee -a ../run_log.log 
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_03v3_cv.nl_out.xlsx --device_type=fet_03v3 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_03v3_dss_cv.nl_out.xlsx --device_type=fet_03v3_dss |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_06v0_cv.nl_out.xlsx --device_type=fet_06v0 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_06v0_dss_cv.nl_out.xlsx --device_type=fet_06v0_dss |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_06v0_nvt_cv.nl_out.xlsx --device_type=fet_06v0_nvt |& tee -a ../run_log.log
+	@echo "========== Runing models_ext-MOS-cv ==========" |& tee -a run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_03v3_cv.nl_out.xlsx --device_type=fet_03v3 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_03v3_dss_cv.nl_out.xlsx --device_type=fet_03v3_dss |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_06v0_cv.nl_out.xlsx --device_type=fet_06v0 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_06v0_dss_cv.nl_out.xlsx --device_type=fet_06v0_dss |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/MOS/fet_06v0_nvt_cv.nl_out.xlsx --device_type=fet_06v0_nvt |& tee -a run_log.log
 	@rm -rf gf180mcu_data/MOS_cv/ && mkdir -p gf180mcu_data/MOS_cv/
 	@mv -f *fet*.csv gf180mcu_data/MOS_cv/
 
@@ -64,9 +64,9 @@ models_ext-MOS-cv:
 .ONESHELL:
 models_ext-MOSCAP:
 	@cd $(Testing_DIR)
-	@echo "========== Runing models_ext-MOSCAP ==========" |& tee -a ../run_log.log 
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/moscap_cv_3p3.nl_out.xlsx --device_type=cap_mos_03v3 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/moscap_cv_6p0.nl_out.xlsx --device_type=cap_mos_06v0 |& tee -a ../run_log.log
+	@echo "========== Runing models_ext-MOSCAP ==========" |& tee -a run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/moscap_cv_3p3.nl_out.xlsx --device_type=cap_mos_03v3 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/moscap_cv_6p0.nl_out.xlsx --device_type=cap_mos_06v0 |& tee -a run_log.log
 	@rm -rf gf180mcu_data/MOSCAP_cv/ && mkdir -p gf180mcu_data/MOSCAP_cv/
 	@mv -f *cap_mos*.csv gf180mcu_data/MOSCAP_cv/
 
@@ -77,8 +77,8 @@ models_ext-MOSCAP:
 .ONESHELL:
 models_ext-MIMCAP:
 	@cd $(Testing_DIR)
-	@echo "========== Runing models_ext-MIMCAP ==========" |& tee -a ../run_log.log 
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx --device_type=cap_mim |& tee -a ../run_log.log
+	@echo "========== Runing models_ext-MIMCAP ==========" |& tee -a run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Cap/mimcap_fc.nl_out.xlsx --device_type=cap_mim |& tee -a run_log.log
 	@rm -rf gf180mcu_data/MIMCAP_cv/ && mkdir -p gf180mcu_data/MIMCAP_cv/
 	@mv -f *cap_mim*.csv gf180mcu_data/MIMCAP_cv/
 
@@ -89,15 +89,15 @@ models_ext-MIMCAP:
 .ONESHELL:
 models_ext-DIODE-iv:
 	@cd $(Testing_DIR)
-	@echo "========== Runing models_ext-DIODE-iv ==========" |& tee -a ../run_log.log 
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_dw2ps_iv.nl_out.xlsx --device_type=diode_dw2ps |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nd2ps_03v3_iv.nl_out.xlsx --device_type=diode_nd2ps_03v3 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nd2ps_06v0_iv.nl_out.xlsx --device_type=diode_nd2ps_06v0 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nw2ps_03v3_iv.nl_out.xlsx --device_type=diode_nw2ps_03v3 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nw2ps_06v0_iv.nl_out.xlsx --device_type=diode_nw2ps_06v0 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pd2nw_03v3_iv.nl_out.xlsx --device_type=diode_pd2nw_03v3 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pd2nw_06v0_iv.nl_out.xlsx --device_type=diode_pd2nw_06v0 |& tee -a ../run_log.log
-	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pw2dw_iv.nl_out.xlsx --device_type=diode_pw2dw |& tee -a ../run_log.log
+	@echo "========== Runing models_ext-DIODE-iv ==========" |& tee -a run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_dw2ps_iv.nl_out.xlsx --device_type=diode_dw2ps |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nd2ps_03v3_iv.nl_out.xlsx --device_type=diode_nd2ps_03v3 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nd2ps_06v0_iv.nl_out.xlsx --device_type=diode_nd2ps_06v0 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nw2ps_03v3_iv.nl_out.xlsx --device_type=diode_nw2ps_03v3 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_nw2ps_06v0_iv.nl_out.xlsx --device_type=diode_nw2ps_06v0 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pd2nw_03v3_iv.nl_out.xlsx --device_type=diode_pd2nw_03v3 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pd2nw_06v0_iv.nl_out.xlsx --device_type=diode_pd2nw_06v0 |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Diode/diode_pw2dw_iv.nl_out.xlsx --device_type=diode_pw2dw |& tee -a run_log.log
 	@rm -rf gf180mcu_data/diode_iv/ && mkdir -p gf180mcu_data/diode_iv/
 	@mv -f *diode*_iv*.csv gf180mcu_data/diode_iv/
 
@@ -131,12 +131,25 @@ res_devices = \
 .ONESHELL:
 models_ext-RES:
 	@for res in $(res_devices); do \
-		python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Resistor/RES*a-wl-$$res.nl_out.xlsx --device_type=$$res |& tee -a ../run_log.log ; \
-		python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Resistor/RES*b-temp-$$res.nl_out.xlsx --device_type=$$res |& tee -a ../run_log.log ; \
+		python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Resistor/RES*a-wl-$$res.nl_out.xlsx --device_type=$$res |& tee -a run_log.log ; \
+		python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/Resistor/RES*b-temp-$$res.nl_out.xlsx --device_type=$$res |& tee -a run_log.log ; \
 	done
 	@rm -rf gf180mcu_data/RES_r/ && mkdir -p gf180mcu_data/RES_r/
 	@mv -f *res*.csv gf180mcu_data/RES_r/
 
+
+#============================
+# ------ models_ext-BJT------
+#============================
+
+.ONESHELL:
+models_ext-BJT-iv:
+	@cd $(Testing_DIR)
+	@echo "========== Runing models_ext-BJT-iv ==========" |& tee -a run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/BJT/bjt_npn_icvc_f.nl_out.xlsx --device_type=bjt_npn |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/BJT/bjt_pnp_icvc_f.nl_out.xlsx --device_type=bjt_pnp |& tee -a run_log.log
+	@rm -rf gf180mcu_data/BJT_iv/ && mkdir -p gf180mcu_data/BJT_iv/
+	@mv -f *bjt*.csv gf180mcu_data/BJT_iv/
 
 #==========================
 # --------- HELP ----------
@@ -149,7 +162,8 @@ help:
 	@echo "... models_ext-MOS-cv    (To extract measured data for MOS-cv devices)"
 	@echo "... models_ext-MOSCAP    (To extract measured data for MOSCAP devices)"
 	@echo "... models_ext-MIMCAP    (To extract measured data for MIMCAP devices)"
-	@echo "... models_ext-DIODE-iv  (To extract measured data for MIMCAP devices)"
+	@echo "... models_ext-DIODE-iv  (To extract measured data for DIODE-iv devices)"
 	@echo "... models_ext-RES       (To extract measured data for RES devices)"
+	@echo "... models_ext-BJT-iv    (To extract measured data for BJT-iv devices)"
 
 .PHONY : help

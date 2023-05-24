@@ -315,7 +315,7 @@ def main():
 
         # Error calculation and report
         ## Relative error calculation for RES-r
-        full_df["res_err"] = np.abs(full_df["res_meas"] - full_df["res_sim"]) * 100.0 / (full_df["res_meas"])
+        full_df["res_err"] = np.abs((full_df["res_meas"] - full_df["res_sim"]) * 100.0 / (full_df["res_meas"]))
         full_df.to_csv(f"{dev_path}/{dev}_full_merged_data.csv", index=False)
 
         # Calculate Q [quantile] to verify matching between measured and simulated data

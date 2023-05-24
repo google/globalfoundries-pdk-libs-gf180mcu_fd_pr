@@ -51,9 +51,9 @@ def bjt_iv_meas_extraction(df: pd.DataFrame, dev_name: str):
     # For BJT npn devices, There are 24 variations = 6*4 [For W_L_variation * temp]
     # For BJT pnp devices, There are 16 variations = 4*4 [For W_L_variation * temp]
     ## We have 4 temperature [25, -40, 125, 175]
-    
+
     NUM_DP_PER_TEMP_IV = NUM_DP_PER_TEMP_NPN_IV if 'npn' in dev_name else NUM_DP_PER_TEMP_PNP_IV
-    
+
     all_temp = (
         [25] * NUM_DP_PER_TEMP_IV + [-40] * NUM_DP_PER_TEMP_IV + [125] * NUM_DP_PER_TEMP_IV + [175] * NUM_DP_PER_TEMP_IV
     )
@@ -75,7 +75,7 @@ def bjt_iv_meas_extraction(df: pd.DataFrame, dev_name: str):
 
     # Generating all data points per each variation and combining all data in one DF
     all_dfs = []
-    # Name of column we don't need to touch it while stacking other columns    
+    # Name of column we don't need to touch it while stacking other columns
     col_untouched = 'vcp (A)' if 'npn' in dev_name else '-vc (A)'
     stacked_col_name = 'ibp'       # Name of new column in which we stacked other columns
     stacked_col_index = 'ic'       # Name of column that holds all values of stacked columns
@@ -104,8 +104,8 @@ def bjt_iv_meas_extraction(df: pd.DataFrame, dev_name: str):
     all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("0p54x16", "00p54x16p00").replace("0p54x8", "00p54x08p00"))
     all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("0p54x4", "00p54x04p00").replace("0p54x2", "00p54x02p00"))
     all_dfs["device_name"] = all_dfs["device_name"].apply(lambda x: x.replace("0p42x10", "10p00x00p42").replace("0p42x5", "05p00x00p42"))
-    all_dfs["ibp"] = all_dfs["ibp"].apply(lambda x: x.split("=")[1])   
-    all_dfs["ibp"] =  all_dfs["ibp"].astype(float)
+    all_dfs["ibp"] = all_dfs["ibp"].apply(lambda x: x.split("=")[1])
+    all_dfs["ibp"] = all_dfs["ibp"].astype(float)
 
     # Generiting sweep file for BJT-iv devices
     gen_bjt_iv_sweeps(all_dfs, dev_name)
