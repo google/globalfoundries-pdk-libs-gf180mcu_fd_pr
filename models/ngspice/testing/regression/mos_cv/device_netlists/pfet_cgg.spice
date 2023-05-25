@@ -1,5 +1,5 @@
 ***************************
-** nfet_03v3_t_cap
+** fet_03v3_t_cap
 ***************************
 * Copyright 2022 Efabless Corporation
 *
@@ -36,30 +36,21 @@ xm D_tn G_tn 0 B_tn {{device}} W = {{width}}u L = {{length}}u nf={{nf}}
 set filetype=ascii
 set wr_singlescale
 set wr_vecnames
-
-compose  {{second_sweep_volt}}_vector   start={{second_sweep_start}}  stop={{second_sweep_stop}}  step={{second_sweep_step}}
-
 set appendwrite
 
-let {{second_sweep_volt}}_counter = 0
-while {{second_sweep_volt}}_counter < length({{second_sweep_volt}}_vector)
-    alter {{second_sweep_volt}} = {{second_sweep_volt}}_vector[{{second_sweep_volt}}_counter]
+save  @m.xm.m0[vgs] @m.xm.m0[vds] @m.xm.m0[vbs] @m.xm.m0[{{cap}}]
 
-    save  @m.xm.m0[vgs] @m.xm.m0[vds] @m.xm.m0[vbs] @m.xm.m0[{{cap}}]
-    *******************
-    ** simulation part
-    *******************
-    DC {{main_sweep}}
+*******************
+** simulation part
+*******************
+DC {{main_sweep}}
 
-    * ** parameters calculation
-    let vgs = @m.xm.m0[vgs]
-    let vds = @m.xm.m0[vds]
-    let vbs = @m.xm.m0[vbs]
-    let {{cap}} = -{@m.xm.m0[{{cap}}]*1e15}
+* ** parameters calculation
+let vgs = -@m.xm.m0[vgs]
+let vds = -@m.xm.m0[vds]
+let vbs = -@m.xm.m0[vbs]
+let {{cap}} = -{@m.xm.m0[{{cap}}]*1e15}
 
-    wrdata {{result_path}} vgs vds vbs {{cap}}
-    reset
-    let vgs_counter = vgs_counter + 1
-end
+wrdata {{result_path}} vgs vds vbs {{cap}}
 .endc
 .end

@@ -108,7 +108,10 @@ def run_sim(dirpath: str, device: str, cap: str,
     """
 
     # Select desired nelist templete to be used in the current run
-    netlist_tmp = os.path.join("device_netlists", f"fet_{cap}.spice")
+    if 'nfet' in device:
+        netlist_tmp = os.path.join("device_netlists", f"nfet_{cap}.spice")
+    else:
+        netlist_tmp = os.path.join("device_netlists", f"pfet_{cap}.spice")
 
     # Preparing output directory at which results will be added
     dev_path = os.path.join(dirpath, device)
@@ -289,7 +292,7 @@ def main():
 
     # Types of measured parasitic caps
     # caps = ['cgc', 'cgg', 'cgs', 'cgd']
-    caps = ['cgg', 'cgs', 'cgd']
+    caps = ['cgs', 'cgs', 'cgd']
 
     # Simulate all data points for each device
     for dev in devices:
@@ -324,6 +327,7 @@ def main():
             sim_df = sim_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
             sim_df = sim_df.replace(-0, 0)
             sim_df.drop_duplicates(inplace=True)
+            sim_df.to_csv("sim_test.csv")
 
             logging.info(f"# Device {dev} number of simulated datapoints for {cap} : {len(sim_df)} ")
 
@@ -339,6 +343,7 @@ def main():
             meas_df = meas_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
             meas_df = meas_df.replace(-0, 0)
             meas_df.drop_duplicates(inplace=True)
+            meas_df.to_csv("meas_test.csv")
 
             logging.info(f"# Device {dev} number of measured datapoints for {cap} : {len(meas_df)} ")
 
