@@ -437,7 +437,8 @@ def main():
     pd.set_option("max_colwidth", None)
     pd.set_option("display.width", 1000)
 
-    main_regr_dir = "bjt_cj_regr"
+    main_regr_dir = "run_bjt_cj_regr"
+
     devices = ["npn", "pnp"]
     npn_devices = [
         "npn_10p00x10p00",

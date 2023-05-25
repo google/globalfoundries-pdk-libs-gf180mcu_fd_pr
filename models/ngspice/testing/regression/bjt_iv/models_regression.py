@@ -223,7 +223,7 @@ def main():
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "bjt_iv_regr"
+    main_regr_dir = "run_bjt_iv_regr"
 
     devices = [
         # All npn devices [10p00x10p00, 05p00x05p00, 00p54x16p00, 00p54x08p00, 00p54x04p00, 00p54x02p00]

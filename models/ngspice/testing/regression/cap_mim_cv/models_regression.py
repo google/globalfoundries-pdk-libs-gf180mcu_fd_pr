@@ -241,7 +241,7 @@ def main():
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "cap_mim_cv_regr"
+    main_regr_dir = "run_cap_mim_cv_regr"
 
     devices = [
         "m2m3_noshield",  # All types [cap_mim_1f5, cap_mim_1f0, cap_mim_2f0]

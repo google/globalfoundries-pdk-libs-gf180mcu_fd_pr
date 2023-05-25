@@ -1,4 +1,4 @@
-# Copyright 2022 GlobalFoundries PDK Authors
+# Copyright 2023 GlobalFoundries PDK Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,23 +15,29 @@
 Usage:
   models_regression.py [--num_cores=<num>]
 
-  -h, --help             Show help text.
-  -v, --version          Show version.
-  --num_cores=<num>      Number of cores to be used by simulator
+  -h, --help                     Show help text.
+  -v, --version                  Show version.
+  --num_cores=<num>              Number of cores to be used by simulator
 """
 
 from docopt import docopt
 import pandas as pd
 import numpy as np
-import os
+from subprocess import check_call, Popen, PIPE
 from jinja2 import Template
 import concurrent.futures
 import shutil
-import multiprocessing as mp
-import logging
 import glob
+import os
+import logging
 
+
+# CONSTANT VALUES
 PASS_THRESH = 5.0
+# === BJT-IV ===
+CLIP_CURR = 10e-9
+MAX_VAL_DETECT = 10e-6  # Max value to detect bad errors above it
+QUANTILE_RATIO = 0.98
 
 
 def check_ngspice_version():
@@ -47,6 +53,7 @@ def check_ngspice_version():
     else:
         version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
         logging.info(f"Your Klayout version is: ngspice {version}")
+
         if version <= 37:
             logging.error(
                 "ngspice version is not supported. Please use ngspice version 38 or newer."
@@ -54,323 +61,135 @@ def check_ngspice_version():
             exit(1)
 
 
-def find_bjt(filepath: str):
-    """Find bjt in csv files
-    Args:
-        filepath (str): Path to csv file.
-    Returns:
-        float: bjt value.
+def simulate_device(netlist_path: str):
     """
-    return os.path.exists(filepath)
-
-
-def call_simulator(file_name: str):
-    """Call simulation commands to perform simulation.
+    Call simulation commands to perform simulation.
     Args:
-        file_name (str): Netlist file name.
+        file_name (str): Netlist cir for run.
     Returns:
-        int: Return code of the simulation. 0 for success.  Non-zero for failure.
+        int: Return code of the simulation. 0 if success.  Non-zero if failed.
     """
-    return os.system(f"ngspice -b -a {file_name} -o {file_name}.log > {file_name}.log")
+    return os.system(f"ngspice -b {netlist_path} -o {netlist_path}.log > {netlist_path}.log 2>&1")
 
 
-def ext_npn_measured(dev_data_path, devices, dev_path):
-    """Extract measured values from excel file.
-    Args:
-        dev_data_path (str): Path to excel file.
-        devices (str): List of devices.
-        dev_path (str): Path to device.
-    Returns:
-        pd.DataFrame: Dataframe containing measured values.
+def run_sim(dirpath: str, device: str, corner: float, temp: float, sweep: str) -> dict:
     """
-    # Read Data
-    df = pd.read_excel(dev_data_path)
+    Function to run simulation for all data points per each variation.
 
-    all_dfs = []
-
-    loops = df["corners"].count()
-
-    for i in range(loops):
-
-        temp_range = int(loops / 4)
-        if i in range(0, temp_range):
-            temp = 25
-        elif i in range(temp_range, 2 * temp_range):
-            temp = -40
-        elif i in range(2 * temp_range, 3 * temp_range):
-            temp = 125
-        else:
-            temp = 175
-
-        tempr = []
-        dev = []
-        ic_meas = []
-        ib_meas = []
-
-        k = i
-        if i >= len(devices):
-            while k >= len(devices):
-                k = k - len(devices)
-
-        # Special case for 1st measured values
-
-        if i == 0:
-
-            idf_ic = df[["vbp ", "vcp =1", "vcp =2", "vcp =3"]].copy()
-            idf_ic.rename(
-                columns={
-                    "vbp ": "measured_base_volt",
-                    "vcp =1": "measured_ic_vcp_step1",
-                    "vcp =2": "measured_ic_vcp_step2",
-                    "vcp =3": "measured_ic_vcp_step3",
-                },
-                inplace=True,
-            )
-
-        else:
-
-            idf_ic = df[
-                ["vbp ", f"vcp =1.{2*i}", f"vcp =2.{2*i}", f"vcp =3.{2*i}"]
-            ].copy()
-            idf_ic.rename(
-                columns={
-                    "vbp ": "measured_base_volt",
-                    f"vcp =1.{2*i}": "measured_ic_vcp_step1",
-                    f"vcp =2.{2*i}": "measured_ic_vcp_step2",
-                    f"vcp =3.{2*i}": "measured_ic_vcp_step3",
-                },
-                inplace=True,
-            )
-
-        os.makedirs(f"{dev_path}/ic_measured", exist_ok=True)
-        idf_ic.to_csv(f"{dev_path}/ic_measured/measured_{devices[k]}_t{temp}.csv")
-
-        idf_ib = df[
-            ["vbp ", f"vcp =1.{2*i+1}", f"vcp =2.{2*i+1}", f"vcp =3.{2*i+1}"]
-        ].copy()
-        idf_ib.rename(
-            columns={
-                "vbp ": "measured_base_volt",
-                f"vcp =1.{2*i+1}": "measured_ib_vcp_step1",
-                f"vcp =2.{2*i+1}": "measured_ib_vcp_step2",
-                f"vcp =3.{2*i+1}": "measured_ib_vcp_step3",
-            },
-            inplace=True,
-        )
-
-        os.makedirs(f"{dev_path}/ib_measured", exist_ok=True)
-        idf_ib.to_csv(f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv")
-
-        dev.append(devices[k])
-        tempr.append(temp)
-        ic_meas.append(f"{dev_path}/ic_measured/measured_{devices[k]}_t{temp}.csv")
-        ib_meas.append(f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv")
-
-        sdf = {
-            "device": dev,
-            "temp": tempr,
-            "ic_measured": ic_meas,
-            "ib_measured": ib_meas,
-        }
-        sdf = pd.DataFrame(sdf)
-        all_dfs.append(sdf)
-
-    df = pd.concat(all_dfs)
-    df.dropna(axis=0, inplace=True)
-    df["corner"] = "typical"
-    df = df[["device", "temp", "corner", "ic_measured", "ib_measured"]]
-
-    return df
-
-
-def ext_pnp_measured(dev_data_path, devices, dev_path):
-    """Extract measured values from excel file.
-    Args:
-        dev_data_path (str): Path to excel file.
-        devices (str): List of devices.
-        dev_path (str): Path to device.
-    Returns:
-        pd.DataFrame: Dataframe containing measured values.
+    Parameters
+    ----------
+    dirpath : str or Path
+        Path to the run results directory
+    device : str
+        Device used in regression test
+    temp: float
+        temp value for the current run
+    sweep: float
+        voltage and current sweep used for the current run
+    Returns
+    -------
+    result_df: dict
+        Dataframe contains results for the current run
     """
-    # Read Data
-    df = pd.read_excel(dev_data_path)
 
-    all_dfs = []
+    # Select desired nelist templete to be used in the current run
+    netlist_tmp = os.path.join("device_netlists", "bjt_beta.spice")
 
-    loops = df["corners"].count()
+    # Preparing output directory at which results will be added
+    dev_netlists_path = os.path.join(dirpath, f"{device}_netlists")
+    os.makedirs(dev_netlists_path, exist_ok=True)
 
-    for i in range(loops):
+    sp_file_name = f"netlist_t{temp}_{corner}.spice"
+    netlist_path = os.path.join(dev_netlists_path, sp_file_name)
 
-        temp_range = int(loops / 4)
-        if i in range(0, temp_range):
-            temp = 25
-        elif i in range(temp_range, 2 * temp_range):
-            temp = -40
-        elif i in range(2 * temp_range, 3 * temp_range):
-            temp = 125
-        else:
-            temp = 175
+    sim_file_name = f"simulated_t{temp}_{corner}.csv"
+    result_path = os.path.join(dev_netlists_path, sim_file_name)
 
-        tempr = []
-        dev = []
-        ic_meas = []
-        ib_meas = []
-
-        k = i
-        if i >= len(devices):
-            while k >= len(devices):
-                k = k - len(devices)
-
-        # Special case for 1st measured values
-
-        if i == 0:
-
-            idf_ic = df[["-vb ", "vc =-1", "vc =-2", "vc =-3"]].copy()
-            idf_ic.rename(
-                columns={
-                    "-vb ": "measured_base_volt",
-                    "vc =-1": "measured_ic_vcp_step1",
-                    "vc =-2": "measured_ic_vcp_step2",
-                    "vc =-3": "measured_ic_vcp_step3",
-                },
-                inplace=True,
-            )
-
-        else:
-
-            idf_ic = df[
-                ["-vb ", f"vc =-1.{2*i}", f"vc =-2.{2*i}", f"vc =-3.{2*i}"]
-            ].copy()
-            idf_ic.rename(
-                columns={
-                    "-vb ": "measured_base_volt",
-                    f"vc =-1.{2*i}": "measured_ic_vcp_step1",
-                    f"vc =-2.{2*i}": "measured_ic_vcp_step2",
-                    f"vc =-3.{2*i}": "measured_ic_vcp_step3",
-                },
-                inplace=True,
-            )
-
-        os.makedirs(f"{dev_path}/ic_measured", exist_ok=True)
-        idf_ic.to_csv(f"{dev_path}/ic_measured/measured_{devices[k]}_t{temp}.csv")
-
-        idf_ib = df[
-            ["-vb ", f"vc =-1.{2*i+1}", f"vc =-2.{2*i+1}", f"vc =-3.{2*i+1}"]
-        ].copy()
-        idf_ib.rename(
-            columns={
-                "-vb ": "measured_base_volt",
-                f"vc =-1.{2*i+1}": "measured_ib_vcp_step1",
-                f"vc =-2.{2*i+1}": "measured_ib_vcp_step2",
-                f"vc =-3.{2*i+1}": "measured_ib_vcp_step3",
-            },
-            inplace=True,
-        )
-
-        os.makedirs(f"{dev_path}/ib_measured", exist_ok=True)
-        idf_ib.to_csv(f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv")
-
-        dev.append(devices[k])
-        tempr.append(temp)
-        ic_meas.append(f"{dev_path}/ic_measured/measured_{devices[k]}_t{temp}.csv")
-        ib_meas.append(f"{dev_path}/ib_measured/measured_{devices[k]}_t{temp}.csv")
-
-        sdf = {
-            "device": dev,
-            "temp": tempr,
-            "ic_measured": ic_meas,
-            "ib_measured": ib_meas,
-        }
-        sdf = pd.DataFrame(sdf)
-        all_dfs.append(sdf)
-
-    df = pd.concat(all_dfs)
-    df.dropna(axis=0, inplace=True)
-    df["corner"] = "typical"
-    df = df[["device", "temp", "corner", "ic_measured", "ib_measured"]]
-
-    return df
-
-
-def run_sim(char: str, dirpath: str, device: str, temp: float) -> dict:
-    """Run simulation.
-    Args:
-        char (str): ib or ic to simulate.
-        dirpath (str): Path to device.
-        device (str): Device name.
-        temp (float): Temperature.
-    Returns:
-        dict: Dictionary containing simulation results.
-    """
     info = {}
     info["device"] = device
     info["temp"] = temp
-    dev = device.split("_")[0]
+    info["corner"] = corner
 
-    netlist_tmp = f"./device_netlists/{dev}.spice"
+    # Differientiate between 2 or 3 terminal res
+    if "npn" in device:
+        terminals = "c b 0 0"
+    else:
+        terminals = "c b 0"
 
-    temp_str = "{:.1f}".format(temp)
-
-    netlist_path = f"{dirpath}/{dev}_netlists" + f"/netlist_{device}_t{temp_str}.spice"
-
-    result_path_ib = (
-        f"{dirpath}/{dev}_netlists/" + f"ib_simulated_{device}_t{temp_str}.csv"
-    )
-    result_path_ic = (
-        f"{dirpath}/{dev}_netlists/" + f"ic_simulated_{device}_t{temp_str}.csv"
-    )
-
+    # Generating netlist templates for all variations
     with open(netlist_tmp) as f:
         tmpl = Template(f.read())
-        os.makedirs(f"{dirpath}/{dev}_netlists", exist_ok=True)
-
         with open(netlist_path, "w") as netlist:
             netlist.write(
                 tmpl.render(
                     device=device,
-                    temp=temp_str,
+                    terminals=terminals,
+                    corner=corner,
+                    temp=temp,
+                    sweep=sweep,
+                    result_path=result_path,
                 )
             )
 
     # Running ngspice for each netlist
-    try:
-        call_simulator(netlist_path)
-        # Find bjt in csv
-        if find_bjt(result_path_ib):
-            bjt_simu_ib = result_path_ib
-            bjt_simu_ic = result_path_ic
-        else:
-            bjt_simu_ib = "None"
-            bjt_simu_ic = "None"
-    except Exception:
-        bjt_simu_ib = "None"
-        bjt_simu_ic = "None"
+    logging.info(f"Running simulation for {device}-iv at temp={temp}, corner={corner}")
 
-    info["beta_sim_ib_unscaled"] = bjt_simu_ib
-    info["beta_sim_ic_unscaled"] = bjt_simu_ic
+    # calling simulator to run netlist and write its results
+    try:
+        simulate_device(netlist_path)
+        bjt_iv = result_path if os.path.exists(result_path) else np.nan
+    except Exception:
+        bjt_iv = np.nan
+
+    # Cleaning output csv files from simulation results and
+    ## fromating columns to match what we have in measurement
+    if os.path.exists(result_path) and os.path.isfile(result_path):
+        result_df = pd.read_csv(result_path, delimiter=r"\s+")
+        # Drop unwanted columns for simplicity
+        result_df.drop("v-sweep", axis=1, inplace=True)
+
+        # Adding columns for all variations per each run
+        result_df["device_name"] = device
+        result_df["corner"] = corner
+        result_df["temp"] = temp
+
+        # Writing output in clean format in same csv path of resutls
+        result_df.to_csv(result_path, index=False, header=True, sep=",")
+
+    info["ic"] = bjt_iv
 
     return info
 
 
-def run_sims(
-    char: str, df: pd.DataFrame, dirpath: str, num_workers=mp.cpu_count()
-) -> pd.DataFrame:
-    """Run simulations.
-    Args:
-        char (str): ib or ic to simulate.
-        df (pd.DataFrame): DataFrame containing device information.
-        dirpath (str): Path to device.
-        num_workers (int, optional): Number of workers. Defaults to mp.cpu_count().
-    Returns:
-        pd.DataFrame: DataFrame containing simulation results.
+def run_sims(df: pd.DataFrame, dirpath: str) -> pd.DataFrame:
+    """
+    Function to run all simulations for all data points and generating results in proper format.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data frame contains all points will be used in simulation
+    dirpath : str or Path
+        Output directory for the regresion results
+    Returns
+    -------
+    df: Pd.DataFrame
+        Dataframe contains all simulation results
     """
 
     results = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers_count) as executor:
         futures_list = []
         for j, row in df.iterrows():
             futures_list.append(
-                executor.submit(run_sim, char, dirpath, row["device"], row["temp"])
+                executor.submit(
+                    run_sim,
+                    dirpath,
+                    row["device_name"],
+                    row["corner"],
+                    row["temp"],
+                    row["sweep"],
+                )
             )
 
         for future in concurrent.futures.as_completed(futures_list):
@@ -378,259 +197,21 @@ def run_sims(
                 data = future.result()
                 results.append(data)
             except Exception as exc:
-                logging.info(f"Test case generated an exception: {exc}")
+                logging.info("Test case generated an exception: %s" % (exc))
 
-    for c in char:
-        sf = glob.glob(f"{dirpath}/*_netlists/{c}*.csv")  # stored simulated data files
+    # Get all simulation generated csv files
+    results_path = os.path.join(dirpath, "*_netlists")
+    run_results_csv = glob.glob(f"{results_path}/*.csv")
 
-        for i in range(len(sf)):
-            df = pd.read_csv(
-                sf[i],
-                delimiter=r"\s+",
-            )
-
-            if c == "ib" and dirpath == "bjt_beta_regr/npn":
-                i_vds = "-i(Vbp)"
-            elif c == "ic" and dirpath == "bjt_beta_regr/npn":
-                i_vds = "-i(Vcp)"
-            elif c == "ib" and dirpath == "bjt_beta_regr/pnp":
-                i_vds = "i(Vbp)"
-            else:
-                i_vds = "i(Vcp)"
-            sdf = df.pivot(index="v-sweep", columns="v(c)", values=i_vds)
-            if dirpath == "bjt_beta_regr/npn":
-                sdf.rename(
-                    columns={
-                        1.0: f"simulated_{c}_vcp_step1",
-                        2.0: f"simulated_{c}_vcp_step2",
-                        3.0: f"simulated_{c}_vcp_step3",
-                    },
-                    inplace=True,
-                )
-            else:
-                sdf.rename(
-                    columns={
-                        -1.0: f"simulated_{c}_vcp_step1",
-                        -2.0: f"simulated_{c}_vcp_step2",
-                        -3.0: f"simulated_{c}_vcp_step3",
-                    },
-                    inplace=True,
-                )
-                # reverse the rows
-                sdf = sdf.iloc[::-1]
-                sdf.index = -1 * sdf.index
-            sdf.to_csv(sf[i], index=True, header=True, sep=",")
-    df = pd.DataFrame(results)
-
-    df = df[["device", "temp", "beta_sim_ib_unscaled", "beta_sim_ic_unscaled"]]
-    df["beta_ib_sim"] = df["beta_sim_ib_unscaled"]
-    df["beta_ic_sim"] = df["beta_sim_ic_unscaled"]
+    # Merging all simulation results in one dataframe
+    df = pd.concat([pd.read_csv(f) for f in run_results_csv], ignore_index=True)
 
     return df
 
 
-def error_calculation(dev_path, char, list_dev, meas_df, sim_df):
-    """
-    error_calculation Calc error between measured and simulated data.
-
-    Parameters
-    ----------
-    dev_path : string
-        Path string to the location of the device data.
-    char : list
-        List of all characteristics used in this measurement.
-    list_dev: list
-        List of all bjt devices in the regression.
-    meas_df : pd.DataFrame
-        Dataframe that holds the information about all measured data.
-    sim_df : pd.DataFrame
-        Dataframe that holds the information about all simulated data.
-
-    Returns
-    -------
-    bool
-        If all regression passed, it returns true. If any of the rules failed it returns false.
-    """
-
-    merged_df = meas_df.merge(sim_df, on=["device", "temp"], how="left")
-
-    merged_all = []
-    for c in char:
-        # create a new dataframe for rms error
-        rms_df = pd.DataFrame(columns=["device", "temp", "corner", "rms_error"])
-
-        merged_dfs = []
-
-        for i in range(len(merged_df)):
-
-            measured_data = pd.read_csv(merged_df[f"{c}_measured"][i])
-            simulated_data = pd.read_csv(merged_df[f"beta_{c}_sim"][i])
-            measured_data["v-sweep"] = simulated_data["v-sweep"]
-            result_data = simulated_data.merge(measured_data, how="left")
-
-            ## We found that most of the curr are in the range of milli-Amps and most of the
-            ## error happens in the off mode of the BJT. And it causes large rmse for the values.
-            ## We will clip at 5nA for all currents to make sure that for small signal it works as expected.
-
-            # Clipping all the  values to lowest_curr
-            lowest_curr = 5.0e-9
-
-            result_data[f"simulated_{c}_vcp_step1"] = result_data[
-                f"simulated_{c}_vcp_step1"
-            ].clip(lower=lowest_curr)
-            result_data[f"simulated_{c}_vcp_step2"] = result_data[
-                f"simulated_{c}_vcp_step2"
-            ].clip(lower=lowest_curr)
-            result_data[f"simulated_{c}_vcp_step3"] = result_data[
-                f"simulated_{c}_vcp_step3"
-            ].clip(lower=lowest_curr)
-            result_data[f"measured_{c}_vcp_step1"] = result_data[
-                f"measured_{c}_vcp_step1"
-            ].clip(lower=lowest_curr)
-            result_data[f"measured_{c}_vcp_step2"] = result_data[
-                f"measured_{c}_vcp_step2"
-            ].clip(lower=lowest_curr)
-            result_data[f"measured_{c}_vcp_step3"] = result_data[
-                f"measured_{c}_vcp_step3"
-            ].clip(lower=lowest_curr)
-
-            result_data["corner"] = "typical"
-            result_data["device"] = (
-                merged_df[f"{c}_measured"][i]
-                .split("/")[-1]
-                .split("d_")[1]
-                .split("_t")[0]
-            )
-            result_data["temp"] = (
-                merged_df[f"{c}_measured"][i]
-                .split("/")[-1]
-                .split("_")[3]
-                .split("t")[1]
-                .split(".")[0]
-            )
-
-            result_data["step1_error"] = (
-                np.abs(
-                    result_data[f"simulated_{c}_vcp_step1"]
-                    - result_data[f"measured_{c}_vcp_step1"]
-                )
-                * 100.0
-                / result_data[f"measured_{c}_vcp_step1"]
-            )
-
-            result_data["step2_error"] = (
-                np.abs(
-                    result_data[f"simulated_{c}_vcp_step2"]
-                    - result_data[f"measured_{c}_vcp_step2"]
-                )
-                * 100.0
-                / result_data[f"measured_{c}_vcp_step2"]
-            )
-
-            result_data["step3_error"] = (
-                np.abs(
-                    result_data[f"simulated_{c}_vcp_step3"]
-                    - result_data[f"measured_{c}_vcp_step3"]
-                )
-                * 100.0
-                / result_data[f"measured_{c}_vcp_step3"]
-            )
-
-            result_data["error"] = (
-                np.abs(
-                    result_data["step1_error"]
-                    + result_data["step2_error"]
-                    + result_data["step3_error"]
-                )
-                / 3
-            )
-            # get rms error
-            result_data["rms_error"] = np.sqrt(np.mean(result_data["error"] ** 2))
-            # fill rms dataframe
-            rms_df.loc[i] = [
-                result_data["device"][0],
-                result_data["temp"][0],
-                result_data["corner"][0],
-                result_data["rms_error"][0],
-            ]
-
-            result_data = result_data[
-                [
-                    "device",
-                    "temp",
-                    "corner",
-                    "measured_base_volt",
-                    f"measured_{c}_vcp_step1",
-                    f"measured_{c}_vcp_step2",
-                    f"measured_{c}_vcp_step3",
-                    f"simulated_{c}_vcp_step1",
-                    f"simulated_{c}_vcp_step2",
-                    f"simulated_{c}_vcp_step3",
-                    "step1_error",
-                    "step2_error",
-                    "step3_error",
-                    "error",
-                ]
-            ]
-
-            merged_dfs.append(result_data)
-
-        merged_out = pd.concat(merged_dfs)
-
-        merged_out.to_csv(f"{dev_path}/error_analysis_{c}.csv", index=False)
-        rms_df.to_csv(f"{dev_path}/final_error_analysis_{c}.csv", index=False)
-        merged_all = rms_df
-        # calculating the error of each device and reporting it
-        for dev in list_dev:
-            min_error_total = float()
-            max_error_total = float()
-            error_total = float()
-            number_of_existance = int()
-
-            # number of rows in the final excel sheet
-            num_rows = merged_all["device"].count()
-
-            for n in range(num_rows):
-                if dev == merged_all["device"].iloc[n]:
-                    number_of_existance += 1
-                    error_total += merged_all["rms_error"].iloc[n]
-                    if merged_all["rms_error"].iloc[n] > max_error_total:
-                        max_error_total = merged_all["rms_error"].iloc[n]
-                    elif merged_all["rms_error"].iloc[n] < min_error_total:
-                        min_error_total = merged_all["rms_error"].iloc[n]
-            mean_error_total = error_total / number_of_existance
-
-            # Making sure that min, max, mean errors are not > 100%
-            if min_error_total > 100:
-                min_error_total = 100
-
-            if max_error_total > 100:
-                max_error_total = 100
-
-            if mean_error_total > 100:
-                mean_error_total = 100
-
-            # logging.infoing min, max, mean errors to the consol
-            logging.info(
-                f"# Device {dev} {c}  min error: {min_error_total:.2f}, max error: {max_error_total:.2f}, mean error {mean_error_total:.2f}"
-            )
-
-            # Verify regression results
-            if max_error_total < PASS_THRESH:
-                logging.info(f"# Device {dev} {c} has passed regression.")
-            else:
-                logging.error(
-                    f"# Device {dev} {c} has failed regression. Needs more analysis."
-                )
-                logging.error(
-                    "#Failed regression for BJT-beta analysis."
-                )
-                exit(1)
-
-
 def main():
     """
-    Main function applies all regression steps
+    Main function for Fets regression for GF180MCU models
     """
 
     ## Check ngspice version
@@ -641,91 +222,121 @@ def main():
     pd.set_option("display.max_rows", None)
     pd.set_option("max_colwidth", None)
     pd.set_option("display.width", 1000)
+    pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "bjt_beta_regr"
+    main_regr_dir = "run_bjt_beta_regr"
 
-    # bjt var.
-
-    devices = ["npn", "pnp"]
-
-    npn_devices = [
-        "npn_10p00x10p00",
-        "npn_05p00x05p00",
-        "npn_00p54x16p00",
-        "npn_00p54x08p00",
-        "npn_00p54x04p00",
-        "npn_00p54x02p00",
+    devices = [
+        # All npn devices [10p00x10p00, 05p00x05p00, 00p54x16p00, 00p54x08p00, 00p54x04p00, 00p54x02p00]
+        "npn",
+        # All pnp devices [10p00x00p42, 05p00x00p42, 10p00x10p00, 05p00x05p00]
+        "pnp",
     ]
 
-    pnp_devices = [
-        "pnp_10p00x00p42",
-        "pnp_05p00x00p42",
-        "pnp_10p00x10p00",
-        "pnp_05p00x05p00",
-    ]
+    # Simulate all data points for each device
+    for dev in devices:
+        dev_path = os.path.join(main_regr_dir, dev)
 
-    char = ["ib", "ic"]
-
-    for i, dev in enumerate(devices):
-        dev_path = f"{main_regr_dir}/{dev}"
-
+        # Making sure to remove old runs
         if os.path.exists(dev_path) and os.path.isdir(dev_path):
             shutil.rmtree(dev_path)
 
-        os.makedirs(f"{dev_path}", exist_ok=False)
+        os.makedirs(dev_path, exist_ok=False)
 
         logging.info("######" * 10)
         logging.info(f"# Checking Device {dev}")
 
-        beta_data_files = glob.glob(
-            f"../../180MCU_SPICE_DATA/BJT/bjt_{dev}_beta_f.nl_out.xlsx"
-        )
-        if len(beta_data_files) < 1:
-            logging.info(f"# Can't find diode file for device: {dev}")
-            beta_file = ""
-        else:
-            beta_file = os.path.abspath(beta_data_files[0])
-        logging.info(f"# bjt_beta data points file : {beta_file}")
+        # Loading measured data to be compared
+        meas_data_path = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/BJT_beta/bjt_{dev}_beta_meas.csv"
 
-        if beta_file == "":
-            logging.info(f"# No datapoints available for validation for device {dev}")
-            continue
-
-        if dev == "npn":
-            f = ext_npn_measured
-            list_dev = npn_devices
-
-        elif dev == "pnp":
-            f = ext_pnp_measured
-            list_dev = pnp_devices
-
-        else:
-            logging.error("Undefined device is selected, please recheck")
+        if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
+            logging.error("There is no measured data to be used in simulation, please recheck")
+            logging.error(f"{meas_data_path} file doesn't exist, please recheck")
             exit(1)
 
-        if beta_file != "":
-            meas_df = f(beta_file, list_dev, dev_path)
+        meas_df = pd.read_csv(meas_data_path)
+        meas_df.drop_duplicates(inplace=True)
+
+        logging.info(f"# Device BJT {dev}-beta number of measured datapoints : {len(meas_df)} ")
+
+        # Loading sweep file used in measurements to be used in simulation for regression
+        sweeps_file = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/BJT_beta/bjt_{dev}_beta_sweeps.csv"
+
+        if not os.path.exists(sweeps_file) or not os.path.isfile(sweeps_file):
+            logging.error("There is no measured data to be used in simulation, please recheck")
+            logging.error(f"{sweeps_file} file doesn't exist, please recheck")
+            exit(1)
+
+        df_sweeps = pd.read_csv(sweeps_file)
+        logging.info(f"Data points used in simulation for {dev}:\n {df_sweeps}")
+
+        # Simulating all data points
+        sim_df = run_sims(df_sweeps, dev_path)
+        sim_df.drop_duplicates(inplace=True)
+
+        logging.info(f"# Device {dev} number of simulated datapoints: {len(sim_df)} ")
+
+        # Merging meas and sim dataframe in one
+        full_df = meas_df.merge(sim_df,
+                                on=['device_name', 'corner', 'temp', 'vbp' , 'vcp'],
+                                how='left',
+                                suffixes=('_meas', '_sim'))
+
+        # Clipping current values to lowest curr
+        ## We found that most of the curr are in the range of milli-Amps and most of the
+        ## error happens in the off mode of the BJT. And it causes large rmse for the values.
+        ## We will clip at 10nA for all currents to make sure that for small signal it works as expected.
+        full_df['ic_meas'] = full_df['ic_meas'].clip(lower=CLIP_CURR)
+        full_df['ic_sim'] = full_df['ic_sim'].clip(lower=CLIP_CURR)
+        full_df['ib_meas'] = full_df['ib_meas'].clip(lower=CLIP_CURR)
+        full_df['ib_sim'] = full_df['ib_sim'].clip(lower=CLIP_CURR)
+
+        # calc beta for both measured and simulated data
+        ## Beta of BJT is defined as ic/ib
+        full_df['beta_meas'] = full_df['ic_meas'] / full_df['ib_meas']
+        full_df['beta_sim'] = full_df['ic_sim'] / full_df['ib_sim']
+
+        # Error calculation and report
+        ## Relative error calculation for BJT-iv
+        full_df["beta_err"] = np.abs((full_df["beta_meas"] - full_df["beta_sim"]) * 100.0 / (full_df["beta_meas"]))
+        full_df.to_csv(f"{dev_path}/{dev}_full_merged_data.csv", index=False)
+
+        # Calculate Q [quantile] to verify matching between measured and simulated data
+        ## Refer to https://builtin.com/data-science/boxplot for more details.
+        q_target = full_df["beta_err"].quantile(QUANTILE_RATIO)
+        logging.info(f"Quantile target for {dev} device is: {q_target} %")
+
+        bad_err_full_df_loc = full_df[full_df["beta_err"] > PASS_THRESH]
+        bad_err_full_df = bad_err_full_df_loc[(bad_err_full_df_loc["ic_sim"] >= MAX_VAL_DETECT) | (bad_err_full_df_loc["beta_err"] >= MAX_VAL_DETECT)]
+        bad_err_full_df.to_csv(f"{dev_path}/{dev}_ic_bad_err.csv", index=False)
+        logging.info(f"Bad relative errors between measured and simulated data at {dev}_ic_bad_err.csv")
+
+        # calculating the relative error of each device and reporting it
+        min_error_total = float(full_df["beta_err"].min())
+        max_error_total = float(full_df["beta_err"].max())
+        mean_error_total = float(full_df["beta_err"].mean())
+
+        # Cliping relative error at 100%
+        min_error_total = 100 if min_error_total > 100 else min_error_total
+        max_error_total = 100 if max_error_total > 100 else max_error_total
+        mean_error_total = 100 if mean_error_total > 100 else mean_error_total
+
+        # logging relative error
+        logging.info(
+            f"# Device {dev}-beta min error: {min_error_total:.2f} %, max error: {max_error_total:.2f} %, mean error {mean_error_total:.2f} %"
+        )
+
+        # Verify regression results
+        if q_target <= PASS_THRESH:
+            logging.info(f"# Device {dev}-beta for simulation has passed regression.")
         else:
-            meas_df = []
-
-        meas_len = len(pd.read_csv(glob.glob(f"{dev_path}/ic_measured/*.csv")[1]))
-
-        logging.info(
-            f"# Device {dev} number of measured_datapoints : {len(meas_df) * meas_len}"
-        )
-
-        sim_df = run_sims(char, meas_df, dev_path, 3)
-
-        sim_len = len(
-            pd.read_csv(glob.glob(f"{dev_path}/{dev}_netlists/{char[1]}*.csv")[1])
-        )
-
-        logging.info(
-            f"# Device {dev} number of simulated datapoints : {len(sim_df) * sim_len}"
-        )
-
-        # compare section
-        error_calculation(dev_path, char, list_dev, meas_df, sim_df)
+            logging.error(
+                f"# Device {dev}-beta simulation has failed regression. Needs more analysis."
+            )
+            logging.error(
+                f"#Failed regression for {dev}-beta analysis."
+            )
+            # exit(1)
 
 # ================================================================
 # -------------------------- MAIN --------------------------------
@@ -735,12 +346,13 @@ def main():
 if __name__ == "__main__":
 
     # Args
-    arguments = docopt(__doc__, version="comparator: 0.1")
+    arguments = docopt(__doc__, version="MODELS-REGRESSION: 0.2")
     workers_count = (
         os.cpu_count() * 2
         if arguments["--num_cores"] is None
         else int(arguments["--num_cores"])
     )
+
     logging.basicConfig(
         level=logging.DEBUG,
         handlers=[

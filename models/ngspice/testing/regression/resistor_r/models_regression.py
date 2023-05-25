@@ -241,7 +241,7 @@ def main():
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "res_r_regr"
+    main_regr_dir = "run_res_r_regr"
 
     devices = [
         "nplus_u",

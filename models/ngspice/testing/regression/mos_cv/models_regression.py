@@ -277,7 +277,7 @@ def main():
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "mos_cv_regr"
+    main_regr_dir = "run_mos_cv_regr"
 
     devices = [
         "fet_03v3",      # For both types [nfet, pfet]
@@ -322,6 +322,7 @@ def main():
             # Round all voltages to elimniate using long digits that could cause mismatch with meas df
             ## Simulator uses small values instead of 0 [10e-16 for example]
             sim_df = sim_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
+            sim_df = sim_df.replace(-0, 0)
             sim_df.drop_duplicates(inplace=True)
 
             logging.info(f"# Device {dev} number of simulated datapoints for {cap} : {len(sim_df)} ")
@@ -336,6 +337,7 @@ def main():
 
             meas_df = pd.read_csv(meas_data_path)
             meas_df = meas_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
+            meas_df = meas_df.replace(-0, 0)
             meas_df.drop_duplicates(inplace=True)
 
             logging.info(f"# Device {dev} number of measured datapoints for {cap} : {len(meas_df)} ")

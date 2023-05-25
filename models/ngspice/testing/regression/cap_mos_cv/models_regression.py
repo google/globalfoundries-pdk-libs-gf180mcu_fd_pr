@@ -263,7 +263,7 @@ def main():
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "cap_mos_cv_regr"
+    main_regr_dir = "run_cap_mos_cv_regr"
 
     devices = [
         "cap_mos_03v3",  # All types [cap_nmos, cap_pmos, cap_nmos_b, cap_pmos_b]

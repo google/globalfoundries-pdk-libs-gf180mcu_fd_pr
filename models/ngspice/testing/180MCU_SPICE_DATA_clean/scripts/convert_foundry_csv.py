@@ -32,6 +32,7 @@ from cap_cv_extraction import cap_meas_extraction
 from diode_iv_extraction import diode_iv_meas_extraction
 from res_r_extraction import ext_temp_corners, ext_const_temp_corners
 from bjt_iv_extraction import bjt_iv_meas_extraction
+from bjt_beta_extraction import bjt_beta_meas_extraction
 
 
 def main(args):
@@ -103,6 +104,10 @@ def main(args):
         if 'icvc' in excel_path:
             # Extracting data for RES-R with temp variations measurement
             bjt_iv_meas_extraction(df, dev_type)
+
+        elif 'beta' in excel_path:
+            # Extracting data for RES-R with temp variations measurement
+            bjt_beta_meas_extraction(df, dev_type)
 
     else:
         logging.error("Suported devices are: Fets, MOSCAP, MIMCAP, RES, BJT")
