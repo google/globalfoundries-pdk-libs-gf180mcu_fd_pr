@@ -327,7 +327,6 @@ def main():
             sim_df = sim_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
             sim_df = sim_df.replace(-0, 0)
             sim_df.drop_duplicates(inplace=True)
-            sim_df.to_csv("sim_test.csv")
 
             logging.info(f"# Device {dev} number of simulated datapoints for {cap} : {len(sim_df)} ")
 
@@ -343,7 +342,6 @@ def main():
             meas_df = meas_df.round({'vbs': 2, 'vgs': 2, 'vds': 2})
             meas_df = meas_df.replace(-0, 0)
             meas_df.drop_duplicates(inplace=True)
-            meas_df.to_csv("meas_test.csv")
 
             logging.info(f"# Device {dev} number of measured datapoints for {cap} : {len(meas_df)} ")
 
