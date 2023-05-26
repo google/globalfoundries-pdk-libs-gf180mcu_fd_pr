@@ -1,0 +1,17 @@
+device_name,corner,temp,sweep
+pnp_10p00x00p42,bjt_typical,25,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_05p00x00p42,bjt_typical,25,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_10p00x10p00,bjt_typical,25,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_05p00x05p00,bjt_typical,25,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_10p00x00p42,bjt_typical,-40,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_05p00x00p42,bjt_typical,-40,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_10p00x10p00,bjt_typical,-40,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_05p00x05p00,bjt_typical,-40,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_10p00x00p42,bjt_typical,125,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_05p00x00p42,bjt_typical,125,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_10p00x10p00,bjt_typical,125,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_05p00x05p00,bjt_typical,125,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_10p00x00p42,bjt_typical,175,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_05p00x00p42,bjt_typical,175,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_10p00x10p00,bjt_typical,175,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0
+pnp_05p00x05p00,bjt_typical,175,Vbp -1.2 -0.2 0.01 Vcp -3.0 -1.0 1.0

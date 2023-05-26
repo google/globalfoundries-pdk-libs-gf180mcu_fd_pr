@@ -234,17 +234,17 @@ def main():
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "diode_iv_regr"
+    main_regr_dir = "run_diode_iv_regr"
 
     devices = [
-        # "diode_dw2ps",
-        # "diode_pw2dw",
+        "diode_dw2ps",
+        "diode_pw2dw",
         "diode_nd2ps_03v3",
-        # "diode_nd2ps_06v0",
-        # "diode_nw2ps_03v3",
-        # "diode_nw2ps_06v0",
-        # "diode_pd2nw_03v3",
-        # "diode_pd2nw_06v0",
+        "diode_nd2ps_06v0",
+        "diode_nw2ps_03v3",
+        "diode_nw2ps_06v0",
+        "diode_pd2nw_03v3",
+        "diode_pd2nw_06v0",
     ]
 
     # Simulate all data points for each device
@@ -341,7 +341,7 @@ def main():
             logging.error(
                 f"#Failed regression for {dev}-IV analysis."
             )
-            # exit(1)
+            # exit(1) #TODO: Investigate for high errors for diode-iv
 
 # # ================================================================
 # -------------------------- MAIN --------------------------------

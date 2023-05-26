@@ -271,7 +271,7 @@ def main(meas_out_result):
     pd.set_option("display.width", 1000)
     pd.options.mode.chained_assignment = None
 
-    main_regr_dir = "mos_id_rds_regr"
+    main_regr_dir = "run_mos_id_rds_regr"
 
     devices = [
         "nfet_03v3",

@@ -1,7 +1,7 @@
-***************************
-** CV netlist generation **
-***************************
-* Copyright 2022 Efabless Corporation
+*******************
+** BJT-beta netlist
+*******************
+* Copyright 2023 Efabless Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -14,31 +14,37 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-Vb b 0 dc -3.0
+
+Vcp c 0 dc=3
+Vbp b 0 dc=1.2
 
 .temp {{temp}}
-.options tnom={{temp}}
-      
 
-xq1 b 0 0 {{device}}
+xq {{terminals}} {{device}}
 
-
-.DC Vb 0 -3.0 -0.1
-
+*****************
+** Analysis
+*****************
 .control
+set filetype=ascii
+set wr_singlescale
+set wr_vecnames
 
-save all @q.xq1.q0[cmu]
-run 
-print  @q.xq1.q0[cmu]
+dc {{sweep}}
 
-wrdata bjt_cj_regr/pnp/cj_simulated/simulated_{{device}}_t{{temp}}_{{cap}}_{{corner}}.csv @q.xq1.q0[cmu]*1.0e15
+let vcp = v(c)
+let vbp = v(b)
+let ic = abs(-i(Vcp))
+let ib = abs(-i(Vbp))
 
+wrdata {{result_path}} vcp vbp  ic ib
 .endc
 
 ** library calling
 
 .include "../../../design.ngspice"
-.lib "../../../sm141064.ngspice" bjt_{{corner}}
+.lib "../../../sm141064.ngspice" {{corner}}
 
+**** end architecture code
 
 .end

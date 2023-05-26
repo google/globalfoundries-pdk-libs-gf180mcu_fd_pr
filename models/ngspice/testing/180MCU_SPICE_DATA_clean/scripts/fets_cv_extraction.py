@@ -79,9 +79,11 @@ def parse_cgd_vds_vgs(sub_df, dev_type, dev_name):
 
     # Adding columns for all voltage sweeps and output
     df_cgd_vds_vgs["vgs"] = df_cgd_vds_vgs["vgs"].apply(
-        lambda x: ".".join(x.split("=")[1].split(".")[:2])
+        lambda x: ".".join(x.split("=")[1].split(".")[:-1])
     )
     df_cgd_vds_vgs["vgs"] = df_cgd_vds_vgs["vgs"].astype(float)
+    df_cgd_vds_vgs["vgs"] = df_cgd_vds_vgs["vgs"].apply(lambda x: x * -1) if "pfet" in dev_type else df_cgd_vds_vgs["vgs"]
+
     df_cgd_vds_vgs["vbs"] = vbs_df_cgd_vds_vgs
     df_cgd_vds_vgs["const_var"] = "vbs"
     df_cgd_vds_vgs["const_var_val"] = vbs_df_cgd_vds_vgs
@@ -154,6 +156,8 @@ def parse_cgs_vds_vgs(sub_df, dev_type, dev_name):
     # Adding columns for all voltage sweeps and output
     df_cgs_vds_vgs["vgs"] = df_cgs_vds_vgs["vgs"].apply(lambda x: x.split("=")[1])
     df_cgs_vds_vgs["vgs"] = df_cgs_vds_vgs["vgs"].astype(float)
+    df_cgs_vds_vgs["vgs"] = df_cgs_vds_vgs["vgs"].apply(lambda x: x * -1) if "pfet" in dev_type else df_cgs_vds_vgs["vgs"]
+
     df_cgs_vds_vgs["vbs"] = vbs_df_cgs_vds_vgs
     df_cgs_vds_vgs["const_var"] = "vbs"
     df_cgs_vds_vgs["const_var_val"] = vbs_df_cgs_vds_vgs
@@ -226,6 +230,8 @@ def parse_cgg_vgs_vds(sub_df, dev_type, dev_name):
     # Adding columns for all voltage sweeps and output
     df_cgg_vgs_vds["vds"] = df_cgg_vgs_vds["vds"].apply(lambda x: x.split("=")[1])
     df_cgg_vgs_vds["vds"] = df_cgg_vgs_vds["vds"].astype(float)
+    df_cgg_vgs_vds["vds"] = df_cgg_vgs_vds["vds"].apply(lambda x: x * -1) if "pfet" in dev_type else df_cgg_vgs_vds["vds"]
+
     df_cgg_vgs_vds["vbs"] = vbs_df_cgg_vgs_vds
     df_cgg_vgs_vds["const_var"] = "vds"
     df_cgg_vgs_vds["const_var_val"] = vbs_df_cgg_vgs_vds
@@ -295,6 +301,8 @@ def parse_cgc_vgs_vbs(sub_df, dev_type, dev_name):
     # Adding columns for all voltage sweeps and output
     df_cgc_vgs_vbs["vbs"] = df_cgc_vgs_vbs["vbs"].apply(lambda x: x.split("=")[1])
     df_cgc_vgs_vbs["vbs"] = df_cgc_vgs_vbs["vbs"].astype(float)
+    df_cgc_vgs_vbs["vgs"] = df_cgc_vgs_vbs["vgs"].apply(lambda x: x * -1) if "pfet" in dev_type else df_cgc_vgs_vbs["vgs"]
+
     df_cgc_vgs_vbs["vds"] = vds_df_cgc_vgs_vbs
     df_cgc_vgs_vbs["const_var"] = "vds"
     df_cgc_vgs_vbs["const_var_val"] = vds_df_cgc_vgs_vbs

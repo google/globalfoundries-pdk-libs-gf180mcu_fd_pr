@@ -3,7 +3,7 @@ nfet_03v3,200.0,0.28,20,typical,25,vbs,0.0,vds 0.0 3.3 0.1 vgs 0.0 3.3 1.1
 nfet_03v3,100.0,10.0,1,typical,25,vbs,0.0,vds 0.0 3.3 0.1 vgs 0.0 3.3 1.1
 nfet_03v3,0.22,0.28,1,typical,25,vbs,0.0,vds 0.0 3.3 0.1 vgs 0.0 3.3 1.1
 nfet_03v3,0.22,10.0,1,typical,25,vbs,0.0,vds 0.0 3.3 0.1 vgs 0.0 3.3 1.1
-pfet_03v3,200.0,0.28,20,typical,25,vbs,0.0,vds -3.3 -0.0 0.1 vgs 0.0 3.3 1.1
-pfet_03v3,100.0,10.0,1,typical,25,vbs,0.0,vds -3.3 -0.0 0.1 vgs 0.0 3.3 1.1
-pfet_03v3,0.22,0.28,1,typical,25,vbs,0.0,vds -3.3 -0.0 0.1 vgs 0.0 3.3 1.1
-pfet_03v3,0.22,10.0,1,typical,25,vbs,0.0,vds -3.3 -0.0 0.1 vgs 0.0 3.3 1.1
+pfet_03v3,200.0,0.28,20,typical,25,vbs,0.0,vds -3.3 -0.0 0.1 vgs -3.3 -0.0 1.1
+pfet_03v3,100.0,10.0,1,typical,25,vbs,0.0,vds -3.3 -0.0 0.1 vgs -3.3 -0.0 1.1
+pfet_03v3,0.22,0.28,1,typical,25,vbs,0.0,vds -3.3 -0.0 0.1 vgs -3.3 -0.0 1.1
+pfet_03v3,0.22,10.0,1,typical,25,vbs,0.0,vds -3.3 -0.0 0.1 vgs -3.3 -0.0 1.1

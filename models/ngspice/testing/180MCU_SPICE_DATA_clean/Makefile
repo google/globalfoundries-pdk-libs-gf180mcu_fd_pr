@@ -149,7 +149,16 @@ models_ext-BJT-iv:
 	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/BJT/bjt_npn_icvc_f.nl_out.xlsx --device_type=bjt_npn |& tee -a run_log.log
 	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/BJT/bjt_pnp_icvc_f.nl_out.xlsx --device_type=bjt_pnp |& tee -a run_log.log
 	@rm -rf gf180mcu_data/BJT_iv/ && mkdir -p gf180mcu_data/BJT_iv/
-	@mv -f *bjt*.csv gf180mcu_data/BJT_iv/
+	@mv -f *bjt*iv*.csv gf180mcu_data/BJT_iv/
+
+.ONESHELL:
+models_ext-BJT-beta:
+	@cd $(Testing_DIR)
+	@echo "========== Runing models_ext-BJT-beta ==========" |& tee -a run_log.log 
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/BJT/bjt_npn_beta_f.nl_out.xlsx --device_type=bjt_npn |& tee -a run_log.log
+	@python3 scripts/convert_foundry_csv.py --excel_path=../180MCU_SPICE_DATA/BJT/bjt_pnp_beta_f.nl_out.xlsx --device_type=bjt_pnp |& tee -a run_log.log
+	@rm -rf gf180mcu_data/BJT_beta/ && mkdir -p gf180mcu_data/BJT_beta/
+	@mv -f *bjt*beta*.csv gf180mcu_data/BJT_beta/
 
 #==========================
 # --------- HELP ----------
@@ -165,5 +174,6 @@ help:
 	@echo "... models_ext-DIODE-iv  (To extract measured data for DIODE-iv devices)"
 	@echo "... models_ext-RES       (To extract measured data for RES devices)"
 	@echo "... models_ext-BJT-iv    (To extract measured data for BJT-iv devices)"
+	@echo "... models_ext-BJT-beta  (To extract measured data for BJT-beta devices)"
 
 .PHONY : help
