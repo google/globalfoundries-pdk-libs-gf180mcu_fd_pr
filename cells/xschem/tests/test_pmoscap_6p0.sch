@@ -76,11 +76,11 @@ lab=M}
 C {devices/code_shown.sym} 30 -200 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
-.include $::180MCU_MODELS/design.spice
-.lib $::180MCU_MODELS/sm141064.spice typical
-.lib $::180MCU_MODELS/sm141064.spice res_typical
-.lib $::180MCU_MODELS/sm141064.spice moscap_typical
-* .lib $::180MCU_MODELS/sm141064.spice res_statistical
+.include $::180MCU_MODELS/design.ngspice
+.lib $::180MCU_MODELS/sm141064.ngspice typical
+.lib $::180MCU_MODELS/sm141064.ngspice res_typical
+.lib $::180MCU_MODELS/sm141064.ngspice moscap_typical
+* .lib $::180MCU_MODELS/sm141064.ngspice res_statistical
 "}
 C {devices/code_shown.sym} 390 -450 0 0 {name=NGSPICE only_toplevel=true
 value="
@@ -99,7 +99,7 @@ tclcommand="
 xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
 "
 }
-C {gf180mcu_fd_pr/pmoscap_6p0.sym} 230 -390 0 0 {name=C1
+C {symbols/pmoscap_6p0.sym} 230 -390 0 0 {name=C1
 W=10e-6
 L=10e-6
 model=pmoscap_6p0
