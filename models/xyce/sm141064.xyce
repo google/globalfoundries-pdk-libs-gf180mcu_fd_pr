@@ -1,4 +1,4 @@
-* Copyright 2022 GlobalFoundries PDK Authors
+* Copyright 2023 GlobalFoundries PDK Authors
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -10716,6 +10716,7 @@ M0 d g s b pfet_06v0
 .LIB sm141064.xyce bjt_mc
 
 .ENDL bjt_statistical
+
 .LIB bjt_mc
 
 .SUBCKT pnp_10p00x00p42 c b e PARAMS: PAR=1 DTEMP=0
@@ -10726,6 +10727,7 @@ M0 d g s b pfet_06v0
 Q0 c b e pnp_10p00x00p42
 
 .MODEL pnp_10p00x00p42 PNP
++ TNOM = 25
 + AF=1 BF='1.69*bfa*(1 + mc_xbf_vpnp*sw_stat_global)*(1 + bf_mis_pnp_10p00x00p42)'
 + BR=0.0036 CJC='2.04e-014*cjca*(1 + mc_xcjc_vpnp*sw_stat_global)'
 + CJE='6.88e-015*cjea*(1 + mc_xcje_vpnp*sw_stat_global)' CJS=0 EG=1.17 FC=0.5
@@ -10737,6 +10739,7 @@ Q0 c b e pnp_10p00x00p42
 + RE='1*rea*(1 + mc_xre_vpnp*sw_stat_global)' TF=1e-010 TR=0 VAF=80 VAR=23
 + VJC=0.43905 VJE=0.43905 VJS=0.75 VTF=10 XCJC=1 XTB=0.0001 XTF=1 XTI=3
 + LEVEL=1
++ CBCPAR=0 CBEPAR=0
 .ENDS pnp_10p00x00p42
 
 .SUBCKT pnp_05p00x00p42 c b e PARAMS: PAR=1 DTEMP=0
@@ -10746,6 +10749,7 @@ Q0 c b e pnp_10p00x00p42
 Q0 c b e pnp_05p00x00p42
 
 .MODEL pnp_05p00x00p42 PNP
++ TNOM = 25
 + AF=1
 + BF='1.681*bfa*(1 + mc_xbf_vpnp*sw_stat_global)*(1 + mis_bf_pnp_05p00x00p42*sw_stat_mismatch / sqrt(par))'
 + BR=1.9872E-3 CJC='1.17E-14*cjca*(1 + mc_xcjc_vpnp*sw_stat_global)'
@@ -10758,6 +10762,7 @@ Q0 c b e pnp_05p00x00p42
 + RE='1*rea*(1 + mc_xre_vpnp*sw_stat_global)' TF=1E-10 TR=0 VAF=180 VAR=23
 + VJC=0.43905 VJE=0.43905 VJS=0.75 VTF=10 XCJC=1 XTB=1E-4 XTF=1 XTI=3
 + LEVEL=1
++ CBCPAR=0 CBEPAR=0
 .ENDS pnp_05p00x00p42
 
 .SUBCKT pnp_10p00x10p00 c b e PARAMS: PAR=1 DTEMP=0
@@ -10767,6 +10772,7 @@ Q0 c b e pnp_05p00x00p42
 Q0 c b e pnp_10p00x10p00
 
 .MODEL pnp_10p00x10p00 PNP
++ TNOM = 25
 + AF=1
 + BF='1.7*bfa*(1 + mc_xbf_vpnp*sw_stat_global)*(1 + mis_bf_pnp_10p00x10p00*sw_stat_mismatch / sqrt(par))'
 + BR=0.017038 CJC='4.69E-14*cjca*(1 + mc_xcjc_vpnp*sw_stat_global)'
@@ -10779,6 +10785,7 @@ Q0 c b e pnp_10p00x10p00
 + RE='1*rea*(1 + mc_xre_vpnp*sw_stat_global)' TF=1E-10 TR=0 VAF=206.4 VAR=23
 + VJC=0.43905 VJE=0.43905 VJS=0.75 VTF=10 XCJC=1 XTB=1E-4 XTF=1 XTI=3
 + LEVEL=1
++ CBCPAR=0 CBEPAR=0
 .ENDS pnp_10p00x10p00
 
 .SUBCKT pnp_05p00x05p00 c b e PARAMS: PAR=1 DTEMP=0
@@ -10788,6 +10795,7 @@ Q0 c b e pnp_10p00x10p00
 Q0 c b e pnp_05p00x05p00
 
 .MODEL pnp_05p00x05p00 PNP
++ TNOM = 25
 + AF=1
 + BF='1.65*bfa*(1 + mc_xbf_vpnp*sw_stat_global)*(1 +mis_bf_pnp_05p00x05p00*sw_stat_mismatch / sqrt(par))'
 + BR=8.372E-3 CJC='2.15E-14*cjca*(1 + mc_xcjc_vpnp*sw_stat_global)'
@@ -10800,6 +10808,7 @@ Q0 c b e pnp_05p00x05p00
 + RE='1*rea*(1 + mc_xre_vpnp*sw_stat_global)' TF=1E-10 TR=0 VAF=208.8 VAR=27.37
 + VJC=0.43905 VJE=0.43905 VJS=0.75 VTF=10 XCJC=1 XTB=1E-4 XTF=1 XTI=3
 + LEVEL=1
++ CBCPAR=0 CBEPAR=0
 .ENDS pnp_05p00x05p00
 
 .SUBCKT npn_10p00x10p00 c b e s PARAMS: PAR=1 DTEMP=0
@@ -10807,6 +10816,7 @@ Q0 c b e pnp_05p00x05p00
 Q0 c b e s npn_10p00x10p00
 
 .MODEL npn_10p00x10p00 NPN
++ TNOM = 25
 + AF=1 BF='10.83*bf_cor_npn*(1 + mc_xbf_vnpn*sw_stat_global)' BR=0.258
 + CJC='7.053E-14*cjc_cor_npn*(1 + mc_xcjc_vnpn*sw_stat_global)'
 + CJE='1.031E-13*cje_cor_npn*(1 + mc_xcje_vnpn*sw_stat_global)' CJS=1.135E-13
@@ -10819,21 +10829,6 @@ Q0 c b e s npn_10p00x10p00
 + RE='6.9007*re_cor_npn*(1 + mc_xre_vnpn*sw_stat_global)' VAF=95.696 VAR=29.681
 + VJC=0.63391 VJE=0.70172 VJS=0.35175 XCJC=1 XTB=0 XTI=3
 + LEVEL=1
-**************************************************************
-*               GENERAL PARAMETERS
-**************************************************************
-**************************************************************
-*               CAPACITANCE PARAMETERS
-**************************************************************
-**************************************************************
-*               Noise PARAMETERS
-**************************************************************
-**************************************************************
-*               DC PARAMETERS
-**************************************************************
-**************************************************************
-*               TEMPERATURE PARAMETERS
-**************************************************************
 .ENDS npn_10p00x10p00
 
 .SUBCKT npn_05p00x05p00 c b e s PARAMS: PAR=1 DTEMP=0
@@ -10841,6 +10836,7 @@ Q0 c b e s npn_10p00x10p00
 Q0 c b e s npn_05p00x05p00
 
 .MODEL npn_05p00x05p00 NPN
++ TNOM = 25
 + AF=1 BF='10.05*bf_cor_npn*(1 + mc_xbf_vnpn*sw_stat_global)' BR=0.16573
 + CJC='2.972E-14*cjc_cor_npn*(1 + mc_xcjc_vnpn*sw_stat_global)'
 + CJE='2.733E-14*cje_cor_npn*(1 + mc_xcje_vnpn*sw_stat_global)' CJS=6.618E-14
@@ -10852,21 +10848,6 @@ Q0 c b e s npn_05p00x05p00
 + RE='12.809*re_cor_npn*(1 + mc_xre_vnpn*sw_stat_global)' VAF=77.796 VAR=28.001
 + VJC=0.63391 VJE=0.70172 VJS=0.35175 XCJC=1 XTB=0 XTI=3
 + LEVEL=1
-**************************************************************
-*               GENERAL PARAMETERS
-**************************************************************
-**************************************************************
-*               CAPACITANCE PARAMETERS
-**************************************************************
-**************************************************************
-*               Noise PARAMETERS
-**************************************************************
-**************************************************************
-*               DC PARAMETERS
-**************************************************************
-**************************************************************
-*               TEMPERATURE PARAMETERS
-**************************************************************
 .ENDS npn_05p00x05p00
 
 .SUBCKT npn_00p54x16p00 c b e s PARAMS: PAR=1 DTEMP=0
@@ -10874,6 +10855,7 @@ Q0 c b e s npn_05p00x05p00
 Q0 c b e s npn_00p54x16p00
 
 .MODEL npn_00p54x16p00 NPN
++ TNOM = 25
 + AF=1 BF='8.4987*bf_cor_npn*(1 + mc_xbf_vnpn*sw_stat_global)' BR=0.079582
 + CJC='3.540E-14*cjc_cor_npn*(1 + mc_xcjc_vnpn*sw_stat_global)'
 + CJE='1.354E-14*cje_cor_npn*(1 + mc_xcje_vnpn*sw_stat_global)' CJS=8.211E-14
@@ -10885,21 +10867,6 @@ Q0 c b e s npn_00p54x16p00
 + RE='14.121*re_cor_npn*(1 + mc_xre_vnpn*sw_stat_global)' VAF=37.389 VAR=23.969
 + VJC=0.63391 VJE=0.70172 VJS=0.35175 XCJC=1 XTB=0 XTI=3
 + LEVEL=1
-**************************************************************
-*               GENERAL PARAMETERS
-**************************************************************
-**************************************************************
-*               CAPACITANCE PARAMETERS
-**************************************************************
-**************************************************************
-*               Noise PARAMETERS
-**************************************************************
-**************************************************************
-*               DC PARAMETERS
-**************************************************************
-**************************************************************
-*               TEMPERATURE PARAMETERS
-**************************************************************
 .ENDS npn_00p54x16p00
 
 .SUBCKT npn_00p54x08p00 c b e s PARAMS: PAR=1 DTEMP=0
@@ -10907,6 +10874,7 @@ Q0 c b e s npn_00p54x16p00
 Q0 c b e s npn_00p54x08p00
 
 .MODEL npn_00p54x08p00 NPN
++ TNOM = 25
 + AF=1 BF='8.4*bf_cor_npn*(1 + mc_xbf_vnpn*sw_stat_global)' BR=0.069974
 + CJC='2.064E-14*cjc_cor_npn*(1 + mc_xcjc_vnpn*sw_stat_global)'
 + CJE='6.857E-15*cje_cor_npn*(1 + mc_xcje_vnpn*sw_stat_global)' CJS=5.703E-14
@@ -10919,21 +10887,6 @@ Q0 c b e s npn_00p54x08p00
 + RE='14.573*re_cor_npn*(1 + mc_xre_vnpn*sw_stat_global)' VAF=37.389 VAR=25.201
 + VJC=0.63391 VJE=0.70172 VJS=0.35175 XCJC=1 XTB=0 XTI=3
 + LEVEL=1
-**************************************************************
-*               GENERAL PARAMETERS
-**************************************************************
-**************************************************************
-*               CAPACITANCE PARAMETERS
-**************************************************************
-**************************************************************
-*               Noise PARAMETERS
-**************************************************************
-**************************************************************
-*               DC PARAMETERS
-**************************************************************
-**************************************************************
-*               TEMPERATURE PARAMETERS
-**************************************************************
 .ENDS npn_00p54x08p00
 
 .SUBCKT npn_00p54x04p00 c b e s PARAMS: PAR=1 DTEMP=0
@@ -10941,6 +10894,7 @@ Q0 c b e s npn_00p54x08p00
 Q0 c b e s npn_00p54x04p00
 
 .MODEL npn_00p54x04p00 NPN
++ TNOM = 25
 + AF=1 BF='8.39*bf_cor_npn*(1 + mc_xbf_vnpn*sw_stat_global)' BR=0.057751
 + CJC='1.326E-14*cjc_cor_npn*(1 + mc_xcjc_vnpn*sw_stat_global)'
 + CJE='3.513E-15*cje_cor_npn*(1 + mc_xcje_vnpn*sw_stat_global)' CJS=4.449E-14
@@ -10953,27 +10907,13 @@ Q0 c b e s npn_00p54x04p00
 + RE='17.058*re_cor_npn*(1 + mc_xre_vnpn*sw_stat_global)' VAF=37.389 VAR=25.201
 + VJC=0.63391 VJE=0.70172 VJS=0.35175 XCJC=1 XTB=0 XTI=3
 + LEVEL=1
-**************************************************************
-*               GENERAL PARAMETERS
-**************************************************************
-**************************************************************
-*               CAPACITANCE PARAMETERS
-**************************************************************
-**************************************************************
-*               Noise PARAMETERS
-**************************************************************
-**************************************************************
-*               DC PARAMETERS
-**************************************************************
-**************************************************************
-*               TEMPERATURE PARAMETERS
-**************************************************************
 .ENDS npn_00p54x04p00
 
 .SUBCKT npn_00p54x02p00 c b e s PARAMS: PAR=1 DTEMP=0
 Q0 c b e s npn_00p54x02p00
 
 .MODEL npn_00p54x02p00 NPN
++ TNOM = 25
 + AF=1 BF='8.25*bf_cor_npn*(1 + mc_xbf_vnpn*sw_stat_global)' BR=0.043698
 + CJC='9.569E-15*cjc_cor_npn*(1 + mc_xcjc_vnpn*sw_stat_global)'
 + CJE='1.841E-15*cje_cor_npn*(1 + mc_xcje_vnpn*sw_stat_global)' CJS=3.822E-14
@@ -10985,21 +10925,6 @@ Q0 c b e s npn_00p54x02p00
 + RE='25.055*re_cor_npn*(1 + mc_xre_vnpn*sw_stat_global)' VAF=37.389 VAR=25.201
 + VJC=0.63391 VJE=0.70172 VJS=0.35175 XCJC=1 XTB=0 XTI=3
 + LEVEL=1
-**************************************************************
-*               GENERAL PARAMETERS
-**************************************************************
-**************************************************************
-*               CAPACITANCE PARAMETERS
-**************************************************************
-**************************************************************
-*               Noise PARAMETERS
-**************************************************************
-**************************************************************
-*               DC PARAMETERS
-**************************************************************
-**************************************************************
-*               TEMPERATURE PARAMETERS
-**************************************************************
 .ENDS npn_00p54x02p00
 
 .ENDL bjt_mc
