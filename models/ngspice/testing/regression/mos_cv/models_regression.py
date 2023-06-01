@@ -31,7 +31,7 @@ import multiprocessing as mp
 import glob
 import os
 import logging
-
+import re
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0
@@ -51,7 +51,7 @@ def check_ngspice_version():
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
     else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        version = int(re.search(r"ngspice-([0-9]+)", ngspice_v_).group(1))
         logging.info(f"Your Klayout version is: ngspice {version}")
 
         if version <= 37:
