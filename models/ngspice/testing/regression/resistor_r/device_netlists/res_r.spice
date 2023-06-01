@@ -1,7 +1,7 @@
 **************************
-** res
+** RES-NETLISTS
 **************************
-* Copyright 2022 Efabless Corporation
+* Copyright 2023 Efabless Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ print res
 
 ** library calling
 
-.include "../../../design.ngspice"
-.lib "../../../sm141064.ngspice" res_{{corner}}
+.include {{model_design_path}}
+.lib {{model_card_path}} res_{{corner}}
 
 .GLOBAL GND
 .end

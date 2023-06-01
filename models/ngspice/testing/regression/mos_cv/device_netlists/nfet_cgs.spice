@@ -1,7 +1,7 @@
 ***************************
 ** nfet_03v3_t_cap
 ***************************
-* Copyright 2022 Efabless Corporation
+* Copyright 2023 Efabless Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@
 
 ** library calling
 
-.include "../../../design.ngspice"
-.lib "../../../sm141064.ngspice" typical
-
+.include {{model_design_path}}
+.lib {{model_card_path}} {{corner}}
 
 ** Circuit Description **
 * power supply

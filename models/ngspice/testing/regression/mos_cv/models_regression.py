@@ -107,6 +107,12 @@ def run_sim(dirpath: str, device: str, cap: str,
         Dataframe contains results for the current run
     """
 
+    # Get model card path
+    regression_dir = os.path.dirname(os.path.abspath(__file__))
+    models_dir = os.path.dirname(os.path.dirname(os.path.dirname(regression_dir)))
+    model_card_path = os.path.join(models_dir, "sm141064.ngspice")
+    model_design_path = os.path.join(models_dir, "design.ngspice")
+
     # Select desired nelist templete to be used in the current run
     if 'nfet' in device:
         netlist_tmp = os.path.join("device_netlists", f"nfet_{cap}.spice")
@@ -156,6 +162,7 @@ def run_sim(dirpath: str, device: str, cap: str,
                     length=length,
                     nf=nf,
                     temp=temp,
+                    corner=corner,
                     cap=cap,
                     main_sweep=main_sweep,
                     second_sweep_volt=second_sweep_volt,
@@ -167,6 +174,8 @@ def run_sim(dirpath: str, device: str, cap: str,
                     const_var=const_var,
                     const_var_val=const_var_val,
                     result_path=result_path,
+                    model_card_path=model_card_path,
+                    model_design_path=model_design_path,
                 )
             )
 
@@ -309,7 +318,7 @@ def main():
             logging.info(f"# Checking Device {dev}")
 
             # Loading sweep file used in measurements to be used in simulation for regression
-            sweeps_file = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_cv/{dev}_sweeps_{cap}.csv"
+            sweeps_file = f"../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_cv/{dev}_sweeps_{cap}.csv"
 
             if not os.path.exists(sweeps_file) or not os.path.isfile(sweeps_file):
                 logging.error("There is no measured data to be used in simulation, please recheck")
@@ -331,7 +340,7 @@ def main():
             logging.info(f"# Device {dev} number of simulated datapoints for {cap} : {len(sim_df)} ")
 
             # Loading measured data to be compared
-            meas_data_path = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_cv/{dev}_meas_{cap}.csv"
+            meas_data_path = f"../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_cv/{dev}_meas_{cap}.csv"
 
             if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
                 logging.error("There is no measured data to be used in simulation, please recheck")
