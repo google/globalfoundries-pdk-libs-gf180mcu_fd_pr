@@ -31,6 +31,7 @@ import glob
 import os
 import logging
 import warnings
+import re
 
 # CONSTANT VALUES
 RES_MOSCAP = 100   # We will use this res (kohm) in RC circuit for MOSCAP measurement
@@ -51,7 +52,7 @@ def check_ngspice_version():
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
     else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        version = int(re.search(r"ngspice-([0-9]+)", ngspice_v_).group(1))
         logging.info(f"Your Klayout version is: ngspice {version}")
 
         if version <= 37:
