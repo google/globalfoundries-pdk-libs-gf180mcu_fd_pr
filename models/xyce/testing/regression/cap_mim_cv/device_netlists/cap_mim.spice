@@ -15,23 +15,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 
-*****************
-** main netlist
-*****************
-.param volt = -3.0
+Ich 0 p dc 1n
 
-V1 in 0 dc {volt} ac 1
-R1 in out 1G
-xcn out 0 {{device}} c_length={{length}}u c_width={{width}}u l={{length}}u w={{width}}u
+.STEP TEMP LIST {{temp}}
+      
+xcn p 0 {{device}} c_length={{length}}u c_width={{width}}u
 
-.meas AC freq when Vdb(out)=-3 PRECISION=15
+.ic v(p)=0.0
+.tran 1ns 10ns
 
-*****************
-** Analysis
-*****************
+.meas tran cj FIND par('(1.0e-9  * time / v(p))*1.0e15') AT=10ns
 
-.ac dec 10 1 10G
-.step volt {{voltage}}
+
+** library calling
 
 .include {{model_design_path}}
 .lib {{model_card_path}} {{corner}}

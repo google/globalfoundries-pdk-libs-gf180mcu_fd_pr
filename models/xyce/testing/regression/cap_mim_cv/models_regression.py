@@ -23,18 +23,17 @@ Usage:
 from docopt import docopt
 import pandas as pd
 import numpy as np
-from subprocess import check_call, Popen, PIPE
+from subprocess import check_call
 from jinja2 import Template
 import concurrent.futures
 import shutil
-import glob
 import os
 import logging
-
+import re
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0
-MAX_VAL_DETECT = 0.1e-15  # Max value to detect bad errors 0.1fF
+MIN_VAL_DETECT = 0.1e-15  # Min value to detect bad errors 0.1fF
 QUANTILE_RATIO = 0.98  # quantile ratio used for regression test
 
 
@@ -65,9 +64,18 @@ def find_mimcap(log_file):
         Parsed capacitance value measured in simulation run.
     """
 
-    cmd = 'grep "cj" {} | head -n 1'.format(log_file)
-    process = Popen(cmd, shell=True, stdout=PIPE)
-    return float(process.communicate()[0][:-1].decode("utf-8").split("=")[1])
+    # Open the file
+    with open(log_file, "r") as f:
+        # Read the file contents
+        log_txt = f.read()
+
+        # Extract the value
+        cap_values = re.findall(r"(?<=CJ = )\d+\.\d+e\+\d+", log_txt)
+        if len(cap_values) > 0:
+            cap_cal = float(cap_values[0])
+            return cap_cal
+        else:
+            return None
 
 
 def simulate_device(netlist_path: str):
@@ -79,7 +87,7 @@ def simulate_device(netlist_path: str):
         int: Return code of the simulation. 0 if success.  Non-zero if failed.
     """
     return check_call(
-        f"Xyce {netlist_path} -l {netlist_path}.log  > {netlist_path}.log 2>&1",
+        f"Xyce {netlist_path} -hspice-ext all -l {netlist_path}.log  > {netlist_path}.log 2>&1",
         shell=True,
     )
 
@@ -322,8 +330,8 @@ def main():
 
         bad_err_full_df_loc = full_df[full_df["Cj_err"] > PASS_THRESH]
         bad_err_full_df = bad_err_full_df_loc[
-            (bad_err_full_df_loc["Cj_sim"] >= MAX_VAL_DETECT)
-            | (bad_err_full_df_loc["Cj_meas"] >= MAX_VAL_DETECT)
+            (bad_err_full_df_loc["Cj_sim"] >= MIN_VAL_DETECT)
+            | (bad_err_full_df_loc["Cj_meas"] >= MIN_VAL_DETECT)
         ]
         bad_err_full_df.to_csv(f"{dev_path}/{dev}_bad_err_cv.csv", index=False)
         logging.info(
