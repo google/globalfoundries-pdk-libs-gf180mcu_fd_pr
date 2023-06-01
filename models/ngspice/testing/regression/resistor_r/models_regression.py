@@ -52,7 +52,7 @@ def check_ngspice_version():
     else:
         # Extract the number after "ngspice-"
         version = int(re.search(r"ngspice-([0-9]+)", ngspice_v_).group(1))
-        logging.info(f"Your Klayout version is: ngspice {version}")
+        logging.info(f"Your ngspice version is: ngspice {version}")
 
         if version <= 37:
             logging.error(
