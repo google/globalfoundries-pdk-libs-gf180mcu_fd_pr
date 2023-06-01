@@ -30,7 +30,7 @@ import shutil
 import glob
 import os
 import logging
-
+import re
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0
@@ -49,7 +49,7 @@ def check_ngspice_version():
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
     else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        version = int(re.search(r"ngspice-([0-9]+)", ngspice_v_).group(1))
         logging.info(f"Your Klayout version is: ngspice {version}")
 
         if version <= 37:
@@ -122,6 +122,12 @@ def run_sim(
         Dataframe contains results for the current run
     """
 
+    # Get model card path
+    regression_dir = os.path.dirname(os.path.abspath(__file__))
+    models_dir = os.path.dirname(os.path.dirname(os.path.dirname(regression_dir)))
+    model_card_path = os.path.join(models_dir, "sm141064.ngspice")
+    model_design_path = os.path.join(models_dir, "design.ngspice")
+
     netlist_tmp = os.path.join("device_netlists", "cap_mim.spice")
 
     # Preparing output directory at which results will be added
@@ -149,6 +155,8 @@ def run_sim(
                     length=length,
                     temp=temp,
                     corner=corner,
+                    model_card_path=model_card_path,
+                    model_design_path=model_design_path,
                 )
             )
 
@@ -265,7 +273,7 @@ def main():
 
         # Loading measured data to be compared
         meas_data_path = (
-            "../../180MCU_SPICE_DATA_clean/gf180mcu_data/MIMCAP_cv/cap_mim_meas_cv.csv"
+            "../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/MIMCAP_cv/cap_mim_meas_cv.csv"
         )
 
         if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):

@@ -1,7 +1,7 @@
 ***************************
 ** cap
 ***************************
-* Copyright 2022 Efabless Corporation
+* Copyright 2023 Efabless Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ xcn p 0 {{device}} c_length={{length}}u c_width={{width}}u
 
 ** library calling
 
-.include "../../../design.ngspice"
-.lib "../../../sm141064.ngspice" {{corner}}
+.include {{model_design_path}}
+.lib {{model_card_path}} {{corner}}
+
 .end

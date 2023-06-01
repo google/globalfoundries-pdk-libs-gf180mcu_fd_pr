@@ -32,7 +32,7 @@ import multiprocessing as mp
 import glob
 import os
 import logging
-
+import re
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0
@@ -56,7 +56,7 @@ def check_ngspice_version():
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
     else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        version = int(re.search(r"ngspice-([0-9]+)", ngspice_v_).group(1))
         logging.info(f"Your Klayout version is: ngspice {version}")
 
         if version <= 37:
@@ -110,6 +110,12 @@ def run_sim(dirpath: str, device: str, meas_out_result: str,
         Dataframe contains results for the current run
     """
 
+    # Get model card path
+    regression_dir = os.path.dirname(os.path.abspath(__file__))
+    models_dir = os.path.dirname(os.path.dirname(os.path.dirname(regression_dir)))
+    model_card_path = os.path.join(models_dir, "sm141064.ngspice")
+    model_design_path = os.path.join(models_dir, "design.ngspice")
+
     # Select desired nelist templete to be used in the current run
     if meas_out_result == "id":
         device_group_netlist = "nfet" if "nfet" in device else "pfet"
@@ -155,11 +161,15 @@ def run_sim(dirpath: str, device: str, meas_out_result: str,
                     width=width,
                     length=length,
                     temp=temp,
+                    corner=corner,
                     sweeps=sweeps,
                     vds_val=vds_val,
                     vbs_val=vbs_val,
                     const_var=const_var,
-                    const_var_val=const_var_val
+                    const_var_val=const_var_val,
+                    result_path=result_path,
+                    model_card_path=model_card_path,
+                    model_design_path=model_design_path,
                 )
             )
 
@@ -299,7 +309,7 @@ def main(meas_out_result):
         logging.info(f"# Checking Device {dev}")
 
         # Loading sweep file used in measurements to be used in simulation for regression
-        sweeps_file = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_iv/{dev}_sweeps_{meas_out_result}.csv"
+        sweeps_file = f"../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_iv/{dev}_sweeps_{meas_out_result}.csv"
 
         if not os.path.exists(sweeps_file) or not os.path.isfile(sweeps_file):
             logging.error("There is no measured data to be used in simulation, please recheck")
@@ -318,7 +328,7 @@ def main(meas_out_result):
         logging.info(f"# Device {dev} number of simulated datapoints for {meas_out_result} : {len(sim_df)} ")
 
         # Loading measured data to be compared
-        meas_data_path = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_iv/{dev}_meas_{meas_out_result}.csv"
+        meas_data_path = f"../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/MOS_iv/{dev}_meas_{meas_out_result}.csv"
 
         if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
             logging.error("There is no measured data to be used in simulation, please recheck")

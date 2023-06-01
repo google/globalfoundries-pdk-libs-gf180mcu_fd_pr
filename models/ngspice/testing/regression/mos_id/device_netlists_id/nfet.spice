@@ -36,13 +36,13 @@ let vgs = v(G_tn)
 let vbs = v(B_tn)
 let id = -i(Vds)
 
-wrdata run_mos_id_rds_regr/{{device}}/{{device}}_netlists/simulated_w{{width}}_l{{length}}_t{{temp}}_{{const_var}}{{const_var_val}}_{{meas_out_result}}.csv vds vgs vbs id
+wrdata {{result_path}} vds vgs vbs id
 .endc
 
 ** library calling
 
-.include "../../../design.ngspice"
-.lib "../../../sm141064.ngspice" typical
+.include {{model_design_path}}
+.lib {{model_card_path}} {{corner}}
 
 **** end architecture code
 

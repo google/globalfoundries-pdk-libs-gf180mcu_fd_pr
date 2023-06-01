@@ -38,8 +38,8 @@ wrdata {{result_path}} Vn In
 
 ** library calling
 
-.include "../../../design.ngspice"
-.lib "../../../sm141064.ngspice" {{corner}}
+.include {{model_design_path}}
+.lib {{model_card_path}} {{corner}}
 
 **** end architecture code
 

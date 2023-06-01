@@ -30,7 +30,7 @@ import shutil
 import glob
 import os
 import logging
-
+import re
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0
@@ -51,7 +51,7 @@ def check_ngspice_version():
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
     else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        version = int(re.search(r"ngspice-([0-9]+)", ngspice_v_).group(1))
         logging.info(f"Your Klayout version is: ngspice {version}")
 
         if version <= 37:
@@ -92,6 +92,12 @@ def run_sim(dirpath: str, device: str, corner: float, temp: float, sweep: str) -
         Dataframe contains results for the current run
     """
 
+    # Get model card path
+    regression_dir = os.path.dirname(os.path.abspath(__file__))
+    models_dir = os.path.dirname(os.path.dirname(os.path.dirname(regression_dir)))
+    model_card_path = os.path.join(models_dir, "sm141064.ngspice")
+    model_design_path = os.path.join(models_dir, "design.ngspice")
+
     # Select desired nelist templete to be used in the current run
     netlist_tmp = os.path.join("device_netlists", "bjt_beta.spice")
 
@@ -128,6 +134,8 @@ def run_sim(dirpath: str, device: str, corner: float, temp: float, sweep: str) -
                     temp=temp,
                     sweep=sweep,
                     result_path=result_path,
+                    model_card_path=model_card_path,
+                    model_design_path=model_design_path,
                 )
             )
 
@@ -247,7 +255,7 @@ def main():
         logging.info(f"# Checking Device {dev}")
 
         # Loading measured data to be compared
-        meas_data_path = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/BJT_beta/bjt_{dev}_beta_meas.csv"
+        meas_data_path = f"../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/BJT_beta/bjt_{dev}_beta_meas.csv"
 
         if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
             logging.error("There is no measured data to be used in simulation, please recheck")
@@ -260,7 +268,7 @@ def main():
         logging.info(f"# Device BJT {dev}-beta number of measured datapoints : {len(meas_df)} ")
 
         # Loading sweep file used in measurements to be used in simulation for regression
-        sweeps_file = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/BJT_beta/bjt_{dev}_beta_sweeps.csv"
+        sweeps_file = f"../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/BJT_beta/bjt_{dev}_beta_sweeps.csv"
 
         if not os.path.exists(sweeps_file) or not os.path.isfile(sweeps_file):
             logging.error("There is no measured data to be used in simulation, please recheck")

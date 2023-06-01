@@ -30,6 +30,7 @@ import shutil
 import glob
 import os
 import logging
+import re
 
 # CONSTANT VALUES
 PASS_THRESH = 5.0  # Threshold value that will be used to test our regression
@@ -49,7 +50,7 @@ def check_ngspice_version():
         logging.error("ngspice is not found. Please make sure ngspice is installed.")
         exit(1)
     else:
-        version = int((ngspice_v_.split("\n")[1]).split(" ")[1].split("-")[1])
+        version = int(re.search(r"ngspice-([0-9]+)", ngspice_v_).group(1))
         logging.info(f"Your Klayout version is: ngspice {version}")
 
         if version <= 37:
@@ -98,6 +99,12 @@ def run_sim(dirpath: str, device_name: str, area: str,
         Dict contains info for the current run
     """
 
+    # Get model card path
+    regression_dir = os.path.dirname(os.path.abspath(__file__))
+    models_dir = os.path.dirname(os.path.dirname(os.path.dirname(regression_dir)))
+    model_card_path = os.path.join(models_dir, "sm141064.ngspice")
+    model_design_path = os.path.join(models_dir, "design.ngspice")
+
     netlist_tmp = os.path.join("device_netlists", "diode_iv.spice")
 
     # Preparing output directory at which results will be added
@@ -130,6 +137,8 @@ def run_sim(dirpath: str, device_name: str, area: str,
                     corner=corner,
                     result_path=result_path,
                     sweep=sweep,
+                    model_card_path=model_card_path,
+                    model_design_path=model_design_path,
                 )
             )
 
@@ -261,7 +270,7 @@ def main():
         logging.info(f"# Checking Device {dev}")
 
         # Loading measured data to be compared
-        meas_data_path = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/diode_iv/{dev}_iv_meas.csv"
+        meas_data_path = f"../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/diode_iv/{dev}_iv_meas.csv"
 
         if not os.path.exists(meas_data_path) or not os.path.isfile(meas_data_path):
             logging.error("There is no measured data to be used in simulation, please recheck")
@@ -274,7 +283,7 @@ def main():
         logging.info(f"# Device {dev} number of measured datapoints for cv : {len(meas_df)} ")
 
         # Loading sweep data that will be used in simulation to get all data points
-        sweep_data_path = f"../../180MCU_SPICE_DATA_clean/gf180mcu_data/diode_iv/{dev}_iv_sweeps.csv"
+        sweep_data_path = f"../../../../180MCU_SPICE_DATA_clean/gf180mcu_data/diode_iv/{dev}_iv_sweeps.csv"
 
         if not os.path.exists(sweep_data_path) or not os.path.isfile(sweep_data_path):
             logging.error("There is no sweep data to be used in simulation, please recheck")
