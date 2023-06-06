@@ -21,15 +21,17 @@ Testing_DIR ?= $(shell pwd)
 
 .DEFAULT_GOAL := all
 
-all : models-ngspice smoke-test
+all : models-extract
 
-models-extract: models_ext-MOS
+models-extract: models_ext-MOS models_ext-MOSCAP models_ext-MIMCAP models_ext-DIODE models_ext-RES models_ext-BJT
 
 #================================
 # -------- models_ext-MOS--------
 #================================
 
 .ONESHELL:
+models_ext-MOS: models_ext-MOS-iv models_ext-MOS-cv
+
 models_ext-MOS-iv:
 	@cd $(Testing_DIR)
 	@echo "========== Runing models_ext-MOS-iv ==========" |& tee -a run_log.log 
@@ -85,6 +87,9 @@ models_ext-MIMCAP:
 #===============================
 # ------ models_ext-diode ------
 #===============================
+
+.ONESHELL:
+models_ext-DIODE: models_ext-DIODE-iv
 
 .ONESHELL:
 models_ext-DIODE-iv:
@@ -143,6 +148,9 @@ models_ext-RES:
 #============================
 
 .ONESHELL:
+models_ext-BJT: models_ext-BJT-iv models_ext-beta
+
+.ONESHELL:
 models_ext-BJT-iv:
 	@cd $(Testing_DIR)
 	@echo "========== Runing models_ext-BJT-iv ==========" |& tee -a run_log.log 
@@ -166,14 +174,12 @@ models_ext-BJT-beta:
 
 help:
 	@echo "\n ==== The following are some of the valid targets for this Makefile ====\n"
-	@echo "... all                  (the default if no target is provided  )"
-	@echo "... models_ext-MOS-iv    (To extract measured data for MOS-iv devices)"
-	@echo "... models_ext-MOS-cv    (To extract measured data for MOS-cv devices)"
-	@echo "... models_ext-MOSCAP    (To extract measured data for MOSCAP devices)"
-	@echo "... models_ext-MIMCAP    (To extract measured data for MIMCAP devices)"
-	@echo "... models_ext-DIODE-iv  (To extract measured data for DIODE-iv devices)"
-	@echo "... models_ext-RES       (To extract measured data for RES devices)"
-	@echo "... models_ext-BJT-iv    (To extract measured data for BJT-iv devices)"
-	@echo "... models_ext-BJT-beta  (To extract measured data for BJT-beta devices)"
+	@echo "... all                  Extract measured data for all devices"
+	@echo "... models_ext-MOS       To extract measured data for MOS devices"
+	@echo "... models_ext-MOSCAP    To extract measured data for MOSCAP devices"
+	@echo "... models_ext-MIMCAP    To extract measured data for MIMCAP devices"
+	@echo "... models_ext-DIODE     To extract measured data for DIODE devices"
+	@echo "... models_ext-RES       To extract measured data for RES devices"
+	@echo "... models_ext-BJT       To extract measured data for BJT devices"
 
 .PHONY : help
