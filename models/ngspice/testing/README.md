@@ -8,8 +8,8 @@ The main purpose of the GF180MCU Models-ngspice regression is to compare the sim
 
 ```text
 📁testing
+ ┣ 📜README.md                                  This file to document GF180MCU ngspice-models testing procedure.
  ┣ 📜Makefile                                   To make a full test for GF180MCU ngspice-models.
- ┣ 📜README.md                                  This file to document GF180MCU ngspice-models.
  ┣ 📁sc_regression/gf180mcu_fd_sc_mcu7t5v0      Directory for GF180MCU ngspice-models Standard cells regression.
  ┣ 📁regression                                 Directory for GF180MCU ngspice-models devices regression.
  ┣ 📁smoke_test                                 Simple inverter design to test ngspice-models.
@@ -70,4 +70,6 @@ You could find the regression run results at `models_run_<date>_<time>` in the c
     ┣ 📜 <device_name>                   Output directory per device in each group contains device netlists, logs and analysis.
  ```
 
-Devices will be failed in models regression if the root mean square (RMS) error between simulation results and measured data exceeds `5%`, You could check `run_log.log` for regression summary.
+Devices will be failed in models regression if the Quantile error between simulation results and measured data exceeds `5%`, You could check `run_log.log` for regression summary.
+
+Refer to [Percentile regression](https://builtin.com/data-science/boxplot) for more details.
