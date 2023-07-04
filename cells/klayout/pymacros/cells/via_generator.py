@@ -125,7 +125,9 @@ def via_stack(
 
         m1_y = con.size[1] + 2 * m_enc
 
-        m1 = c.add_ref(gf.components.rectangle(size=(m1_x, m1_y), layer=layer["metal1"]))
+        m1 = c.add_ref(
+            gf.components.rectangle(size=(m1_x, m1_y), layer=layer["metal1"])
+        )
         m1.xmin = con.xmin - m_enc
         m1.ymin = con.ymin - m_enc
 
@@ -159,10 +161,74 @@ def via_stack(
         m2_mx = (m2_x - (via1.xmax - via1.xmin)) / 2
         m2_my = (m2_y - (via1.ymax - via1.ymin)) / 2
 
-        m2 = c.add_ref(gf.components.rectangle(size=(m2_x, m2_y), layer=layer["metal2"]))
+        m2 = c.add_ref(
+            gf.components.rectangle(size=(m2_x, m2_y), layer=layer["metal2"])
+        )
         m2.move((via1.xmin - m2_mx, via1.ymin - m2_my))
 
     return c
+
+
+def draw_via_dev(
+    layout,
+    x_min: float = 0,
+    y_min: float = 1,
+    x_max: float = 0,
+    y_max: float = 1,
+    metal_level: str = "M1",
+    base_layer: str = "comp",
+):
+
+    """
+
+    return via stack till the metal level indicated where :
+    metal_level 1 : till m1
+    metal_level 2 : till m2
+    metal_level 3 : till m3
+    metal_level 4 : till m4
+    metal_level 5 : till m5
+    withen the range xrange and yrange and expecting the base_layer to be drawen
+
+    Args:
+        layout : layout object
+        x_min :  left x_point of vias generated
+        x_max :  right x_point of vias generated
+        y_min :  bottom y_point of vias generated
+        y_max :  top y_point of vias generated
+
+    """
+
+    c = gf.Component("via_stack_dev")
+
+    if metal_level == "M1":
+        metal_lev = 1
+    elif metal_level == "M2":
+        metal_lev = 2
+    elif metal_level == "M3":
+        metal_lev = 3
+    elif metal_level == "M4":
+        metal_lev = 4
+    else:
+        metal_lev = 5
+
+    v_stack = c.add_ref(
+        via_stack(x_range=(x_min, x_max), y_range=(y_min, y_max), metal_level=metal_lev)
+    )
+
+    if len(base_layer) > 0 and base_layer in layer:
+        base = c.add_ref(
+            gf.components.rectangle(
+                size=(x_max - x_min, y_max - y_min), layer=layer[base_layer]
+            )
+        )
+        base.center = v_stack.center
+
+    c.write_gds("via_stack_temp.gds")
+    layout.read("via_stack_temp.gds")
+    cell_name = "via_stack_dev"
+    print(type(layout.cell(cell_name)))
+
+    return layout.cell(cell_name)
 
 
 # testing the generated methods
