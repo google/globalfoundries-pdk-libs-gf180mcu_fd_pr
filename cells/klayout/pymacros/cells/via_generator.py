@@ -206,6 +206,27 @@ def via_stack(
     return c
 
 
+def get_level_num(base_layer, base_layers, metal_level, metal_layers):
+    level_1 = -1
+    level_2 = -1
+
+    if base_layer in base_layers:
+        level_1 = -1
+    else:
+        for i in range(len(metal_layers)):
+            if base_layer == metal_layers[i]:
+                level_1 = i
+
+    if metal_level in base_layers:
+        level_2 = -1
+    else:
+        for i in range(len(metal_layers)):
+            if metal_level == metal_layers[i]:
+                level_2 = i
+
+    return level_1, level_2
+
+
 def draw_via_dev(
     layout,
     x_min: float = 0,
@@ -237,30 +258,132 @@ def draw_via_dev(
 
     c = gf.Component("via_stack_dev")
 
-    if metal_level == "M1":
-        metal_lev = 1
-    elif metal_level == "M2":
-        metal_lev = 2
-    elif metal_level == "M3":
-        metal_lev = 3
-    elif metal_level == "M4":
-        metal_lev = 4
-    else:
-        metal_lev = 5
+    # vias dimensions
 
-    v_stack = c.add_ref(
-        via_stack(
-            x_range=(x_min, x_max), y_range=(y_min, y_max), metal_level=metal_lev
+    con_size = (0.22, 0.22)
+    con_enc = (0.07, 0.07)
+
+    con_spacing = (0.28, 0.28)
+
+    via_size = (0.22, 0.22)
+    via_spacing = (0.28, 0.28)
+    via_enc = (0.06, 0.06)
+
+    x_range = x_max - x_min
+    y_range = y_max - y_min
+
+    base_layers = ["poly2", "comp"]
+    metal_layers = ["M1", "M2", "M3", "M4", "M5", "Mtop"]
+
+    level_1, level_2 = get_level_num(base_layer, base_layers, metal_level, metal_layers)
+
+    if level_1 <= -1 and level_2 >= -1 and base_layer in layer :
+        c.add_ref(
+            gf.components.rectangle(size=(x_range, y_range), layer=layer[base_layer])
         )
-    )
 
-    if len(base_layer) > 0 and base_layer in layer:
-        base = c.add_ref(
-            gf.components.rectangle(
-                size=(x_max - x_min, y_max - y_min), layer=layer[base_layer]
+        if level_2 == -1 and metal_level in layer:
+            c.add_ref(
+                gf.components.rectangle(
+                    size=(x_range, y_range), layer=layer[metal_level]
+                )
             )
+
+    if level_1 <= 0 and level_2 >= 0:
+        c.add_ref(
+            gf.components.rectangle(size=(x_range, y_range), layer=layer["metal1"])
         )
-        base.center = v_stack.center
+
+    if level_1 <= 1 and level_2 >= 1:
+        c.add_ref(
+            gf.components.rectangle(size=(x_range, y_range), layer=layer["metal2"])
+        )
+
+    if level_1 <= 2 and level_2 >= 2:
+        c.add_ref(
+            gf.components.rectangle(size=(x_range, y_range), layer=layer["metal3"])
+        )
+
+    if level_1 <= 3 and level_2 >= 3:
+        c.add_ref(
+            gf.components.rectangle(size=(x_range, y_range), layer=layer["metal4"])
+        )
+
+    if level_1 <= 4 and level_2 >= 4:
+        c.add_ref(
+            gf.components.rectangle(size=(x_range, y_range), layer=layer["metal5"])
+        )
+
+    if level_1 <= 5 and level_2 >= 5:
+        c.add_ref(
+            gf.components.rectangle(size=(x_range, y_range), layer=layer["metaltop"])
+        )
+
+    if level_1 <= -1 and level_2 > -1:
+        con = via_generator(
+            x_range=(x_min, x_max),
+            y_range=(y_min, y_max),
+            via_size=con_size,
+            via_layer=layer["contact"],
+            via_enclosure=con_enc,
+            via_spacing=con_spacing,
+        )
+        c.add_ref(con)
+
+    if level_1 <= 0 and level_2 > 0:
+        v1 = via_generator(
+            x_range=(x_min, x_max),
+            y_range=(y_min, y_max),
+            via_size=via_size,
+            via_layer=layer["via1"],
+            via_enclosure=via_enc,
+            via_spacing=via_spacing,
+        )
+        c.add_ref(v1)
+
+    if level_1 <= 1 and level_2 > 1:
+        v2 = via_generator(
+            x_range=(x_min, x_max),
+            y_range=(y_min, y_max),
+            via_size=via_size,
+            via_layer=layer["via2"],
+            via_enclosure=via_enc,
+            via_spacing=via_spacing,
+        )
+        c.add_ref(v2)
+
+    if level_1 <= 2 and level_2 > 2:
+        v3 = via_generator(
+            x_range=(x_min, x_max),
+            y_range=(y_min, y_max),
+            via_size=via_size,
+            via_layer=layer["via3"],
+            via_enclosure=via_enc,
+            via_spacing=via_spacing,
+        )
+        c.add_ref(v3)
+
+    if level_1 <= 3 and level_2 > 3:
+        v4 = via_generator(
+            x_range=(x_min, x_max),
+            y_range=(y_min, y_max),
+            via_size=via_size,
+            via_layer=layer["via4"],
+            via_enclosure=via_enc,
+            via_spacing=via_spacing,
+        )
+        c.add_ref(v4)
+
+    if level_1 <= 4 and level_2 > 4:
+        v5 = via_generator(
+            x_range=(x_min, x_max),
+            y_range=(y_min, y_max),
+            via_size=via_size,
+            via_layer=layer["via5"],
+            via_enclosure=via_enc,
+            via_spacing=via_spacing,
+        )
+        c.add_ref(v5)
 
     c.write_gds("via_stack_temp.gds")
     layout.read("via_stack_temp.gds")
@@ -274,5 +397,5 @@ def draw_via_dev(
 if __name__ == "__main__":
     c = via_stack()
     c.show()
-    # c = vias_gen_draw(start_layer="li",end_layer="poly")
+    # c = vias_gen_draw(base_layer="li",end_layer="poly")
     # c.show()
