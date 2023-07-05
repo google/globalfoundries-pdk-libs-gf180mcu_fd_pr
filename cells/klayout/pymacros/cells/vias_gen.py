@@ -21,7 +21,7 @@ import os
 from .via_generator import draw_via_dev
 
 via_size = 0.22
-via_enc = 0.06
+via_enc = 0.07
 
 
 class via_dev(pya.PCellDeclarationHelper):
@@ -35,14 +35,25 @@ class via_dev(pya.PCellDeclarationHelper):
         super(via_dev, self).__init__()
 
         # ===================== PARAMETERS DECLARATIONS =====================
-        self.Type_handle = self.param("metal_level", self.TypeList, "metal_level")
+        self.Type_handle = self.param("base_layer", self.TypeList, "base_layer")
+        self.Type_handle.add_choice("poly2", "poly2")
+        self.Type_handle.add_choice("comp", "comp")
         self.Type_handle.add_choice("M1", "M1")
         self.Type_handle.add_choice("M2", "M2")
         self.Type_handle.add_choice("M3", "M3")
         self.Type_handle.add_choice("M4", "M4")
         self.Type_handle.add_choice("M5", "M5")
+        self.Type_handle.add_choice("Mtop", "Mtop")
 
-        self.param("base_layer", self.TypeString, "base_layer_name", default="comp")
+        self.Type_handle = self.param("metal_level", self.TypeList, "metal_level")
+        self.Type_handle.add_choice("poly2", "poly2")
+        self.Type_handle.add_choice("comp", "comp")
+        self.Type_handle.add_choice("M1", "M1")
+        self.Type_handle.add_choice("M2", "M2")
+        self.Type_handle.add_choice("M3", "M3")
+        self.Type_handle.add_choice("M4", "M4")
+        self.Type_handle.add_choice("M5", "M5")
+        self.Type_handle.add_choice("Mtop", "Mtop")
 
         self.param("x_min", self.TypeDouble, "X_min", default=0, unit="um")
         self.param("y_min", self.TypeDouble, "Y_min", default=0, unit="um")
