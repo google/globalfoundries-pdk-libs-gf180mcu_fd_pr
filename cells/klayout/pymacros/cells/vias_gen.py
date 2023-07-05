@@ -35,7 +35,7 @@ class via_dev(pya.PCellDeclarationHelper):
         super(via_dev, self).__init__()
 
         # ===================== PARAMETERS DECLARATIONS =====================
-        self.Type_handle = self.param("base_layer", self.TypeList, "base_layer")
+        self.Type_handle = self.param("base_layer", self.TypeList, "start_layer")
         self.Type_handle.add_choice("poly2", "poly2")
         self.Type_handle.add_choice("comp", "comp")
         self.Type_handle.add_choice("M1", "M1")
@@ -45,7 +45,7 @@ class via_dev(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("M5", "M5")
         self.Type_handle.add_choice("Mtop", "Mtop")
 
-        self.Type_handle = self.param("metal_level", self.TypeList, "metal_level")
+        self.Type_handle = self.param("metal_level", self.TypeList, "end_layer")
         self.Type_handle.add_choice("poly2", "poly2")
         self.Type_handle.add_choice("comp", "comp")
         self.Type_handle.add_choice("M1", "M1")
