@@ -271,21 +271,24 @@ def draw_via_dev(
     via_size = (0.26, 0.26)
     via_spacing = (0.26, 0.26)
 
-    if x_range > (4*con_size[0]+ 3*con_spacing[0]) and y_range > (2*4*via_size[1] + 3*via_spacing[1]) : 
-        con_spacing = (0.28,0.28)
+    if x_range > (4 * con_size[0] + 3 * con_spacing[0]) and y_range > (
+        2 * 4 * via_size[1] + 3 * via_spacing[1]
+    ):
+        con_spacing = (0.28, 0.28)
 
-    if x_range > (4*via_size[0]+ 3*via_spacing[0]) and y_range > (4*via_size[1]+ 3*via_spacing[1]) : 
-        via_spacing = (0.36,0.36)
+    if x_range > (4 * via_size[0] + 3 * via_spacing[0]) and y_range > (
+        4 * via_size[1] + 3 * via_spacing[1]
+    ):
+        via_spacing = (0.36, 0.36)
 
     via_enc = (0.06, 0.06)
-
 
     base_layers = ["poly2", "comp"]
     metal_layers = ["M1", "M2", "M3", "M4", "M5", "Mtop"]
 
     level_1, level_2 = get_level_num(base_layer, base_layers, metal_level, metal_layers)
 
-    if level_1 <= -1 and level_2 >= -1 and base_layer in layer :
+    if level_1 <= -1 and level_2 >= -1 and base_layer in layer:
         c.add_ref(
             gf.components.rectangle(size=(x_range, y_range), layer=layer[base_layer])
         )

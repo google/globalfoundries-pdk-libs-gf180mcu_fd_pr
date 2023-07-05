@@ -69,14 +69,14 @@ class via_dev(pya.PCellDeclarationHelper):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
         #  We also update the numerical value or the shape, depending on which on has not changed.
 
-        if self.metal_level == "Mtop" : 
+        if self.metal_level == "Mtop":
             if (self.x_max - self.x_min) < mt_min:
                 self.x_max = self.x_min + mt_min
 
             if (self.y_max - self.y_min) < mt_min:
                 self.y_max = self.y_min + mt_min
-        
-        else : 
+
+        else:
             if (self.x_max - self.x_min) < (via_size + (2 * via_enc)):
                 self.x_max = self.x_min + (via_size + (2 * via_enc))
 
