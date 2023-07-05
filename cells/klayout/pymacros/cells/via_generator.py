@@ -260,17 +260,25 @@ def draw_via_dev(
 
     # vias dimensions
 
+    x_range = x_max - x_min
+    y_range = y_max - y_min
+
     con_size = (0.22, 0.22)
     con_enc = (0.07, 0.07)
 
-    con_spacing = (0.28, 0.28)
+    con_spacing = (0.25, 0.25)
 
-    via_size = (0.22, 0.22)
-    via_spacing = (0.28, 0.28)
+    via_size = (0.26, 0.26)
+    via_spacing = (0.26, 0.26)
+
+    if x_range > (4*con_size[0]+ 3*con_spacing[0]) and y_range > (2*4*via_size[1] + 3*via_spacing[1]) : 
+        con_spacing = (0.28,0.28)
+
+    if x_range > (4*via_size[0]+ 3*via_spacing[0]) and y_range > (4*via_size[1]+ 3*via_spacing[1]) : 
+        via_spacing = (0.36,0.36)
+
     via_enc = (0.06, 0.06)
 
-    x_range = x_max - x_min
-    y_range = y_max - y_min
 
     base_layers = ["poly2", "comp"]
     metal_layers = ["M1", "M2", "M3", "M4", "M5", "Mtop"]
