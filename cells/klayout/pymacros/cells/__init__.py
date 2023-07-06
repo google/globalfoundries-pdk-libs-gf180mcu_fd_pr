@@ -45,6 +45,7 @@ from .res import (
     pwell_resistor,
 )
 from .efuse import efuse
+from .vias_gen import via_dev
 
 
 # It's a Python class that inherits from the pya.Library class
@@ -128,6 +129,9 @@ class gf180mcu(pya.Library):
         self.layout().register_pcell(
             "ppolyf_u_high_Rs_resistor", ppolyf_u_high_Rs_resistor()
         )
+
+        # VIAS
+        self.layout().register_pcell("via_dev", via_dev())
 
         # Register us with the name "gf180mcu".
         self.register("gf180mcu")
