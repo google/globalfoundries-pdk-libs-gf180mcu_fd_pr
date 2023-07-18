@@ -551,7 +551,7 @@ Xr1 d d1 b nplus_u_m1
 Xr2 s s1 b nplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b nfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 
 .MODEL nfet_03v3.0 NMOS
@@ -1256,7 +1256,7 @@ Xr1 d d1 b nplus_u_m1
 Xr2 s s1 b nplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b nfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL nfet_03v3.0 NMOS
 + A0=0.11226647 A1=0 A2=1 ACDE=0.6 ACNQSMOD=0 AGIDL=1.3268e-010 AGS=0.31756239
@@ -1969,7 +1969,7 @@ Xr1 d d1 b nplus_u_m1
 Xr2 s s1 b nplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b nfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL nfet_03v3.0 NMOS
 + A0=0.11164211 A1=0 A2=1 ACDE=0.6 ACNQSMOD=0 AGIDL=1.3268e-010 AGS=0.33078713
@@ -2686,7 +2686,7 @@ Xr1 d d1 b nplus_u_m1
 Xr2 s s1 b nplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b nfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL nfet_03v3.0 NMOS
 + A0=0.11206719 A1=0 A2=1 ACDE=0.6 ACNQSMOD=0 AGIDL=1.3268e-010 AGS=0.32050776
@@ -3399,7 +3399,7 @@ Xr1 d d1 b nplus_u_m1
 Xr2 s s1 b nplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b nfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL nfet_03v3.0 NMOS
 + A0=0.11186736 A1=0 A2=1 ACDE=0.6 ACNQSMOD=0 AGIDL=1.3268e-010 AGS=0.32766
@@ -4115,7 +4115,7 @@ Xr1 d d1 b pplus_u_m1
 Xr2 s s1 b pplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b pfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL pfet_03v3.0 PMOS
 + A0=1.0272635 A1=0 A2=0.99 ACDE=1 ACNQSMOD=0 AGIDL=1.5908e-011 AGS=0.19081247
@@ -4835,7 +4835,7 @@ Xr1 d d1 b pplus_u_m1
 Xr2 s s1 b pplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b pfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL pfet_03v3.0 PMOS
 + A0=1.0088763 A1=0 A2=0.99 ACDE=1 ACNQSMOD=0 AGIDL=1.5908e-011 AGS=0.20174918
@@ -5558,7 +5558,7 @@ Xr1 d d1 b pplus_u_m1
 Xr2 s s1 b pplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b pfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL pfet_03v3.0 PMOS
 + A0=1.0456883 A1=0 A2=0.99 ACDE=1 ACNQSMOD=0 AGIDL=1.5908e-011 AGS=0.1800417
@@ -6282,7 +6282,7 @@ Xr1 d d1 b pplus_u_m1
 Xr2 s s1 b pplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b pfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL pfet_03v3.0 PMOS
 + A0=1.039392 A1=0 A2=0.99 ACDE=1 ACNQSMOD=0 AGIDL=1.5908e-011 AGS=0.18391438
@@ -7005,7 +7005,7 @@ Xr1 d d1 b pplus_u_m1
 Xr2 s s1 b pplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b pfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL pfet_03v3.0 PMOS
 + A0=1.0151475 A1=0 A2=0.99 ACDE=1 ACNQSMOD=0 AGIDL=1.5908e-011 AGS=0.19776586
@@ -7731,7 +7731,7 @@ Xr1 d d1 b nplus_u_m2
 Xr2 s s1 b nplus_u_m2
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b nfet_06v0
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL nfet_06v0.0 NMOS
 + A0=0.72499969 A1=0 A2=0.96 ACDE=0.3 ACNQSMOD=0 AGIDL=0 AGS=0.13699995
@@ -7876,7 +7876,7 @@ Rb 1 2
 + PARAMS: W=1e-5 L=1.8e-6 AS=0 AD=0 PS=0 PD=0 NRD=0 NRS=0 PAR=1 DTEMP=0 SA=0 SB=0 NF=1
 + SD=0 M=1
 M0 d g s b nfet_06v0_nvt
-+ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w}
++ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w} M={m}
 .ENDS nfet_06v0_nvt
 .MODEL nfet_06v0_nvt.0 NMOS
 + A0=0.88 A1=0 A2=0.47 ACDE=0.3 ACNQSMOD=0 AGIDL=2e-010 AGS=0.72 AIGBACC=0.43
@@ -7985,7 +7985,7 @@ Xr1 d d1 b pplus_u_m2
 Xr2 s s1 b pplus_u_m2
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b pfet_06v0
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL pfet_06v0.0 PMOS
 + A0=0.84 A1=0 A2=1 ACDE=0.7 ACNQSMOD=0 AGIDL=1.1E-15 AGS=0.059 ALPHA0=9.6E-7
@@ -9612,7 +9612,7 @@ Xr1 d d1 b pplus_u_m1
 Xr2 s s1 b pplus_u_m1
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b pfet_03v3
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL pfet_03v3.0 PMOS
 + A0=1.0272635 A1=0 A2=0.99 ACDE=1 ACNQSMOD=0 AGIDL=1.5908e-011 AGS=0.19081247
@@ -10341,7 +10341,7 @@ Rb 1 2
 + PARAMS: W=1e-5 L=1.8e-6 AS=0 AD=0 PS=0 PD=0 NRD=0 NRS=0 PAR=1 DTEMP=0 SA=0 SB=0 NF=1
 + SD=0 M=1
 M0 d g s b nfet_06v0_nvt
-+ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w}
++ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w} M={m}
 .ENDS nfet_06v0_nvt
 .MODEL nfet_06v0_nvt.0 NMOS
 + A0=0.88 A1=0 A2=0.47 ACDE=0.3 ACNQSMOD=0 AGIDL=2e-010 AGS=0.72 AIGBACC=0.43
@@ -10450,7 +10450,7 @@ Xr1 d d1 b pplus_u_m2
 Xr2 s s1 b pplus_u_m2
 + PARAMS: WR='w' LR='(s_sab==0) ? 1e-15 : s_sab' DTEMP={dtemp}
 M0 d1 g s1 b pfet_06v0
-+ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w'
++ AD={ad} AS={as} L='l' NRD={nrd} NRS={nrs} PD={pd} PS={ps} W='w' M={m}
 .ENDS
 .MODEL pfet_06v0.0 PMOS
 + A0=0.84 A1=0 A2=1 ACDE=0.7 ACNQSMOD=0 AGS=0.059 ALPHA0=9.6E-7 ALPHA1=51.5
@@ -10576,7 +10576,7 @@ Rfuse in out R='200*(1-pblow) + 900*pblow'
 + VAR_VTH='0.7071*par_vth* 1e-06 / p_sqrtarea' MIS_VTH={agauss(0,var_vth,1)}
 
 M0 d g s b nfet_03v3
-+ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w}
++ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w} M={m}
 
 .ENDS nfet_03v3
 
@@ -10593,7 +10593,7 @@ M0 d g s b nfet_03v3
 + VAR_VTH='0.7071*par_vth* 1e-06 / p_sqrtarea' MIS_VTH={agauss(0,var_vth,1)}
 
 M0 d g s b pfet_03v3
-+ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w}
++ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w} M={m}
 
 .ENDS pfet_03v3
 
@@ -10610,7 +10610,7 @@ M0 d g s b pfet_03v3
 + VAR_VTH='0.7071*par_vth* 1e-06 / p_sqrtarea' MIS_VTH={agauss(0,var_vth,1)}
 
 M0 d g s b nfet_06v0
-+ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w}
++ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w} M={m}
 
 .ENDS nfet_06v0
 
@@ -10627,7 +10627,7 @@ M0 d g s b nfet_06v0
 + VAR_VTH='0.7071*par_vth* 1e-06 / p_sqrtarea' MIS_VTH={agauss(0,var_vth,1)}
 
 M0 d g s b pfet_06v0
-+ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w}
++ AD={ad} AS={as} L={l} NRD={nrd} NRS={nrs} PD={pd} PS={ps} W={w} M={m}
 
 .ENDS pfet_06v0
 
