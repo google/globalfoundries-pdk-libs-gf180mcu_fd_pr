@@ -1266,7 +1266,12 @@ def draw_nfet(
 
     con_size = 0.22
     con_sp = 0.28
-    con_comp_enc = 0.07
+
+    if bulk == "Bulk Tie" : 
+        con_comp_enc = 0.1 
+    else : 
+        con_comp_enc = 0.07
+        
     con_pp_sp = 0.1 - con_comp_enc
     con_pl_enc = 0.07
     pl_cmp_spacing = 0.18
@@ -1588,20 +1593,8 @@ def draw_nfet(
             )
 
     # generating bulk
-    if bulk == "None":
-        nplus = c_inst.add_ref(
-            gf.components.rectangle(
-                size=(
-                    sd_diff.size[0] + 2 * comp_np_enc,
-                    sd_diff.size[1] + 2 * np_cmp_ency,
-                ),
-                layer=layer["nplus"],
-            )
-        )
-        nplus.xmin = sd_diff.xmin - comp_np_enc
-        nplus.ymin = sd_diff.ymin - np_cmp_ency
-
-    elif bulk == "Bulk Tie":
+    
+    if bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
             gf.components.rectangle(
                 size=(sd_l + con_sp, sd_diff.size[1]), layer=layer["comp"]
@@ -1613,13 +1606,13 @@ def draw_nfet(
             gf.components.rectangle(
                 size=(
                     sd_diff.xmax - sd_diff.xmin + comp_np_enc,
-                    sd_diff.size[1] + (2 * np_cmp_ency),
+                    sd_diff.size[1] + (2 * gate_np_enc),
                 ),
                 layer=layer["nplus"],
             )
         )
         nsdm.xmin = sd_diff.xmin - comp_np_enc
-        nsdm.ymin = sd_diff.ymin - np_cmp_ency
+        nsdm.ymin = sd_diff.ymin - gate_np_enc
         psdm = c_inst.add_ref(
             gf.components.rectangle(
                 size=(
@@ -1657,16 +1650,29 @@ def draw_nfet(
             )
         )
 
-    if bulk == "Guard Ring":
-
-        nsdm = c_inst.add_ref(
+    else :
+        nplus = c_inst.add_ref(
             gf.components.rectangle(
-                size=(sd_diff.size[0] + 2 * comp_np_enc, w_gate + 2 * gate_np_enc),
+                size=(
+                    sd_diff.size[0] + 2 * comp_np_enc,
+                    sd_diff.size[1] + 2 * np_cmp_ency,
+                ),
                 layer=layer["nplus"],
             )
         )
-        nsdm.xmin = sd_diff.xmin - comp_np_enc
-        nsdm.ymin = sd_diff_intr.ymin - gate_np_enc
+        nplus.xmin = sd_diff.xmin - comp_np_enc
+        nplus.ymin = sd_diff.ymin - np_cmp_ency
+
+    if bulk == "Guard Ring":
+
+        # nsdm = c_inst.add_ref(
+        #     gf.components.rectangle(
+        #         size=(sd_diff.size[0] + 2 * comp_np_enc, w_gate + 2 * gate_np_enc),
+        #         layer=layer["nplus"],
+        #     )
+        # )
+        # nsdm.xmin = sd_diff.xmin - comp_np_enc
+        # nsdm.ymin = sd_diff_intr.ymin - gate_np_enc
         c.add_ref(c_inst)
 
         bulk_gr_gen(
