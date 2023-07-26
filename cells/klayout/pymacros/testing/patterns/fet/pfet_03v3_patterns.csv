@@ -1,0 +1,4 @@
+pcell_name,netlist_name,volt,bulk,l_gate,w_gate,ld,nf,gate_con_pos,sd_con_col,cont_bet_fin,interdig,patt,patt_lbl,lbl,g_lbl,sd_lbl,sub_lbl,netlist_nets,netlists_param,dev_name
+pfet,pfet_03v3_pcells,3.3V,Bulk Tie,9.92,3.56,2.92,10,top,2,0,0,ABA,0,1,g0_g0_g0_g0_g0_g0_g0_g0_g0_g0,s0_d0_s0_d0_s0_d0_s0_d0_s0_d0_s0,sub,d0 g0 s0 sub,W=35.6u L=9.92u,M0
+pfet,pfet_03v3_pcells,3.3V,Guard Ring,7.13,4.53,1.67,7,bottom,2,1,1,ABCDDCBA,0,1,gA1_gB1_gC1_gD1,s1_d1_s1_d1_s1_d1_s1_d1_s1,sub,d1 gA1 s1 sub_d1 gB1 s1 sub_d1 gC1 s1 sub_d1 gD1 s1 sub,W=9.06u L=7.13u_W=9.06u L=7.13u_W=9.06u L=7.13u_W=9.06u L=7.13u,M1A_M1B_M1C_M1D
+pfet,pfet_03v3_pcells,3.3V,Guard Ring,7.74,3.83,4.97,3,alternating,7,0,1,AAAABBBCCDCCBBBAAAA,0,1,gA2_gB2_gC2_gD2,s2_d2_s2_d2_s2_d2_s2_d2_s2_d2_s2_d2_s2_d2_s2_d2_s2_d2_s2_d2,sub,d2 gA2 s2 sub_d2 gB2 s2 sub_d2 gC2 s2 sub_d2 gD2 s2 sub,W=30.64u L=7.74u_W=22.98u L=7.74u_W=15.32u L=7.74u_W=3.83u L=7.74u,M2A_M2B_M2C_M2D

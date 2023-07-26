@@ -1,0 +1,4 @@
+pcell_name,netlist_name,volt,bulk,l_gate,w_gate,ld,nf,gate_con_pos,sd_con_col,cont_bet_fin,interdig,patt,patt_lbl,lbl,g_lbl,sd_lbl,sub_lbl,netlist_nets,netlists_param,dev_name
+nfet,nfet_03v3_pcells,3.3V,None,7.25,5.03,4.71,2,top,2,0,0,ABA,0,1,g0_g0,s0_d0_s0,sub,d0 g0 s0 sub,W=10.06u L=7.25u,M0
+nfet,nfet_03v3_pcells,3.3V,Bulk Tie,8.07,3.38,8.04,3,bottom,6,1,1,ABCDDCBA,0,1,gA1_gB1_gC1_gD1,s1_d1_s1_d1_s1_d1_s1_d1_s1,sub,d1 gA1 s1 sub_d1 gB1 s1 sub_d1 gC1 s1 sub_d1 gD1 s1 sub,W=6.76u L=8.07u_W=6.76u L=8.07u_W=6.76u L=8.07u_W=6.76u L=8.07u,M1A_M1B_M1C_M1D
+nfet,nfet_03v3_pcells,3.3V,Guard Ring,7.04,9.65,3.88,2,alternating,3,1,0,AAAABBBCCDCCBBBAAAA,0,1,g2_g2,s2_d2_s2,sub,d2 g2 s2 sub,W=19.3u L=7.04u,M2

@@ -7,3 +7,5 @@ openpyxl
 sympy
 klayout
 gdsfactory
+pytest
+pytest-dependency
