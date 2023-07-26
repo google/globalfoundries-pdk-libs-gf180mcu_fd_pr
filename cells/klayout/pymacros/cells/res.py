@@ -55,8 +55,8 @@ nplus_u_w = 0.42
 pplus_u_l = 0.42
 pplus_u_w = 0.42
 
-nwell_l = 0.42
-nwell_w = 0.42
+nwell_l = 2.0
+nwell_w = 2.0
 
 pwell_l = 2.0
 pwell_w = 2.0
@@ -99,8 +99,6 @@ class metal_resistor(pya.PCellDeclarationHelper):
 
         self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
         self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
-        self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
         self.param("array_x", self.TypeInt, "Repeat X", default=1)
@@ -127,13 +125,6 @@ class metal_resistor(pya.PCellDeclarationHelper):
             + ("%.3f" % self.w_res)
             + ")"
         )
-        return (
-            "metal_resistor(L="
-            + ("%.3f" % self.l_res)
-            + ",W="
-            + ("%.3f" % self.w_res)
-            + ")"
-        )
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
@@ -144,10 +135,6 @@ class metal_resistor(pya.PCellDeclarationHelper):
         self.perim = 2 * (self.w_res + self.l_res)
         # w,l must be larger or equal than min. values.
         if (self.res_type) == "rm1":
-            if (self.l_res) < rm1_l:
-                self.l_res = rm1_l
-            if (self.w_res) < rm1_w:
-                self.w_res = rm1_w
             if (self.l_res) < rm1_l:
                 self.l_res = rm1_l
             if (self.w_res) < rm1_w:
@@ -742,7 +729,7 @@ class pwell_resistor(pya.PCellDeclarationHelper):
         super(pwell_resistor, self).__init__()
 
         # ===================== PARAMETERS DECLARATIONS =====================
-        self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
+        self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=1)
         self.param("w_res", self.TypeDouble, "Width", default=pwell_l, unit="um")
         self.param("l_res", self.TypeDouble, "Length", default=pwell_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")

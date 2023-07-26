@@ -85,19 +85,24 @@ def draw_pcell(layout, top, lib, patt_file, device_name, device_space):
             y_shift = 0 if i == 0 else y_shift + device_space * DB_PERC
 
         pcell_name = row["pcell_name"]
-        param = row.drop(
-            labels=[
-                "pcell_name",
-                "netlist_name",
-                "netlist_nets",
-                "netlists_param",
-                "dev_name",
-            ]
-        ).to_dict()
 
         if "fet" in device_name:
+            param = row.drop(
+                labels=[
+                    "pcell_name",
+                    "netlist_name",
+                    "netlist_nets",
+                    "netlists_param",
+                    "dev_name",
+                ]
+            ).to_dict()
+
             param["g_lbl"] = param["g_lbl"].split("_")
             param["sd_lbl"] = param["sd_lbl"].split("_")
+
+        else:
+
+            param = row.drop(labels=["pcell_name"]).to_dict()
 
         try:
             logging.info(f"Generating pcell for {device_name} with params : {param}")

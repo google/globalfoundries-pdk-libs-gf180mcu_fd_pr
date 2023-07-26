@@ -262,20 +262,28 @@ def plus_res_inst(
     pp_enc_cmp: float = 0.16
     comp_spacing: float = 0.72
     sab_res_ext = 0.22
+    cmp_area = 0.203
+    sab_area = 2.01
 
     res_mk = c.add_ref(
         gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
     )
 
     if "plus_u" in res_type:
+
+        if (res_mk.size[0] * (res_mk.size[1] + (2 * sab_res_ext))) < sab_area:
+            sab_rect_size = (res_mk.size[0], round(sab_area / res_mk.size[0], 3))
+        else:
+            sab_rect_size = (res_mk.size[0], (res_mk.size[1] + (2 * sab_res_ext)))
+
         sab_rect = c.add_ref(
-            gf.components.rectangle(
-                size=(res_mk.size[0], res_mk.size[1] + (2 * sab_res_ext)),
-                layer=layer["sab"],
-            )
+            gf.components.rectangle(size=sab_rect_size, layer=layer["sab"],)
         )
         sab_rect.xmin = res_mk.xmin
         sab_rect.ymin = res_mk.ymin - sab_res_ext
+
+        np_enc_cmp: float = 0.18
+        pp_enc_cmp: float = 0.18
 
     cmp = c.add_ref(
         gf.components.rectangle(
@@ -285,6 +293,11 @@ def plus_res_inst(
     )
     cmp.xmin = res_mk.xmin - cmp_res_ext
     cmp.ymin = res_mk.ymin
+
+    # if "nplus_s" in res_type :
+    #     lvpwell_rect = c.add_ref(gf.components.rectangle(size=(cmp.size[0]+(2*lvpwell_enc_cmp),w_res),layer=layer["lvpwell"]))
+    #     lvpwell_rect.xmin = cmp.xmin - lvpwell_enc_cmp
+    #     lvpwell_rect.ymin = res_mk.ymin
 
     cmp_con = via_stack(
         x_range=(cmp.xmin, res_mk.xmin + con_enc),
@@ -330,11 +343,16 @@ def plus_res_inst(
 
     if sub == 1:
 
+        if (sub_w * w_res) < cmp_area:
+            sub_rect_size = (sub_w, round(cmp_area / sub_w, 3))
+        else:
+            sub_rect_size = (sub_w, w_res)
+
         sub_rect = c.add_ref(
-            gf.components.rectangle(size=(sub_w, w_res), layer=layer["comp"])
+            gf.components.rectangle(size=sub_rect_size, layer=layer["comp"])
         )
+        sub_rect.center = cmp.center
         sub_rect.xmax = cmp.xmin - comp_spacing
-        sub_rect.ymin = cmp.ymin
 
         # sub_rect contact
         sub_con = c.add_ref(
@@ -350,7 +368,7 @@ def plus_res_inst(
             gf.components.rectangle(
                 size=(
                     sub_rect.size[0] + (2 * pp_enc_cmp),
-                    cmp.size[1] + (2 * pp_enc_cmp),
+                    sub_rect.size[1] + (2 * pp_enc_cmp),
                 ),
                 layer=sub_imp_layer,
             )
@@ -396,7 +414,7 @@ def draw_nplus_res(
         cmp_res_ext = 0.29
         con_enc = 0.07
     else:
-        cmp_res_ext = 0.44
+        cmp_res_ext = 0.52
         con_enc = 0.0
 
     # adding res inst
@@ -477,7 +495,7 @@ def draw_pplus_res(
         cmp_res_ext = 0.29
         con_enc = 0.07
     else:
-        cmp_res_ext = 0.44
+        cmp_res_ext = 0.52
         con_enc = 0.0
 
     # adding res inst
@@ -549,6 +567,7 @@ def polyf_res_inst(
     r0_lbl: str = "",
     r1_lbl: str = "",
     sub_lbl: str = "",
+    sub_sp: float = 0.1,
 ) -> gf.Component:
 
     c = gf.Component()
@@ -556,8 +575,9 @@ def polyf_res_inst(
     sub_w: float = 0.36
     np_enc_poly2 = 0.3
     pp_enc_cmp: float = 0.16
-    comp_spacing: float = 0.72
+    comp_spacing: float = 0.46 + sub_sp
     sab_res_ext = 0.28
+    cmp_area = 0.203
 
     res_mk = c.add_ref(
         gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
@@ -605,11 +625,16 @@ def polyf_res_inst(
     pl_imp.xmin = pl.xmin - np_enc_poly2
     pl_imp.ymin = pl.ymin - np_enc_poly2
 
+    if (sub_w * w_res) < cmp_area:
+        sub_rect_size = (sub_w, round(cmp_area / sub_w, 3))
+    else:
+        sub_rect_size = (sub_w, w_res)
+
     sub_rect = c.add_ref(
-        gf.components.rectangle(size=(sub_w, w_res), layer=layer["comp"])
+        gf.components.rectangle(size=sub_rect_size, layer=layer["comp"])
     )
+    sub_rect.center = pl.center
     sub_rect.xmax = pl.xmin - comp_spacing
-    sub_rect.ymin = pl.ymin
 
     # sub_rect contact
     sub_con = c.add_ref(
@@ -623,7 +648,10 @@ def polyf_res_inst(
 
     sub_imp = c.add_ref(
         gf.components.rectangle(
-            size=(sub_rect.size[0] + (2 * pp_enc_cmp), pl.size[1] + (2 * pp_enc_cmp),),
+            size=(
+                sub_rect.size[0] + (2 * pp_enc_cmp),
+                sub_rect.size[1] + (2 * pp_enc_cmp),
+            ),
             layer=sub_imp_layer,
         )
     )
@@ -679,6 +707,7 @@ def draw_npolyf_res(
     lvpwell_enc_cmp = 0.43
     dn_enc_lvpwell = 2.5
     sub_w = 0.36
+    sub_sp = 0.26
 
     if res_type == "npolyf_s":
         pl_res_ext = 0.29
@@ -701,6 +730,7 @@ def draw_npolyf_res(
             r0_lbl=r0_lbl,
             r1_lbl=r1_lbl,
             sub_lbl=sub_lbl,
+            sub_sp=sub_sp,
         )
     )
 
@@ -767,8 +797,10 @@ def draw_ppolyf_res(
 
     if deepnwell == 1:
         sub_layer = layer["nplus"]
+        sub_sp = 0.26
     else:
         sub_layer = layer["pplus"]
+        sub_sp = 0.4
 
     # adding res inst
     r_inst = c.add_ref(
@@ -784,6 +816,7 @@ def draw_ppolyf_res(
             r0_lbl=r0_lbl,
             r1_lbl=r1_lbl,
             sub_lbl=sub_lbl,
+            sub_sp=sub_sp,
         )
     )
 
