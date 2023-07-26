@@ -1274,7 +1274,10 @@ def draw_nfet(
         
     con_pp_sp = 0.1 - con_comp_enc
     con_pl_enc = 0.07
-    pl_cmp_spacing = 0.18
+    if volt == "3.3V" :
+        pl_cmp_spacing = 0.18
+    else : 
+        pl_cmp_spacing = 0.3
     m1_area = 0.145
     m1_sp = 0.3
     pl_cmpcon_sp = 0.15
@@ -1307,11 +1310,9 @@ def draw_nfet(
 
     if w_gate <= con_size + 2 * con_comp_enc:
         cmpc_y = con_comp_enc + con_size + con_comp_enc
-        np_cmp_ency = comp_np_enc
 
     else:
         cmpc_y = w_gate
-        np_cmp_ency = gate_np_enc
 
     cmpc_size = (sd_l_con, cmpc_y)
 
@@ -1655,13 +1656,13 @@ def draw_nfet(
             gf.components.rectangle(
                 size=(
                     sd_diff.size[0] + 2 * comp_np_enc,
-                    sd_diff.size[1] + 2 * np_cmp_ency,
+                    sd_diff.size[1] + 2 * gate_np_enc,
                 ),
                 layer=layer["nplus"],
             )
         )
         nplus.xmin = sd_diff.xmin - comp_np_enc
-        nplus.ymin = sd_diff.ymin - np_cmp_ency
+        nplus.ymin = sd_diff.ymin - gate_np_enc
 
     if bulk == "Guard Ring":
 
@@ -2714,17 +2715,8 @@ def draw_nfet_06v0_nvt(
             )
 
     # generating bulk
-    if bulk == "None":
-        nplus = c_inst.add_ref(
-            gf.components.rectangle(
-                size=(sd_diff.size[0] + 2 * comp_np_enc, w_gate + 2 * gate_np_enc),
-                layer=layer["nplus"],
-            )
-        )
-        nplus.xmin = sd_diff.xmin - comp_np_enc
-        nplus.ymin = sd_diff_intr.ymin - gate_np_enc
 
-    elif bulk == "Bulk Tie":
+    if bulk == "Bulk Tie":
 
         rect_bulk = c_inst.add_ref(
             gf.components.rectangle(
@@ -2947,6 +2939,16 @@ def draw_nfet_06v0_nvt(
         )
         dg.xmin = sd_diff.xmin - nvt_enc_cmp
         dg.ymin = sd_diff.ymin - nvt_enc_cmp
+
+    else :
+        nplus = c_inst.add_ref(
+            gf.components.rectangle(
+                size=(sd_diff.size[0] + 2 * comp_np_enc, w_gate + 2 * gate_np_enc),
+                layer=layer["nplus"],
+            )
+        )
+        nplus.xmin = sd_diff.xmin - comp_np_enc
+        nplus.ymin = sd_diff_intr.ymin - gate_np_enc
 
     if bulk != "Guard Ring":
         c.add_ref(c_inst)
