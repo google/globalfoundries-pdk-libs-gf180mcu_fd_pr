@@ -1868,7 +1868,7 @@ def draw_pfet(
     """
     # used layers and dimensions
 
-    end_cap: float = 0.22
+    end_cap: float = 0.3
     if volt == "3.3V":
         comp_spacing: float = 0.28
         nw_enc_pcmp = 0.43
@@ -1886,7 +1886,10 @@ def draw_pfet(
     con_sp = 0.28
     con_comp_enc = 0.07
     con_pp_sp = 0.1 - con_comp_enc
-    pl_cmp_spacing = 0.1
+    if volt == "3.3V" :
+        pl_cmp_spacing = 0.18
+    else : 
+        pl_cmp_spacing = 0.3
     con_pl_enc = 0.07
     dg_enc_cmp = 0.24
     dg_enc_poly = 0.4
@@ -2250,7 +2253,7 @@ def draw_pfet(
             gf.components.rectangle(
                 size=(
                     sd_diff.xmax - sd_diff.xmin + comp_pp_enc,
-                    sd_diff.size[1] + (2 * pp_cmp_ency),
+                    sd_diff.size[1] + (2 * gate_pp_enc),
                     # w_gate + 2 * gate_pp_enc,
                 ),
                 layer=layer["pplus"],
