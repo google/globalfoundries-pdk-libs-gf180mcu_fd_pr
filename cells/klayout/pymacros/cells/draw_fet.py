@@ -816,7 +816,7 @@ def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
     con_size = 0.22
     con_sp = 0.28
     con_comp_enc = 0.07
-    pcmpgr_enc_dn = 2.5
+    pcmpgr_enc_dn = 2.6
 
     c_temp_gr = gf.Component("temp_store guard ring")
     rect_pcmpgr_in = c_temp_gr.add_ref(
@@ -1253,10 +1253,8 @@ def draw_nfet(
     # used layers and dimensions
 
     end_cap: float = 0.3
-    if volt == "3.3V":
-        comp_spacing: float = 0.28
-    else:
-        comp_spacing: float = 0.36
+
+    comp_spacing = 0.28 if volt == "3.3V" else 0.36
 
     gate_np_enc: float = 0.23
     comp_np_enc: float = 0.16
@@ -1267,16 +1265,16 @@ def draw_nfet(
     con_size = 0.22
     con_sp = 0.28
 
-    if bulk == "Bulk Tie" : 
-        con_comp_enc = 0.1 
-    else : 
+    if bulk == "Bulk Tie":
+        con_comp_enc = 0.1
+    else:
         con_comp_enc = 0.07
-        
+
     con_pp_sp = 0.1 - con_comp_enc
     con_pl_enc = 0.07
-    if volt == "3.3V" :
+    if volt == "3.3V":
         pl_cmp_spacing = 0.18
-    else : 
+    else:
         pl_cmp_spacing = 0.3
     m1_area = 0.145
     m1_sp = 0.3
@@ -1594,7 +1592,7 @@ def draw_nfet(
             )
 
     # generating bulk
-    
+
     if bulk == "Bulk Tie":
         rect_bulk = c_inst.add_ref(
             gf.components.rectangle(
@@ -1651,7 +1649,7 @@ def draw_nfet(
             )
         )
 
-    else :
+    else:
         nplus = c_inst.add_ref(
             gf.components.rectangle(
                 size=(
@@ -1869,12 +1867,9 @@ def draw_pfet(
     # used layers and dimensions
 
     end_cap: float = 0.3
-    if volt == "3.3V":
-        comp_spacing: float = 0.28
-        nw_enc_pcmp = 0.43
-    else:
-        comp_spacing: float = 0.36
-        nw_enc_pcmp = 0.6
+
+    comp_spacing = 0.28 if volt == "3.3V" else 0.36
+    nw_enc_pcmp = 0.43 if volt == "3.3V" else 0.6
 
     gate_pp_enc: float = 0.23
     comp_np_enc: float = 0.16
@@ -1886,9 +1881,9 @@ def draw_pfet(
     con_sp = 0.28
     con_comp_enc = 0.07
     con_pp_sp = 0.1 - con_comp_enc
-    if volt == "3.3V" :
+    if volt == "3.3V":
         pl_cmp_spacing = 0.18
-    else : 
+    else:
         pl_cmp_spacing = 0.3
     con_pl_enc = 0.07
     dg_enc_cmp = 0.24
@@ -1928,11 +1923,9 @@ def draw_pfet(
 
     if w_gate <= con_size + 2 * con_comp_enc:
         cmpc_y = con_comp_enc + con_size + con_comp_enc
-        pp_cmp_ency = comp_pp_enc
 
     else:
         cmpc_y = w_gate
-        pp_cmp_ency = gate_pp_enc
 
     cmpc_size = (sd_l_con, cmpc_y)
 
@@ -2943,7 +2936,7 @@ def draw_nfet_06v0_nvt(
         dg.xmin = sd_diff.xmin - nvt_enc_cmp
         dg.ymin = sd_diff.ymin - nvt_enc_cmp
 
-    else :
+    else:
         nplus = c_inst.add_ref(
             gf.components.rectangle(
                 size=(sd_diff.size[0] + 2 * comp_np_enc, w_gate + 2 * gate_np_enc),

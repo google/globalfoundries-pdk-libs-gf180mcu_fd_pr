@@ -132,12 +132,12 @@ class nfet(pya.PCellDeclarationHelper):
                 self.l_gate = nfet_06v0_l
             if (self.w_gate) < fet_5_6_w:
                 self.w_gate = fet_5_6_w
-        
+
         if self.con_bet_fin == 1:
             if self.bulk == "Bulk Tie":
                 if (self.w_gate) < fet_w_con_bulk:
                     self.w_gate = fet_w_con_bulk
-            else : 
+            else:
                 if (self.w_gate) < fet_w_con:
                     self.w_gate = fet_w_con
 
@@ -146,7 +146,6 @@ class nfet(pya.PCellDeclarationHelper):
 
         if (self.grw) < fet_grw:
             self.grw = fet_grw
-
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -284,7 +283,7 @@ class pfet(pya.PCellDeclarationHelper):
                 self.l_gate = pfet_05v0_l
             if (self.w_gate) < fet_5_6_w:
                 self.w_gate = fet_5_6_w
-                
+
         elif self.volt == "6V":
             if (self.l_gate) < pfet_06v0_l:
                 self.l_gate = pfet_06v0_l
@@ -301,7 +300,7 @@ class pfet(pya.PCellDeclarationHelper):
             if self.bulk == "Bulk Tie":
                 if (self.w_gate) < fet_w_con_bulk:
                     self.w_gate = fet_w_con_bulk
-            else : 
+            else:
                 if (self.w_gate) < fet_w_con:
                     self.w_gate = fet_w_con
 
