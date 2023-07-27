@@ -1345,7 +1345,7 @@ def draw_diode_dw2ps(
 
     diode_mk = c.add_ref(
         gf.components.rectangle(
-            size=(dn_rect.size[0], dn_rect.size[1]), layer=layer["diode_mk"]
+            size=(dn_rect.size[0], dn_rect.size[1]), layer=layer["well_diode_mk"]
         )
     )
     diode_mk.xmin = dn_rect.xmin
