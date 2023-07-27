@@ -20,6 +20,8 @@ from .draw_fet import draw_nfet, draw_nfet_06v0_nvt, draw_pfet
 
 fet_3p3_l = 0.28
 fet_3p3_w = 0.22
+fet_w_con = 0.36
+fet_w_con_bulk = 0.42
 fet_5_6_w = 0.3
 
 nfet_05v0_l = 0.6
@@ -31,7 +33,7 @@ pfet_06v0_l = 0.55
 nfet_nat_l = 1.8
 nfet_nat_w = 0.8
 fet_grw = 0.36
-fet_ld = 0.44
+fet_ld = 0.52
 
 ldfet_l_min = 0.6
 ldfet_l_max = 20
@@ -118,16 +120,26 @@ class nfet(pya.PCellDeclarationHelper):
                 self.l_gate = fet_3p3_l
             if (self.w_gate) < fet_3p3_w:
                 self.w_gate = fet_3p3_w
+
         elif self.volt == "5V":
             if (self.l_gate) < nfet_05v0_l:
                 self.l_gate = nfet_05v0_l
             if (self.w_gate) < fet_5_6_w:
                 self.w_gate = fet_5_6_w
+
         elif self.volt == "6V":
             if (self.l_gate) < nfet_06v0_l:
                 self.l_gate = nfet_06v0_l
             if (self.w_gate) < fet_5_6_w:
                 self.w_gate = fet_5_6_w
+
+        if self.con_bet_fin == 1:
+            if self.bulk == "Bulk Tie":
+                if (self.w_gate) < fet_w_con_bulk:
+                    self.w_gate = fet_w_con_bulk
+            else:
+                if (self.w_gate) < fet_w_con:
+                    self.w_gate = fet_w_con
 
         if (self.ld) < fet_ld:
             self.ld = fet_ld
@@ -265,11 +277,13 @@ class pfet(pya.PCellDeclarationHelper):
                 self.l_gate = fet_3p3_l
             if (self.w_gate) < fet_3p3_w:
                 self.w_gate = fet_3p3_w
+
         elif self.volt == "5V":
             if (self.l_gate) < pfet_05v0_l:
                 self.l_gate = pfet_05v0_l
             if (self.w_gate) < fet_5_6_w:
                 self.w_gate = fet_5_6_w
+
         elif self.volt == "6V":
             if (self.l_gate) < pfet_06v0_l:
                 self.l_gate = pfet_06v0_l
@@ -281,6 +295,14 @@ class pfet(pya.PCellDeclarationHelper):
 
         if (self.grw) < fet_grw:
             self.grw = fet_grw
+
+        if self.con_bet_fin == 1:
+            if self.bulk == "Bulk Tie":
+                if (self.w_gate) < fet_w_con_bulk:
+                    self.w_gate = fet_w_con_bulk
+            else:
+                if (self.w_gate) < fet_w_con:
+                    self.w_gate = fet_w_con
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
