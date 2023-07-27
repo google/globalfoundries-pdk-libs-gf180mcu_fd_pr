@@ -67,14 +67,14 @@ npolyf_s_w = 0.42
 ppolyf_s_l = 0.42
 ppolyf_s_w = 0.42
 
-npolyf_u_l = 0.42
-npolyf_u_w = 0.42
+npolyf_u_l = 0.8
+npolyf_u_w = 0.8
 
-ppolyf_u_l = 0.42
-ppolyf_u_w = 0.42
+ppolyf_u_l = 0.8
+ppolyf_u_w = 0.8
 
-ppolyf_u_h_res_l = 0.42
-ppolyf_u_h_res_w = 0.42
+ppolyf_u_h_res_l = 1.0
+ppolyf_u_h_res_w = 1.0
 
 
 class metal_resistor(pya.PCellDeclarationHelper):

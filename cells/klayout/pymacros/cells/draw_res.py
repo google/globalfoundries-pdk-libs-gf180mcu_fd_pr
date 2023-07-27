@@ -578,20 +578,23 @@ def polyf_res_inst(
     comp_spacing: float = 0.46 + sub_sp
     sab_res_ext = 0.28
     cmp_area = 0.203
+    sab_area = 2.01
 
     res_mk = c.add_ref(
         gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
     )
 
     if "polyf_u" in res_type:
+
+        if (res_mk.size[0] * (res_mk.size[1] + (2 * sab_res_ext))) < sab_area:
+            sab_rect_size = (res_mk.size[0], round(sab_area / res_mk.size[0], 3))
+        else:
+            sab_rect_size = (res_mk.size[0], (res_mk.size[1] + (2 * sab_res_ext)))
+
         sab_rect = c.add_ref(
-            gf.components.rectangle(
-                size=(res_mk.size[0], res_mk.size[1] + (2 * sab_res_ext)),
-                layer=layer["sab"],
-            )
+            gf.components.rectangle(size=sab_rect_size, layer=layer["sab"],)
         )
-        sab_rect.xmin = res_mk.xmin
-        sab_rect.ymin = res_mk.ymin - sab_res_ext
+        sab_rect.center = res_mk.center
 
     pl = c.add_ref(
         gf.components.rectangle(
@@ -713,7 +716,7 @@ def draw_npolyf_res(
         pl_res_ext = 0.29
         con_enc = 0.07
     else:
-        pl_res_ext = 0.44
+        pl_res_ext = 0.66
         con_enc = 0.0
 
     # adding res inst
@@ -792,7 +795,7 @@ def draw_ppolyf_res(
         pl_res_ext = 0.29
         con_enc = 0.07
     else:
-        pl_res_ext = 0.44
+        pl_res_ext = 0.66
         con_enc = 0.0
 
     if deepnwell == 1:
@@ -859,7 +862,7 @@ def draw_ppolyf_u_high_Rs_res(
 
     c = gf.Component("res_dev")
 
-    dn_enc_ncmp = 0.62
+    dn_enc_ncmp = 0.62 if volt == "3.3V" else 0.66
     dn_enc_poly2 = 1.34
 
     pl_res_ext = 0.64
@@ -872,6 +875,8 @@ def draw_ppolyf_u_high_Rs_res(
     con_size = 0.36
     resis_enc = (1.04, 0.4)
     dg_enc_dn = 0.5
+    np_pp_area = 0.351
+    sab_area = 2.01
 
     res_mk = c.add_ref(
         gf.components.rectangle(size=(l_res, w_res), layer=layer["res_mk"])
@@ -890,17 +895,24 @@ def draw_ppolyf_u_high_Rs_res(
     resis_mk.xmin = res_mk.xmin - resis_enc[0]
     resis_mk.ymin = res_mk.ymin - resis_enc[1]
 
-    sab_rect = c.add_ref(
-        gf.components.rectangle(
-            size=(
-                res_mk.size[0] + (2 * sab_res_ext[0]),
-                res_mk.size[1] + (2 * sab_res_ext[1]),
-            ),
-            layer=layer["sab"],
+    if (
+        (res_mk.size[0] + (2 * sab_res_ext[0]))
+        * (res_mk.size[1] + (2 * sab_res_ext[1]))
+    ) < sab_area:
+        sab_rect_size = (
+            (res_mk.size[0] + (2 * sab_res_ext[0])),
+            round(sab_area / (res_mk.size[0] + (2 * sab_res_ext[0])), 3),
         )
+    else:
+        sab_rect_size = (
+            (res_mk.size[0] + (2 * sab_res_ext[0])),
+            (res_mk.size[1] + (2 * sab_res_ext[1])),
+        )
+
+    sab_rect = c.add_ref(
+        gf.components.rectangle(size=sab_rect_size, layer=layer["sab"],)
     )
-    sab_rect.xmin = res_mk.xmin - sab_res_ext[0]
-    sab_rect.ymin = res_mk.ymin - sab_res_ext[1]
+    sab_rect.center = res_mk.center
 
     pl = c.add_ref(
         gf.components.rectangle(
@@ -983,14 +995,21 @@ def draw_ppolyf_u_high_Rs_res(
     else:
         sub_layer = layer["pplus"]
 
-    sub_imp = c.add_ref(
-        gf.components.rectangle(
-            size=(sub_rect.size[0] + (2 * pp_enc_cmp), pl.size[1] + (2 * pp_enc_cmp),),
-            layer=sub_layer,
+    if (
+        (sub_rect.size[0] + (2 * pp_enc_cmp)) * (pl.size[1] + (2 * pp_enc_cmp))
+    ) < np_pp_area:
+        sub_imp_size = (
+            sub_rect.size[0] + (2 * pp_enc_cmp),
+            round(np_pp_area / (pl.size[1] + (2 * pp_enc_cmp)), 3),
         )
-    )
-    sub_imp.xmin = sub_rect.xmin - pp_enc_cmp
-    sub_imp.ymin = sub_rect.ymin - pp_enc_cmp
+    else:
+        sub_imp_size = (
+            sub_rect.size[0] + (2 * pp_enc_cmp),
+            pl.size[1] + (2 * pp_enc_cmp),
+        )
+
+    sub_imp = c.add_ref(gf.components.rectangle(size=sub_imp_size, layer=sub_layer,))
+    sub_imp.center = sub_rect.center
 
     if deepnwell == 1:
 
