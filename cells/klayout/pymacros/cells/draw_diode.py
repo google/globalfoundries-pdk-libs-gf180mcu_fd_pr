@@ -172,8 +172,8 @@ def draw_diode_nd2ps(
             dg = c.add_ref(
                 gf.components.rectangle(
                     size=(
-                        dn_rect.size[0] + (2*dg_enc_dn),
-                        dn_rect.size[1] + (2*dg_enc_dn),
+                        dn_rect.size[0] + (2 * dg_enc_dn),
+                        dn_rect.size[1] + (2 * dg_enc_dn),
                     ),
                     layer=layer["dualgate"],
                 )
@@ -204,7 +204,9 @@ def draw_diode_nd2ps(
                     layer=layer["comp"],
                 )
             )
-            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid))
+            rect_pcmpgr_out.move(
+                (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+            )
             c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -321,7 +323,9 @@ def draw_diode_nd2ps(
                     layer=layer["metal1"],
                 )
             )
-            comp_m1_out.move((rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid))
+            comp_m1_out.move(
+                (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+            )
             c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -330,8 +334,8 @@ def draw_diode_nd2ps(
                     layer=layer["metal1"],
                 )
             )  # guardring metal1
-    
-    else : 
+
+    else:
 
         if volt == "5/6V":
             dg = c.add_ref(
@@ -468,7 +472,6 @@ def draw_diode_pd2nw(
             layer=layer["metal1_label"],
         )
 
-
     # nwell generation
     nwell = c.add_ref(
         gf.components.rectangle(
@@ -534,7 +537,9 @@ def draw_diode_pd2nw(
                     layer=layer["comp"],
                 )
             )
-            rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid))
+            rect_pcmpgr_out.move(
+                (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+            )
             c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -651,7 +656,9 @@ def draw_diode_pd2nw(
                     layer=layer["metal1"],
                 )
             )
-            comp_m1_out.move((rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid))
+            comp_m1_out.move(
+                (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+            )
             c.add_ref(
                 gf.geometry.boolean(
                     A=rect_pcmpgr_out,
@@ -660,8 +667,8 @@ def draw_diode_pd2nw(
                     layer=layer["metal1"],
                 )
             )  # guardring metal1
-    
-    else : 
+
+    else:
 
         if volt == "5/6V":
             dg = c.add_ref(
@@ -771,7 +778,7 @@ def draw_diode_nw2ps(
 
     diode_mk = c.add_ref(
         gf.components.rectangle(
-            size=(nwell.xmax - pplus.xmin,nwell.size[1]), layer=layer["well_diode_mk"]
+            size=(nwell.xmax - pplus.xmin, nwell.size[1]), layer=layer["well_diode_mk"]
         )
     )
     diode_mk.xmin = pplus.xmin
@@ -956,7 +963,7 @@ def draw_diode_pw2dw(
         )
     )
 
-    dn_rect.xmax= lvpwell.xmax + dn_enc_lvpwell
+    dn_rect.xmax = lvpwell.xmax + dn_enc_lvpwell
     dn_rect.ymin = lvpwell.ymin - dn_enc_lvpwell
 
     if pcmpgr == 1:
@@ -983,7 +990,9 @@ def draw_diode_pw2dw(
                 layer=layer["comp"],
             )
         )
-        rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid))
+        rect_pcmpgr_out.move(
+            (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+        )
         c.add_ref(
             gf.geometry.boolean(
                 A=rect_pcmpgr_out,
@@ -1090,11 +1099,16 @@ def draw_diode_pw2dw(
 
         comp_m1_out = c_temp_gr.add_ref(
             gf.components.rectangle(
-                size=((comp_m1_in.size[0]) + 2 * pcmp_gr_wid, (comp_m1_in.size[1]) + 2 * pcmp_gr_wid),
+                size=(
+                    (comp_m1_in.size[0]) + 2 * pcmp_gr_wid,
+                    (comp_m1_in.size[1]) + 2 * pcmp_gr_wid,
+                ),
                 layer=layer["metal1"],
             )
         )
-        comp_m1_out.move((rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid))
+        comp_m1_out.move(
+            (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+        )
         c.add_ref(
             gf.geometry.boolean(
                 A=rect_pcmpgr_out,
@@ -1314,21 +1328,18 @@ def draw_diode_dw2ps(
 
     # generate dnwell
 
-    if (ncmp.size[0] + (2 * dn_enc_ncmp)) < dn_wid : 
+    if (ncmp.size[0] + (2 * dn_enc_ncmp)) < dn_wid:
         dn_x = dn_wid
-    else : 
+    else:
         dn_x = ncmp.size[0] + (2 * dn_enc_ncmp)
-    
-    if (ncmp.size[1] + (2 * dn_enc_ncmp)) < dn_wid : 
-        dn_y = dn_wid 
-    else : 
+
+    if (ncmp.size[1] + (2 * dn_enc_ncmp)) < dn_wid:
+        dn_y = dn_wid
+    else:
         dn_y = ncmp.size[1] + (2 * dn_enc_ncmp)
 
     dn_rect = c.add_ref(
-        gf.components.rectangle(
-            size=(dn_x,dn_y),
-            layer=layer["dnwell"],
-        )
+        gf.components.rectangle(size=(dn_x, dn_y), layer=layer["dnwell"],)
     )
     dn_rect.center = ncmp.center
 
@@ -1364,7 +1375,9 @@ def draw_diode_dw2ps(
                 layer=layer["comp"],
             )
         )
-        rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid))
+        rect_pcmpgr_out.move(
+            (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+        )
         c.add_ref(
             gf.geometry.boolean(
                 A=rect_pcmpgr_out,
@@ -1491,7 +1504,9 @@ def draw_diode_dw2ps(
                 layer=layer["metal1"],
             )
         )
-        comp_m1_out.move((rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid))
+        comp_m1_out.move(
+            (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+        )
         c.add_ref(
             gf.geometry.boolean(
                 A=rect_pcmpgr_out,
@@ -1560,6 +1575,7 @@ def draw_sc_diode(
     con_size = 0.22
     con_sp = 0.28
     con_comp_enc = 0.07
+    pcmp_gr_wid = 0.36
 
     # cathode draw
 
@@ -1638,7 +1654,10 @@ def draw_sc_diode(
 
     cath_m1_v = c.add_array(
         component=gf.components.rectangle(
-            size=(cath_m1_xmax - cath_m1_xmin, cath_m1_ymin - sc_cathode.ymin + m1_w,),
+            size=(
+                cath_m1_xmax - cath_m1_xmin,
+                cath_m1_ymin - sc_cathode.ymin + m1_w + 0.001,
+            ),
             layer=layer["metal1"],
         ),
         rows=1,
@@ -1647,7 +1666,7 @@ def draw_sc_diode(
     )
 
     cath_m1_v.xmin = cath_m1_xmin
-    cath_m1_v.ymax = cath_m1_ymin
+    cath_m1_v.ymax = cath_m1_ymin + 0.001
 
     cath_m1_h = c.add_ref(
         gf.components.rectangle(size=(cath_m1_v.size[0], m1_w), layer=layer["metal1"])
@@ -1673,7 +1692,7 @@ def draw_sc_diode(
         spacing=(wa + cw + (2 * sc_comp_spacing), 0),
     )
 
-    sc_anode.xmin = sc_cathode.xmin + (cw + sc_comp_spacing)
+    sc_anode.xmin = sc_cathode.xmin + (cw + sc_comp_spacing + np_enc_comp)
 
     an_m1_polys = sc_anode.get_polygons(by_spec=layer["metal1"])
     an_m1_xmin = np.min(an_m1_polys[0][:, 0])
@@ -1685,7 +1704,10 @@ def draw_sc_diode(
 
         an_m1_v = c.add_array(
             component=gf.components.rectangle(
-                size=(an_m1_xmax - an_m1_xmin, cath_m1_ymin - sc_an.ymin + m1_w,),
+                size=(
+                    an_m1_xmax - an_m1_xmin,
+                    cath_m1_ymin - sc_an.ymin + m1_w + 0.001,
+                ),
                 layer=layer["metal1"],
             ),
             rows=1,
@@ -1700,7 +1722,7 @@ def draw_sc_diode(
             gf.components.rectangle(size=(an_m1_v.size[0], m1_w), layer=layer["metal1"])
         )
         an_m1_h.xmin = an_m1_v.xmin
-        an_m1_h.ymin = an_m1_v.ymax
+        an_m1_h.ymin = an_m1_v.ymax - 0.001
 
         # anode label generation
         if lbl == 1:
@@ -1743,13 +1765,13 @@ def draw_sc_diode(
     dn_rect = c.add_ref(
         gf.components.rectangle(
             size=(
-                sc_anode.size[0] + (2 * dn_enc_sc_an),
+                sc_cathode.size[0] + (2 * dn_enc_sc_an),
                 sc_anode.size[1] + (2 * dn_enc_sc_an),
             ),
             layer=layer["dnwell"],
         )
     )
-    dn_rect.xmin = sc_anode.xmin - dn_enc_sc_an
+    dn_rect.xmin = sc_cathode.xmin - dn_enc_sc_an
     dn_rect.ymin = sc_anode.ymin - dn_enc_sc_an
 
     if pcmpgr == 1:
@@ -1770,13 +1792,15 @@ def draw_sc_diode(
         rect_pcmpgr_out = c_temp_gr.add_ref(
             gf.components.rectangle(
                 size=(
-                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * cw,
-                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * cw,
+                    (rect_pcmpgr_in.xmax - rect_pcmpgr_in.xmin) + 2 * pcmp_gr_wid,
+                    (rect_pcmpgr_in.ymax - rect_pcmpgr_in.ymin) + 2 * pcmp_gr_wid,
                 ),
                 layer=layer["comp"],
             )
         )
-        rect_pcmpgr_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        rect_pcmpgr_out.move(
+            (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+        )
         c.add_ref(
             gf.geometry.boolean(
                 A=rect_pcmpgr_out,
@@ -1883,11 +1907,16 @@ def draw_sc_diode(
 
         comp_m1_out = c_temp_gr.add_ref(
             gf.components.rectangle(
-                size=((comp_m1_in.size[0]) + 2 * cw, (comp_m1_in.size[1]) + 2 * cw,),
+                size=(
+                    (comp_m1_in.size[0]) + 2 * pcmp_gr_wid,
+                    (comp_m1_in.size[1]) + 2 * pcmp_gr_wid,
+                ),
                 layer=layer["metal1"],
             )
         )
-        comp_m1_out.move((rect_pcmpgr_in.xmin - cw, rect_pcmpgr_in.ymin - cw))
+        comp_m1_out.move(
+            (rect_pcmpgr_in.xmin - pcmp_gr_wid, rect_pcmpgr_in.ymin - pcmp_gr_wid)
+        )
         c.add_ref(
             gf.geometry.boolean(
                 A=rect_pcmpgr_out,

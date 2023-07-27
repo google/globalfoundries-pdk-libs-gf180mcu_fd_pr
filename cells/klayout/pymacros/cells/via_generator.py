@@ -102,7 +102,6 @@ def via_stack(
 
     con_size = (0.22, 0.22)
     con_enc = 0.07
-    m_enc = 0.06
 
     con_spacing = (0.28, 0.28)
 
