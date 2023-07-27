@@ -64,7 +64,7 @@ def draw_cap_mim(
         up_lbl_layer = layer["metal3_label"]
         bot_lbl_layer = layer["metal2_label"]
 
-    via_size = (0.22, 0.22)
+    via_size = (0.26, 0.26)
     via_spacing = (0.5, 0.5)
     via_enc = (0.4, 0.4)
 

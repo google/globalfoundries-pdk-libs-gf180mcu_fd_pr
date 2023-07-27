@@ -20,8 +20,8 @@ import pya
 import os
 from .draw_cap_mim import draw_cap_mim
 
-mim_l = 1.02
-mim_w = 1.02
+mim_l = 5
+mim_w = 5
 
 
 class cap_mim(pya.PCellDeclarationHelper):
@@ -92,7 +92,7 @@ class cap_mim(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         option = os.environ["GF_PDK_OPTION"]
-        if option == "A":
+        if (option == "A" or option == "E"):
             if (self.mim_option) == "MIM-B":
                 raise TypeError(f"Current stack ({option}) doesn't allow this option")
         else:
