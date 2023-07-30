@@ -51,7 +51,7 @@ def via_generator(
     if nr < 1:
         nr = 1
 
-    nc = ceil(width / (via_size[0] + via_spacing[0]))
+    nc = floor(width / (via_size[0] + via_spacing[0]))
 
     if (
         round(width - nc * via_size[0] - (nc - 1) * via_spacing[0], 2)
