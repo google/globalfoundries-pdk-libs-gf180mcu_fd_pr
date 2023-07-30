@@ -55,8 +55,8 @@ nplus_u_w = 0.42
 pplus_u_l = 0.42
 pplus_u_w = 0.42
 
-nwell_l = 0.42
-nwell_w = 0.42
+nwell_l = 2.0
+nwell_w = 2.0
 
 pwell_l = 2.0
 pwell_w = 2.0
@@ -67,14 +67,14 @@ npolyf_s_w = 0.42
 ppolyf_s_l = 0.42
 ppolyf_s_w = 0.42
 
-npolyf_u_l = 0.42
-npolyf_u_w = 0.42
+npolyf_u_l = 0.8
+npolyf_u_w = 0.8
 
-ppolyf_u_l = 0.42
-ppolyf_u_w = 0.42
+ppolyf_u_l = 0.8
+ppolyf_u_w = 0.8
 
-ppolyf_u_h_res_l = 0.42
-ppolyf_u_h_res_w = 0.42
+ppolyf_u_h_res_l = 1.0
+ppolyf_u_h_res_w = 1.0
 
 
 class metal_resistor(pya.PCellDeclarationHelper):
@@ -97,8 +97,6 @@ class metal_resistor(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("tm11k", "tm11k")
         self.Type_handle.add_choice("tm30k", "tm30k")
 
-        self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
-        self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
         self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
         self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
@@ -127,13 +125,6 @@ class metal_resistor(pya.PCellDeclarationHelper):
             + ("%.3f" % self.w_res)
             + ")"
         )
-        return (
-            "metal_resistor(L="
-            + ("%.3f" % self.l_res)
-            + ",W="
-            + ("%.3f" % self.w_res)
-            + ")"
-        )
 
     def coerce_parameters_impl(self):
         # We employ coerce_parameters_impl to decide whether the handle or the numeric parameter has changed.
@@ -144,10 +135,6 @@ class metal_resistor(pya.PCellDeclarationHelper):
         self.perim = 2 * (self.w_res + self.l_res)
         # w,l must be larger or equal than min. values.
         if (self.res_type) == "rm1":
-            if (self.l_res) < rm1_l:
-                self.l_res = rm1_l
-            if (self.w_res) < rm1_w:
-                self.w_res = rm1_w
             if (self.l_res) < rm1_l:
                 self.l_res = rm1_l
             if (self.w_res) < rm1_w:
@@ -742,7 +729,7 @@ class pwell_resistor(pya.PCellDeclarationHelper):
         super(pwell_resistor, self).__init__()
 
         # ===================== PARAMETERS DECLARATIONS =====================
-        self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=0)
+        self.param("pcmpgr", self.TypeBoolean, "Guard Ring", default=1)
         self.param("w_res", self.TypeDouble, "Width", default=pwell_l, unit="um")
         self.param("l_res", self.TypeDouble, "Length", default=pwell_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
