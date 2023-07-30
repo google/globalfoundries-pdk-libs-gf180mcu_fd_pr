@@ -350,6 +350,14 @@ def draw_diode_nd2ps(
             dg.xmin = pcmp.xmin - dg_enc_cmp
             dg.ymin = pcmp.ymin - dg_enc_cmp
 
+        lvpwell = c.add_ref(
+            gf.components.rectangle(
+                size=(diode_mk.size[0], diode_mk.size[1],), layer=layer["lvpwell"],
+            )
+        )
+
+        lvpwell.center = diode_mk.center
+
     # creating layout and cell in klayout
 
     c.write_gds("diode_nd2ps_temp.gds")
@@ -1180,10 +1188,26 @@ def draw_diode_dw2ps(
 
     pcmpgr_enc_dn = 2.5
     pcmp_gr_wid = 0.36
-    dn_wid = 1.7
 
-    if (wa < ((2 * cw) + comp_spacing)) or (la < ((2 * cw) + comp_spacing)):
-        ncmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
+    dn_rect = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["dnwell"],))
+
+    diode_mk = c.add_ref(
+        gf.components.rectangle(
+            size=(dn_rect.size[0], dn_rect.size[1]), layer=layer["well_diode_mk"]
+        )
+    )
+    diode_mk.xmin = dn_rect.xmin
+    diode_mk.ymin = dn_rect.ymin
+
+    if (wa < ((2 * cw) + comp_spacing + (2 * dn_enc_ncmp))) or (
+        la < ((2 * cw) + comp_spacing + (2 * dn_enc_ncmp))
+    ):
+        ncmp = c.add_ref(
+            gf.components.rectangle(
+                size=(cw, la - (2 * dn_enc_ncmp)), layer=layer["comp"]
+            )
+        )
+        ncmp.center = dn_rect.center
 
         n_con = c.add_ref(
             via_stack(
@@ -1209,11 +1233,19 @@ def draw_diode_dw2ps(
         c_temp = gf.Component("temp_store guard ring")
         ncmp_in = c_temp.add_ref(
             gf.components.rectangle(
-                size=(wa - (2 * cw), la - (2 * cw)), layer=layer["comp"],
+                size=(
+                    wa - (2 * dn_enc_ncmp) - (2 * cw),
+                    la - (2 * dn_enc_ncmp) - (2 * cw),
+                ),
+                layer=layer["comp"],
             )
         )
+        ncmp_in.center = dn_rect.center
         ncmp_out = c_temp.add_ref(
-            gf.components.rectangle(size=(wa, la), layer=layer["comp"],)
+            gf.components.rectangle(
+                size=(wa - (2 * dn_enc_ncmp), la - (2 * dn_enc_ncmp)),
+                layer=layer["comp"],
+            )
         )
         ncmp_out.move((ncmp_in.xmin - cw, ncmp_in.ymin - cw))
         ncmp = c.add_ref(
@@ -1242,7 +1274,7 @@ def draw_diode_dw2ps(
             )
         )
         nplus_out.move((ncmp_out.xmin - pp_enc_comp, ncmp_out.ymin - pp_enc_comp,))
-        c.add_ref(
+        nplus = c.add_ref(
             gf.geometry.boolean(
                 A=nplus_out, B=nplus_in, operation="A-B", layer=layer["nplus"]
             )
@@ -1327,29 +1359,6 @@ def draw_diode_dw2ps(
         )
 
     # generate dnwell
-
-    if (ncmp.size[0] + (2 * dn_enc_ncmp)) < dn_wid:
-        dn_x = dn_wid
-    else:
-        dn_x = ncmp.size[0] + (2 * dn_enc_ncmp)
-
-    if (ncmp.size[1] + (2 * dn_enc_ncmp)) < dn_wid:
-        dn_y = dn_wid
-    else:
-        dn_y = ncmp.size[1] + (2 * dn_enc_ncmp)
-
-    dn_rect = c.add_ref(
-        gf.components.rectangle(size=(dn_x, dn_y), layer=layer["dnwell"],)
-    )
-    dn_rect.center = ncmp.center
-
-    diode_mk = c.add_ref(
-        gf.components.rectangle(
-            size=(dn_rect.size[0], dn_rect.size[1]), layer=layer["well_diode_mk"]
-        )
-    )
-    diode_mk.xmin = dn_rect.xmin
-    diode_mk.ymin = dn_rect.ymin
 
     if pcmpgr == 1:
 

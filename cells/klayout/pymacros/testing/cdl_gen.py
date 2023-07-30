@@ -75,17 +75,34 @@ def cdl_gen(df, device_name):
         """
     )
 
-    # reading netlist parameters (name,nets,type,values) for every pattern
-    for i, row in df.iterrows():
-        nets = row["netlist_nets"].split("_")
-        dev_name = row["dev_name"].split("_")
-        param = row["netlists_param"].split("_")
-        nl = len(nets)
+    if "fet" in device_name:
 
-        for j in range(nl):
+        # reading netlist parameters (name,nets,type,values) for every pattern
+        for i, row in df.iterrows():
+            nets = row["netlist_nets"].split("_")
+            dev_name = row["dev_name"].split("_")
+            param = row["netlists_param"].split("_")
+            nl = len(nets)
+
+            for j in range(nl):
+                cdl_f.write(
+                    f"""
+    {dev_name[j]} {nets[j]} {device_name} {param[j]}
+                    """
+                )
+
+    elif "diode" in device_name:
+
+        # reading netlist parameters (name,nets,type,values) for every pattern
+        for i, row in df.iterrows():
+            nets = row["netlist_nets"]
+            dev_name = row["dev_name"]
+            dev_tb = row["dev_tb"]
+            param = row["netlists_param"]
+
             cdl_f.write(
                 f"""
-{dev_name[j]} {nets[j]} {device_name} {param[j]}
+{dev_name} {nets} {dev_tb} {param}
                 """
             )
 
