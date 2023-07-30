@@ -100,7 +100,7 @@ def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
                 width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
                 moscap_meas.append(float(moscap_val))
 
-                if type(moscap_corners) == str:
+                if moscap_corners is str:
 
                     corner.append((moscap_corners.split("_")[-1]))
 
@@ -113,7 +113,7 @@ def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
                 width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
                 moscap_meas.append(float(moscap_val))
 
-                if type(moscap_corners) == str:
+                if moscap_corners is str:
 
                     corner.append((moscap_corners.split("_")[-1]))
 
@@ -128,7 +128,7 @@ def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
                 width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
                 moscap_meas.append(float(moscap_val))
 
-                if type(moscap_corners) == str:
+                if moscap_corners is str:
 
                     corner.append((moscap_corners.split("_")[-1]))
 
@@ -140,7 +140,7 @@ def ext_measured(dev_data_path: str, device: str) -> pd.DataFrame:
                 width.append(float(a_str.split("(")[1].split("x")[1].split("u")[0]))
                 moscap_meas.append(float(moscap_val))
 
-                if type(moscap_corners) == str:
+                if moscap_corners is str:
 
                     corner.append((moscap_corners.split("_")[-1]))
 
