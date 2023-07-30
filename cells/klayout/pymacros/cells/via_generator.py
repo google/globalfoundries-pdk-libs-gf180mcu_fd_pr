@@ -102,13 +102,13 @@ def via_stack(
 
     con_size = (0.22, 0.22)
     con_enc = 0.07
-    m_enc = 0.06
 
     con_spacing = (0.28, 0.28)
 
     via_size = (0.22, 0.22)
     via_spacing = (0.28, 0.28)
     via_enc = (0.06, 0.06)
+    m1_area = 0.145
 
     if metal_level >= 1:
         con_gen = via_generator(
@@ -125,11 +125,13 @@ def via_stack(
 
         m1_y = con.size[1] + 2 * con_enc
 
-        m1 = c.add_ref(
-            gf.components.rectangle(size=(m1_x, m1_y), layer=layer["metal1"])
-        )
-        m1.xmin = con.xmin - m_enc
-        m1.ymin = con.ymin - m_enc
+        if (m1_x * m1_y) < m1_area:
+            m1_size = (m1_x, round(m1_area / m1_x, 3))
+        else:
+            m1_size = (m1_x, m1_y)
+
+        m1 = c.add_ref(gf.components.rectangle(size=m1_size, layer=layer["metal1"]))
+        m1.center = con.center
 
     if metal_level >= 2:
         via1_gen = via_generator(
