@@ -864,7 +864,7 @@ def draw_diode_pw2dw(
 
     c = gf.Component("diode_pw2dw_dev")
 
-    comp_spacing: float = 0.48
+    comp_spacing: float = 0.92
     np_enc_comp: float = 0.16
     pp_enc_comp: float = 0.16
 
