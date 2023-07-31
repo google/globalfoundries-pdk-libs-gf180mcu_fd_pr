@@ -32,11 +32,13 @@ np_w = 0.36
 pn_l = 0.36
 pn_w = 0.36
 
-nwp_l = 0.54
-nwp_w = 0.54
+nwp_l = 0.86
+nwp_w = 0.86
+nwp_cw = 0.36
 
-diode_pw2dw_l = 0.42
-diode_pw2dw_w = 0.42
+diode_pw2dw_l = 0.74
+diode_pw2dw_w = 0.74
+diode_pw2dw_cw = 0.36
 
 diode_dw2ps_l = 1.9
 diode_dw2ps_w = 1.7
@@ -47,6 +49,7 @@ sc_w = 0.62
 
 cmp_area = 0.203
 dn_enc_ncmp = 0.66
+nw_enc_cmp = 0.16
 
 
 class diode_nd2ps(pya.PCellDeclarationHelper):
@@ -66,9 +69,9 @@ class diode_nd2ps(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("la", self.TypeDouble, "Length", default=np_l, unit="um")
         self.param("wa", self.TypeDouble, "Width", default=np_w, unit="um")
-        self.param("cw", self.TypeDouble, "Cathode Width", default=np_w, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=np_l, unit="um")
+        self.param("cw", self.TypeDouble, "Anode Width", default=np_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
@@ -156,8 +159,8 @@ class diode_pd2nw(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("la", self.TypeDouble, "Length", default=pn_l, unit="um")
         self.param("wa", self.TypeDouble, "Width", default=pn_w, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=pn_l, unit="um")
         self.param("cw", self.TypeDouble, "Cathode Width", default=np_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
@@ -246,7 +249,7 @@ class diode_nw2ps(pya.PCellDeclarationHelper):
 
         self.param("la", self.TypeDouble, "Length", default=nwp_l, unit="um")
         self.param("wa", self.TypeDouble, "Width", default=nwp_w, unit="um")
-        self.param("cw", self.TypeDouble, "Cathode Width", default=np_w, unit="um")
+        self.param("cw", self.TypeDouble, "Anode Width", default=np_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
@@ -270,10 +273,10 @@ class diode_nw2ps(pya.PCellDeclarationHelper):
             self.la = nwp_l
         if (self.wa) < nwp_w:
             self.wa = nwp_w
-        if (self.cw) < nwp_w:
-            self.cw = nwp_w
-        if (self.la * self.wa) < cmp_area:
-            self.la = round(cmp_area / self.wa, 3)
+        if (self.cw) < nwp_cw:
+            self.cw = nwp_cw
+        if (self.cw * (self.la - (2 * nw_enc_cmp))) < cmp_area:
+            self.cw = round(cmp_area / (self.la - (2 * nw_enc_cmp)), 2)
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -331,8 +334,8 @@ class diode_pw2dw(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("3.3V", "3.3V")
         self.Type_handle.add_choice("5/6V", "5/6V")
 
-        self.param("la", self.TypeDouble, "Length", default=diode_pw2dw_l, unit="um")
         self.param("wa", self.TypeDouble, "Width", default=diode_pw2dw_w, unit="um")
+        self.param("la", self.TypeDouble, "Length", default=diode_pw2dw_l, unit="um")
         self.param("cw", self.TypeDouble, "Cathode Width", default=np_w, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
@@ -357,10 +360,12 @@ class diode_pw2dw(pya.PCellDeclarationHelper):
             self.la = diode_pw2dw_l
         if (self.wa) < diode_pw2dw_w:
             self.wa = diode_pw2dw_w
-        if (self.cw) < diode_pw2dw_w:
-            self.cw = diode_pw2dw_w
-        if (self.la * self.wa) < cmp_area:
-            self.la = round(cmp_area / self.wa, 3)
+        if (self.cw) < diode_pw2dw_cw:
+            self.cw = diode_pw2dw_cw
+        if ((self.la - (2 * nw_enc_cmp)) * (self.wa - (2 * nw_enc_cmp))) < cmp_area:
+            self.la = round(cmp_area / (self.wa - (2 * nw_enc_cmp)), 3) + (
+                2 * nw_enc_cmp
+            )
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which

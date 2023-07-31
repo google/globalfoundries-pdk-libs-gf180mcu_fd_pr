@@ -403,7 +403,7 @@ def draw_diode_pd2nw(
 
     dg_enc_cmp = 0.24
     dn_enc_nwell = 0.5
-    nwell_ncmp_enc = 0.12 if volt == "3.3V" else 0.16
+    nwell_ncmp_enc = 0.28
     nwell_pcmp_enc = 0.43 if volt == "3.3V" else 0.6
     pcmpgr_enc_dn = 2.5
     dg_enc_dn = 0.5
@@ -731,8 +731,20 @@ def draw_diode_nw2ps(
 
     nwell_ncmp_enc = 0.16
 
+    nwell = c.add_ref(gf.components.rectangle(size=(wa, la,), layer=layer["nwell"],))
+
     # n generation
-    ncmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
+    ncmp = c.add_ref(
+        gf.components.rectangle(
+            size=(
+                nwell.size[0] - (2 * nwell_ncmp_enc),
+                nwell.size[1] - (2 * nwell_ncmp_enc),
+            ),
+            layer=layer["comp"],
+        )
+    )
+    ncmp.center = nwell.center
+
     nplus = c.add_ref(
         gf.components.rectangle(
             size=(ncmp.size[0] + (2 * np_enc_comp), ncmp.size[1] + (2 * np_enc_comp),),
@@ -741,18 +753,6 @@ def draw_diode_nw2ps(
     )
     nplus.xmin = ncmp.xmin - np_enc_comp
     nplus.ymin = ncmp.ymin - np_enc_comp
-
-    nwell = c.add_ref(
-        gf.components.rectangle(
-            size=(
-                ncmp.size[0] + (2 * nwell_ncmp_enc),
-                ncmp.size[1] + (2 * nwell_ncmp_enc),
-            ),
-            layer=layer["nwell"],
-        )
-    )
-    nwell.xmin = ncmp.xmin - nwell_ncmp_enc
-    nwell.ymin = ncmp.ymin - nwell_ncmp_enc
 
     n_con = c.add_ref(
         via_stack(
@@ -764,7 +764,10 @@ def draw_diode_nw2ps(
     )  # ncomp contact
 
     # p generation
-    pcmp = c.add_ref(gf.components.rectangle(size=(cw, la), layer=layer["comp"]))
+    pcmp = c.add_ref(
+        gf.components.rectangle(size=(cw, ncmp.size[1]), layer=layer["comp"])
+    )
+    pcmp.center = ncmp.center
     pcmp.xmax = ncmp.xmin - comp_spacing
     pplus = c.add_ref(
         gf.components.rectangle(
@@ -876,29 +879,11 @@ def draw_diode_pw2dw(
 
     pcmpgr_enc_dn = 2.5
     pcmp_gr_wid = 0.36
-
-    # p generation
-    pcmp = c.add_ref(gf.components.rectangle(size=(wa, la), layer=layer["comp"]))
-    pplus = c.add_ref(
-        gf.components.rectangle(
-            size=(pcmp.size[0] + (2 * pp_enc_comp), pcmp.size[1] + (2 * pp_enc_comp),),
-            layer=layer["pplus"],
-        )
-    )
-    pplus.xmin = pcmp.xmin - pp_enc_comp
-    pplus.ymin = pcmp.ymin - pp_enc_comp
+    grw = 0.36
 
     lvpwell = c.add_ref(
-        gf.components.rectangle(
-            size=(
-                pcmp.size[0] + (2 * lvpwell_enc_pcmp),
-                pcmp.size[1] + (2 * lvpwell_enc_pcmp),
-            ),
-            layer=layer["lvpwell"],
-        )
+        gf.components.rectangle(size=(wa, la,), layer=layer["lvpwell"],)
     )
-    lvpwell.xmin = pcmp.xmin - lvpwell_enc_pcmp
-    lvpwell.ymin = pcmp.ymin - lvpwell_enc_pcmp
 
     diode_mk = c.add_ref(
         gf.components.rectangle(
@@ -908,18 +893,161 @@ def draw_diode_pw2dw(
     diode_mk.xmin = lvpwell.xmin
     diode_mk.ymin = lvpwell.ymin
 
-    p_con = c.add_ref(
-        via_stack(
-            x_range=(pcmp.xmin, pcmp.xmax),
-            y_range=(pcmp.ymin, pcmp.ymax),
-            base_layer=layer["comp"],
-            metal_level=1,
+    if (wa < ((2 * grw) + comp_spacing + (2 * lvpwell_enc_pcmp))) or (
+        la < ((2 * grw) + comp_spacing + (2 * lvpwell_enc_pcmp))
+    ):
+
+        # p generation
+        pcmp = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    lvpwell.size[0] - (2 * lvpwell_enc_pcmp),
+                    lvpwell.size[1] - (2 * lvpwell_enc_pcmp),
+                ),
+                layer=layer["comp"],
+            )
         )
-    )  # pcomp_contact
+        pcmp.center = lvpwell.center
+
+        pplus = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    pcmp.size[0] + (2 * pp_enc_comp),
+                    pcmp.size[1] + (2 * pp_enc_comp),
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        pplus.xmin = pcmp.xmin - pp_enc_comp
+        pplus.ymin = pcmp.ymin - pp_enc_comp
+
+        p_con = c.add_ref(
+            via_stack(
+                x_range=(pcmp.xmin, pcmp.xmax),
+                y_range=(pcmp.ymin, pcmp.ymax),
+                base_layer=layer["comp"],
+                metal_level=1,
+            )
+        )  # pcomp_contact
+
+    else:
+
+        c_temp = gf.Component("temp_store guard ring")
+
+        pcmp_in = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    lvpwell.size[0] - (2 * lvpwell_enc_pcmp) - (2 * grw),
+                    lvpwell.size[1] - (2 * lvpwell_enc_pcmp) - (2 * grw),
+                ),
+                layer=layer["comp"],
+            )
+        )
+        pcmp_in.center = lvpwell.center
+
+        pcmp_out = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    lvpwell.size[0] - (2 * lvpwell_enc_pcmp),
+                    lvpwell.size[1] - (2 * lvpwell_enc_pcmp),
+                ),
+                layer=layer["comp"],
+            )
+        )
+        pcmp_out.move((pcmp_in.xmin - grw, pcmp_in.ymin - grw))
+        pcmp = c.add_ref(
+            gf.geometry.boolean(
+                A=pcmp_out, B=pcmp_in, operation="A-B", layer=layer["comp"],
+            )
+        )
+
+        pplus_in = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (pcmp_in.xmax - pcmp_in.xmin) - 2 * pp_enc_comp,
+                    (pcmp_in.ymax - pcmp_in.ymin) - 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        pplus_in.move((pcmp_in.xmin + pp_enc_comp, pcmp_in.ymin + pp_enc_comp,))
+        pplus_out = c_temp.add_ref(
+            gf.components.rectangle(
+                size=(
+                    (pcmp_out.xmax - pcmp_out.xmin) + 2 * pp_enc_comp,
+                    (pcmp_out.ymax - pcmp_out.ymin) + 2 * pp_enc_comp,
+                ),
+                layer=layer["pplus"],
+            )
+        )
+        pplus_out.move((pcmp_out.xmin - pp_enc_comp, pcmp_out.ymin - pp_enc_comp,))
+        pplus = c.add_ref(
+            gf.geometry.boolean(
+                A=pplus_out, B=pplus_in, operation="A-B", layer=layer["pplus"]
+            )
+        )  # pplus
+
+        # generating contacts
+
+        c.add_ref(
+            via_generator(
+                x_range=(pcmp_in.xmin + con_size, pcmp_in.xmax - con_size,),
+                y_range=(pcmp_out.ymin, pcmp_in.ymin),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # bottom contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(pcmp_in.xmin + con_size, pcmp_in.xmax - con_size,),
+                y_range=(pcmp_in.ymax, pcmp_out.ymax),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # upper contact
+
+        p_con = c.add_ref(
+            via_generator(
+                x_range=(pcmp_out.xmin, pcmp_in.xmin),
+                y_range=(pcmp_in.ymin + con_size, pcmp_in.ymax - con_size,),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # left contact
+
+        c.add_ref(
+            via_generator(
+                x_range=(pcmp_in.xmax, pcmp_out.xmax),
+                y_range=(pcmp_in.ymin + con_size, pcmp_in.ymax - con_size,),
+                via_enclosure=(con_comp_enc, con_comp_enc),
+                via_layer=layer["contact"],
+                via_size=(con_size, con_size),
+                via_spacing=(con_sp, con_sp),
+            )
+        )  # right contact
+
+        c.add_ref(
+            gf.geometry.boolean(
+                A=pcmp_out, B=pcmp_in, operation="A-B", layer=layer["metal1"],
+            )
+        )  # guardring metal1
 
     # n generation
-    ncmp = c.add_ref(gf.components.rectangle(size=(cw, la), layer=layer["comp"]))
+    ncmp = c.add_ref(
+        gf.components.rectangle(
+            size=(cw, lvpwell.size[1] - (2 * lvpwell_enc_pcmp)), layer=layer["comp"]
+        )
+    )
+    ncmp.center = pcmp.center
     ncmp.xmax = pcmp.xmin - comp_spacing
+
     nplus = c.add_ref(
         gf.components.rectangle(
             size=(ncmp.size[0] + (2 * np_enc_comp), ncmp.size[1] + (2 * np_enc_comp),),
