@@ -27,6 +27,7 @@ def draw_metal_res(
     l_res: float = 0.1,
     w_res: float = 0.1,
     res_type: str = "rm1",
+    tm_level: str = "LM6",
     lbl: bool = 0,
     r0_lbl: str = "",
     r1_lbl: str = "",
@@ -57,9 +58,23 @@ def draw_metal_res(
         res_layer = layer["metal3_res"]
         m_lbl_layer = layer["metal3_label"]
     else:
-        m_layer = layer["metaltop"]
-        res_layer = layer["metal6_res"]
-        m_lbl_layer = layer["metaltop_label"]
+
+        if tm_level == "3LM":
+            m_layer = layer["metal3"]
+            res_layer = layer["metal3_res"]
+            m_lbl_layer = layer["metal3_label"]
+        elif tm_level == "4LM":
+            m_layer = layer["metal4"]
+            res_layer = layer["metal4_res"]
+            m_lbl_layer = layer["metal4_label"]
+        elif tm_level == "5LM":
+            m_layer = layer["metal5"]
+            res_layer = layer["metal5_res"]
+            m_lbl_layer = layer["metal5_label"]
+        else:
+            m_layer = layer["metaltop"]
+            res_layer = layer["metal6_res"]
+            m_lbl_layer = layer["metaltop_label"]
 
     res_mk = c.add_ref(gf.components.rectangle(size=(l_res, w_res), layer=res_layer))
 
