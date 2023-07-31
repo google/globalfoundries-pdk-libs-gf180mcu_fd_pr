@@ -19,16 +19,16 @@
 import pya
 from .draw_cap_mos import draw_cap_mos
 
-cap_nmos_w = 1.88
+cap_nmos_w = 1
 cap_nmos_l = 1
 
-cap_pmos_w = 1.88
+cap_pmos_w = 1
 cap_pmos_l = 1
 
-cap_nmos_b_w = 1.88
+cap_nmos_b_w = 1
 cap_nmos_b_l = 1
 
-cap_pmos_b_w = 1.88
+cap_pmos_b_w = 1
 cap_pmos_b_l = 1
 
 poly_spacing = 0.24

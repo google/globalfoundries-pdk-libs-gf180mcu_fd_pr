@@ -38,6 +38,9 @@ def cap_mos_inst(
     implant_enc: Float2 = (0.1, 0.1),
     lbl: bool = 0,
     g_lbl: str = "",
+    lvpwell: bool = 1,
+    nwell: bool = 1,
+    nw_enc_cmp: float = 0.16,
 ) -> gf.Component:
     """Returns mos cap simple instance
 
@@ -66,6 +69,23 @@ def cap_mos_inst(
     )
     cap_mk.xmin = cmp.xmin
     cap_mk.ymin = cmp.ymin
+
+    if lvpwell == 0:
+        lvpwell_rect = c_inst.add_ref(
+            gf.components.rectangle(
+                size=(cap_mk.size[0], cap_mk.size[1]), layer=layer["lvpwell"]
+            )
+        )
+        lvpwell_rect.center = cap_mk.center
+
+    if nwell == 0:
+        nwell_rect = c_inst.add_ref(
+            gf.components.rectangle(
+                size=(cmp.size[0] + (2 * nw_enc_cmp), cmp.size[1] + (2 * nw_enc_cmp)),
+                layer=layer["nwell"],
+            )
+        )
+        nwell_rect.center = cmp.center
 
     cmp_con_el = via_stack(
         x_range=(cmp.xmin, cmp.xmin + con_w),
@@ -189,8 +209,12 @@ def draw_cap_mos(
 
     if "cap_nmos" in type:
         implant_layer = layer["nplus"]
+        lvp_dis = 1 if "_b" in type else deepnwell
+        nw_dis = 1
     else:
         implant_layer = layer["pplus"]
+        lvp_dis = 1
+        nw_dis = 1 if ("_b" in type or (deepnwell == 0 and pcmpgr == 1)) else deepnwell
 
     c_inst = c.add_ref(
         cap_mos_inst(
@@ -205,6 +229,9 @@ def draw_cap_mos(
             implant_enc=(np_enc_cmp, np_enc_gate),
             lbl=lbl,
             g_lbl=g_lbl,
+            lvpwell=lvp_dis,
+            nwell=nw_dis,
+            nw_enc_cmp=lvpwell_enc_ncmp,
         )
     )
 
@@ -418,6 +445,16 @@ def draw_cap_mos(
         )  # psdm
 
         # generating contacts
+
+        if deepnwell == 0 and gr_imp == layer["nplus"]:
+            print("here")
+
+            nwell_rect = c.add_ref(
+                gf.components.rectangle(
+                    size=(psdm_out.size[0], psdm_out.size[1]), layer=layer["nwell"]
+                )
+            )
+            nwell_rect.center = psdm_out.center
 
         c.add_ref(
             via_generator(
