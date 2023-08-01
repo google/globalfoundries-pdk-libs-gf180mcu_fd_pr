@@ -1,110 +1,110 @@
-pcell_name,netlist_name,volt,la,wa,cw
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,7.27,9.2
-diode_nw2ps,diode_nw2ps_pcells,5/6V,1.46,2.47,4.05
-diode_nw2ps,diode_nw2ps_pcells,5/6V,5.17,6.81,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,7.41,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,5.95,6.3
-diode_nw2ps,diode_nw2ps_pcells,5/6V,7.18,6.33,5.34
-diode_nw2ps,diode_nw2ps_pcells,5/6V,8.82,4.67,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,7.52,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,10.0,5.02
-diode_nw2ps,diode_nw2ps_pcells,5/6V,8.72,7.08,2.92
-diode_nw2ps,diode_nw2ps_pcells,5/6V,9.1,7.52,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,4.67,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,6.33,5.45
-diode_nw2ps,diode_nw2ps_pcells,5/6V,7.64,5.95,3.89
-diode_nw2ps,diode_nw2ps_pcells,5/6V,2.82,7.41,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,6.81,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,2.47,2.92
-diode_nw2ps,diode_nw2ps_pcells,5/6V,4.13,7.27,5.02
-diode_nw2ps,diode_nw2ps_pcells,5/6V,4.03,10.0,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,7.08,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,10.0,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,4.67,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,7.52,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,5.95,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,7.08,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,7.27,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,2.47,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,6.81,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,7.41,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,6.33,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,7.41,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,6.81,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,2.47,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,7.27,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,10.0,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,4.67,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,7.52,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,7.08,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,6.33,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,5.95,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,6.33,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,6.81,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,5.95,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,4.67,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,10.0,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,2.47,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,7.08,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,7.41,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,7.52,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,7.27,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,5.95,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,2.47,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,7.27,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,10.0,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,6.33,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,7.52,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,7.41,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,4.67,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,7.08,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,6.81,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,7.41,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,7.52,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,2.47,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,6.33,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,7.27,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,7.08,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,6.81,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,5.95,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,10.0,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,4.67,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,7.08,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,5.95,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,10.0,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,6.33,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,4.67,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,7.41,3.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,7.27,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,6.81,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,2.47,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,7.52,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,7.27,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,7.41,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,10.0,5.45
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,7.08,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,2.47,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,7.52,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,7.41,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,7.52,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,6.33,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,2.47,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,4.67,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,6.33,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,4.67,4.05
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,6.81,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,6.81,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.72,7.27,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,7.08,3.89
-diode_nw2ps,diode_nw2ps_pcells,3.3V,2.82,6.81,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.18,5.95,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,5.17,10.0,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.03,5.95,9.86
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,5.95,5.34
-diode_nw2ps,diode_nw2ps_pcells,3.3V,1.46,10.0,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,8.82,6.33,5.02
-diode_nw2ps,diode_nw2ps_pcells,3.3V,9.1,6.33,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,2.47,9.2
-diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,7.41,6.3
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,7.41,2.92
-diode_nw2ps,diode_nw2ps_pcells,3.3V,7.64,7.41,5.34
+pcell_name,netlist_name,volt,la,wa,cw,lbl,p_lbl,n_lbl,netlist_nets,netlists_param,dev_name,dev_tb
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,4.91,3.51,1,p0,n0,p0 n0,AREA=20.2783 PJ=18.08,D0,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,5/6V,8.59,4.89,7.45,1,p1,n1,p1 n1,AREA=42.0051 PJ=26.96,D1,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,5/6V,6.68,6.13,4.65,1,p2,n2,p2 n2,AREA=40.9484 PJ=25.619999999999997,D2,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,3.7,1.59,1,p3,n3,p3 n3,AREA=3.182 PJ=9.120000000000001,D3,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,4.34,4.6,1,p4,n4,p4 n4,AREA=14.755999999999998 PJ=15.48,D4,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,5/6V,6.6,6.67,1.2,1,p5,n5,p5 n5,AREA=44.022 PJ=26.54,D5,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,5/6V,1.28,7.34,7.16,1,p6,n6,p6 n6,AREA=9.3952 PJ=17.24,D6,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,6.95,9.9,1,p7,n7,p7 n7,AREA=16.68 PJ=18.7,D7,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,9.33,3.99,1,p8,n8,p8 n8,AREA=12.129000000000001 PJ=21.26,D8,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,5/6V,4.2,7.42,4.45,1,p9,n9,p9 n9,AREA=31.164 PJ=23.240000000000002,D9,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,5/6V,1.3,6.95,4.6,1,p10,n10,p10 n10,AREA=9.035 PJ=16.5,D10,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,7.34,1.2,1,p11,n11,p11 n11,AREA=30.828 PJ=23.08,D11,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,6.67,4.65,1,p12,n12,p12 n12,AREA=8.5376 PJ=15.9,D12,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,5/6V,2.4,4.34,1.59,1,p13,n13,p13 n13,AREA=10.415999999999999 PJ=13.48,D13,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,5/6V,3.4,3.7,3.51,1,p14,n14,p14 n14,AREA=12.58 PJ=14.2,D14,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,6.13,7.45,1,p15,n15,p15 n15,AREA=40.458 PJ=25.46,D15,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,4.89,4.45,1,p16,n16,p16 n16,AREA=32.6652 PJ=23.14,D16,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,5/6V,0.86,4.91,3.99,1,p17,n17,p17 n17,AREA=4.2226 PJ=11.540000000000001,D17,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,5/6V,4.13,9.33,9.9,1,p18,n18,p18 n18,AREA=38.5329 PJ=26.92,D18,diode_nw2ps_06v0
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,7.42,7.16,1,p19,n19,p19 n19,AREA=63.7378 PJ=32.019999999999996,D19,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,9.33,4.6,1,p20,n20,p20 n20,AREA=80.1447 PJ=35.84,D20,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,7.34,4.6,1,p21,n21,p21 n21,AREA=30.3142 PJ=22.939999999999998,D21,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,6.95,4.65,1,p22,n22,p22 n22,AREA=5.977 PJ=15.620000000000001,D22,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,4.34,7.45,1,p23,n23,p23 n23,AREA=28.9912 PJ=22.04,D23,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,7.42,4.6,1,p24,n24,p24 n24,AREA=48.971999999999994 PJ=28.04,D24,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,4.91,4.65,1,p25,n25,p25 n25,AREA=16.694 PJ=16.62,D25,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,4.89,4.6,1,p26,n26,p26 n26,AREA=11.735999999999999 PJ=14.579999999999998,D26,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,6.13,4.6,1,p27,n27,p27 n27,AREA=7.8464 PJ=14.82,D27,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,3.7,4.6,1,p28,n28,p28 n28,AREA=15.540000000000001 PJ=15.8,D28,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,6.67,7.45,1,p29,n29,p29 n29,AREA=8.671 PJ=15.94,D29,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,3.7,4.65,1,p30,n30,p30 n30,AREA=4.8100000000000005 PJ=10.0,D30,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,6.13,9.9,1,p31,n31,p31 n31,AREA=25.746000000000002 PJ=20.66,D31,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,4.89,9.9,1,p32,n32,p32 n32,AREA=6.2592 PJ=12.34,D32,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,4.91,7.45,1,p33,n33,p33 n33,AREA=11.784 PJ=14.620000000000001,D33,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,9.33,7.45,1,p34,n34,p34 n34,AREA=31.721999999999998 PJ=25.46,D34,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,7.34,4.65,1,p35,n35,p35 n35,AREA=48.443999999999996 PJ=27.88,D35,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,6.95,1.59,1,p36,n36,p36 n36,AREA=46.426 PJ=27.259999999999998,D36,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,7.42,7.45,1,p37,n37,p37 n37,AREA=6.3812 PJ=16.56,D37,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,6.67,1.59,1,p38,n38,p38 n38,AREA=27.5471 PJ=21.6,D38,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,4.34,4.65,1,p39,n39,p39 n39,AREA=37.2806 PJ=25.86,D39,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,6.67,9.9,1,p40,n40,p40 n40,AREA=57.2953 PJ=30.52,D40,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,6.13,3.99,1,p41,n41,p41 n41,AREA=25.3169 PJ=20.52,D41,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,4.34,9.9,1,p42,n42,p42 n42,AREA=3.7323999999999997 PJ=10.4,D42,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,7.34,9.9,1,p43,n43,p43 n43,AREA=49.0312 PJ=28.04,D43,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,9.33,1.59,1,p44,n44,p44 n44,AREA=61.577999999999996 PJ=31.86,D44,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,4.89,1.59,1,p45,n45,p45 n45,AREA=16.625999999999998 PJ=16.58,D45,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,7.42,4.65,1,p46,n46,p46 n46,AREA=17.808 PJ=19.64,D46,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,3.7,7.45,1,p47,n47,p47 n47,AREA=4.736000000000001 PJ=9.96,D47,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,6.95,7.45,1,p48,n48,p48 n48,AREA=29.19 PJ=22.3,D48,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,4.91,9.9,1,p49,n49,p49 n49,AREA=6.383 PJ=12.42,D49,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,4.34,7.16,1,p50,n50,p50 n50,AREA=5.642 PJ=11.28,D50,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,4.89,4.65,1,p51,n51,p51 n51,AREA=20.538 PJ=18.18,D51,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,4.91,1.59,1,p52,n52,p52 n52,AREA=6.284800000000001 PJ=12.38,D52,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,9.33,7.16,1,p53,n53,p53 n53,AREA=22.392 PJ=23.46,D53,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,6.67,7.16,1,p54,n54,p54 n54,AREA=22.678 PJ=20.14,D54,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,6.95,7.16,1,p55,n55,p55 n55,AREA=45.87 PJ=27.1,D55,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,3.7,7.16,1,p56,n56,p56 n56,AREA=24.716 PJ=20.759999999999998,D56,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,7.34,4.45,1,p57,n57,p57 n57,AREA=6.312399999999999 PJ=16.4,D57,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,7.42,1.2,1,p58,n58,p58 n58,AREA=30.6446 PJ=23.1,D58,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,6.13,1.59,1,p59,n59,p59 n59,AREA=52.6567 PJ=29.439999999999998,D59,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,3.7,1.2,1,p60,n60,p60 n60,AREA=31.783 PJ=24.58,D60,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,6.95,4.45,1,p61,n61,p61 n61,AREA=28.7035 PJ=22.16,D61,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,4.89,7.16,1,p62,n62,p62 n62,AREA=4.2054 PJ=11.5,D62,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,6.67,4.6,1,p63,n63,p63 n63,AREA=44.5556 PJ=26.7,D63,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,4.91,4.45,1,p64,n64,p64 n64,AREA=32.406 PJ=23.02,D64,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,7.42,9.9,1,p65,n65,p65 n65,AREA=25.227999999999998 PJ=21.64,D65,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,6.13,4.45,1,p66,n66,p66 n66,AREA=14.712 PJ=17.06,D66,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,4.34,4.45,1,p67,n67,p67 n67,AREA=5.5552 PJ=11.24,D67,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,9.33,3.51,1,p68,n68,p68 n68,AREA=39.186 PJ=27.060000000000002,D68,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,7.34,1.59,1,p69,n69,p69 n69,AREA=9.542 PJ=17.28,D69,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,7.42,3.51,1,p70,n70,p70 n70,AREA=9.646 PJ=17.44,D70,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,4.34,3.99,1,p71,n71,p71 n71,AREA=18.228 PJ=17.08,D71,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,9.33,1.2,1,p72,n72,p72 n72,AREA=11.942400000000001 PJ=21.22,D72,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,6.67,3.99,1,p73,n73,p73 n73,AREA=16.008 PJ=18.14,D73,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,7.34,3.99,1,p74,n74,p74 n74,AREA=24.956 PJ=21.48,D74,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,3.7,9.9,1,p75,n75,p75 n75,AREA=24.419999999999998 PJ=20.6,D75,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,4.91,1.2,1,p76,n76,p76 n76,AREA=32.7988 PJ=23.18,D76,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,6.13,1.2,1,p77,n77,p77 n77,AREA=5.2718 PJ=13.98,D77,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,4.89,7.45,1,p78,n78,p78 n78,AREA=20.1957 PJ=18.04,D78,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,6.95,3.99,1,p79,n79,p79 n79,AREA=59.7005 PJ=31.08,D79,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,4.91,4.6,1,p80,n80,p80 n80,AREA=42.1769 PJ=27.0,D80,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,3.7,4.65,1,p81,n81,p81 n81,AREA=15.281 PJ=15.66,D81,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,9.33,4.65,1,p82,n82,p82 n82,AREA=8.0238 PJ=20.38,D82,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,7.42,3.99,1,p83,n83,p83 n83,AREA=49.565599999999996 PJ=28.2,D83,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,4.89,3.99,1,p84,n84,p84 n84,AREA=32.273999999999994 PJ=22.979999999999997,D84,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,6.95,1.2,1,p85,n85,p85 n85,AREA=23.63 PJ=20.7,D85,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,3.7,3.99,1,p86,n86,p86 n86,AREA=8.88 PJ=12.2,D86,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,6.95,3.51,1,p87,n87,p87 n87,AREA=8.896 PJ=16.46,D87,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,6.67,1.59,1,p88,n88,p88 n88,AREA=28.014 PJ=21.740000000000002,D88,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,4.89,1.2,1,p89,n89,p89 n89,AREA=6.357 PJ=12.379999999999999,D89,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,7.34,3.51,1,p90,n90,p90 n90,AREA=17.616 PJ=19.48,D90,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,6.67,3.51,1,p91,n91,p91 n91,AREA=5.7362 PJ=15.06,D91,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,7.34,7.45,1,p92,n92,p92 n92,AREA=63.050599999999996 PJ=31.86,D92,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,6.13,3.51,1,p93,n93,p93 n93,AREA=52.6567 PJ=29.439999999999998,D93,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,6.13,7.16,1,p94,n94,p94 n94,AREA=7.969 PJ=14.86,D94,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.2,4.91,7.16,1,p95,n95,p95 n95,AREA=20.622 PJ=18.22,D95,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,7.42,1.59,1,p96,n96,p96 n96,AREA=9.4976 PJ=17.4,D96,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,3.4,6.13,4.45,1,p97,n97,p97 n97,AREA=20.842 PJ=19.06,D97,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.6,4.34,3.51,1,p98,n98,p98 n98,AREA=28.644 PJ=21.88,D98,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,6.68,9.33,3.51,1,p99,n99,p99 n99,AREA=62.3244 PJ=32.019999999999996,D99,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,4.13,4.34,7.16,1,p100,n100,p100 n100,AREA=17.9242 PJ=16.939999999999998,D100,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,4.34,1.2,1,p101,n101,p101 n101,AREA=37.2806 PJ=25.86,D101,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,8.59,9.33,4.45,1,p102,n102,p102 n102,AREA=80.1447 PJ=35.84,D102,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.28,6.67,3.99,1,p103,n103,p103 n103,AREA=8.5376 PJ=15.9,D103,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,1.3,6.67,4.45,1,p104,n104,p104 n104,AREA=8.671 PJ=15.94,D104,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,4.89,3.51,1,p105,n105,p105 n105,AREA=4.2054 PJ=11.5,D105,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,0.86,3.7,4.6,1,p106,n106,p106 n106,AREA=3.182 PJ=9.120000000000001,D106,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,3.7,4.45,1,p107,n107,p107 n107,AREA=8.88 PJ=12.2,D107,diode_nw2ps_03v3
+diode_nw2ps,diode_nw2ps_pcells,3.3V,2.4,3.7,1.2,1,p108,n108,p108 n108,AREA=8.88 PJ=12.2,D108,diode_nw2ps_03v3
