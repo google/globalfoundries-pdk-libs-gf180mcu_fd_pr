@@ -32,7 +32,6 @@ jobs:
         run: |
           make test-fet-pcells
 
-jobs:
   diode_pcells_testing:
     runs-on: ubuntu-latest
     strategy:
@@ -45,7 +44,6 @@ jobs:
         run: |
           make test-diodes-pcells
 
-jobs:
   mimcap_pcells_testing:
     runs-on: ubuntu-latest
     strategy:
@@ -58,7 +56,6 @@ jobs:
         run: |
           make test-mimcap-pcells
 
-jobs:
   moscap_pcells_testing:
     runs-on: ubuntu-latest
     strategy:
@@ -71,7 +68,6 @@ jobs:
         run: |
           make test-moscap-pcells
 
-jobs:
   res_pcells_testing:
     runs-on: ubuntu-latest
     strategy:
