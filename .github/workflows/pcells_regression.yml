@@ -42,7 +42,7 @@ jobs:
           submodules: 'recursive'
       - name: diode pcells regression
         run: |
-          make test-diodes-pcells
+          make test-diode-pcells
 
   mimcap_pcells_testing:
     runs-on: ubuntu-latest
