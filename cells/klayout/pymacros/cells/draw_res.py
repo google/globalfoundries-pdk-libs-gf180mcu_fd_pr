@@ -27,6 +27,7 @@ def draw_metal_res(
     l_res: float = 0.1,
     w_res: float = 0.1,
     res_type: str = "rm1",
+    tm_level: str = "LM6",
     lbl: bool = 0,
     r0_lbl: str = "",
     r1_lbl: str = "",
@@ -57,9 +58,23 @@ def draw_metal_res(
         res_layer = layer["metal3_res"]
         m_lbl_layer = layer["metal3_label"]
     else:
-        m_layer = layer["metaltop"]
-        res_layer = layer["metal6_res"]
-        m_lbl_layer = layer["metaltop_label"]
+
+        if tm_level == "3LM":
+            m_layer = layer["metal3"]
+            res_layer = layer["metal3_res"]
+            m_lbl_layer = layer["metal3_label"]
+        elif tm_level == "4LM":
+            m_layer = layer["metal4"]
+            res_layer = layer["metal4_res"]
+            m_lbl_layer = layer["metal4_label"]
+        elif tm_level == "5LM":
+            m_layer = layer["metal5"]
+            res_layer = layer["metal5_res"]
+            m_lbl_layer = layer["metal5_label"]
+        else:
+            m_layer = layer["metaltop"]
+            res_layer = layer["metal6_res"]
+            m_lbl_layer = layer["metaltop_label"]
 
     res_mk = c.add_ref(gf.components.rectangle(size=(l_res, w_res), layer=res_layer))
 
@@ -279,8 +294,7 @@ def plus_res_inst(
         sab_rect = c.add_ref(
             gf.components.rectangle(size=sab_rect_size, layer=layer["sab"],)
         )
-        sab_rect.xmin = res_mk.xmin
-        sab_rect.ymin = res_mk.ymin - sab_res_ext
+        sab_rect.center = res_mk.center
 
         np_enc_cmp: float = 0.18
         pp_enc_cmp: float = 0.18
@@ -293,11 +307,6 @@ def plus_res_inst(
     )
     cmp.xmin = res_mk.xmin - cmp_res_ext
     cmp.ymin = res_mk.ymin
-
-    # if "nplus_s" in res_type :
-    #     lvpwell_rect = c.add_ref(gf.components.rectangle(size=(cmp.size[0]+(2*lvpwell_enc_cmp),w_res),layer=layer["lvpwell"]))
-    #     lvpwell_rect.xmin = cmp.xmin - lvpwell_enc_cmp
-    #     lvpwell_rect.ymin = res_mk.ymin
 
     cmp_con = via_stack(
         x_range=(cmp.xmin, res_mk.xmin + con_enc),
@@ -707,10 +716,10 @@ def draw_npolyf_res(
 
     c = gf.Component("res_dev")
 
-    lvpwell_enc_cmp = 0.43
-    dn_enc_lvpwell = 2.5
     sub_w = 0.36
-    sub_sp = 0.26
+    sub_sp = 0.26 if deepnwell == 0 else 0.4
+    np_enc_cmp = 0.16
+    dn_enc_cmp = 0.66 - np_enc_cmp
 
     if res_type == "npolyf_s":
         pl_res_ext = 0.29
@@ -718,6 +727,8 @@ def draw_npolyf_res(
     else:
         pl_res_ext = 0.66
         con_enc = 0.0
+
+    sub_imp = layer["nplus"] if deepnwell == 1 else layer["pplus"]
 
     # adding res inst
     r_inst = c.add_ref(
@@ -728,7 +739,7 @@ def draw_npolyf_res(
             pl_res_ext=pl_res_ext,
             con_enc=con_enc,
             pl_imp_layer=layer["nplus"],
-            sub_imp_layer=layer["pplus"],
+            sub_imp_layer=sub_imp,
             lbl=lbl,
             r0_lbl=r0_lbl,
             r1_lbl=r1_lbl,
@@ -738,29 +749,17 @@ def draw_npolyf_res(
     )
 
     if deepnwell == 1:
-        lvpwell = c.add_ref(
-            gf.components.rectangle(
-                size=(
-                    r_inst.size[0] + (2 * lvpwell_enc_cmp),
-                    r_inst.size[1] + (2 * lvpwell_enc_cmp),
-                ),
-                layer=layer["lvpwell"],
-            )
-        )
-        lvpwell.xmin = r_inst.xmin - lvpwell_enc_cmp
-        lvpwell.ymin = r_inst.ymin - lvpwell_enc_cmp
 
         dn_rect = c.add_ref(
             gf.components.rectangle(
                 size=(
-                    lvpwell.size[0] + (2 * dn_enc_lvpwell),
-                    lvpwell.size[1] + (2 * dn_enc_lvpwell),
+                    r_inst.size[0] + (2 * dn_enc_cmp),
+                    r_inst.size[1] + (2 * dn_enc_cmp),
                 ),
                 layer=layer["dnwell"],
             )
         )
-        dn_rect.xmin = lvpwell.xmin - dn_enc_lvpwell
-        dn_rect.ymin = lvpwell.ymin - dn_enc_lvpwell
+        dn_rect.center = r_inst.center
 
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))

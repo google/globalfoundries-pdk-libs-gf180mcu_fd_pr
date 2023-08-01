@@ -1,101 +1,101 @@
-pcell_name,netlist_name,l_res,w_res,deepnwell,pcmpgr
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,5.7,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,8.79,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,4.54,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,2.51,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,0.47,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,0.63,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,4.3,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,7.46,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,3.92,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,7.46,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,2.51,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,7.46,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,7.46,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,3.15,1,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,7.46,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,7.46,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,7.46,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,7.46,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,7.46,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,3.15,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,7.46,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,4.3,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,5.7,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,8.79,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,0.63,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,3.92,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,9.89,2.51,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,3.98,2.51,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,2.36,2.51,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.24,2.51,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.09,4.54,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,7.82,0.47,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,1.12,2.51,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,8.29,2.51,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.85,2.51,0,1
-nplus_s_resistor,nplus_s_resistor_pcells,4.54,2.51,0,1
+pcell_name,netlist_name,l_res,w_res,deepnwell,pcmpgr,lbl,r0_lbl,r1_lbl,sub_lbl,netlist_nets,netlists_param,dev_name,dev_tb
+nplus_s_resistor,nplus_s_pcells,9.38,3.11,0,1,1,rp0,rn0,sub,rp0 rn0 sub,L=9.38u W=3.11u,R0,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,8.48,1,1,1,rp1,rn1,sub_dw,rp1 rn1 sub_dw,L=7.84u W=8.48u,R1,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,9.74,3.0,1,1,1,rp2,rn2,sub_dw,rp2 rn2 sub_dw,L=9.74u W=3.0u,R2,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,7.03,0.83,1,1,1,rp3,rn3,sub_dw,rp3 rn3 sub_dw,L=7.03u W=0.83u,R3,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,8.56,9.28,1,1,1,rp4,rn4,sub_dw,rp4 rn4 sub_dw,L=8.56u W=9.28u,R4,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,9.54,7.06,1,1,1,rp5,rn5,sub_dw,rp5 rn5 sub_dw,L=9.54u W=7.06u,R5,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,3.24,4.8,1,1,1,rp6,rn6,sub_dw,rp6 rn6 sub_dw,L=3.24u W=4.8u,R6,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,3.36,1.89,1,1,1,rp7,rn7,sub_dw,rp7 rn7 sub_dw,L=3.36u W=1.89u,R7,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,7.1,9.89,1,1,1,rp8,rn8,sub_dw,rp8 rn8 sub_dw,L=7.1u W=9.89u,R8,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,6.94,3.8,1,1,1,rp9,rn9,sub_dw,rp9 rn9 sub_dw,L=6.94u W=3.8u,R9,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,6.94,9.89,0,1,1,rp10,rn10,sub,rp10 rn10 sub,L=6.94u W=9.89u,R10,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,1.89,0,1,1,rp11,rn11,sub,rp11 rn11 sub,L=7.1u W=1.89u,R11,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,4.8,0,1,1,rp12,rn12,sub,rp12 rn12 sub,L=3.36u W=4.8u,R12,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,7.06,0,1,1,rp13,rn13,sub,rp13 rn13 sub,L=3.24u W=7.06u,R13,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,9.28,0,1,1,rp14,rn14,sub,rp14 rn14 sub,L=9.54u W=9.28u,R14,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,0.83,0,1,1,rp15,rn15,sub,rp15 rn15 sub,L=8.56u W=0.83u,R15,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.03,3.0,0,1,1,rp16,rn16,sub,rp16 rn16 sub,L=7.03u W=3.0u,R16,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,8.48,0,1,1,rp17,rn17,sub,rp17 rn17 sub,L=9.74u W=8.48u,R17,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,3.11,0,1,1,rp18,rn18,sub,rp18 rn18 sub,L=7.84u W=3.11u,R18,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,3.8,0,1,1,rp19,rn19,sub,rp19 rn19 sub,L=9.38u W=3.8u,R19,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,9.89,1,1,1,rp20,rn20,sub_dw,rp20 rn20 sub_dw,L=9.38u W=9.89u,R20,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,7.84,9.89,0,1,1,rp21,rn21,sub,rp21 rn21 sub,L=7.84u W=9.89u,R21,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,3.11,1,1,1,rp22,rn22,sub_dw,rp22 rn22 sub_dw,L=9.74u W=3.11u,R22,nplus_s_dw
+nplus_s_resistor,nplus_s_pcells,7.03,9.89,0,1,1,rp23,rn23,sub,rp23 rn23 sub,L=7.03u W=9.89u,R23,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,9.89,0,1,1,rp24,rn24,sub,rp24 rn24 sub,L=8.56u W=9.89u,R24,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,9.89,0,1,1,rp25,rn25,sub,rp25 rn25 sub,L=9.54u W=9.89u,R25,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,9.89,0,1,1,rp26,rn26,sub,rp26 rn26 sub,L=3.24u W=9.89u,R26,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,9.89,0,1,1,rp27,rn27,sub,rp27 rn27 sub,L=3.36u W=9.89u,R27,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,3.11,0,1,1,rp28,rn28,sub,rp28 rn28 sub,L=7.1u W=3.11u,R28,nplus_s
+nplus_s_resistor,nplus_s_pcells,6.94,3.11,0,1,1,rp29,rn29,sub,rp29 rn29 sub,L=6.94u W=3.11u,R29,nplus_s
+nplus_s_resistor,nplus_s_pcells,6.94,8.48,0,1,1,rp30,rn30,sub,rp30 rn30 sub,L=6.94u W=8.48u,R30,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,8.48,0,1,1,rp31,rn31,sub,rp31 rn31 sub,L=7.1u W=8.48u,R31,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,3.11,0,1,1,rp32,rn32,sub,rp32 rn32 sub,L=3.36u W=3.11u,R32,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,3.11,0,1,1,rp33,rn33,sub,rp33 rn33 sub,L=3.24u W=3.11u,R33,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,3.11,0,1,1,rp34,rn34,sub,rp34 rn34 sub,L=9.54u W=3.11u,R34,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,3.11,0,1,1,rp35,rn35,sub,rp35 rn35 sub,L=8.56u W=3.11u,R35,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.03,3.11,0,1,1,rp36,rn36,sub,rp36 rn36 sub,L=7.03u W=3.11u,R36,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,9.89,0,1,1,rp37,rn37,sub,rp37 rn37 sub,L=9.74u W=9.89u,R37,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,3.8,0,1,1,rp38,rn38,sub,rp38 rn38 sub,L=7.84u W=3.8u,R38,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,8.48,0,1,1,rp39,rn39,sub,rp39 rn39 sub,L=9.38u W=8.48u,R39,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,1.89,0,1,1,rp40,rn40,sub,rp40 rn40 sub,L=9.38u W=1.89u,R40,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,1.89,0,1,1,rp41,rn41,sub,rp41 rn41 sub,L=7.84u W=1.89u,R41,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,1.89,0,1,1,rp42,rn42,sub,rp42 rn42 sub,L=9.74u W=1.89u,R42,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.03,1.89,0,1,1,rp43,rn43,sub,rp43 rn43 sub,L=7.03u W=1.89u,R43,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,1.89,0,1,1,rp44,rn44,sub,rp44 rn44 sub,L=8.56u W=1.89u,R44,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,1.89,0,1,1,rp45,rn45,sub,rp45 rn45 sub,L=9.54u W=1.89u,R45,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,1.89,0,1,1,rp46,rn46,sub,rp46 rn46 sub,L=3.24u W=1.89u,R46,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,8.48,0,1,1,rp47,rn47,sub,rp47 rn47 sub,L=3.36u W=8.48u,R47,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,3.8,0,1,1,rp48,rn48,sub,rp48 rn48 sub,L=7.1u W=3.8u,R48,nplus_s
+nplus_s_resistor,nplus_s_pcells,6.94,1.89,0,1,1,rp49,rn49,sub,rp49 rn49 sub,L=6.94u W=1.89u,R49,nplus_s
+nplus_s_resistor,nplus_s_pcells,6.94,3.0,0,1,1,rp50,rn50,sub,rp50 rn50 sub,L=6.94u W=3.0u,R50,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,3.0,0,1,1,rp51,rn51,sub,rp51 rn51 sub,L=7.1u W=3.0u,R51,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,3.0,0,1,1,rp52,rn52,sub,rp52 rn52 sub,L=3.36u W=3.0u,R52,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,8.48,0,1,1,rp53,rn53,sub,rp53 rn53 sub,L=3.24u W=8.48u,R53,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,8.48,0,1,1,rp54,rn54,sub,rp54 rn54 sub,L=9.54u W=8.48u,R54,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,8.48,0,1,1,rp55,rn55,sub,rp55 rn55 sub,L=8.56u W=8.48u,R55,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.03,8.48,0,1,1,rp56,rn56,sub,rp56 rn56 sub,L=7.03u W=8.48u,R56,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,3.8,0,1,1,rp57,rn57,sub,rp57 rn57 sub,L=9.74u W=3.8u,R57,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,3.0,0,1,1,rp58,rn58,sub,rp58 rn58 sub,L=7.84u W=3.0u,R58,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,3.0,0,1,1,rp59,rn59,sub,rp59 rn59 sub,L=9.38u W=3.0u,R59,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,4.8,0,1,1,rp60,rn60,sub,rp60 rn60 sub,L=9.38u W=4.8u,R60,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,4.8,0,1,1,rp61,rn61,sub,rp61 rn61 sub,L=7.84u W=4.8u,R61,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,4.8,0,1,1,rp62,rn62,sub,rp62 rn62 sub,L=9.74u W=4.8u,R62,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.03,4.8,0,1,1,rp63,rn63,sub,rp63 rn63 sub,L=7.03u W=4.8u,R63,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,3.0,0,1,1,rp64,rn64,sub,rp64 rn64 sub,L=8.56u W=3.0u,R64,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,3.0,0,1,1,rp65,rn65,sub,rp65 rn65 sub,L=9.54u W=3.0u,R65,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,3.0,0,1,1,rp66,rn66,sub,rp66 rn66 sub,L=3.24u W=3.0u,R66,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,3.8,0,1,1,rp67,rn67,sub,rp67 rn67 sub,L=3.36u W=3.8u,R67,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,4.8,0,1,1,rp68,rn68,sub,rp68 rn68 sub,L=7.1u W=4.8u,R68,nplus_s
+nplus_s_resistor,nplus_s_pcells,6.94,4.8,0,1,1,rp69,rn69,sub,rp69 rn69 sub,L=6.94u W=4.8u,R69,nplus_s
+nplus_s_resistor,nplus_s_pcells,6.94,0.83,0,1,1,rp70,rn70,sub,rp70 rn70 sub,L=6.94u W=0.83u,R70,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,0.83,0,1,1,rp71,rn71,sub,rp71 rn71 sub,L=7.1u W=0.83u,R71,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,0.83,0,1,1,rp72,rn72,sub,rp72 rn72 sub,L=3.36u W=0.83u,R72,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,3.8,0,1,1,rp73,rn73,sub,rp73 rn73 sub,L=3.24u W=3.8u,R73,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,4.8,0,1,1,rp74,rn74,sub,rp74 rn74 sub,L=9.54u W=4.8u,R74,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,4.8,0,1,1,rp75,rn75,sub,rp75 rn75 sub,L=8.56u W=4.8u,R75,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.03,3.8,0,1,1,rp76,rn76,sub,rp76 rn76 sub,L=7.03u W=3.8u,R76,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,0.83,0,1,1,rp77,rn77,sub,rp77 rn77 sub,L=9.74u W=0.83u,R77,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,0.83,0,1,1,rp78,rn78,sub,rp78 rn78 sub,L=7.84u W=0.83u,R78,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,0.83,0,1,1,rp79,rn79,sub,rp79 rn79 sub,L=9.38u W=0.83u,R79,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,7.06,0,1,1,rp80,rn80,sub,rp80 rn80 sub,L=9.38u W=7.06u,R80,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,7.06,0,1,1,rp81,rn81,sub,rp81 rn81 sub,L=7.84u W=7.06u,R81,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,7.06,0,1,1,rp82,rn82,sub,rp82 rn82 sub,L=9.74u W=7.06u,R82,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.03,7.06,0,1,1,rp83,rn83,sub,rp83 rn83 sub,L=7.03u W=7.06u,R83,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,3.8,0,1,1,rp84,rn84,sub,rp84 rn84 sub,L=8.56u W=3.8u,R84,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,3.8,0,1,1,rp85,rn85,sub,rp85 rn85 sub,L=9.54u W=3.8u,R85,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,0.83,0,1,1,rp86,rn86,sub,rp86 rn86 sub,L=3.24u W=0.83u,R86,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,7.06,0,1,1,rp87,rn87,sub,rp87 rn87 sub,L=3.36u W=7.06u,R87,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,7.06,0,1,1,rp88,rn88,sub,rp88 rn88 sub,L=7.1u W=7.06u,R88,nplus_s
+nplus_s_resistor,nplus_s_pcells,6.94,7.06,0,1,1,rp89,rn89,sub,rp89 rn89 sub,L=6.94u W=7.06u,R89,nplus_s
+nplus_s_resistor,nplus_s_pcells,6.94,9.28,0,1,1,rp90,rn90,sub,rp90 rn90 sub,L=6.94u W=9.28u,R90,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.1,9.28,0,1,1,rp91,rn91,sub,rp91 rn91 sub,L=7.1u W=9.28u,R91,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.36,9.28,0,1,1,rp92,rn92,sub,rp92 rn92 sub,L=3.36u W=9.28u,R92,nplus_s
+nplus_s_resistor,nplus_s_pcells,3.24,9.28,0,1,1,rp93,rn93,sub,rp93 rn93 sub,L=3.24u W=9.28u,R93,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.54,0.83,0,1,1,rp94,rn94,sub,rp94 rn94 sub,L=9.54u W=0.83u,R94,nplus_s
+nplus_s_resistor,nplus_s_pcells,8.56,7.06,0,1,1,rp95,rn95,sub,rp95 rn95 sub,L=8.56u W=7.06u,R95,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.03,9.28,0,1,1,rp96,rn96,sub,rp96 rn96 sub,L=7.03u W=9.28u,R96,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.74,9.28,0,1,1,rp97,rn97,sub,rp97 rn97 sub,L=9.74u W=9.28u,R97,nplus_s
+nplus_s_resistor,nplus_s_pcells,7.84,9.28,0,1,1,rp98,rn98,sub,rp98 rn98 sub,L=7.84u W=9.28u,R98,nplus_s
+nplus_s_resistor,nplus_s_pcells,9.38,9.28,0,1,1,rp99,rn99,sub,rp99 rn99 sub,L=9.38u W=9.28u,R99,nplus_s

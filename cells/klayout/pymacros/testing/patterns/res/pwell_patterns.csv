@@ -1,101 +1,101 @@
-pcell_name,netlist_name,l_res,w_res
-pwell_resistor,pwell_resistor_pcells,17.24,11.76
-pwell_resistor,pwell_resistor_pcells,12.8,9.02
-pwell_resistor,pwell_resistor_pcells,11.91,3.09
-pwell_resistor,pwell_resistor_pcells,18.38,3.54
-pwell_resistor,pwell_resistor_pcells,14.23,13.46
-pwell_resistor,pwell_resistor_pcells,5.38,3.53
-pwell_resistor,pwell_resistor_pcells,7.74,2.18
-pwell_resistor,pwell_resistor_pcells,11.69,9.91
-pwell_resistor,pwell_resistor_pcells,10.08,17.98
-pwell_resistor,pwell_resistor_pcells,2.37,20.0
-pwell_resistor,pwell_resistor_pcells,2.37,17.98
-pwell_resistor,pwell_resistor_pcells,10.08,9.91
-pwell_resistor,pwell_resistor_pcells,11.69,17.98
-pwell_resistor,pwell_resistor_pcells,7.74,17.98
-pwell_resistor,pwell_resistor_pcells,5.38,17.98
-pwell_resistor,pwell_resistor_pcells,14.23,17.98
-pwell_resistor,pwell_resistor_pcells,18.38,17.98
-pwell_resistor,pwell_resistor_pcells,11.91,17.98
-pwell_resistor,pwell_resistor_pcells,12.8,17.98
-pwell_resistor,pwell_resistor_pcells,17.24,17.98
-pwell_resistor,pwell_resistor_pcells,17.24,9.91
-pwell_resistor,pwell_resistor_pcells,12.8,9.91
-pwell_resistor,pwell_resistor_pcells,11.91,9.91
-pwell_resistor,pwell_resistor_pcells,18.38,9.91
-pwell_resistor,pwell_resistor_pcells,14.23,9.91
-pwell_resistor,pwell_resistor_pcells,5.38,9.91
-pwell_resistor,pwell_resistor_pcells,7.74,9.91
-pwell_resistor,pwell_resistor_pcells,11.69,20.0
-pwell_resistor,pwell_resistor_pcells,10.08,20.0
-pwell_resistor,pwell_resistor_pcells,2.37,9.91
-pwell_resistor,pwell_resistor_pcells,2.37,11.76
-pwell_resistor,pwell_resistor_pcells,10.08,11.76
-pwell_resistor,pwell_resistor_pcells,11.69,11.76
-pwell_resistor,pwell_resistor_pcells,7.74,11.76
-pwell_resistor,pwell_resistor_pcells,5.38,11.76
-pwell_resistor,pwell_resistor_pcells,14.23,11.76
-pwell_resistor,pwell_resistor_pcells,18.38,11.76
-pwell_resistor,pwell_resistor_pcells,11.91,11.76
-pwell_resistor,pwell_resistor_pcells,12.8,11.76
-pwell_resistor,pwell_resistor_pcells,17.24,20.0
-pwell_resistor,pwell_resistor_pcells,17.24,2.18
-pwell_resistor,pwell_resistor_pcells,12.8,20.0
-pwell_resistor,pwell_resistor_pcells,11.91,20.0
-pwell_resistor,pwell_resistor_pcells,18.38,20.0
-pwell_resistor,pwell_resistor_pcells,14.23,20.0
-pwell_resistor,pwell_resistor_pcells,5.38,20.0
-pwell_resistor,pwell_resistor_pcells,7.74,20.0
-pwell_resistor,pwell_resistor_pcells,11.69,2.18
-pwell_resistor,pwell_resistor_pcells,10.08,2.18
-pwell_resistor,pwell_resistor_pcells,2.37,2.18
-pwell_resistor,pwell_resistor_pcells,2.37,9.02
-pwell_resistor,pwell_resistor_pcells,10.08,9.02
-pwell_resistor,pwell_resistor_pcells,11.69,9.02
-pwell_resistor,pwell_resistor_pcells,7.74,9.02
-pwell_resistor,pwell_resistor_pcells,5.38,9.02
-pwell_resistor,pwell_resistor_pcells,14.23,9.02
-pwell_resistor,pwell_resistor_pcells,18.38,9.02
-pwell_resistor,pwell_resistor_pcells,11.91,9.02
-pwell_resistor,pwell_resistor_pcells,12.8,2.18
-pwell_resistor,pwell_resistor_pcells,17.24,9.02
-pwell_resistor,pwell_resistor_pcells,17.24,3.53
-pwell_resistor,pwell_resistor_pcells,12.8,3.53
-pwell_resistor,pwell_resistor_pcells,11.91,2.18
-pwell_resistor,pwell_resistor_pcells,18.38,2.18
-pwell_resistor,pwell_resistor_pcells,14.23,2.18
-pwell_resistor,pwell_resistor_pcells,5.38,2.18
-pwell_resistor,pwell_resistor_pcells,7.74,3.53
-pwell_resistor,pwell_resistor_pcells,11.69,3.53
-pwell_resistor,pwell_resistor_pcells,10.08,3.53
-pwell_resistor,pwell_resistor_pcells,2.37,3.53
-pwell_resistor,pwell_resistor_pcells,2.37,3.09
-pwell_resistor,pwell_resistor_pcells,10.08,3.09
-pwell_resistor,pwell_resistor_pcells,11.69,3.09
-pwell_resistor,pwell_resistor_pcells,7.74,3.09
-pwell_resistor,pwell_resistor_pcells,5.38,3.09
-pwell_resistor,pwell_resistor_pcells,14.23,3.53
-pwell_resistor,pwell_resistor_pcells,18.38,3.53
-pwell_resistor,pwell_resistor_pcells,11.91,3.53
-pwell_resistor,pwell_resistor_pcells,12.8,3.09
-pwell_resistor,pwell_resistor_pcells,17.24,3.09
-pwell_resistor,pwell_resistor_pcells,17.24,13.46
-pwell_resistor,pwell_resistor_pcells,12.8,13.46
-pwell_resistor,pwell_resistor_pcells,11.91,13.46
-pwell_resistor,pwell_resistor_pcells,18.38,3.09
-pwell_resistor,pwell_resistor_pcells,14.23,3.09
-pwell_resistor,pwell_resistor_pcells,5.38,13.46
-pwell_resistor,pwell_resistor_pcells,7.74,13.46
-pwell_resistor,pwell_resistor_pcells,11.69,13.46
-pwell_resistor,pwell_resistor_pcells,10.08,13.46
-pwell_resistor,pwell_resistor_pcells,2.37,13.46
-pwell_resistor,pwell_resistor_pcells,2.37,3.54
-pwell_resistor,pwell_resistor_pcells,10.08,3.54
-pwell_resistor,pwell_resistor_pcells,11.69,3.54
-pwell_resistor,pwell_resistor_pcells,7.74,3.54
-pwell_resistor,pwell_resistor_pcells,5.38,3.54
-pwell_resistor,pwell_resistor_pcells,14.23,3.54
-pwell_resistor,pwell_resistor_pcells,18.38,13.46
-pwell_resistor,pwell_resistor_pcells,11.91,3.54
-pwell_resistor,pwell_resistor_pcells,12.8,3.54
-pwell_resistor,pwell_resistor_pcells,17.24,3.54
+pcell_name,netlist_name,l_res,w_res,lbl,r0_lbl,r1_lbl,sub_lbl,netlist_nets,netlists_param,dev_name,dev_tb
+pwell_resistor,pwell_pcells,10.36,15.43,1,rp0,rn0,sub,rp0 rn0 sub,L=10.36u W=15.43u,R0,pwell
+pwell_resistor,pwell_pcells,18.68,16.82,1,rp1,rn1,sub,rp1 rn1 sub,L=18.68u W=16.82u,R1,pwell
+pwell_resistor,pwell_pcells,13.62,6.72,1,rp2,rn2,sub,rp2 rn2 sub,L=13.62u W=6.72u,R2,pwell
+pwell_resistor,pwell_pcells,11.79,19.87,1,rp3,rn3,sub,rp3 rn3 sub,L=11.79u W=19.87u,R3,pwell
+pwell_resistor,pwell_pcells,10.02,15.06,1,rp4,rn4,sub,rp4 rn4 sub,L=10.02u W=15.06u,R4,pwell
+pwell_resistor,pwell_pcells,2.41,17.08,1,rp5,rn5,sub,rp5 rn5 sub,L=2.41u W=17.08u,R5,pwell
+pwell_resistor,pwell_pcells,8.11,8.3,1,rp6,rn6,sub,rp6 rn6 sub,L=8.11u W=8.3u,R6,pwell
+pwell_resistor,pwell_pcells,7.36,5.51,1,rp7,rn7,sub,rp7 rn7 sub,L=7.36u W=5.51u,R7,pwell
+pwell_resistor,pwell_pcells,17.37,10.25,1,rp8,rn8,sub,rp8 rn8 sub,L=17.37u W=10.25u,R8,pwell
+pwell_resistor,pwell_pcells,18.0,13.6,1,rp9,rn9,sub,rp9 rn9 sub,L=18.0u W=13.6u,R9,pwell
+pwell_resistor,pwell_pcells,18.0,10.25,1,rp10,rn10,sub,rp10 rn10 sub,L=18.0u W=10.25u,R10,pwell
+pwell_resistor,pwell_pcells,17.37,5.51,1,rp11,rn11,sub,rp11 rn11 sub,L=17.37u W=5.51u,R11,pwell
+pwell_resistor,pwell_pcells,7.36,10.25,1,rp12,rn12,sub,rp12 rn12 sub,L=7.36u W=10.25u,R12,pwell
+pwell_resistor,pwell_pcells,8.11,10.25,1,rp13,rn13,sub,rp13 rn13 sub,L=8.11u W=10.25u,R13,pwell
+pwell_resistor,pwell_pcells,2.41,10.25,1,rp14,rn14,sub,rp14 rn14 sub,L=2.41u W=10.25u,R14,pwell
+pwell_resistor,pwell_pcells,10.02,10.25,1,rp15,rn15,sub,rp15 rn15 sub,L=10.02u W=10.25u,R15,pwell
+pwell_resistor,pwell_pcells,11.79,10.25,1,rp16,rn16,sub,rp16 rn16 sub,L=11.79u W=10.25u,R16,pwell
+pwell_resistor,pwell_pcells,13.62,10.25,1,rp17,rn17,sub,rp17 rn17 sub,L=13.62u W=10.25u,R17,pwell
+pwell_resistor,pwell_pcells,18.68,10.25,1,rp18,rn18,sub,rp18 rn18 sub,L=18.68u W=10.25u,R18,pwell
+pwell_resistor,pwell_pcells,10.36,10.25,1,rp19,rn19,sub,rp19 rn19 sub,L=10.36u W=10.25u,R19,pwell
+pwell_resistor,pwell_pcells,10.36,5.51,1,rp20,rn20,sub,rp20 rn20 sub,L=10.36u W=5.51u,R20,pwell
+pwell_resistor,pwell_pcells,18.68,5.51,1,rp21,rn21,sub,rp21 rn21 sub,L=18.68u W=5.51u,R21,pwell
+pwell_resistor,pwell_pcells,13.62,5.51,1,rp22,rn22,sub,rp22 rn22 sub,L=13.62u W=5.51u,R22,pwell
+pwell_resistor,pwell_pcells,11.79,5.51,1,rp23,rn23,sub,rp23 rn23 sub,L=11.79u W=5.51u,R23,pwell
+pwell_resistor,pwell_pcells,10.02,5.51,1,rp24,rn24,sub,rp24 rn24 sub,L=10.02u W=5.51u,R24,pwell
+pwell_resistor,pwell_pcells,2.41,5.51,1,rp25,rn25,sub,rp25 rn25 sub,L=2.41u W=5.51u,R25,pwell
+pwell_resistor,pwell_pcells,8.11,5.51,1,rp26,rn26,sub,rp26 rn26 sub,L=8.11u W=5.51u,R26,pwell
+pwell_resistor,pwell_pcells,7.36,13.6,1,rp27,rn27,sub,rp27 rn27 sub,L=7.36u W=13.6u,R27,pwell
+pwell_resistor,pwell_pcells,17.37,13.6,1,rp28,rn28,sub,rp28 rn28 sub,L=17.37u W=13.6u,R28,pwell
+pwell_resistor,pwell_pcells,18.0,5.51,1,rp29,rn29,sub,rp29 rn29 sub,L=18.0u W=5.51u,R29,pwell
+pwell_resistor,pwell_pcells,18.0,15.43,1,rp30,rn30,sub,rp30 rn30 sub,L=18.0u W=15.43u,R30,pwell
+pwell_resistor,pwell_pcells,17.37,15.43,1,rp31,rn31,sub,rp31 rn31 sub,L=17.37u W=15.43u,R31,pwell
+pwell_resistor,pwell_pcells,7.36,15.43,1,rp32,rn32,sub,rp32 rn32 sub,L=7.36u W=15.43u,R32,pwell
+pwell_resistor,pwell_pcells,8.11,15.43,1,rp33,rn33,sub,rp33 rn33 sub,L=8.11u W=15.43u,R33,pwell
+pwell_resistor,pwell_pcells,2.41,15.43,1,rp34,rn34,sub,rp34 rn34 sub,L=2.41u W=15.43u,R34,pwell
+pwell_resistor,pwell_pcells,10.02,15.43,1,rp35,rn35,sub,rp35 rn35 sub,L=10.02u W=15.43u,R35,pwell
+pwell_resistor,pwell_pcells,11.79,15.43,1,rp36,rn36,sub,rp36 rn36 sub,L=11.79u W=15.43u,R36,pwell
+pwell_resistor,pwell_pcells,13.62,15.43,1,rp37,rn37,sub,rp37 rn37 sub,L=13.62u W=15.43u,R37,pwell
+pwell_resistor,pwell_pcells,18.68,15.43,1,rp38,rn38,sub,rp38 rn38 sub,L=18.68u W=15.43u,R38,pwell
+pwell_resistor,pwell_pcells,10.36,13.6,1,rp39,rn39,sub,rp39 rn39 sub,L=10.36u W=13.6u,R39,pwell
+pwell_resistor,pwell_pcells,10.36,8.3,1,rp40,rn40,sub,rp40 rn40 sub,L=10.36u W=8.3u,R40,pwell
+pwell_resistor,pwell_pcells,18.68,13.6,1,rp41,rn41,sub,rp41 rn41 sub,L=18.68u W=13.6u,R41,pwell
+pwell_resistor,pwell_pcells,13.62,13.6,1,rp42,rn42,sub,rp42 rn42 sub,L=13.62u W=13.6u,R42,pwell
+pwell_resistor,pwell_pcells,11.79,13.6,1,rp43,rn43,sub,rp43 rn43 sub,L=11.79u W=13.6u,R43,pwell
+pwell_resistor,pwell_pcells,10.02,13.6,1,rp44,rn44,sub,rp44 rn44 sub,L=10.02u W=13.6u,R44,pwell
+pwell_resistor,pwell_pcells,2.41,13.6,1,rp45,rn45,sub,rp45 rn45 sub,L=2.41u W=13.6u,R45,pwell
+pwell_resistor,pwell_pcells,8.11,13.6,1,rp46,rn46,sub,rp46 rn46 sub,L=8.11u W=13.6u,R46,pwell
+pwell_resistor,pwell_pcells,7.36,8.3,1,rp47,rn47,sub,rp47 rn47 sub,L=7.36u W=8.3u,R47,pwell
+pwell_resistor,pwell_pcells,17.37,8.3,1,rp48,rn48,sub,rp48 rn48 sub,L=17.37u W=8.3u,R48,pwell
+pwell_resistor,pwell_pcells,18.0,8.3,1,rp49,rn49,sub,rp49 rn49 sub,L=18.0u W=8.3u,R49,pwell
+pwell_resistor,pwell_pcells,18.0,16.82,1,rp50,rn50,sub,rp50 rn50 sub,L=18.0u W=16.82u,R50,pwell
+pwell_resistor,pwell_pcells,17.37,16.82,1,rp51,rn51,sub,rp51 rn51 sub,L=17.37u W=16.82u,R51,pwell
+pwell_resistor,pwell_pcells,7.36,16.82,1,rp52,rn52,sub,rp52 rn52 sub,L=7.36u W=16.82u,R52,pwell
+pwell_resistor,pwell_pcells,8.11,16.82,1,rp53,rn53,sub,rp53 rn53 sub,L=8.11u W=16.82u,R53,pwell
+pwell_resistor,pwell_pcells,2.41,16.82,1,rp54,rn54,sub,rp54 rn54 sub,L=2.41u W=16.82u,R54,pwell
+pwell_resistor,pwell_pcells,10.02,16.82,1,rp55,rn55,sub,rp55 rn55 sub,L=10.02u W=16.82u,R55,pwell
+pwell_resistor,pwell_pcells,11.79,16.82,1,rp56,rn56,sub,rp56 rn56 sub,L=11.79u W=16.82u,R56,pwell
+pwell_resistor,pwell_pcells,13.62,16.82,1,rp57,rn57,sub,rp57 rn57 sub,L=13.62u W=16.82u,R57,pwell
+pwell_resistor,pwell_pcells,18.68,8.3,1,rp58,rn58,sub,rp58 rn58 sub,L=18.68u W=8.3u,R58,pwell
+pwell_resistor,pwell_pcells,10.36,16.82,1,rp59,rn59,sub,rp59 rn59 sub,L=10.36u W=16.82u,R59,pwell
+pwell_resistor,pwell_pcells,10.36,17.08,1,rp60,rn60,sub,rp60 rn60 sub,L=10.36u W=17.08u,R60,pwell
+pwell_resistor,pwell_pcells,18.68,17.08,1,rp61,rn61,sub,rp61 rn61 sub,L=18.68u W=17.08u,R61,pwell
+pwell_resistor,pwell_pcells,13.62,8.3,1,rp62,rn62,sub,rp62 rn62 sub,L=13.62u W=8.3u,R62,pwell
+pwell_resistor,pwell_pcells,11.79,8.3,1,rp63,rn63,sub,rp63 rn63 sub,L=11.79u W=8.3u,R63,pwell
+pwell_resistor,pwell_pcells,10.02,8.3,1,rp64,rn64,sub,rp64 rn64 sub,L=10.02u W=8.3u,R64,pwell
+pwell_resistor,pwell_pcells,2.41,8.3,1,rp65,rn65,sub,rp65 rn65 sub,L=2.41u W=8.3u,R65,pwell
+pwell_resistor,pwell_pcells,8.11,17.08,1,rp66,rn66,sub,rp66 rn66 sub,L=8.11u W=17.08u,R66,pwell
+pwell_resistor,pwell_pcells,7.36,17.08,1,rp67,rn67,sub,rp67 rn67 sub,L=7.36u W=17.08u,R67,pwell
+pwell_resistor,pwell_pcells,17.37,17.08,1,rp68,rn68,sub,rp68 rn68 sub,L=17.37u W=17.08u,R68,pwell
+pwell_resistor,pwell_pcells,18.0,17.08,1,rp69,rn69,sub,rp69 rn69 sub,L=18.0u W=17.08u,R69,pwell
+pwell_resistor,pwell_pcells,18.0,6.72,1,rp70,rn70,sub,rp70 rn70 sub,L=18.0u W=6.72u,R70,pwell
+pwell_resistor,pwell_pcells,17.37,6.72,1,rp71,rn71,sub,rp71 rn71 sub,L=17.37u W=6.72u,R71,pwell
+pwell_resistor,pwell_pcells,7.36,6.72,1,rp72,rn72,sub,rp72 rn72 sub,L=7.36u W=6.72u,R72,pwell
+pwell_resistor,pwell_pcells,8.11,6.72,1,rp73,rn73,sub,rp73 rn73 sub,L=8.11u W=6.72u,R73,pwell
+pwell_resistor,pwell_pcells,2.41,6.72,1,rp74,rn74,sub,rp74 rn74 sub,L=2.41u W=6.72u,R74,pwell
+pwell_resistor,pwell_pcells,10.02,17.08,1,rp75,rn75,sub,rp75 rn75 sub,L=10.02u W=17.08u,R75,pwell
+pwell_resistor,pwell_pcells,11.79,17.08,1,rp76,rn76,sub,rp76 rn76 sub,L=11.79u W=17.08u,R76,pwell
+pwell_resistor,pwell_pcells,13.62,17.08,1,rp77,rn77,sub,rp77 rn77 sub,L=13.62u W=17.08u,R77,pwell
+pwell_resistor,pwell_pcells,18.68,6.72,1,rp78,rn78,sub,rp78 rn78 sub,L=18.68u W=6.72u,R78,pwell
+pwell_resistor,pwell_pcells,10.36,6.72,1,rp79,rn79,sub,rp79 rn79 sub,L=10.36u W=6.72u,R79,pwell
+pwell_resistor,pwell_pcells,10.36,15.06,1,rp80,rn80,sub,rp80 rn80 sub,L=10.36u W=15.06u,R80,pwell
+pwell_resistor,pwell_pcells,18.68,15.06,1,rp81,rn81,sub,rp81 rn81 sub,L=18.68u W=15.06u,R81,pwell
+pwell_resistor,pwell_pcells,13.62,15.06,1,rp82,rn82,sub,rp82 rn82 sub,L=13.62u W=15.06u,R82,pwell
+pwell_resistor,pwell_pcells,11.79,6.72,1,rp83,rn83,sub,rp83 rn83 sub,L=11.79u W=6.72u,R83,pwell
+pwell_resistor,pwell_pcells,10.02,6.72,1,rp84,rn84,sub,rp84 rn84 sub,L=10.02u W=6.72u,R84,pwell
+pwell_resistor,pwell_pcells,2.41,15.06,1,rp85,rn85,sub,rp85 rn85 sub,L=2.41u W=15.06u,R85,pwell
+pwell_resistor,pwell_pcells,8.11,15.06,1,rp86,rn86,sub,rp86 rn86 sub,L=8.11u W=15.06u,R86,pwell
+pwell_resistor,pwell_pcells,7.36,15.06,1,rp87,rn87,sub,rp87 rn87 sub,L=7.36u W=15.06u,R87,pwell
+pwell_resistor,pwell_pcells,17.37,15.06,1,rp88,rn88,sub,rp88 rn88 sub,L=17.37u W=15.06u,R88,pwell
+pwell_resistor,pwell_pcells,18.0,15.06,1,rp89,rn89,sub,rp89 rn89 sub,L=18.0u W=15.06u,R89,pwell
+pwell_resistor,pwell_pcells,18.0,19.87,1,rp90,rn90,sub,rp90 rn90 sub,L=18.0u W=19.87u,R90,pwell
+pwell_resistor,pwell_pcells,17.37,19.87,1,rp91,rn91,sub,rp91 rn91 sub,L=17.37u W=19.87u,R91,pwell
+pwell_resistor,pwell_pcells,7.36,19.87,1,rp92,rn92,sub,rp92 rn92 sub,L=7.36u W=19.87u,R92,pwell
+pwell_resistor,pwell_pcells,8.11,19.87,1,rp93,rn93,sub,rp93 rn93 sub,L=8.11u W=19.87u,R93,pwell
+pwell_resistor,pwell_pcells,2.41,19.87,1,rp94,rn94,sub,rp94 rn94 sub,L=2.41u W=19.87u,R94,pwell
+pwell_resistor,pwell_pcells,10.02,19.87,1,rp95,rn95,sub,rp95 rn95 sub,L=10.02u W=19.87u,R95,pwell
+pwell_resistor,pwell_pcells,11.79,15.06,1,rp96,rn96,sub,rp96 rn96 sub,L=11.79u W=15.06u,R96,pwell
+pwell_resistor,pwell_pcells,13.62,19.87,1,rp97,rn97,sub,rp97 rn97 sub,L=13.62u W=19.87u,R97,pwell
+pwell_resistor,pwell_pcells,18.68,19.87,1,rp98,rn98,sub,rp98 rn98 sub,L=18.68u W=19.87u,R98,pwell
+pwell_resistor,pwell_pcells,10.36,19.87,1,rp99,rn99,sub,rp99 rn99 sub,L=10.36u W=19.87u,R99,pwell
