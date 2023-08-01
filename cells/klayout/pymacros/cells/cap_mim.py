@@ -39,12 +39,11 @@ class cap_mim(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("MIM-A", "MIM-A")
         self.Type_handle.add_choice("MIM-B", "MIM-B")
 
-        self.Type_handle2 = self.param(
-            "metal_level", self.TypeList, "Metal level (MIM-B)"
-        )
-        self.Type_handle2.add_choice("M4", "M4")
-        self.Type_handle2.add_choice("M5", "M5")
-        self.Type_handle2.add_choice("M6", "M6")
+        self.Type_handle2 = self.param("metal_level", self.TypeList, "MIM_Metal_level")
+        self.Type_handle2.add_choice("M2-M3", "M3")
+        self.Type_handle2.add_choice("M3-M4", "M4")
+        self.Type_handle2.add_choice("M4-M5", "M5")
+        self.Type_handle2.add_choice("M5-M6", "M6")
 
         self.param("lc", self.TypeDouble, "Length", default=mim_l, unit="um")
         self.param("wc", self.TypeDouble, "Width", default=mim_w, unit="um")
@@ -73,6 +72,10 @@ class cap_mim(pya.PCellDeclarationHelper):
             self.wc = mim_w
         if (self.mim_option) == "MIM-A":
             self.metal_level = "M3"
+        elif self.metal_level == "M3":
+            raise TypeError(
+                "Current MIM option (B) doesn't allow this M2-M3 MIM metal level"
+            )
 
     def can_create_from_shape_impl(self):
         # Implement the "Create PCell from shape" protocol: we can use any shape which
@@ -91,13 +94,7 @@ class cap_mim(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        option = os.environ["GF_PDK_OPTION"]
-        if (option == "A" or option == "E"):
-            if (self.mim_option) == "MIM-B":
-                raise TypeError(f"Current stack ({option}) doesn't allow this option")
-        else:
-            if (self.mim_option) == "MIM-A":
-                raise TypeError(f"Current stack ({option}) doesn't allow this option")
+
         np_instance = draw_cap_mim(
             self.layout,
             lc=self.lc,

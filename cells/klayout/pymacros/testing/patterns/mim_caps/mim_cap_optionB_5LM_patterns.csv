@@ -1,101 +1,101 @@
-pcell_name,netlist_name,mim_option,metal_level,lc,wc
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,6.78
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,12.49
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,18.92
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,19.42
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,15.76
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,16.52
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,9.46
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,7.25
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,9.2,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,16.63,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,6.91,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,17.25,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,14.22,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,5.28,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,7.63,13.44
-cap_mim,cap_mim_pcells,MIM-B,M5,12.54,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,12.34,15.79
-cap_mim,cap_mim_pcells,MIM-B,M5,18.19,15.79
+pcell_name,netlist_name,mim_option,metal_level,lc,wc,lbl,top_lbl,bot_lbl,netlist_nets,netlists_param,dev_name,dev_tb
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,5.42,1,c_top0,c_bot0,c_top0 c_bot0,M=1 l=13.06u w=5.42u c = 141.5704f,C0,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,16.77,1,c_top1,c_bot1,c_top1 c_bot1,M=1 l=16.42u w=16.77u c = 550.7268f,C1,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,14.87,1,c_top2,c_bot2,c_top2 c_bot2,M=1 l=13.38u w=14.87u c = 397.9212f,C2,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,8.29,1,c_top3,c_bot3,c_top3 c_bot3,M=1 l=7.87u w=8.29u c = 130.4846f,C3,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,6.28,1,c_top4,c_bot4,c_top4 c_bot4,M=1 l=12.81u w=6.28u c = 160.89360000000002f,C4,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,11.36,1,c_top5,c_bot5,c_top5 c_bot5,M=1 l=12.39u w=11.36u c = 281.5008f,C5,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,10.88,1,c_top6,c_bot6,c_top6 c_bot6,M=1 l=10.34u w=10.88u c = 224.9984f,C6,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,5.44,1,c_top7,c_bot7,c_top7 c_bot7,M=1 l=10.03u w=5.44u c = 109.1264f,C7,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,19.02,1,c_top8,c_bot8,c_top8 c_bot8,M=1 l=5.8u w=19.02u c = 220.63199999999998f,C8,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,6.74,1,c_top9,c_bot9,c_top9 c_bot9,M=1 l=11.75u w=6.74u c = 158.39000000000001f,C9,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,19.02,1,c_top10,c_bot10,c_top10 c_bot10,M=1 l=11.75u w=19.02u c = 446.96999999999997f,C10,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,5.44,1,c_top11,c_bot11,c_top11 c_bot11,M=1 l=5.8u w=5.44u c = 63.104f,C11,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,19.02,1,c_top12,c_bot12,c_top12 c_bot12,M=1 l=10.03u w=19.02u c = 381.54119999999995f,C12,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,19.02,1,c_top13,c_bot13,c_top13 c_bot13,M=1 l=10.34u w=19.02u c = 393.3336f,C13,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,19.02,1,c_top14,c_bot14,c_top14 c_bot14,M=1 l=12.39u w=19.02u c = 471.3156f,C14,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,19.02,1,c_top15,c_bot15,c_top15 c_bot15,M=1 l=12.81u w=19.02u c = 487.2924f,C15,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,19.02,1,c_top16,c_bot16,c_top16 c_bot16,M=1 l=7.87u w=19.02u c = 299.3748f,C16,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,19.02,1,c_top17,c_bot17,c_top17 c_bot17,M=1 l=13.38u w=19.02u c = 508.97520000000003f,C17,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,19.02,1,c_top18,c_bot18,c_top18 c_bot18,M=1 l=16.42u w=19.02u c = 624.6168f,C18,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,19.02,1,c_top19,c_bot19,c_top19 c_bot19,M=1 l=13.06u w=19.02u c = 496.80240000000003f,C19,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,5.44,1,c_top20,c_bot20,c_top20 c_bot20,M=1 l=13.06u w=5.44u c = 142.0928f,C20,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,5.44,1,c_top21,c_bot21,c_top21 c_bot21,M=1 l=16.42u w=5.44u c = 178.64960000000002f,C21,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,5.44,1,c_top22,c_bot22,c_top22 c_bot22,M=1 l=13.38u w=5.44u c = 145.57440000000003f,C22,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,5.44,1,c_top23,c_bot23,c_top23 c_bot23,M=1 l=7.87u w=5.44u c = 85.6256f,C23,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,5.44,1,c_top24,c_bot24,c_top24 c_bot24,M=1 l=12.81u w=5.44u c = 139.3728f,C24,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,5.44,1,c_top25,c_bot25,c_top25 c_bot25,M=1 l=12.39u w=5.44u c = 134.8032f,C25,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,5.44,1,c_top26,c_bot26,c_top26 c_bot26,M=1 l=10.34u w=5.44u c = 112.4992f,C26,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,6.74,1,c_top27,c_bot27,c_top27 c_bot27,M=1 l=10.03u w=6.74u c = 135.2044f,C27,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,6.74,1,c_top28,c_bot28,c_top28 c_bot28,M=1 l=5.8u w=6.74u c = 78.184f,C28,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,5.44,1,c_top29,c_bot29,c_top29 c_bot29,M=1 l=11.75u w=5.44u c = 127.84f,C29,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,5.42,1,c_top30,c_bot30,c_top30 c_bot30,M=1 l=11.75u w=5.42u c = 127.37f,C30,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,5.42,1,c_top31,c_bot31,c_top31 c_bot31,M=1 l=5.8u w=5.42u c = 62.872f,C31,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,5.42,1,c_top32,c_bot32,c_top32 c_bot32,M=1 l=10.03u w=5.42u c = 108.72519999999999f,C32,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,5.42,1,c_top33,c_bot33,c_top33 c_bot33,M=1 l=10.34u w=5.42u c = 112.0856f,C33,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,5.42,1,c_top34,c_bot34,c_top34 c_bot34,M=1 l=12.39u w=5.42u c = 134.3076f,C34,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,5.42,1,c_top35,c_bot35,c_top35 c_bot35,M=1 l=12.81u w=5.42u c = 138.8604f,C35,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,5.42,1,c_top36,c_bot36,c_top36 c_bot36,M=1 l=7.87u w=5.42u c = 85.3108f,C36,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,5.42,1,c_top37,c_bot37,c_top37 c_bot37,M=1 l=13.38u w=5.42u c = 145.0392f,C37,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,5.42,1,c_top38,c_bot38,c_top38 c_bot38,M=1 l=16.42u w=5.42u c = 177.99280000000002f,C38,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,6.74,1,c_top39,c_bot39,c_top39 c_bot39,M=1 l=13.06u w=6.74u c = 176.0488f,C39,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,10.88,1,c_top40,c_bot40,c_top40 c_bot40,M=1 l=13.06u w=10.88u c = 284.1856f,C40,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,6.74,1,c_top41,c_bot41,c_top41 c_bot41,M=1 l=16.42u w=6.74u c = 221.34160000000003f,C41,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,6.74,1,c_top42,c_bot42,c_top42 c_bot42,M=1 l=13.38u w=6.74u c = 180.3624f,C42,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,6.74,1,c_top43,c_bot43,c_top43 c_bot43,M=1 l=7.87u w=6.74u c = 106.08760000000001f,C43,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,6.74,1,c_top44,c_bot44,c_top44 c_bot44,M=1 l=12.81u w=6.74u c = 172.67880000000002f,C44,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,6.74,1,c_top45,c_bot45,c_top45 c_bot45,M=1 l=12.39u w=6.74u c = 167.0172f,C45,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,6.74,1,c_top46,c_bot46,c_top46 c_bot46,M=1 l=10.34u w=6.74u c = 139.38320000000002f,C46,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,10.88,1,c_top47,c_bot47,c_top47 c_bot47,M=1 l=10.03u w=10.88u c = 218.2528f,C47,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,10.88,1,c_top48,c_bot48,c_top48 c_bot48,M=1 l=5.8u w=10.88u c = 126.208f,C48,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,10.88,1,c_top49,c_bot49,c_top49 c_bot49,M=1 l=11.75u w=10.88u c = 255.68f,C49,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,16.77,1,c_top50,c_bot50,c_top50 c_bot50,M=1 l=11.75u w=16.77u c = 394.09499999999997f,C50,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,16.77,1,c_top51,c_bot51,c_top51 c_bot51,M=1 l=5.8u w=16.77u c = 194.53199999999998f,C51,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,16.77,1,c_top52,c_bot52,c_top52 c_bot52,M=1 l=10.03u w=16.77u c = 336.40619999999996f,C52,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,16.77,1,c_top53,c_bot53,c_top53 c_bot53,M=1 l=10.34u w=16.77u c = 346.80359999999996f,C53,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,16.77,1,c_top54,c_bot54,c_top54 c_bot54,M=1 l=12.39u w=16.77u c = 415.5606f,C54,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,16.77,1,c_top55,c_bot55,c_top55 c_bot55,M=1 l=12.81u w=16.77u c = 429.6474f,C55,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,16.77,1,c_top56,c_bot56,c_top56 c_bot56,M=1 l=7.87u w=16.77u c = 263.9598f,C56,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,16.77,1,c_top57,c_bot57,c_top57 c_bot57,M=1 l=13.38u w=16.77u c = 448.7652f,C57,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,10.88,1,c_top58,c_bot58,c_top58 c_bot58,M=1 l=16.42u w=10.88u c = 357.29920000000004f,C58,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,16.77,1,c_top59,c_bot59,c_top59 c_bot59,M=1 l=13.06u w=16.77u c = 438.0324f,C59,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,11.36,1,c_top60,c_bot60,c_top60 c_bot60,M=1 l=13.06u w=11.36u c = 296.7232f,C60,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,11.36,1,c_top61,c_bot61,c_top61 c_bot61,M=1 l=16.42u w=11.36u c = 373.0624f,C61,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,10.88,1,c_top62,c_bot62,c_top62 c_bot62,M=1 l=13.38u w=10.88u c = 291.14880000000005f,C62,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,10.88,1,c_top63,c_bot63,c_top63 c_bot63,M=1 l=7.87u w=10.88u c = 171.2512f,C63,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,10.88,1,c_top64,c_bot64,c_top64 c_bot64,M=1 l=12.81u w=10.88u c = 278.7456f,C64,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,10.88,1,c_top65,c_bot65,c_top65 c_bot65,M=1 l=12.39u w=10.88u c = 269.6064f,C65,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,11.36,1,c_top66,c_bot66,c_top66 c_bot66,M=1 l=10.34u w=11.36u c = 234.92479999999998f,C66,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,11.36,1,c_top67,c_bot67,c_top67 c_bot67,M=1 l=10.03u w=11.36u c = 227.88159999999996f,C67,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,11.36,1,c_top68,c_bot68,c_top68 c_bot68,M=1 l=5.8u w=11.36u c = 131.77599999999998f,C68,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,11.36,1,c_top69,c_bot69,c_top69 c_bot69,M=1 l=11.75u w=11.36u c = 266.96f,C69,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,14.87,1,c_top70,c_bot70,c_top70 c_bot70,M=1 l=11.75u w=14.87u c = 349.445f,C70,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,14.87,1,c_top71,c_bot71,c_top71 c_bot71,M=1 l=5.8u w=14.87u c = 172.492f,C71,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,14.87,1,c_top72,c_bot72,c_top72 c_bot72,M=1 l=10.03u w=14.87u c = 298.2922f,C72,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,14.87,1,c_top73,c_bot73,c_top73 c_bot73,M=1 l=10.34u w=14.87u c = 307.5116f,C73,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,14.87,1,c_top74,c_bot74,c_top74 c_bot74,M=1 l=12.39u w=14.87u c = 368.4786f,C74,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,11.36,1,c_top75,c_bot75,c_top75 c_bot75,M=1 l=12.81u w=11.36u c = 291.0432f,C75,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,11.36,1,c_top76,c_bot76,c_top76 c_bot76,M=1 l=7.87u w=11.36u c = 178.8064f,C76,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,11.36,1,c_top77,c_bot77,c_top77 c_bot77,M=1 l=13.38u w=11.36u c = 303.9936f,C77,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,14.87,1,c_top78,c_bot78,c_top78 c_bot78,M=1 l=16.42u w=14.87u c = 488.3308f,C78,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,14.87,1,c_top79,c_bot79,c_top79 c_bot79,M=1 l=13.06u w=14.87u c = 388.4044f,C79,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,6.28,1,c_top80,c_bot80,c_top80 c_bot80,M=1 l=13.06u w=6.28u c = 164.0336f,C80,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,6.28,1,c_top81,c_bot81,c_top81 c_bot81,M=1 l=16.42u w=6.28u c = 206.23520000000002f,C81,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,6.28,1,c_top82,c_bot82,c_top82 c_bot82,M=1 l=13.38u w=6.28u c = 168.05280000000002f,C82,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,14.87,1,c_top83,c_bot83,c_top83 c_bot83,M=1 l=7.87u w=14.87u c = 234.0538f,C83,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,14.87,1,c_top84,c_bot84,c_top84 c_bot84,M=1 l=12.81u w=14.87u c = 380.9694f,C84,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,6.28,1,c_top85,c_bot85,c_top85 c_bot85,M=1 l=12.39u w=6.28u c = 155.6184f,C85,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,6.28,1,c_top86,c_bot86,c_top86 c_bot86,M=1 l=10.34u w=6.28u c = 129.8704f,C86,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,6.28,1,c_top87,c_bot87,c_top87 c_bot87,M=1 l=10.03u w=6.28u c = 125.9768f,C87,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,6.28,1,c_top88,c_bot88,c_top88 c_bot88,M=1 l=5.8u w=6.28u c = 72.848f,C88,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,6.28,1,c_top89,c_bot89,c_top89 c_bot89,M=1 l=11.75u w=6.28u c = 147.58f,C89,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,11.75,8.29,1,c_top90,c_bot90,c_top90 c_bot90,M=1 l=11.75u w=8.29u c = 194.81499999999997f,C90,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,5.8,8.29,1,c_top91,c_bot91,c_top91 c_bot91,M=1 l=5.8u w=8.29u c = 96.16399999999999f,C91,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.03,8.29,1,c_top92,c_bot92,c_top92 c_bot92,M=1 l=10.03u w=8.29u c = 166.29739999999998f,C92,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,10.34,8.29,1,c_top93,c_bot93,c_top93 c_bot93,M=1 l=10.34u w=8.29u c = 171.4372f,C93,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.39,8.29,1,c_top94,c_bot94,c_top94 c_bot94,M=1 l=12.39u w=8.29u c = 205.4262f,C94,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,12.81,8.29,1,c_top95,c_bot95,c_top95 c_bot95,M=1 l=12.81u w=8.29u c = 212.38979999999998f,C95,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,7.87,6.28,1,c_top96,c_bot96,c_top96 c_bot96,M=1 l=7.87u w=6.28u c = 98.8472f,C96,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.38,8.29,1,c_top97,c_bot97,c_top97 c_bot97,M=1 l=13.38u w=8.29u c = 221.8404f,C97,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,16.42,8.29,1,c_top98,c_bot98,c_top98 c_bot98,M=1 l=16.42u w=8.29u c = 272.2436f,C98,cap_mim_2f0_m4m5_noshield
+cap_mim,mim_cap_optionB_5LM_pcells,MIM-B,M5,13.06,8.29,1,c_top99,c_bot99,c_top99 c_bot99,M=1 l=13.06u w=8.29u c = 216.5348f,C99,cap_mim_2f0_m4m5_noshield

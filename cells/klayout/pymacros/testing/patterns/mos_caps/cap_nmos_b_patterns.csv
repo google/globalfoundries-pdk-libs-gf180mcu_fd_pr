@@ -1,101 +1,101 @@
-pcell_name,netlist_name,volt,lc,wc
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,5.71
-cap_nmos_b,cap_nmos_b_pcells,5/6V,9.63,2.77
-cap_nmos_b,cap_nmos_b_pcells,5/6V,5.61,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,5.96
-cap_nmos_b,cap_nmos_b_pcells,5/6V,4.11,5.34
-cap_nmos_b,cap_nmos_b_pcells,5/6V,3.67,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,8.04
-cap_nmos_b,cap_nmos_b_pcells,5/6V,6.91,4.45
-cap_nmos_b,cap_nmos_b_pcells,5/6V,2.08,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,5.34
-cap_nmos_b,cap_nmos_b_pcells,5/6V,8.81,5.96
-cap_nmos_b,cap_nmos_b_pcells,5/6V,9.18,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,2.77
-cap_nmos_b,cap_nmos_b_pcells,5/6V,2.81,5.71
-cap_nmos_b,cap_nmos_b_pcells,5/6V,8.14,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,5.71
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,5.71
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,5.71
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,5.71
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,5.71
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,5.71
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,5.71
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,5.71
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,7.26
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,8.04
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,2.77
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,2.77
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,2.77
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,2.77
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,2.77
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,2.77
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,2.77
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,2.77
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,5.96
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,5.96
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,5.96
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,5.96
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,5.37
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,5.96
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,5.96
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,5.96
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,5.96
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,5.34
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,5.34
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,5.34
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,4.45
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,5.34
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,4.72
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,5.34
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,5.34
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.08,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,6.91,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,3.67,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.81,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.18,5.34
-cap_nmos_b,cap_nmos_b_pcells,3.3V,4.11,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,5.61,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,2.81,5.34
-cap_nmos_b,cap_nmos_b_pcells,3.3V,8.14,8.83
-cap_nmos_b,cap_nmos_b_pcells,3.3V,9.63,8.83
+pcell_name,netlist_name,volt,lc,wc,lbl,g_lbl,sd_lbl,netlist_nets,netlists_param,dev_name,dev_tb
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,4.67,1,c_g0,c_d0,c_g0 c_d0,M=1 l=8.41u w=4.67u,C0,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,4.8,9.19,1,c_g1,c_d1,c_g1 c_d1,M=1 l=4.8u w=9.19u,C1,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,3.13,4.23,1,c_g2,c_d2,c_g2 c_d2,M=1 l=3.13u w=4.23u,C2,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,8.5,1,c_g3,c_d3,c_g3 c_d3,M=1 l=6.88u w=8.5u,C3,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,9.7,1,c_g4,c_d4,c_g4 c_d4,M=1 l=8.36u w=9.7u,C4,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,4.76,9.72,1,c_g5,c_d5,c_g5 c_d5,M=1 l=4.76u w=9.72u,C5,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,1.01,5.47,1,c_g6,c_d6,c_g6 c_d6,M=1 l=1.01u w=5.47u,C6,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,8.04,1,c_g7,c_d7,c_g7 c_d7,M=1 l=2.51u w=8.04u,C7,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,3.82,1,c_g8,c_d8,c_g8 c_d8,M=1 l=9.26u w=3.82u,C8,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,9.76,8.0,1,c_g9,c_d9,c_g9 c_d9,M=1 l=9.76u w=8.0u,C9,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,9.26,8.04,1,c_g10,c_d10,c_g10 c_d10,M=1 l=9.26u w=8.04u,C10,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,5.47,1,c_g11,c_d11,c_g11 c_d11,M=1 l=9.76u w=5.47u,C11,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,9.72,1,c_g12,c_d12,c_g12 c_d12,M=1 l=1.01u w=9.72u,C12,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,2.51,9.7,1,c_g13,c_d13,c_g13 c_d13,M=1 l=2.51u w=9.7u,C13,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,8.36,8.5,1,c_g14,c_d14,c_g14 c_d14,M=1 l=8.36u w=8.5u,C14,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,4.23,1,c_g15,c_d15,c_g15 c_d15,M=1 l=4.76u w=4.23u,C15,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,9.19,1,c_g16,c_d16,c_g16 c_d16,M=1 l=3.13u w=9.19u,C16,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,6.88,4.67,1,c_g17,c_d17,c_g17 c_d17,M=1 l=6.88u w=4.67u,C17,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,5/6V,8.41,3.82,1,c_g18,c_d18,c_g18 c_d18,M=1 l=8.41u w=3.82u,C18,cap_nmos_06v0_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,8.0,1,c_g19,c_d19,c_g19 c_d19,M=1 l=4.8u w=8.0u,C19,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,3.82,1,c_g20,c_d20,c_g20 c_d20,M=1 l=4.8u w=3.82u,C20,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,5.47,1,c_g21,c_d21,c_g21 c_d21,M=1 l=8.41u w=5.47u,C21,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,5.47,1,c_g22,c_d22,c_g22 c_d22,M=1 l=6.88u w=5.47u,C22,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,5.47,1,c_g23,c_d23,c_g23 c_d23,M=1 l=3.13u w=5.47u,C23,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,5.47,1,c_g24,c_d24,c_g24 c_d24,M=1 l=4.76u w=5.47u,C24,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,5.47,1,c_g25,c_d25,c_g25 c_d25,M=1 l=8.36u w=5.47u,C25,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,5.47,1,c_g26,c_d26,c_g26 c_d26,M=1 l=2.51u w=5.47u,C26,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,3.82,1,c_g27,c_d27,c_g27 c_d27,M=1 l=1.01u w=3.82u,C27,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,3.82,1,c_g28,c_d28,c_g28 c_d28,M=1 l=9.76u w=3.82u,C28,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,5.47,1,c_g29,c_d29,c_g29 c_d29,M=1 l=9.26u w=5.47u,C29,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,4.67,1,c_g30,c_d30,c_g30 c_d30,M=1 l=9.26u w=4.67u,C30,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,4.67,1,c_g31,c_d31,c_g31 c_d31,M=1 l=9.76u w=4.67u,C31,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,4.67,1,c_g32,c_d32,c_g32 c_d32,M=1 l=1.01u w=4.67u,C32,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,4.67,1,c_g33,c_d33,c_g33 c_d33,M=1 l=2.51u w=4.67u,C33,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,4.67,1,c_g34,c_d34,c_g34 c_d34,M=1 l=8.36u w=4.67u,C34,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,4.67,1,c_g35,c_d35,c_g35 c_d35,M=1 l=4.76u w=4.67u,C35,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,4.67,1,c_g36,c_d36,c_g36 c_d36,M=1 l=3.13u w=4.67u,C36,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,3.82,1,c_g37,c_d37,c_g37 c_d37,M=1 l=6.88u w=3.82u,C37,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,8.0,1,c_g38,c_d38,c_g38 c_d38,M=1 l=8.41u w=8.0u,C38,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,4.67,1,c_g39,c_d39,c_g39 c_d39,M=1 l=4.8u w=4.67u,C39,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,5.47,1,c_g40,c_d40,c_g40 c_d40,M=1 l=4.8u w=5.47u,C40,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,8.04,1,c_g41,c_d41,c_g41 c_d41,M=1 l=8.41u w=8.04u,C41,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,8.04,1,c_g42,c_d42,c_g42 c_d42,M=1 l=6.88u w=8.04u,C42,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,3.82,1,c_g43,c_d43,c_g43 c_d43,M=1 l=3.13u w=3.82u,C43,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,3.82,1,c_g44,c_d44,c_g44 c_d44,M=1 l=4.76u w=3.82u,C44,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,3.82,1,c_g45,c_d45,c_g45 c_d45,M=1 l=8.36u w=3.82u,C45,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,3.82,1,c_g46,c_d46,c_g46 c_d46,M=1 l=2.51u w=3.82u,C46,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,8.04,1,c_g47,c_d47,c_g47 c_d47,M=1 l=1.01u w=8.04u,C47,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,8.04,1,c_g48,c_d48,c_g48 c_d48,M=1 l=9.76u w=8.04u,C48,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,8.0,1,c_g49,c_d49,c_g49 c_d49,M=1 l=9.26u w=8.0u,C49,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,9.19,1,c_g50,c_d50,c_g50 c_d50,M=1 l=9.26u w=9.19u,C50,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,9.19,1,c_g51,c_d51,c_g51 c_d51,M=1 l=9.76u w=9.19u,C51,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,9.19,1,c_g52,c_d52,c_g52 c_d52,M=1 l=1.01u w=9.19u,C52,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,9.19,1,c_g53,c_d53,c_g53 c_d53,M=1 l=2.51u w=9.19u,C53,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,9.19,1,c_g54,c_d54,c_g54 c_d54,M=1 l=8.36u w=9.19u,C54,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,9.19,1,c_g55,c_d55,c_g55 c_d55,M=1 l=4.76u w=9.19u,C55,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,8.04,1,c_g56,c_d56,c_g56 c_d56,M=1 l=3.13u w=8.04u,C56,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,9.19,1,c_g57,c_d57,c_g57 c_d57,M=1 l=6.88u w=9.19u,C57,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,9.19,1,c_g58,c_d58,c_g58 c_d58,M=1 l=8.41u w=9.19u,C58,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,8.04,1,c_g59,c_d59,c_g59 c_d59,M=1 l=4.8u w=8.04u,C59,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,9.7,1,c_g60,c_d60,c_g60 c_d60,M=1 l=4.8u w=9.7u,C60,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,9.7,1,c_g61,c_d61,c_g61 c_d61,M=1 l=8.41u w=9.7u,C61,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,9.7,1,c_g62,c_d62,c_g62 c_d62,M=1 l=6.88u w=9.7u,C62,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,9.7,1,c_g63,c_d63,c_g63 c_d63,M=1 l=3.13u w=9.7u,C63,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,8.04,1,c_g64,c_d64,c_g64 c_d64,M=1 l=4.76u w=8.04u,C64,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,8.04,1,c_g65,c_d65,c_g65 c_d65,M=1 l=8.36u w=8.04u,C65,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,8.0,1,c_g66,c_d66,c_g66 c_d66,M=1 l=2.51u w=8.0u,C66,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,9.7,1,c_g67,c_d67,c_g67 c_d67,M=1 l=1.01u w=9.7u,C67,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,9.7,1,c_g68,c_d68,c_g68 c_d68,M=1 l=9.76u w=9.7u,C68,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,9.7,1,c_g69,c_d69,c_g69 c_d69,M=1 l=9.26u w=9.7u,C69,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,4.23,1,c_g70,c_d70,c_g70 c_d70,M=1 l=9.26u w=4.23u,C70,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,4.23,1,c_g71,c_d71,c_g71 c_d71,M=1 l=9.76u w=4.23u,C71,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,8.0,1,c_g72,c_d72,c_g72 c_d72,M=1 l=1.01u w=8.0u,C72,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,4.23,1,c_g73,c_d73,c_g73 c_d73,M=1 l=2.51u w=4.23u,C73,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,8.0,1,c_g74,c_d74,c_g74 c_d74,M=1 l=8.36u w=8.0u,C74,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,9.7,1,c_g75,c_d75,c_g75 c_d75,M=1 l=4.76u w=9.7u,C75,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,8.0,1,c_g76,c_d76,c_g76 c_d76,M=1 l=3.13u w=8.0u,C76,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,8.0,1,c_g77,c_d77,c_g77 c_d77,M=1 l=6.88u w=8.0u,C77,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,4.23,1,c_g78,c_d78,c_g78 c_d78,M=1 l=8.41u w=4.23u,C78,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,4.23,1,c_g79,c_d79,c_g79 c_d79,M=1 l=4.8u w=4.23u,C79,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,9.72,1,c_g80,c_d80,c_g80 c_d80,M=1 l=4.8u w=9.72u,C80,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,9.72,1,c_g81,c_d81,c_g81 c_d81,M=1 l=8.41u w=9.72u,C81,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,4.23,1,c_g82,c_d82,c_g82 c_d82,M=1 l=6.88u w=4.23u,C82,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,9.72,1,c_g83,c_d83,c_g83 c_d83,M=1 l=3.13u w=9.72u,C83,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,8.0,1,c_g84,c_d84,c_g84 c_d84,M=1 l=4.76u w=8.0u,C84,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,4.23,1,c_g85,c_d85,c_g85 c_d85,M=1 l=8.36u w=4.23u,C85,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,9.72,1,c_g86,c_d86,c_g86 c_d86,M=1 l=2.51u w=9.72u,C86,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,4.23,1,c_g87,c_d87,c_g87 c_d87,M=1 l=1.01u w=4.23u,C87,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,9.72,1,c_g88,c_d88,c_g88 c_d88,M=1 l=9.76u w=9.72u,C88,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,9.72,1,c_g89,c_d89,c_g89 c_d89,M=1 l=9.26u w=9.72u,C89,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.26,8.5,1,c_g90,c_d90,c_g90 c_d90,M=1 l=9.26u w=8.5u,C90,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,9.76,8.5,1,c_g91,c_d91,c_g91 c_d91,M=1 l=9.76u w=8.5u,C91,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,1.01,8.5,1,c_g92,c_d92,c_g92 c_d92,M=1 l=1.01u w=8.5u,C92,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,2.51,8.5,1,c_g93,c_d93,c_g93 c_d93,M=1 l=2.51u w=8.5u,C93,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.36,9.72,1,c_g94,c_d94,c_g94 c_d94,M=1 l=8.36u w=9.72u,C94,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.76,8.5,1,c_g95,c_d95,c_g95 c_d95,M=1 l=4.76u w=8.5u,C95,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,3.13,8.5,1,c_g96,c_d96,c_g96 c_d96,M=1 l=3.13u w=8.5u,C96,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,6.88,9.72,1,c_g97,c_d97,c_g97 c_d97,M=1 l=6.88u w=9.72u,C97,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,8.41,8.5,1,c_g98,c_d98,c_g98 c_d98,M=1 l=8.41u w=8.5u,C98,cap_nmos_03v3_b
+cap_nmos_b,cap_nmos_b_pcells,3.3V,4.8,8.5,1,c_g99,c_d99,c_g99 c_d99,M=1 l=4.8u w=8.5u,C99,cap_nmos_03v3_b
