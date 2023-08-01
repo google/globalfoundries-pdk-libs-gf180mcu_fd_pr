@@ -1,101 +1,101 @@
-pcell_name,netlist_name,l_res,w_res,deepnwell,pcmpgr
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,9.67,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,5.55,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,3.39,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,5.68,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,1.22,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,6.24,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,4.59,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,4.66,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,2.27,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,4.66,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,5.68,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,4.66,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,4.66,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,2.3,1,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,4.66,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,4.66,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,4.66,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,4.66,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,4.66,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,2.3,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,4.66,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,4.59,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,9.67,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,5.55,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,6.24,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,2.27,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.05,5.68,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.78,5.68,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,1.18,5.68,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,2.07,5.68,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.09,3.39,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.27,1.22,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,9.11,5.68,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,7.63,5.68,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,6.77,5.68,0,1
-ppolyf_s_resistor,ppolyf_s_resistor_pcells,3.18,5.68,0,1
+pcell_name,netlist_name,l_res,w_res,deepnwell,pcmpgr,lbl,r0_lbl,r1_lbl,sub_lbl,netlist_nets,netlists_param,dev_name,dev_tb
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,9.8,0,1,1,rp0,rn0,sub,rp0 rn0 sub,L=6.96u W=9.8u,R0,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,1.7,1,1,1,rp1,rn1,sub_dw,rp1 rn1 sub_dw,L=8.98u W=1.7u,R1,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,6.51,1,1,1,rp2,rn2,sub_dw,rp2 rn2 sub_dw,L=5.03u W=6.51u,R2,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,9.33,1,1,1,rp3,rn3,sub_dw,rp3 rn3 sub_dw,L=7.08u W=9.33u,R3,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,5.63,1,1,1,rp4,rn4,sub_dw,rp4 rn4 sub_dw,L=5.0u W=5.63u,R4,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,5.69,1,1,1,rp5,rn5,sub_dw,rp5 rn5 sub_dw,L=1.86u W=5.69u,R5,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,3.98,1,1,1,rp6,rn6,sub_dw,rp6 rn6 sub_dw,L=2.14u W=3.98u,R6,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,8.71,1,1,1,rp7,rn7,sub_dw,rp7 rn7 sub_dw,L=0.82u W=8.71u,R7,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,2.23,1,1,1,rp8,rn8,sub_dw,rp8 rn8 sub_dw,L=6.54u W=2.23u,R8,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,1.37,1,1,1,rp9,rn9,sub_dw,rp9 rn9 sub_dw,L=2.57u W=1.37u,R9,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,2.23,0,1,1,rp10,rn10,sub,rp10 rn10 sub,L=2.57u W=2.23u,R10,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,8.71,0,1,1,rp11,rn11,sub,rp11 rn11 sub,L=6.54u W=8.71u,R11,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,3.98,0,1,1,rp12,rn12,sub,rp12 rn12 sub,L=0.82u W=3.98u,R12,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,5.69,0,1,1,rp13,rn13,sub,rp13 rn13 sub,L=2.14u W=5.69u,R13,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,5.63,0,1,1,rp14,rn14,sub,rp14 rn14 sub,L=1.86u W=5.63u,R14,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,9.33,0,1,1,rp15,rn15,sub,rp15 rn15 sub,L=5.0u W=9.33u,R15,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,6.51,0,1,1,rp16,rn16,sub,rp16 rn16 sub,L=7.08u W=6.51u,R16,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,1.7,0,1,1,rp17,rn17,sub,rp17 rn17 sub,L=5.03u W=1.7u,R17,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,9.8,0,1,1,rp18,rn18,sub,rp18 rn18 sub,L=8.98u W=9.8u,R18,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,1.37,0,1,1,rp19,rn19,sub,rp19 rn19 sub,L=6.96u W=1.37u,R19,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,2.23,1,1,1,rp20,rn20,sub_dw,rp20 rn20 sub_dw,L=6.96u W=2.23u,R20,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,2.23,0,1,1,rp21,rn21,sub,rp21 rn21 sub,L=8.98u W=2.23u,R21,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,9.8,1,1,1,rp22,rn22,sub_dw,rp22 rn22 sub_dw,L=5.03u W=9.8u,R22,ppolyf_s_dw
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,2.23,0,1,1,rp23,rn23,sub,rp23 rn23 sub,L=7.08u W=2.23u,R23,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,2.23,0,1,1,rp24,rn24,sub,rp24 rn24 sub,L=5.0u W=2.23u,R24,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,2.23,0,1,1,rp25,rn25,sub,rp25 rn25 sub,L=1.86u W=2.23u,R25,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,2.23,0,1,1,rp26,rn26,sub,rp26 rn26 sub,L=2.14u W=2.23u,R26,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,2.23,0,1,1,rp27,rn27,sub,rp27 rn27 sub,L=0.82u W=2.23u,R27,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,9.8,0,1,1,rp28,rn28,sub,rp28 rn28 sub,L=6.54u W=9.8u,R28,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,9.8,0,1,1,rp29,rn29,sub,rp29 rn29 sub,L=2.57u W=9.8u,R29,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,1.7,0,1,1,rp30,rn30,sub,rp30 rn30 sub,L=2.57u W=1.7u,R30,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,1.7,0,1,1,rp31,rn31,sub,rp31 rn31 sub,L=6.54u W=1.7u,R31,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,9.8,0,1,1,rp32,rn32,sub,rp32 rn32 sub,L=0.82u W=9.8u,R32,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,9.8,0,1,1,rp33,rn33,sub,rp33 rn33 sub,L=2.14u W=9.8u,R33,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,9.8,0,1,1,rp34,rn34,sub,rp34 rn34 sub,L=1.86u W=9.8u,R34,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,9.8,0,1,1,rp35,rn35,sub,rp35 rn35 sub,L=5.0u W=9.8u,R35,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,9.8,0,1,1,rp36,rn36,sub,rp36 rn36 sub,L=7.08u W=9.8u,R36,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,2.23,0,1,1,rp37,rn37,sub,rp37 rn37 sub,L=5.03u W=2.23u,R37,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,1.37,0,1,1,rp38,rn38,sub,rp38 rn38 sub,L=8.98u W=1.37u,R38,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,1.7,0,1,1,rp39,rn39,sub,rp39 rn39 sub,L=6.96u W=1.7u,R39,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,8.71,0,1,1,rp40,rn40,sub,rp40 rn40 sub,L=6.96u W=8.71u,R40,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,8.71,0,1,1,rp41,rn41,sub,rp41 rn41 sub,L=8.98u W=8.71u,R41,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,8.71,0,1,1,rp42,rn42,sub,rp42 rn42 sub,L=5.03u W=8.71u,R42,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,8.71,0,1,1,rp43,rn43,sub,rp43 rn43 sub,L=7.08u W=8.71u,R43,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,8.71,0,1,1,rp44,rn44,sub,rp44 rn44 sub,L=5.0u W=8.71u,R44,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,8.71,0,1,1,rp45,rn45,sub,rp45 rn45 sub,L=1.86u W=8.71u,R45,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,8.71,0,1,1,rp46,rn46,sub,rp46 rn46 sub,L=2.14u W=8.71u,R46,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,1.7,0,1,1,rp47,rn47,sub,rp47 rn47 sub,L=0.82u W=1.7u,R47,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,1.37,0,1,1,rp48,rn48,sub,rp48 rn48 sub,L=6.54u W=1.37u,R48,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,8.71,0,1,1,rp49,rn49,sub,rp49 rn49 sub,L=2.57u W=8.71u,R49,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,6.51,0,1,1,rp50,rn50,sub,rp50 rn50 sub,L=2.57u W=6.51u,R50,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,6.51,0,1,1,rp51,rn51,sub,rp51 rn51 sub,L=6.54u W=6.51u,R51,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,6.51,0,1,1,rp52,rn52,sub,rp52 rn52 sub,L=0.82u W=6.51u,R52,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,1.7,0,1,1,rp53,rn53,sub,rp53 rn53 sub,L=2.14u W=1.7u,R53,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,1.7,0,1,1,rp54,rn54,sub,rp54 rn54 sub,L=1.86u W=1.7u,R54,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,1.7,0,1,1,rp55,rn55,sub,rp55 rn55 sub,L=5.0u W=1.7u,R55,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,1.7,0,1,1,rp56,rn56,sub,rp56 rn56 sub,L=7.08u W=1.7u,R56,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,1.37,0,1,1,rp57,rn57,sub,rp57 rn57 sub,L=5.03u W=1.37u,R57,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,6.51,0,1,1,rp58,rn58,sub,rp58 rn58 sub,L=8.98u W=6.51u,R58,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,6.51,0,1,1,rp59,rn59,sub,rp59 rn59 sub,L=6.96u W=6.51u,R59,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,3.98,0,1,1,rp60,rn60,sub,rp60 rn60 sub,L=6.96u W=3.98u,R60,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,3.98,0,1,1,rp61,rn61,sub,rp61 rn61 sub,L=8.98u W=3.98u,R61,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,3.98,0,1,1,rp62,rn62,sub,rp62 rn62 sub,L=5.03u W=3.98u,R62,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,3.98,0,1,1,rp63,rn63,sub,rp63 rn63 sub,L=7.08u W=3.98u,R63,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,6.51,0,1,1,rp64,rn64,sub,rp64 rn64 sub,L=5.0u W=6.51u,R64,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,6.51,0,1,1,rp65,rn65,sub,rp65 rn65 sub,L=1.86u W=6.51u,R65,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,6.51,0,1,1,rp66,rn66,sub,rp66 rn66 sub,L=2.14u W=6.51u,R66,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,1.37,0,1,1,rp67,rn67,sub,rp67 rn67 sub,L=0.82u W=1.37u,R67,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,3.98,0,1,1,rp68,rn68,sub,rp68 rn68 sub,L=6.54u W=3.98u,R68,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,3.98,0,1,1,rp69,rn69,sub,rp69 rn69 sub,L=2.57u W=3.98u,R69,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,9.33,0,1,1,rp70,rn70,sub,rp70 rn70 sub,L=2.57u W=9.33u,R70,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,9.33,0,1,1,rp71,rn71,sub,rp71 rn71 sub,L=6.54u W=9.33u,R71,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,9.33,0,1,1,rp72,rn72,sub,rp72 rn72 sub,L=0.82u W=9.33u,R72,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,1.37,0,1,1,rp73,rn73,sub,rp73 rn73 sub,L=2.14u W=1.37u,R73,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,3.98,0,1,1,rp74,rn74,sub,rp74 rn74 sub,L=1.86u W=3.98u,R74,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,3.98,0,1,1,rp75,rn75,sub,rp75 rn75 sub,L=5.0u W=3.98u,R75,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,1.37,0,1,1,rp76,rn76,sub,rp76 rn76 sub,L=7.08u W=1.37u,R76,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,9.33,0,1,1,rp77,rn77,sub,rp77 rn77 sub,L=5.03u W=9.33u,R77,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,9.33,0,1,1,rp78,rn78,sub,rp78 rn78 sub,L=8.98u W=9.33u,R78,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,9.33,0,1,1,rp79,rn79,sub,rp79 rn79 sub,L=6.96u W=9.33u,R79,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,5.69,0,1,1,rp80,rn80,sub,rp80 rn80 sub,L=6.96u W=5.69u,R80,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,5.69,0,1,1,rp81,rn81,sub,rp81 rn81 sub,L=8.98u W=5.69u,R81,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,5.69,0,1,1,rp82,rn82,sub,rp82 rn82 sub,L=5.03u W=5.69u,R82,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,5.69,0,1,1,rp83,rn83,sub,rp83 rn83 sub,L=7.08u W=5.69u,R83,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,1.37,0,1,1,rp84,rn84,sub,rp84 rn84 sub,L=5.0u W=1.37u,R84,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,1.37,0,1,1,rp85,rn85,sub,rp85 rn85 sub,L=1.86u W=1.37u,R85,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,9.33,0,1,1,rp86,rn86,sub,rp86 rn86 sub,L=2.14u W=9.33u,R86,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,5.69,0,1,1,rp87,rn87,sub,rp87 rn87 sub,L=0.82u W=5.69u,R87,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,5.69,0,1,1,rp88,rn88,sub,rp88 rn88 sub,L=6.54u W=5.69u,R88,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,5.69,0,1,1,rp89,rn89,sub,rp89 rn89 sub,L=2.57u W=5.69u,R89,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.57,5.63,0,1,1,rp90,rn90,sub,rp90 rn90 sub,L=2.57u W=5.63u,R90,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.54,5.63,0,1,1,rp91,rn91,sub,rp91 rn91 sub,L=6.54u W=5.63u,R91,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,0.82,5.63,0,1,1,rp92,rn92,sub,rp92 rn92 sub,L=0.82u W=5.63u,R92,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,2.14,5.63,0,1,1,rp93,rn93,sub,rp93 rn93 sub,L=2.14u W=5.63u,R93,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,1.86,9.33,0,1,1,rp94,rn94,sub,rp94 rn94 sub,L=1.86u W=9.33u,R94,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.0,5.69,0,1,1,rp95,rn95,sub,rp95 rn95 sub,L=5.0u W=5.69u,R95,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,7.08,5.63,0,1,1,rp96,rn96,sub,rp96 rn96 sub,L=7.08u W=5.63u,R96,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,5.03,5.63,0,1,1,rp97,rn97,sub,rp97 rn97 sub,L=5.03u W=5.63u,R97,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,8.98,5.63,0,1,1,rp98,rn98,sub,rp98 rn98 sub,L=8.98u W=5.63u,R98,ppolyf_s
+ppolyf_s_resistor,ppolyf_s_pcells,6.96,5.63,0,1,1,rp99,rn99,sub,rp99 rn99 sub,L=6.96u W=5.63u,R99,ppolyf_s
