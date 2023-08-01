@@ -76,6 +76,8 @@ ppolyf_u_w = 0.8
 ppolyf_u_h_res_l = 1.0
 ppolyf_u_h_res_w = 1.0
 
+tm_area = 0.563
+
 
 class metal_resistor(pya.PCellDeclarationHelper):
     """
@@ -96,6 +98,14 @@ class metal_resistor(pya.PCellDeclarationHelper):
         self.Type_handle.add_choice("tm9k", "tm9k")
         self.Type_handle.add_choice("tm11k", "tm11k")
         self.Type_handle.add_choice("tm30k", "tm30k")
+
+        self.Type_handle2 = self.param(
+            "tm_level", self.TypeList, "TM Metal resistor level"
+        )
+        self.Type_handle2.add_choice("3LM", "3LM")
+        self.Type_handle2.add_choice("4LM", "4LM")
+        self.Type_handle2.add_choice("5LM", "5LM")
+        self.Type_handle2.add_choice("6LM", "6LM")
 
         self.param("l_res", self.TypeDouble, "Width", default=rm1_l, unit="um")
         self.param("w_res", self.TypeDouble, "Length", default=rm1_w, unit="um")
@@ -151,12 +161,16 @@ class metal_resistor(pya.PCellDeclarationHelper):
                 self.l_res = tm6k_l
             if (self.w_res) < tm6k_w:
                 self.w_res = tm6k_w
+            if (self.w_res * self.l_res) < tm_area:
+                self.l_res = round(tm_area / self.w_res, 2)
 
         if (self.res_type) == "tm9k" or (self.res_type) == "tm11k":
             if (self.l_res) < tm9_11k_l:
                 self.l_res = tm9_11k_l
             if (self.w_res) < tm9_11k_w:
                 self.w_res = tm9_11k_w
+            if (self.w_res * self.l_res) < tm_area:
+                self.l_res = round(tm_area / self.w_res, 2)
 
         if (self.res_type) == "tm30k":
             if (self.l_res) < tm30k_l:
@@ -182,34 +196,13 @@ class metal_resistor(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
         dbu_PERCISION = 1 / self.layout.dbu
-        option = os.environ["GF_PDK_OPTION"]
-        if option == "A":
-            if (
-                ((self.res_type) == "rm3")
-                or ((self.res_type) == "tm6k")
-                or ((self.res_type) == "tm9k")
-                or ((self.res_type) == "tm11k")
-            ):
-                raise TypeError(f"Current stack ({option}) doesn't allow this option")
-        elif option == "B":
-            if (
-                ((self.res_type) == "tm6k")
-                or ((self.res_type) == "tm9k")
-                or ((self.res_type) == "tm30k")
-            ):
-                raise TypeError(f"Current stack ({option}) doesn't allow this option")
-        else:
-            if (
-                ((self.res_type) == "tm6k")
-                or ((self.res_type) == "tm11k")
-                or ((self.res_type) == "tm30k")
-            ):
-                raise TypeError(f"Current stack ({option}) doesn't allow this option")
+
         np_instance = draw_metal_res(
             layout=self.layout,
             l_res=self.l_res,
             w_res=self.w_res,
             res_type=self.res_type,
+            tm_level=self.tm_level,
             lbl=self.lbl,
             r0_lbl=self.r0_lbl,
             r1_lbl=self.r1_lbl,
