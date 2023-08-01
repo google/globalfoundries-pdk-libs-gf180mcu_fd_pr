@@ -31,5 +31,57 @@ jobs:
       - name: fet pcells regression
         run: |
           make test-fet-pcells
+
+jobs:
+  diode_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: diode pcells regression
+        run: |
+          make test-diodes-pcells
+
+jobs:
+  mimcap_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: mimcap pcells regression
+        run: |
+          make test-mimcap-pcells
+
+jobs:
+  moscap_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: moscap pcells regression
+        run: |
+          make test-moscap-pcells
+
+jobs:
+  res_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: res pcells regression
+        run: |
+          make test-res-pcells
       
       

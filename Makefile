@@ -29,6 +29,13 @@ lint: | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) flake8 .
 
 ################################################################################
+##  CLONING PV REPO
+################################################################################
+
+DRC-PV: | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) rm -rf globalfoundries-pdk-libs-gf180mcu_fd_pv/ && git clone https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pv.git
+
+################################################################################
 ## DRC Regression section
 ################################################################################
 # DRC main testing
@@ -61,7 +68,22 @@ test-ngspice-%: | $(CONDA_ENV_PYTHON)
 ## PCells Regression section
 ################################################################################
 # fet main testing
-test-fet-pcells: | $(CONDA_ENV_PYTHON)
+test-fet-pcells:   | $(CONDA_ENV_PYTHON)
 	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/ && pytest --device=fet pcell_reg_Pytest.py 
 
+# diode main testing
+test-diode-pcells:   | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/ && pytest --device=diodes pcell_reg_Pytest.py 
+
+# moscap main testing
+test-moscap-pcells:   | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/ && pytest --device=mos_caps pcell_reg_Pytest.py 
+
+# mimcap main testing
+test-mimcap-pcells:   | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/ && pytest --device=mim_caps pcell_reg_Pytest.py
+
+# res main testing
+test-res-pcells:   | $(CONDA_ENV_PYTHON)
+	@$(IN_CONDA_ENV) cd cells/klayout/pymacros/testing/ && pytest --device=res pcell_reg_Pytest.py  
 
