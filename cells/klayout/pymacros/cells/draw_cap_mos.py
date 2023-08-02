@@ -23,6 +23,7 @@ from .via_generator import via_generator, via_stack
 from .layers_def import layer
 
 import numpy as np
+import os
 
 
 @gf.cell
@@ -277,32 +278,18 @@ def draw_cap_mos(
     cmp_xmax = np.max(cmp_polys[0][:, 0])
     cmp_ymax = np.max(cmp_polys[0][:, 1])
 
-    if "_b" in type:
-        if "cap_nmos" in type:
-            nwell = c.add_ref(
-                gf.components.rectangle(
-                    size=(
-                        cmp_xmax - cmp_xmin + (2 * np_enc_cmp),
-                        cmp_ymax - cmp_ymin + (2 * np_enc_gate),
-                    ),
-                    layer=layer["nwell"],
-                )
+    if "cap_nmos_b" in type:
+        nwell = c.add_ref(
+            gf.components.rectangle(
+                size=(
+                    cmp_xmax - cmp_xmin + (2 * np_enc_cmp),
+                    cmp_ymax - cmp_ymin + (2 * np_enc_gate),
+                ),
+                layer=layer["nwell"],
             )
-            nwell.xmin = cmp_xmin - np_enc_cmp
-            nwell.ymin = cmp_ymin - np_enc_gate
-        else:
-            lvpwell = c.add_ref(
-                gf.components.rectangle(
-                    size=(
-                        cmp_xmax - cmp_xmin + (2 * np_enc_cmp),
-                        cmp_ymax - cmp_ymin + (2 * np_enc_gate),
-                    ),
-                    layer=layer["lvpwell"],
-                )
-            )
-
-            lvpwell.xmin = cmp_xmin - np_enc_cmp
-            lvpwell.ymin = cmp_ymin - np_enc_gate
+        )
+        nwell.xmin = cmp_xmin - np_enc_cmp
+        nwell.ymin = cmp_ymin - np_enc_gate
 
     if deepnwell == 1:
 
@@ -538,5 +525,6 @@ def draw_cap_mos(
     c.write_gds("cap_mos_temp.gds")
     layout.read("cap_mos_temp.gds")
     cell_name = "cap_mos_dev"
+    os.remove("cap_mos_temp.gds")
 
     return layout.cell(cell_name)

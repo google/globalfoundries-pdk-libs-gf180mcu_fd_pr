@@ -23,6 +23,7 @@ import gdsfactory as gf
 from gdsfactory.types import Float2, LayerSpec
 from .via_generator import via_generator, via_stack
 from .layers_def import layer
+import os
 
 
 @gf.cell
@@ -123,10 +124,10 @@ def alter_interdig(
 
     c_inst = gf.Component()
 
-    m2_spacing = 0.28
-    via_size = (0.26, 0.26)
-    via_enc = (0.06, 0.06)
-    via_spacing = (0.26, 0.26)
+    m2_spacing: float = 0.28
+    via_size: float = (0.26, 0.26)
+    via_enc: float = (0.06, 0.06)
+    via_spacing: float = (0.26, 0.26)
 
     pat_o = []
     pat_e = []
@@ -296,24 +297,23 @@ def alter_interdig(
                     gf.components.rectangle(
                         size=(m2_y + sd_l + (i + 1) * (m3_spacing + m3_x), m2_y,),
                         layer=layer["metal2"],
-                    ).move(
-                        (
-                            m2_arrb.xmin
-                            - (m2_y + sd_l + (i + 1) * (m3_spacing + m3_x)),
-                            m2_arrb.ymax - i * (m2_spacing + m2_y) - m2_y,
-                        )
+                    )
+                ).move(
+                    (
+                        m2_arrb.xmin - (m2_y + sd_l + (i + 1) * (m3_spacing + m3_x)),
+                        m2_arrb.ymax - i * (m2_spacing + m2_y) - m2_y,
                     )
                 )
+
                 m2_join_u = c_inst.add_ref(
                     gf.components.rectangle(
                         size=(m2_y + sd_l + (i + 1) * (m3_spacing + m3_x), m2_y,),
                         layer=layer["metal2"],
-                    ).move(
-                        (
-                            m2_arru.xmin
-                            - (m2_y + sd_l + (i + 1) * (m3_spacing + m3_x)),
-                            m2_arru.ymin + j * (m2_spacing + m2_y),
-                        )
+                    )
+                ).move(
+                    (
+                        m2_arru.xmin - (m2_y + sd_l + (i + 1) * (m3_spacing + m3_x)),
+                        m2_arru.ymin + j * (m2_spacing + m2_y),
                     )
                 )
                 m3 = c_inst.add_ref(
@@ -382,10 +382,10 @@ def interdigit(
         [nt.append(x) for x in pat if x not in nt]
         nl = int(len(nt))
 
-        m2_spacing = 0.28
-        via_size = (0.26, 0.26)
-        via_enc = (0.06, 0.06)
-        via_spacing = (0.26, 0.26)
+        m2_spacing: float = 0.28
+        via_size: float = (0.26, 0.26)
+        via_enc: float = (0.06, 0.06)
+        via_spacing: float = (0.26, 0.26)
 
         m2_y = via_size[1] + 2 * via_enc[1]
         m2 = gf.components.rectangle(
@@ -628,10 +628,10 @@ def bulk_gr_gen(
 
     comp_pp_enc: float = 0.16
 
-    con_size = 0.22
-    con_sp = 0.28
-    con_comp_enc = 0.07
-    dg_enc_cmp = 0.24
+    con_size: float = 0.22
+    con_sp: float = 0.28
+    con_comp_enc: float = 0.07
+    dg_enc_cmp: float = 0.24
 
     c_temp = gf.Component("temp_store")
     rect_bulk_in = c_temp.add_ref(
@@ -688,7 +688,7 @@ def bulk_gr_gen(
 
     c.add_ref(
         via_generator(
-            x_range=(rect_bulk_in.xmin + con_size, rect_bulk_in.xmax - con_size,),
+            x_range=(rect_bulk_in.xmin + con_size, rect_bulk_in.xmax - con_size),
             y_range=(rect_bulk_out.ymin, rect_bulk_in.ymin),
             via_enclosure=(con_comp_enc, con_comp_enc),
             via_layer=layer["contact"],
@@ -699,7 +699,7 @@ def bulk_gr_gen(
 
     c.add_ref(
         via_generator(
-            x_range=(rect_bulk_in.xmin + con_size, rect_bulk_in.xmax - con_size,),
+            x_range=(rect_bulk_in.xmin + con_size, rect_bulk_in.xmax - con_size),
             y_range=(rect_bulk_in.ymax, rect_bulk_out.ymax),
             via_enclosure=(con_comp_enc, con_comp_enc),
             via_layer=layer["contact"],
@@ -711,7 +711,7 @@ def bulk_gr_gen(
     c.add_ref(
         via_generator(
             x_range=(rect_bulk_out.xmin, rect_bulk_in.xmin),
-            y_range=(rect_bulk_in.ymin + con_size, rect_bulk_in.ymax - con_size,),
+            y_range=(rect_bulk_in.ymin + con_size, rect_bulk_in.ymax - con_size),
             via_enclosure=(con_comp_enc, con_comp_enc),
             via_layer=layer["contact"],
             via_size=(con_size, con_size),
@@ -722,7 +722,7 @@ def bulk_gr_gen(
     c.add_ref(
         via_generator(
             x_range=(rect_bulk_in.xmax, rect_bulk_out.xmax),
-            y_range=(rect_bulk_in.ymin + con_size, rect_bulk_in.ymax - con_size,),
+            y_range=(rect_bulk_in.ymin + con_size, rect_bulk_in.ymax - con_size),
             via_enclosure=(con_comp_enc, con_comp_enc),
             via_layer=layer["contact"],
             via_size=(con_size, con_size),
@@ -777,9 +777,9 @@ def bulk_gr_gen(
             nfet_deep_nwell(
                 deepnwell=deepnwell,
                 pcmpgr=pcmpgr,
-                inst_size=(B.size[0], B.size[1]),
-                inst_xmin=B.xmin,
-                inst_ymin=B.ymin,
+                inst_size=(rect_bulk_out.size[0], rect_bulk_out.size[1]),
+                inst_xmin=rect_bulk_out.xmin,
+                inst_ymin=rect_bulk_out.ymin,
                 grw=grw,
                 volt=volt,
             )
@@ -813,10 +813,10 @@ def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
     c = gf.Component()
 
     comp_pp_enc: float = 0.16
-    con_size = 0.22
-    con_sp = 0.28
-    con_comp_enc = 0.07
-    pcmpgr_enc_dn = 2.6
+    con_size: float = 0.22
+    con_sp: float = 0.28
+    con_comp_enc: float = 0.07
+    pcmpgr_enc_dn: float = 2.6
 
     c_temp_gr = gf.Component("temp_store guard ring")
     rect_pcmpgr_in = c_temp_gr.add_ref(
@@ -890,7 +890,7 @@ def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
 
     c.add_ref(
         via_generator(
-            x_range=(rect_pcmpgr_in.xmin + con_size, rect_pcmpgr_in.xmax - con_size,),
+            x_range=(rect_pcmpgr_in.xmin + con_size, rect_pcmpgr_in.xmax - con_size),
             y_range=(rect_pcmpgr_in.ymax, rect_pcmpgr_out.ymax),
             via_enclosure=(con_comp_enc, con_comp_enc),
             via_layer=layer["contact"],
@@ -902,7 +902,7 @@ def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
     c.add_ref(
         via_generator(
             x_range=(rect_pcmpgr_out.xmin, rect_pcmpgr_in.xmin),
-            y_range=(rect_pcmpgr_in.ymin + con_size, rect_pcmpgr_in.ymax - con_size,),
+            y_range=(rect_pcmpgr_in.ymin + con_size, rect_pcmpgr_in.ymax - con_size),
             via_enclosure=(con_comp_enc, con_comp_enc),
             via_layer=layer["contact"],
             via_size=(con_size, con_size),
@@ -913,7 +913,7 @@ def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
     c.add_ref(
         via_generator(
             x_range=(rect_pcmpgr_in.xmax, rect_pcmpgr_out.xmax),
-            y_range=(rect_pcmpgr_in.ymin + con_size, rect_pcmpgr_in.ymax - con_size,),
+            y_range=(rect_pcmpgr_in.ymin + con_size, rect_pcmpgr_in.ymax - con_size),
             via_enclosure=(con_comp_enc, con_comp_enc),
             via_layer=layer["contact"],
             via_size=(con_size, con_size),
@@ -967,11 +967,11 @@ def nfet_deep_nwell(
 
     c = gf.Component()
 
-    dn_enc_lvpwell = 2.5
-    lvpwell_enc_ncmp = 0.44
-    dg_enc_dn = 0.5
-    dg_enc_cmp = 0.24
-    dg_enc_poly = 0.4
+    dn_enc_lvpwell: float = 2.5
+    lvpwell_enc_ncmp: float = 0.44
+    dg_enc_dn: float = 0.5
+    dg_enc_cmp: float = 0.24
+    dg_enc_poly: float = 0.4
 
     if deepnwell == 1:
 
@@ -1254,7 +1254,7 @@ def draw_nfet(
 
     end_cap: float = 0.3
 
-    comp_spacing = 0.28 if volt == "3.3V" else 0.36
+    comp_spacing: float = 0.28 if volt == "3.3V" else 0.36
 
     gate_np_enc: float = 0.23
     comp_np_enc: float = 0.16
@@ -1262,23 +1262,23 @@ def draw_nfet(
     poly2_spacing: float = 0.24
     pc_ext: float = 0.04
 
-    con_size = 0.22
-    con_sp = 0.28
+    con_size: float = 0.22
+    con_sp: float = 0.28
 
     if bulk == "Bulk Tie":
-        con_comp_enc = 0.1
+        con_comp_enc: float = 0.1
     else:
-        con_comp_enc = 0.07
+        con_comp_enc: float = 0.07
 
-    con_pp_sp = 0.1 - con_comp_enc
-    con_pl_enc = 0.07
+    con_pp_sp: float = 0.1 - con_comp_enc
+    con_pl_enc: float = 0.07
     if volt == "3.3V":
-        pl_cmp_spacing = 0.18
+        pl_cmp_spacing: float = 0.18
     else:
-        pl_cmp_spacing = 0.3
-    m1_area = 0.145
-    m1_sp = 0.3
-    pl_cmpcon_sp = 0.15
+        pl_cmp_spacing: float = 0.3
+    m1_area: float = 0.145
+    m1_sp: float = 0.3
+    pl_cmpcon_sp: float = 0.15
 
     sd_l_con = (
         ((sd_con_col) * con_size)
@@ -1713,6 +1713,7 @@ def draw_nfet(
     c.write_gds("nfet_temp.gds")
     layout.read("nfet_temp.gds")
     cell_name = "sky_nfet_dev"
+    os.remove("nfet_temp.gds")
 
     return layout.cell(cell_name)
     # return c
@@ -1743,8 +1744,8 @@ def pfet_deep_nwell(
 
     c = gf.Component()
 
-    dnwell_enc_pcmp = 1.1
-    dg_enc_dn = 0.5
+    dnwell_enc_pcmp: float = 1.1
+    dg_enc_dn: float = 0.5
 
     if deepnwell == 1:
         dn_rect = c.add_ref(
@@ -1868,8 +1869,8 @@ def draw_pfet(
 
     end_cap: float = 0.3
 
-    comp_spacing = 0.28 if volt == "3.3V" else 0.36
-    nw_enc_pcmp = 0.43 if volt == "3.3V" else 0.6
+    comp_spacing: float = 0.28 if volt == "3.3V" else 0.36
+    nw_enc_pcmp: float = 0.43 if volt == "3.3V" else 0.6
 
     gate_pp_enc: float = 0.23
     comp_np_enc: float = 0.16
@@ -1877,20 +1878,20 @@ def draw_pfet(
     poly2_spacing: float = 0.24
     pc_ext: float = 0.04
 
-    con_size = 0.22
-    con_sp = 0.28
-    con_comp_enc = 0.07
-    con_pp_sp = 0.1 - con_comp_enc
+    con_size: float = 0.22
+    con_sp: float = 0.28
+    con_comp_enc: float = 0.07
+    con_pp_sp: float = 0.1 - con_comp_enc
     if volt == "3.3V":
-        pl_cmp_spacing = 0.18
+        pl_cmp_spacing: float = 0.18
     else:
-        pl_cmp_spacing = 0.3
-    con_pl_enc = 0.07
-    dg_enc_cmp = 0.24
-    dg_enc_poly = 0.4
-    m1_sp = 0.3
-    m1_area = 0.145
-    pl_cmpcon_sp = 0.15
+        pl_cmp_spacing: float = 0.3
+    con_pl_enc: float = 0.07
+    dg_enc_cmp: float = 0.24
+    dg_enc_poly: float = 0.4
+    m1_sp: float = 0.3
+    m1_area: float = 0.145
+    pl_cmpcon_sp: float = 0.15
 
     # sd_l_con = (
     #     ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
@@ -2294,7 +2295,7 @@ def draw_pfet(
         )
 
         # deep nwell generation
-        nw_enc_pcmp = 0.45 + comp_np_enc + psdm.ymax - nsdm.ymax
+        nw_enc_pcmp: float = 0.45 + comp_np_enc + psdm.ymax - nsdm.ymax
         c.add_ref(
             pfet_deep_nwell(
                 deepnwell=deepnwell,
@@ -2342,6 +2343,7 @@ def draw_pfet(
     c.write_gds("pfet_temp.gds")
     layout.read("pfet_temp.gds")
     cell_name = "sky_pfet_dev"
+    os.remove("pfet_temp.gds")
 
     return layout.cell(cell_name)
 
@@ -2392,16 +2394,16 @@ def draw_nfet_06v0_nvt(
     poly2_spacing: float = 0.24
     pc_ext: float = 0.04
 
-    con_size = 0.22
-    con_sp = 0.28
-    con_comp_enc = 0.07
-    con_pp_sp = 0.1 - con_comp_enc
-    pl_cmp_spacing = 0.1
-    con_pl_enc = 0.07
-    pl_cmpcon_sp = 0.15
-    nvt_enc_cmp = 2
-    m1_sp = 0.3
-    m1_area = 0.145
+    con_size: float = 0.22
+    con_sp: float = 0.28
+    con_comp_enc: float = 0.07
+    con_pp_sp: float = 0.1 - con_comp_enc
+    pl_cmp_spacing: float = 0.1
+    con_pl_enc: float = 0.07
+    pl_cmpcon_sp: float = 0.15
+    nvt_enc_cmp: float = 2
+    m1_sp: float = 0.3
+    m1_area: float = 0.145
 
     sd_l_con = (
         ((sd_con_col) * con_size)
@@ -2853,7 +2855,7 @@ def draw_nfet_06v0_nvt(
 
         c.add_ref(
             via_generator(
-                x_range=(rect_bulk_in.xmin + con_size, rect_bulk_in.xmax - con_size,),
+                x_range=(rect_bulk_in.xmin + con_size, rect_bulk_in.xmax - con_size),
                 y_range=(rect_bulk_in.ymax, rect_bulk_out.ymax),
                 via_enclosure=(con_comp_enc, con_comp_enc),
                 via_layer=layer["contact"],
@@ -2865,7 +2867,7 @@ def draw_nfet_06v0_nvt(
         c.add_ref(
             via_generator(
                 x_range=(rect_bulk_out.xmin, rect_bulk_in.xmin),
-                y_range=(rect_bulk_in.ymin + con_size, rect_bulk_in.ymax - con_size,),
+                y_range=(rect_bulk_in.ymin + con_size, rect_bulk_in.ymax - con_size),
                 via_enclosure=(con_comp_enc, con_comp_enc),
                 via_layer=layer["contact"],
                 via_size=(con_size, con_size),
@@ -2876,7 +2878,7 @@ def draw_nfet_06v0_nvt(
         c.add_ref(
             via_generator(
                 x_range=(rect_bulk_in.xmax, rect_bulk_out.xmax),
-                y_range=(rect_bulk_in.ymin + con_size, rect_bulk_in.ymax - con_size,),
+                y_range=(rect_bulk_in.ymin + con_size, rect_bulk_in.ymax - con_size),
                 via_enclosure=(con_comp_enc, con_comp_enc),
                 via_layer=layer["contact"],
                 via_size=(con_size, con_size),
@@ -2974,6 +2976,7 @@ def draw_nfet_06v0_nvt(
     c.write_gds("nfet_nvt_temp.gds")
     layout.read("nfet_nvt_temp.gds")
     cell_name = "sky_nfet_nvt_dev"
+    os.remove("nfet_nvt_temp.gds")
 
     return layout.cell(cell_name)
 
