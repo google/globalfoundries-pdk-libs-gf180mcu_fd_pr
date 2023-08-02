@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  fet_pcells_testing:
+  nfet_03v3_pcells_testing:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 12
@@ -28,9 +28,69 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - name: fet pcells regression
+      - name: nfet_03v3 pcells regression
         run: |
-          make test-fet-pcells
+          make test-nfet_03v3-pcells
+
+  nfet_05v0_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: nfet_05v0 pcells regression
+        run: |
+          make test-nfet_05v0-pcells
+
+  nfet_06v0_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: nfet_06v0 pcells regression
+        run: |
+          make test-nfet_06v0-pcells
+
+  pfet_03v3_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: pfet_03v3 pcells regression
+        run: |
+          make test-pfet_03v3-pcells
+
+  pfet_05v0_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: pfet_05v0 pcells regression
+        run: |
+          make test-pfet_05v0-pcells
+
+  pfet_06v0_pcells_testing:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: pfet_06v0 pcells regression
+        run: |
+          make test-pfet_06v0-pcells
 
   diode_pcells_testing:
     runs-on: ubuntu-latest
