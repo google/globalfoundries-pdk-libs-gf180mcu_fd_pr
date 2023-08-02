@@ -23,6 +23,7 @@ from .via_generator import via_generator, via_stack
 from .layers_def import layer
 
 import numpy as np
+import os
 
 
 @gf.cell
@@ -538,5 +539,6 @@ def draw_cap_mos(
     c.write_gds("cap_mos_temp.gds")
     layout.read("cap_mos_temp.gds")
     cell_name = "cap_mos_dev"
+    os.remove("cap_mos_temp.gds")
 
     return layout.cell(cell_name)

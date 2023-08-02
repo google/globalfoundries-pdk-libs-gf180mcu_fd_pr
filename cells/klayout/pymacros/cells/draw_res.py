@@ -20,6 +20,7 @@ import gdsfactory as gf
 from gdsfactory.types import LayerSpec, Float2
 from .layers_def import layer
 from .via_generator import via_generator, via_stack
+import os
 
 
 def draw_metal_res(
@@ -107,6 +108,7 @@ def draw_metal_res(
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
     cell_name = "res_dev"
+    os.remove("res_temp.gds")
 
     return layout.cell(cell_name)
 
@@ -475,6 +477,7 @@ def draw_nplus_res(
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
     cell_name = "res_dev"
+    os.remove("res_temp.gds")
 
     return layout.cell(cell_name)
 
@@ -559,6 +562,7 @@ def draw_pplus_res(
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
     cell_name = "res_dev"
+    os.remove("res_temp.gds")
 
     return layout.cell(cell_name)
 
@@ -767,6 +771,7 @@ def draw_npolyf_res(
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
     cell_name = "res_dev"
+    os.remove("res_temp.gds")
 
     return layout.cell(cell_name)
 
@@ -842,6 +847,7 @@ def draw_ppolyf_res(
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
     cell_name = "res_dev"
+    os.remove("res_temp.gds")
 
     return layout.cell(cell_name)
 
@@ -1055,6 +1061,7 @@ def draw_ppolyf_u_high_Rs_res(
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
     cell_name = "res_dev"
+    os.remove("res_temp.gds")
 
     return layout.cell(cell_name)
 
@@ -1231,5 +1238,6 @@ def draw_well_res(
     c.write_gds("res_temp.gds")
     layout.read("res_temp.gds")
     cell_name = "res_dev"
+    os.remove("res_temp.gds")
 
     return layout.cell(cell_name)

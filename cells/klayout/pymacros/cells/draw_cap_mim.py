@@ -2,6 +2,7 @@ import gdsfactory as gf
 
 from .via_generator import via_generator, via_stack
 from .layers_def import layer
+import os
 
 
 def draw_cap_mim(
@@ -139,5 +140,6 @@ def draw_cap_mim(
     c.write_gds("mim_cap_temp.gds")
     layout.read("mim_cap_temp.gds")
     cell_name = "mim_cap_dev"
+    os.remove("mim_cap_temp.gds")
 
     return layout.cell(cell_name)
