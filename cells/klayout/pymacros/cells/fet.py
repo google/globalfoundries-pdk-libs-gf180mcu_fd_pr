@@ -18,9 +18,9 @@
 import pya
 from .draw_fet import draw_nfet, draw_nfet_06v0_nvt, draw_pfet
 
-fet_3p3_l = 0.28
-fet_3p3_w = 0.22
-fet_w_con = 0.36
+fet_3p3_l = float(0.28)
+fet_3p3_w = float(0.22)
+fet_w_con = float(0.36)
 fet_w_con_bulk = 0.42
 fet_5_6_w = 0.3
 
