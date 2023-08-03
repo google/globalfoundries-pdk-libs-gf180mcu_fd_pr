@@ -17,7 +17,7 @@
 ########################################################################################################################
 
 import gdsfactory as gf
-from gdsfactory.types import LayerSpec, Float2
+from gdsfactory.typings import LayerSpec, Float2
 from .layers_def import layer
 from .via_generator import via_generator, via_stack
 import os
