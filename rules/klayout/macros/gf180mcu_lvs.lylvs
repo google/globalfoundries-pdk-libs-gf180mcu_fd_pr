@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>true</show-in-menu>
  <group-name/>
@@ -30,6 +31,55 @@
 # limitations under the License.
 
 
-# %include ../lvs/gf180mcu.lvs
+require 'yaml'
+
+## reading the parent directory of the current file
+run_dir = File.expand_path("..", __dir__)
+
+## reading the loaded gds file path
+layout_path = Pathname.new(RBA::CellView.active.filename)
+
+## read saved options from yaml file
+options = YAML.load(File.read(__dir__ + "/lvs_options.yml"))
+
+## reading netlist option to get netlist_path
+if options["netlist"] == ""
+    net_name = layout_path.split()[1].to_s().split(".")[0]
+
+    net_dir = "#{layout_path.split()[0]}/#{net_name}.cdl"
+
+else  
+    net_dir = options["netlist"]
+
+end
+
+## create options passed to run_drc.py 
+options_str = "--lvs_sub=#{options["sub_name"]} #{options["run_mode"]} #{options["variant"]} #{options["top_cell_name"]} #{options["spice_net"]} #{options["spice_comment"]} #{options["verbose"]}  #{options["schematic_simple"]} #{options["net_only"]} #{options["top_lvl_pins"]} #{options["combine"]} #{options["purge"]} #{options["purge_nets"]} #{options["run_dir"]}"
+
+## run_drc command line
+cmd = "python3 #{run_dir}/lvs/run_lvs.py --layout=#{layout_path} --netlist=#{net_dir} #{options_str}"
+
+## start running drc 
+puts "######### running #{cmd}"
+lvs_res = `#{cmd}`
+
+## read the log of lvs run to get output lydb file paths if run_dir option is disables 
+gds_name = layout_path.split()[1].to_s.split(".")[0]
+
+if options["run_dir"] == ""
+    File.open(__dir__ + "/lvs_res.txt", "w") { |file| file.write(lvs_res) }
+    lydb_path = File.readlines(__dir__ + "/lvs_res.txt")[3].split(/ /)[-1]
+    File.delete(__dir__ + "/lvs_res.txt")
+    lydb_dir = lydb_path.to_s().split("/#{gds_name}")[0]
+else 
+    lydb_dir = options["run_dir"].split("=")[1]
+end
+
+lydb_file = "#{gds_name}.lvsdb"
+
+
+## open a klayout window with database loaded 
+`klayout #{layout_path} -mn #{lydb_dir}/#{lydb_file}`
+
 </text>
 </klayout-macro>
