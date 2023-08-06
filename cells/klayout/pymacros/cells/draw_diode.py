@@ -18,7 +18,7 @@
 
 import gdsfactory as gf
 from .layers_def import layer
-from gdsfactory.types import Float2
+from gdsfactory.typings import Float2
 from .via_generator import via_generator, via_stack
 
 import numpy as np
