@@ -22,8 +22,7 @@ from .draw_cap_mim import draw_cap_mim
 
 mim_min_l = 5
 mim_min_w = 5
-mim_max_l = 100
-mim_max_w = 100
+mim_cap_area: float = (100 * 100)
 
 
 class cap_mim(pya.PCellDeclarationHelper):
@@ -47,8 +46,8 @@ class cap_mim(pya.PCellDeclarationHelper):
         self.Type_handle2.add_choice("M4-M5", "M5")
         self.Type_handle2.add_choice("M5-M6", "M6")
 
-        self.param("lc", self.TypeDouble, "Length", default=mim_min_l, unit="um")
         self.param("wc", self.TypeDouble, "Width", default=mim_min_w, unit="um")
+        self.param("lc", self.TypeDouble, "Length", default=mim_min_l, unit="um")
         self.param("area", self.TypeDouble, "Area", readonly=True, unit="um^2")
         self.param("perim", self.TypeDouble, "Perimeter", readonly=True, unit="um")
 
@@ -72,10 +71,8 @@ class cap_mim(pya.PCellDeclarationHelper):
             self.lc = mim_min_l
         if (self.wc) < mim_min_w:
             self.wc = mim_min_w
-        if (self.lc) > mim_max_l:
-            self.lc = mim_max_l
-        if (self.wc) > mim_max_w:
-            self.wc = mim_max_w
+        if (self.lc * self.wc) > mim_cap_area:
+            self.lc = round(mim_cap_area / self.wc, 3)
         if (self.mim_option) == "MIM-A":
             self.metal_level = "M3"
         elif self.metal_level == "M3":

@@ -15,9 +15,6 @@ export KLAYOUT_HOME=`pwd`
 ```
 2.(optional step to enable GUI menu for running DRC/LVS) You will need to run the following commands as well from inside `cells/klayout` folder:
 ```bash
-ln -s ../../rules/klayout/drc 
-ln -s ../../rules/klayout/lvs
-ln -s ../../rules/klayout/macros
 ln -s ../../tech/klayout/gf180mcu.lyt
 ln -s ../../tech/klayout/gf180mcu.lyp
 ```

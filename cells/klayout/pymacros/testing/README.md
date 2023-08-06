@@ -1,22 +1,17 @@
 # PCell Testing
 
-In this folder, the test scripts generates patterns from different PCells and save them into GDS files and then we can run DRC on them to make sure they are clean.
+In this folder, the test scripts uses generated patterns from different PCells in form of csv files and save them into GDS files and then we can run DRC aand LVS on them to make sure they are clean.
 
 ## Usage
 
-To generate the PCells for testing, you run the following:
+To generate and test the PCells, you run the following:
 ```bash
-python generate_pcell.py --device=<device_name>
+pytest --device=<device_name> pcell_reg_Pytest.py
 ```
 
-To show how to use the `generate_pcell.py` utility:
-```bash
-python generate_pcell.py -h
-```
+After generating the PCells, you could see the testing results as pass or fail tests in pytest summary report 
 
-After generating the PCells, you could run DRC on those cells using the make file in `drc_test`. 
-
-To run all DRC tests, you need to run the following command inside `drc_test` folder:
+To run all pcells tests, you need to run the following command :
 ```bash
 make all
 ```
