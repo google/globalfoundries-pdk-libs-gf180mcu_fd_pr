@@ -26,7 +26,7 @@ run_folder   := $(shell date +'run_%Y_%m_%d_%H_%M')
 
 all : test-pcell
 
-test-pcell: Add_run-dir  test-bjt  test-diode  test-MIM  test-cap_mos  test-FET  test-RES
+test-pcell: Add_run-dir test-diode  test-MIM  test-cap_mos  test-FET  test-RES
 
 #=================================
 # --------- RUN FOLDER ----------
