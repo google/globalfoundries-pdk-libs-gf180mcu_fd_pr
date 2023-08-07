@@ -1,0 +1,11 @@
+---
+drc_mode: ''
+run_mode: "--run_mode=flat"
+variant: "--variant=C"
+top_cell_name: ''
+run_dir: ''
+verbose: ''
+feol: ''
+beol: ''
+offgrid: ''
+connectivity: ''

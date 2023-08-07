@@ -1,0 +1,16 @@
+---
+sub_name: "--lvs_sub=gf180mcu_gnd"
+run_mode: "--run_mode=flat"
+variant: "--variant=C"
+netlist: ''
+spice_net: ''
+top_cell_name: ''
+run_dir: ''
+spice_comment: ''
+verbose: ''
+schematic_simple: ''
+net_only: ''
+top_lvl_pins: ''
+combine: ''
+purge: ''
+purge_nets: ''
