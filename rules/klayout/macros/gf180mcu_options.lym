@@ -36,37 +36,6 @@ require 'yaml'
   # Adding DRC options
   #####################################################################################
   
-  #0 Setting DRC mode
-  drc_mode_action = RBA::Action::new
-  drc_mode_action.title = "DRC type"
-  drc_mode_action.on_triggered do
-    
-      drc_mode_select = RBA::InputDialog::ask_item("DRC modes options", "Select DRC mode:", [ "Antenna only", "Density only", "Main only", "Main &amp; Antenna only", "Main &amp; Density only", "Main, Antenna &amp; Density" ], 3)
-      options = YAML.load(File.read(__dir__ + "/drc_options.yml"))
-      if drc_mode_select == "Antenna only" 
-        options["drc_mode"] = "--antenna_only"
-        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
-      elsif drc_mode_select == "Density only" 
-        options["drc_mode"] = "--density_only"
-        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
-      elsif drc_mode_select == "Main only" 
-        options["drc_mode"] = " "
-        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
-      elsif drc_mode_select == "Main &amp; Antenna only"
-        options["drc_mode"] = "--antenna"
-        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
-      elsif drc_mode_select == "Main &amp; Density only"
-        options["drc_mode"] = "--density"
-        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
-      elsif drc_mode_select == "Main, Antenna &amp; Density"
-        options["drc_mode"] =  "--antenna --density"
-        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
-      end
-      
-  end
-  
-mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
-  
   #1 Setting run mode
   run_mode_drc_action = RBA::Action::new
   run_mode_drc_action.title = "Run mode"
@@ -75,7 +44,7 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       run_mode_select = RBA::InputDialog::ask_item("Run mode", "Select run mode:", [ "tiling", "deep", "flat" ], 1)
       options = YAML.load(File.read(__dir__ + "/drc_options.yml"))
       if run_mode_select 
-          options["run_mode"]= "--drc_mode=#{run_mode_select}"
+          options["run_mode"]= run_mode_select
           File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
       else 
           options["run_mode"]= ""
@@ -93,7 +62,7 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
     variant_select = RBA::InputDialog::ask_item("Variant options", "Select variant option:", [ "A", "B", "C" , "D", "E"], 2)
       options = YAML.load(File.read(__dir__ + "/drc_options.yml"))
       if variant_select
-        options["variant"] = "--variant=#{variant_select}"
+        options["variant"] = variant_select
         File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }    
       end
     
@@ -107,26 +76,12 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
     top_cell_name = RBA::InputDialog::ask_string("Top cell name", "Please enter Top_cell name", "TOP")
       options = YAML.load(File.read(__dir__ + "/drc_options.yml")) 
       if top_cell_name 
-        options["top_cell_name"] = "--topcell=#{top_cell_name}"
+        options["top_cell_name"] = top_cell_name
         File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
   end
   mw.menu.insert_item("submenu.drc_menu.end", "TOP_cell_name", top_cell_action)
-  
-  #4 Adding run_dir path
-  run_dir_action = RBA::Action::new
-  run_dir_action.title = "Run_dir Path"
-  run_dir_action.on_triggered do
-    run_dir_path = RBA::InputDialog::ask_string("Run dir Path", "Please enter Run dir Path", "#{__dir__}")
-      options = YAML.load(File.read(__dir__ + "/drc_options.yml")) 
-      if run_dir_path
-        options["run_dir"] = "--run_dir=#{run_dir_path}"
-        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
-      end
-    
-  end
-  mw.menu.insert_item("submenu.drc_menu.end", "run_dir_path", run_dir_action)
   
   #5 Setting verbose mode
   verbose_drc_action = RBA::Action::new
@@ -137,7 +92,10 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
     
       options = YAML.load(File.read(__dir__ + "/drc_options.yml"))
       if verbose_drc_action.is_checked?
-        options["verbose"] = "--verbose"
+        options["verbose"] = "true"
+        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else
+        options["verbose"] = "false"
         File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -151,8 +109,11 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
   feol_action.checked=(true)
   feol_action.on_triggered do
       options = YAML.load(File.read(__dir__ + "/drc_options.yml"))
-      unless feol_action.is_checked?
-        options["feol"] = "--no_feol"
+      if feol_action.is_checked?
+        options["feol"] = true
+        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else
+        options["feol"] = false
         File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -166,8 +127,11 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
   beol_action.checked=(true)
   beol_action.on_triggered do
     options = YAML.load(File.read(__dir__ + "/drc_options.yml"))
-      unless beol_action.is_checked?
-        options["beol"] = "--no_beol"
+      if beol_action.is_checked?
+        options["beol"] = true
+        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["beol"] = false
         File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -181,8 +145,11 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
   offgrid_action.checked=(true)
   offgrid_action.on_triggered do
     options = YAML.load(File.read(__dir__ + "/drc_options.yml"))
-      unless offgrid_action.is_checked?
-        options["offgrid"] = "--no_offgrid"
+      if offgrid_action.is_checked?
+        options["offgrid"] = "true"
+        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["offgrid"] = "false"
         File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -197,7 +164,10 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
   connectivity_action.on_triggered do
     options = YAML.load(File.read(__dir__ + "/drc_options.yml")) 
       if connectivity_action.is_checked?
-        options["connectivity"] = "--connectivity"
+        options["connectivity"] = "true"
+        File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["connectivity"] = "false"
         File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -215,7 +185,7 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
     sub_name = RBA::InputDialog::ask_string("Substrate name", "Please enter substrate name", "gf180mcu_gnd")
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if sub_name 
-        options["sub_name"] = "--lvs_sub=#{sub_name}"
+        options["sub_name"] = sub_name
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -230,7 +200,7 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       run_mode_select = RBA::InputDialog::ask_item("Run mode", "Select run mode:", [ "tiling", "deep", "flat" ], 1)
       if run_mode_select 
-        options["run_mode"] = "--run_mode=#{run_mode_select}"
+        options["run_mode"] = run_mode_select
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -245,7 +215,7 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       variant_select = RBA::InputDialog::ask_item("Variant options", "Select variant option:", [ "A", "B", "C", "D" ], 2)
       if variant_select 
-        options["variant"] = "--variant=#{variant_select}"
+        options["variant"] = variant_select
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -273,26 +243,12 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
     top_cell_name = RBA::InputDialog::ask_string("Top cell name", "Please enter Top_cell name", "TOP")
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if top_cell_name 
-        options["top_cell_name"] = "--topcell=#{top_cell_name}"
+        options["top_cell_name"] = top_cell_name
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
   end
   mw.menu.insert_item("submenu.lvs_menu.end", "TOP_cell_name", top_cell_action)
-
-  #6 Adding run_dir path
-  run_dir_action = RBA::Action::new
-  run_dir_action.title = "Run_dir Path"
-  run_dir_action.on_triggered do
-    run_dir_path = RBA::InputDialog::ask_string("Run dir Path", "Please enter Run dir Path", "#{__dir__}")
-      options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
-      if run_dir_path
-        options["run_dir"] = "--run_dir=#{run_dir_path}"
-        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
-      end
-    
-  end
-  mw.menu.insert_item("submenu.lvs_menu.end", "run_dir_path", run_dir_action)
   
   #7 Setting spice net names
   spice_net_action = RBA::Action::new
@@ -302,8 +258,11 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
   spice_net_action.on_triggered do
     
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
-      unless spice_net_action.is_checked?
-        options["spice_net"] = "--no_net_names"
+      if spice_net_action.is_checked?
+        options["spice_net"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["spice_net"] = false
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -319,9 +278,11 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
     
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if spice_comment_action.is_checked?
-        options["spice_comment"] = "--spice_comments"
+        options["spice_comment"] = true
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
-        
+      else 
+        options["spice_comment"] = false
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
   end
@@ -336,7 +297,10 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if scale_action.is_checked?
-        options["scale"] = "--scale "
+        options["scale"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["scale"] = false
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -352,7 +316,10 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
   
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if verbose_action.is_checked?
-        options["verbose"] = "--verbose "
+        options["verbose"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["verbose"] = false
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -368,7 +335,10 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if schematic_simple_action.is_checked?
-        options["schematic_simple"] = "--schematic_simplify "
+        options["schematic_simple"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["schematic_simple"] = false
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -384,8 +354,11 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if net_only_action.is_checked?
-        options["net_only"] = "--net_only"
-        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+        options["net_only"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml)}
+      else
+        options["net_only"] = false
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml)}
       end
     
   end
@@ -400,8 +373,11 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if top_lvl_pins_action.is_checked?
-        options["top_lvl_pins"] = "--top_lvl_pins"
-        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+        options["top_lvl_pins"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml)}
+      else 
+        options["top_lvl_pins"] = false
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml)}
       end
     
   end
@@ -416,7 +392,10 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       if combine_action.is_checked?
-        options["combine"] = "--combine"
+        options["combine"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["combine"] = false
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -433,7 +412,10 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml")) 
       
       if purge_action.is_checked?
-        options["purge"] = "--purge"
+        options["purge"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["purge"] = false
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -449,7 +431,10 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
       
       options = YAML.load(File.read(__dir__ + "/lvs_options.yml"))
       if purge_nets_action.is_checked?
-        options["purge_nets"] = "--purge_nets"
+        options["purge_nets"] = true
+        File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
+      else 
+        options["purge_nets"] = false
         File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(options.to_yaml) }
       end
     
@@ -463,31 +448,30 @@ mw.menu.insert_item("submenu.drc_menu.end", "drc_mode", drc_mode_action)
   
   mw.on_view_closed do
     ## write default options 
-    drc_options = {"drc_mode"=&gt;"", 
-             "run_mode"=&gt;"--run_mode=flat",
-             "variant"=&gt;"--variant=C" ,
+    drc_options = {
+             "run_mode"=&gt;"flat",
+             "variant"=&gt;"C" ,
              "top_cell_name"=&gt;"",
-             "run_dir"=&gt;"",
-             "verbose"=&gt;"",
-             "feol"=&gt;"",
-             "beol"=&gt;"",
-             "offgrid"=&gt; "",
-             "connectivity"=&gt;"" }
-    lvs_options = {"sub_name"=&gt;"--lvs_sub=gf180mcu_gnd",
-            "run_mode"=&gt;"--run_mode=flat", 
-            "variant"=&gt;"--variant=C" ,
+             "verbose"=&gt;"false",
+             "feol"=&gt;true,
+             "beol"=&gt;true,
+             "offgrid"=&gt; "true",
+             "connectivity"=&gt;"false" }
+    lvs_options = {"sub_name"=&gt;"gf180mcu_gnd",
+            "run_mode"=&gt;"flat", 
+            "variant"=&gt;"C" ,
             "netlist"=&gt;"" ,
-            "spice_net"=&gt;"",
+            "spice_net"=&gt;true,
             "top_cell_name"=&gt;"",
-            "run_dir"=&gt;"",
-            "spice_comment"=&gt;"",
-            "verbose"=&gt;"",
-            "schematic_simple"=&gt;"",
-            "net_only"=&gt;"",
-            "top_lvl_pins"=&gt;"",
-            "combine"=&gt;"",
-            "purge"=&gt;"",
-            "purge_nets"=&gt;""
+            "spice_comment"=&gt;false,
+            "scale"=&gt;false,
+            "verbose"=&gt;false,
+            "schematic_simple"=&gt;false,
+            "net_only"=&gt;false,
+            "top_lvl_pins"=&gt;false,
+            "combine"=&gt;false,
+            "purge"=&gt;false,
+            "purge_nets"=&gt;false
               }
     File.open(__dir__ + "/drc_options.yml", "w") { |file| file.write(drc_options.to_yaml) }
     File.open(__dir__ + "/lvs_options.yml", "w") { |file| file.write(lvs_options.to_yaml) }

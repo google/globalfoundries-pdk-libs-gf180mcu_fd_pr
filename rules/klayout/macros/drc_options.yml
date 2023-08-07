@@ -1,11 +1,9 @@
 ---
-drc_mode: ''
-run_mode: "--run_mode=flat"
-variant: "--variant=C"
+run_mode: flat
+variant: C
 top_cell_name: ''
-run_dir: ''
-verbose: ''
-feol: ''
-beol: ''
-offgrid: ''
-connectivity: ''
+verbose: 'false'
+feol: true
+beol: true
+offgrid: 'true'
+connectivity: 'false'
