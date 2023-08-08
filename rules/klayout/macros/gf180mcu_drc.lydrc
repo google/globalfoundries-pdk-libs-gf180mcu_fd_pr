@@ -90,5 +90,5 @@ $conn_drc = options["connectivity"]
 #%include ../drc/rule_decks/density.drc
 #%include ../drc/main.drc
 
-
+</text>
 </klayout-macro>
