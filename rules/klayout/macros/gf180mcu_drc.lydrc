@@ -46,6 +46,21 @@ run_dir = File.expand_path("..", dir_path)
 ## read the log of drc run to get output lydb file paths if run_dir option is disables 
 gds_name = layout_path.split()[1].to_s.split(".")[0]
 
+out_dir = "#{run_dir}/macros/run_drc_main"
+
+if Dir.exist?out_dir
+  `rm -r #{out_dir}`
+end
+
+## create options passed to run_drc.py 
+options_str = "--variant=#{options["variant"]} --run_dir=#{run_dir}/macros/run_drc_main --macro_gen"
+
+## run_drc command line
+cmd = "python3 #{run_dir}/drc/run_drc.py --path=#{layout_path} #{options_str}"
+
+## start running drc 
+puts "######### running #{cmd}"
+drc_res = `#{cmd}`
 
 ## pass options to main.drc
 $run_mode = options["run_mode"]
@@ -84,11 +99,17 @@ $offgrid = options["offgrid"]
 
 $conn_drc = options["connectivity"]
 
+unless File.exist?"#{run_dir}/macros/run_drc_main/main.drc"
+  STDERR.puts "file run_drc_main.drc doesn't exist"
+  exit
+end
+
 ## include run files
 
 #%include ../drc/rule_decks/antenna.drc
 #%include ../drc/rule_decks/density.drc
-#%include ../drc/main.drc
+#%include run_drc_main/main.drc
+
 
 </text>
 </klayout-macro>
