@@ -48,10 +48,17 @@ if options["netlist"] == ""
     net_name = layout_path.split()[1].to_s().split(".")[0]
 
     net_dir = "#{layout_path.split()[0]}/#{net_name}.cdl"
-
+    unless File.exist?net_dir
+      net_dir = "#{layout_path.split()[0]}/#{net_name}.spice"
+    end
 else  
     net_dir = options["netlist"]
 
+end
+
+unless File.exist?net_dir
+  STDERR.puts "netlist file #{net_dir} doesn't exist"
+  exit
 end
 
 ## read the log of lvs run to get output lydb file paths if run_dir option is disables 
