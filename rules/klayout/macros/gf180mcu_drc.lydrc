@@ -30,56 +30,65 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'yaml'
-
-
-## reading the parent directory of the current file
-run_dir = File.expand_path("..", __dir__)
+require "yaml"
 
 ## reading the loaded gds file path
 layout_path = Pathname.new(RBA::CellView.active.filename)
 layout_dir = layout_path.split()[0]
 
 ## read saved options from yaml file
-options = YAML.load(File.read(__dir__ + "/drc_options.yml"))
+dir_path = File.dirname(File.expand_path(__FILE__))
+options = YAML.load(File.read(dir_path + "/drc_options.yml"))
 
-## create options passed to run_drc.py 
-options_str = "#{options["drc_mode"]} #{options["run_mode"]} #{options["variant"]} #{options["top_cell_name"]} #{options["verbose"]} #{options["feol"]} #{options["beol"]} #{options["offgrid"]} #{options["connectivity"]} #{options["run_dir"]}"
-
-## run_drc command line
-cmd = "python3 #{run_dir}/drc/run_drc.py --path=#{layout_path} #{options_str}"
-
-## start running drc 
-puts "######### running #{cmd}"
-drc_res = `#{cmd}`
+## reading the parent directory of the current file
+run_dir = File.expand_path("..", dir_path)
 
 ## read the log of drc run to get output lydb file paths if run_dir option is disables 
 gds_name = layout_path.split()[1].to_s.split(".")[0]
 
-if options["run_dir"] == ""
-    File.open(__dir__ + "/drc_res.txt", "w") { |file| file.write(drc_res) }
-    lydb_path = File.readlines(__dir__ + "/drc_res.txt")[3].split(/ /)[-1]
-    File.delete(__dir__ + "/drc_res.txt")
-    lydb_dir = lydb_path.to_s().split("/#{gds_name}")[0]
-else 
-    lydb_dir = options["run_dir"].split("=")[1]
+
+## pass options to main.drc
+$run_mode = options["run_mode"]
+
+if options["variant"] == "A" 
+  $metal_top = "30K"
+  $metal_level = "3LM"
+  $mim_option = "A"
+elsif options["variant"] == "B"
+  $metal_top = "11K"
+  $metal_level = "4LM"
+  $mim_option = "B"
+elsif options["variant"] == "C"
+  $metal_top = "9K"
+  $metal_level = "5LM"
+  $mim_option = "B"
+elsif options["variant"] == "D"
+  $metal_top = "9K"
+  $metal_level = "6LM"
+  $mim_option = "B"
+elsif options["variant"] == "E"
+  $metal_top = "9K"
+  $metal_level = "6LM"
+  $mim_option = "A"
 end
 
+$topcell = options["top_cell_name"]
 
-## choose the displayed database file
-if options["drc_mode"] == "--antenna_only" 
-  lydb_file =  "#{gds_name}_antenna.lyrdb"
-  
-elsif options["drc_mode"] == "--density_only" 
-  lydb_file = "#{gds_name}_density.lyrdb"
-  
-else 
-  lydb_file = "#{gds_name}_main.lyrdb"
-  
-  end
+$verbose = options["verbose"]
 
-## open a klayout window with database loaded 
-`klayout #{layout_path} -m #{lydb_dir}/#{lydb_file}`
+$feol = options["feol"]
 
-</text>
+$beol = options["beol"]
+
+$offgrid = options["offgrid"]
+
+$conn_drc = options["connectivity"]
+
+## include run files
+
+#%include ../drc/rule_decks/antenna.drc
+#%include ../drc/rule_decks/density.drc
+#%include ../drc/main.drc
+
+
 </klayout-macro>
