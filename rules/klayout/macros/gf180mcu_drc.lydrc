@@ -49,7 +49,7 @@ gds_name = layout_path.split()[1].to_s.split(".")[0]
 out_dir = "#{run_dir}/macros/run_drc_main"
 
 if Dir.exist?out_dir
-  `rm -r #{out_dir}`
+  `rm #{out_dir}/drc_run*.log`
 end
 
 ## create options passed to run_drc.py 
@@ -106,8 +106,11 @@ end
 
 ## include run files
 
+$report = "antenna.lyrdb"
 #%include ../drc/rule_decks/antenna.drc
+$report = "density.lyrdb"
 #%include ../drc/rule_decks/density.drc
+$report = "main.lyrdb"
 #%include run_drc_main/main.drc
 
 
