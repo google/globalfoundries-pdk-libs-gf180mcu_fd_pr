@@ -47327,8 +47327,8 @@ q0 c b e  pnp_10p00x00p42  dtemp=dtemp
 +tref    = 25              	level = 1
 +cjc     = '2.04e-014*cjca*(1 + mc_xcjc_vpnp*sw_stat_global)' 	cje     = '6.88e-015*cjea*(1 + mc_xcje_vpnp*sw_stat_global)' 	cjs     = 0               fc      = 0.5           
 +mjc     = 0.22711         	mje     = 0.14469         	mjs     = 0.5             vjc     = 0.43905       
-+vje     = 0.43905         	vjs     = 0.75            	xcjc    = 1               cbcp    = 0             
-+cbep    = 0               	ccsp    = 0               	itf     = 0.1             ptf     = 0             
++vje     = 0.43905         	vjs     = 0.75            	xcjc    = 1             
++itf     = 0.1             ptf     = 0             
 +tf      = 1e-010          	tr      = 0               	vtf     = 10              xtf     = 1             
 +af      = 1               	kf      = 0             
 +is      = '9e-019*isa*(1 + mc_xis_vpnp*sw_stat_global)*(1 + isa_mis_pnp_10p00x00p42)'    	rb      = '41*rba*(1 + mc_xrb_vpnp*sw_stat_global)'        	re      = '1*rea*(1 + mc_xre_vpnp*sw_stat_global)'         irb     = 0.1           
@@ -47362,8 +47362,7 @@ q0 c b e  pnp_05p00x00p42  dtemp=dtemp
 +cjs = 0                       vjs = 0.75                    	mjs = 0.5                     
 +tf = 1E-10                    xtf = 1                       	vtf = 10                      
 +itf = 0.1                     xcjc = 1                      	fc = 0.5                      
-+tr = 0                        ptf = 0                       	cbcp = 0                      
-+cbep = 0                      ccsp = 0                      
++tr = 0                        ptf = 0                     
 +xtb = 1E-4                    xti = 3                       	eg = 1.17                     
 +tbf1 = 6.1E-3                 tbf2 = -4.235165E-22          	tikf1 = -4.3E-3               
 +cte = 1E-3                    ctc = 2.8626E-3               	tvje = 1.9314E-3              
@@ -47392,8 +47391,7 @@ q0 c b e  pnp_10p00x10p00  dtemp=dtemp
 +cjs = 0                       vjs = 0.75                    	mjs = 0.5                     
 +tf = 1E-10                    xtf = 1                       	vtf = 10                      
 +itf = 0.1                     xcjc = 1                      	fc = 0.5                      
-+tr = 0                        ptf = 0                       	cbcp = 0                      
-+cbep = 0                      ccsp = 0                      
++tr = 0                        ptf = 0                      
 +xtb = 1E-4                    xti = 3                       	eg = 1.17                     
 +tbf1 = 4.26E-3                tbf2 = -1.4E-6                	tikf1 = -4.3E-3               
 +cte = 1E-3                    ctc = 2.8626E-3               	tvje = 1.9314E-3              
@@ -47422,8 +47420,7 @@ q0 c b e  pnp_05p00x05p00  dtemp=dtemp
 +cjs = 0                       vjs = 0.75                    	mjs = 0.5                     
 +tf = 1E-10                    xtf = 1                       	vtf = 10                      
 +itf = 0.1                     xcjc = 1                      	fc = 0.5                      
-+tr = 0                        ptf = 0                       	cbcp = 0                      
-+cbep = 0                      ccsp = 0                      
++tr = 0                        ptf = 0                     
 +xtb = 1E-4                    xti = 3                       	eg = 1.17                     
 +tbf1 = 4.54E-3                tbf2 = -9E-7                  	tikf1 = -4.3E-3               
 +cte = 1E-3                    ctc = 2.8626E-3               	tvje = 1.9314E-3              
