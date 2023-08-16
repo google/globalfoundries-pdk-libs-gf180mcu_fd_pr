@@ -465,7 +465,7 @@ c3_gb g b '(cgb_min +  cgb_amp/(1+(1/pow(max(1e-3, cgb_slope*(v(b,g)-cgb_vth + n
 +cgds_fixed = '3.9*8.854e-12/toxep' 
 rd1 d d2 '(rdrift*pfet_10v0_asym_drdrift)/(w/nf-wa)' tc1=trx1 tc2=trx2 m=nf
 rd2 d2 d1 'max(0.1, (rd*pfet_10v0_asym_drdsw*(1+trd1*(temper+dtemp-25))/(w/nf-wb)*(tanh(ra*(v(s,d)-rb*(l-lb)/(0.6e-6-lb))))))' m=nf
-m0 d1 g s b pfet_10v0_asym_core w=w l=l dtemp=0 ad=ad pd=pd as=as ps=ps nf=nf nrd=nrd nrs=nrs sa=sa sb=sb sd=sd
+m0 d1 g s b pfet_10v0_asym_core w=w l=l ad=ad pd=pd as=as ps=ps nf=nf nrd=nrd nrs=nrs sa=sa sb=sb sd=sd
 c1_gd g d c='pfet_10v0_asym_dcgd*(cgds_fixed*w*lcgd_d+ exp(polar_d*min(max(-v(d,s)-vthd,0),polard_min))*cgdl_d*w*(1+tanh(cgdv_d/(1+cgd_val*max(-v(d,g),0))*(-v(g,d1)+cgd_vthd*(1+cgdv_d2*-v(d,d1)) - pfet_10v0_asym_dvth0))))'
 c1_gd2 g d1 c='pfet_10v0_asym_dcgd*(cgds_fixed*w*lcgd_d2 + cgdl_d2*w*(1+tanh( cgdv_d/(1+cgd_val*max(-v(d,g),0))*(-v(g,d1)+cgd_vthd*(1+cgdv_d2*-v(d,d1)) - pfet_10v0_asym_dvth0   ) )) )'
 c2_gs g s c='pfet_10v0_asym_dcgs*(cgds_fixed*w*lcgs + cgsl_s*w*(1-tanh(cgs_slope*(-v(s,g)+cgs_vth)))*(1 +cgs_factor/(1+cgs_factor2*exp(v(g,d1)-cgs_vth1))*(1- exp(polar_s*min(max(-v(d1,s)-vthd,0),polars_min)))))'
