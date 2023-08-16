@@ -47,34 +47,12 @@
 + pfet_10v0_asym_DCGS=1 pfet_10v0_asym_DCGD=1 pfet_10v0_asym_DCJS=1 pfet_10v0_asym_DCJD=1
 *************10V************
 .LIB smbb000149.xyce nfet_10v0_asym_t
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .LIB smbb000149.xyce pfet_10v0_asym_t
 .LIB smbb000149.xyce noise_corner
-.ENDL
+.ENDL typical
 
 
 .LIB ss
-
 .PARAM
 + nfet_10v0_asym_DTOX=8E-10 nfet_10v0_asym_DXL=6e-008 nfet_10v0_asym_DXW=-3.46E-8 nfet_10v0_asym_DVTH0=0.112
 + nfet_10v0_asym_DRDSW=1.2 nfet_10v0_asym_DRDRIFT=1.271 nfet_10v0_asym_DVSAT=0.926
@@ -84,34 +62,12 @@
 + pfet_10v0_asym_DRDRIFT=1.144 pfet_10v0_asym_DVSAT=0.91 pfet_10v0_asym_DU0=0.964
 + pfet_10v0_asym_DCGS=1.1 pfet_10v0_asym_DCGD=1.2 pfet_10v0_asym_DCJS=1.1 pfet_10v0_asym_DCJD=1.2
 .LIB smbb000149.xyce nfet_10v0_asym_t
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .LIB smbb000149.xyce pfet_10v0_asym_t
 .LIB smbb000149.xyce noise_corner
-.ENDL
+.ENDL ss
 
 
 .LIB ff
-
 .PARAM
 + nfet_10v0_asym_DTOX=-8E-10 nfet_10v0_asym_DXL=-6e-008 nfet_10v0_asym_DXW=3.46E-8
 + nfet_10v0_asym_DVTH0=-0.10388 nfet_10v0_asym_DRDSW=0.868 nfet_10v0_asym_DRDRIFT=0.8245
@@ -121,35 +77,12 @@
 + pfet_10v0_asym_DRDRIFT=0.89 pfet_10v0_asym_DVSAT=1.06 pfet_10v0_asym_DU0=1.03 pfet_10v0_asym_DCGS=0.9
 + pfet_10v0_asym_DCGD=0.8 pfet_10v0_asym_DCJS=0.9 pfet_10v0_asym_DCJD=0.8
 .LIB smbb000149.xyce nfet_10v0_asym_t
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .LIB smbb000149.xyce pfet_10v0_asym_t
 .LIB smbb000149.xyce noise_corner
-.ENDL
+.ENDL ff
+
 
 .LIB sf
-
-
 .PARAM
 + nfet_10v0_asym_DTOX=0 nfet_10v0_asym_DXL=5.024e-008 nfet_10v0_asym_DXW=0 nfet_10v0_asym_DVTH0=0.068
 + nfet_10v0_asym_DRDSW=1.2 nfet_10v0_asym_DRDRIFT=1.156 nfet_10v0_asym_DVSAT=0.928
@@ -159,34 +92,12 @@
 + pfet_10v0_asym_DVSAT=1.012 pfet_10v0_asym_DU0=1.03 pfet_10v0_asym_DCGS=0.93 pfet_10v0_asym_DCGD=0.86
 + pfet_10v0_asym_DCJS=0.93 pfet_10v0_asym_DCJD=0.86
 .LIB smbb000149.xyce nfet_10v0_asym_t
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .LIB smbb000149.xyce pfet_10v0_asym_t
 .LIB smbb000149.xyce noise_corner
-.ENDL
+.ENDL sf
+
 
 .LIB fs
-
 .PARAM
 + nfet_10v0_asym_DTOX=0 nfet_10v0_asym_DXL=-5.02e-008 nfet_10v0_asym_DXW=0 nfet_10v0_asym_DVTH0=-0.058169
 + nfet_10v0_asym_DRDSW=0.868 nfet_10v0_asym_DRDRIFT=0.89748 nfet_10v0_asym_DVSAT=1.045
@@ -196,33 +107,12 @@
 + pfet_10v0_asym_DVSAT=0.989 pfet_10v0_asym_DU0=0.97 pfet_10v0_asym_DCGS=1.07 pfet_10v0_asym_DCGD=1.14
 + pfet_10v0_asym_DCJS=1.07 pfet_10v0_asym_DCJD=1.14
 .LIB smbb000149.xyce nfet_10v0_asym_t
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .LIB smbb000149.xyce pfet_10v0_asym_t
 .LIB smbb000149.xyce noise_corner
-.ENDL
+.ENDL fs
 
 
 .LIB statistical
-
 .PARAM
 + MC_VSAT2_10V={agauss(0, 1, 3)} MC_RD_10V_2={agauss(0, 1, 3)} MC_U0_10V_2={agauss(0, 1, 3)}
 + MC_CGOL_10V_2={agauss(0, 1, 3)} MC_VSATN2_10V={agauss(0, 1, 3)} MC_RDN_10V_2={agauss(0, 1, 3)}
@@ -244,22 +134,6 @@
 + nfet_10v0_asym_DCGD='(1+(24e-3* mc_cgol_10V+24e-3* mc_cgolN_10V)*sw_stat_global*mc_skew)'
 + nfet_10v0_asym_DCJS='(1+(12e-3* mc_cgol_10V+12e-3* mc_cgolN_10V)*sw_stat_global*mc_skew)'
 + nfet_10v0_asym_DCJD='(1+(24e-3* mc_cgol_10V+24e-3* mc_cgolN_10V)*sw_stat_global*mc_skew)'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .PARAM
 + pfet_10v0_asym_SIG_DVTH1='0.01692*(-0.7*mc_sig_vth+0.7*mc_sig_vthp)*sw_stat_global*mc_skew'
 + pfet_10v0_asym_DTOX='7.143e-11*(0.77*mc_toxe+0.63*mc_toxep)*sw_stat_global*mc_skew'
@@ -273,28 +147,10 @@
 + pfet_10v0_asym_DCJS='(1+(12e-3*mc_cgol_10V + 12e-3*mc_cgolp_10V)*sw_stat_global*mc_skew)'
 + pfet_10v0_asym_DCJD='(1+(24e-3*mc_cgol_10V + 24e-3*mc_cgolp_10V)*sw_stat_global*mc_skew)'
 
-
-
-
 .LIB smbb000149.xyce nfet_10v0_asym_t
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .LIB smbb000149.xyce pfet_10v0_asym_t
 .LIB smbb000149.xyce noise_corner
-.ENDL
+.ENDL statistical
 *
 
 .LIB noise_corner
@@ -302,11 +158,7 @@
 + nfet_10v0_asym_NOIA='(fnoicor==0)*1.1021E42 + (fnoicor==1)*2.5852e42' nfet_10v0_asym_NOIB='(fnoicor==0)*2.8476E24 + (fnoicor==1)*6.5096e+024'
 + nfet_10v0_asym_NOIC='(fnoicor==0)*8.75 + (fnoicor==1)*8.75' pfet_10v0_asym_NOIA='(fnoicor==0)*2.9073e+041 + (fnoicor==1)*1.7073e+042'
 + pfet_10v0_asym_NOIB='(fnoicor==0)*8.0736e+025 + (fnoicor==1)*2.4523e+026' pfet_10v0_asym_NOIC='(fnoicor==0)*12780 + (fnoicor==1)*12780'
-.ENDL
-
-
-
-
+.ENDL noise_corner
 
 *
 *
@@ -318,7 +170,7 @@
 
 .SUBCKT nfet_10v0_asym d g s b
 + PARAMS: W=25E-6 L=0.6E-6 AD='w*1.48e-6' PD='2*(1.48e-6+w)' AS='w*0.48e-6' PS='(w+0.48e-6)*2'
-+ NRD=0 NRS=0 NF=1 DTEMP=0 SA=0 SB=0 SD=0 PAR=1
++ NRD=0 NRS=0 NF=1 DTEMP=0 SA=0 SB=0 SD=0 PAR=1 M=1
 .PARAM
 + RDRIFT1=1.5433E3 WA=-1.6705E-8 RD=0.17322 RA=4.631E-3 RB=1.1181 LB=-1.0648E-6 WB=-2.8512E-7
 + TRX1=2.8643E-3 TRX2=1.0098E-5 TRTH1=5.5E-4 TRTH2=0 CGDL_D2=5.0343E-10 TOXEP=1.376E-8
@@ -329,13 +181,6 @@
 + CGS_FACTOR2=1 CGDV_D2=-2.1473 CGDL_D=1.3222E-11 CGS_VTH1=0.20635
 .PARAM CGDS_FIXED='3.9*8.854e-12/toxep'
 
-
-
-
-
-
-
-
 Rdrift d d2
 + TC1={trx1} TC2={trx2} M={nf}
 + R='(rdrift1*nfet_10v0_asym_drdrift)*1.2e-6/(w/nf-wa)'
@@ -344,7 +189,7 @@ Rd2 d2 d1
 + R='max(1e-2, (rd*nfet_10v0_asym_drdsw*(1+trth1*(temp+dtemp-25)+trth2*(temp+dtemp-25)*(temp+dtemp-25)))/(w/nf-wb)*(tanh(ra*(v(d,s)-rb*(l-lb)/(0.6e-6-lb)))))'
 M0 d1 g s b nfet_10v0_asym_core
 + AD={ad} AS={as} L={l} NF={nf} NRD={nrd} NRS={nrs} PD={pd} PS={ps} SA={sa}
-+ SB={sb} SD={sd} W={w}
++ SB={sb} SD={sd} W={w} M={m}
 C1_gd g d
 + C='nfet_10v0_asym_dcgd*(cgds_fixed*w*lcgd_d+ exp(polar_d*min(max(v(d,s)-vthd,0),polard_min))*cgdl_d*w*(1+tanh(cgdv_d/(1+cgd_val*max(v(d,g),0))*(v(g,d1)+cgd_vthd*(1+cgdv_d2*v(d,d1)) -nfet_10v0_asym_dvth0))))'
 C1_gd2 g d1
@@ -395,47 +240,7 @@ C3_gb g b
 + WW=0 WWL=0 WWN=1 XJ=1.5E-7 XJBVD=1 XJBVS=1 XL='0+nfet_10v0_asym_dxl' XPART=1
 + XTID=3 XTIS=3 XTSD=0.63818 XW='0+nfet_10v0_asym_dxw'
 + LEVEL=14
-***** Flag Parameter ***
-***** Geometry Range Parameter ***
-***** Process Parameter ***
-***** dW and dL Parameter ***
-***** Vth Related  Parameter ***
-***** Mobility Related Parameter ***
-***** Subthreshold Related Parameter ***
-***** Output Resistance Related Parameter ***
-***** GIDL Effect Parameters ***
-***** Flicker Noise Model Parameter ***
-***** Capacitance Parameter ***
-
-***** Souce/Drain Junction Diode Model Parameter ***
-
-
-
-
-
-***** Temperature coefficient ***
-
-
-
-
-
-
-
-
-
-
-
 .ENDS nfet_10v0_asym
-
-
-
-
-
-
-
-
-
-
 
 .ENDL nfet_10v0_asym_t
 
@@ -449,7 +254,7 @@ C3_gb g b
 
 .SUBCKT pfet_10v0_asym d g s b
 + PARAMS: W=2.5E-5 L=6E-7 DTEMP=0 NF=1 AD='(w*1.78e-6)' PD='2*(w+1.78e-6)' AS='w*0.48e-6'
-+ PS='(w+0.48e-6)*2' NRD=0 NRS=0 SA=0 SB=0 SD=0 PAR=1
++ PS='(w+0.48e-6)*2' NRD=0 NRS=0 SA=0 SB=0 SD=0 PAR=1 M=1
 .PARAM
 + RDRIFT=5.751E-3 RD=0.94645 RA=1.1954E-3 RB=1.5957 LB=6.78E-6 WA=-6.5504E-7 WB=4.1955E-8
 + TRX1=2.836E-3 TRX2=7.4236E-6 TRD1=-3.7522E-3 CGDL_D2=4.3795E-10 TOXEP=1.568E-8
@@ -460,12 +265,6 @@ C3_gb g b
 + CGS_FACTOR2=1 CGDV_D2=-1.2197 CGDL_D=1.6046E-11 CGS_VTH1=0.13041
 .PARAM CGDS_FIXED='3.9*8.854e-12/toxep'
 
-
-
-
-
-
-
 Rd1 d d2
 + TC1={trx1} TC2={trx2} M={nf} R='(rdrift*pfet_10v0_asym_drdrift)/(w/nf-wa)'
 Rd2 d2 d1
@@ -473,7 +272,7 @@ Rd2 d2 d1
 + R='max(0.1, (rd*pfet_10v0_asym_drdsw*(1+trd1*(temp+dtemp-25))/(w/nf-wb)*(tanh(ra*(v(s,d)-rb*(l-lb)/(0.6e-6-lb))))))'
 M0 d1 g s b pfet_10v0_asym_core
 + AD={ad} AS={as} L={l} NF={nf} NRD={nrd} NRS={nrs} PD={pd} PS={ps} SA={sa}
-+ SB={sb} SD={sd} W={w}
++ SB={sb} SD={sd} W={w} M={m}
 C1_gd g d
 + C='pfet_10v0_asym_dcgd*(cgds_fixed*w*lcgd_d+ exp(polar_d*min(max(-v(d,s)-vthd,0),polard_min))*cgdl_d*w*(1+tanh(cgdv_d/(1+cgd_val*max(-v(d,g),0))*(-v(g,d1)+cgd_vthd*(1+cgdv_d2*-v(d,d1)) - pfet_10v0_asym_dvth0))))'
 C1_gd2 g d1
@@ -525,59 +324,10 @@ C3_gb g b
 + WUTE=-4E-8 WVSAT=0 WVTH0=0 WW=0 WWL=0 XJ=1.5E-7 XJBVD=1 XJBVS=1
 + XL=' 0 + pfet_10v0_asym_dxl' XTSD=0.92538 XW='0+ pfet_10v0_asym_dxw'
 + LEVEL=14
-***** Flag Parameter ***
-***** Geometry Range Parameter ***
-***** Process Parameter ***
-***** dW and dL Parameter ***
-***** Vth Related  Parameter ***
-***** Mobility Related Parameter ***
-***** Subthreshold Related Parameter ***
-***** Output Resistance Related Parameter ***
-***** Gate Dielectric Tunneling Current ***
-***** GIDL Effect Parameters ***
-
-
-
-
-
-
-***** Flicker Noise Model Parameter ***
-
-
-***** Capacitance Parameter ***
-
-
-***** Souce/Drain Junction Diode Model Parameter ***
-
-
-
-
-
-
-***** Temperature coefficient ***
-
-
-
-
-
-
-
-
-
-
-
 .ENDS pfet_10v0_asym
-
-
-
-
-
 
 .ENDL pfet_10v0_asym_t
 
-
-
 ************************end of file*************************
-
 
 *

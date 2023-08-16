@@ -14,30 +14,19 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-vds D_tn 0 dc={{vds_val}}
-vgs G_tn 0 dc=10
-Vbs B_tn 0 dc={{vbs_val}}
 
-.temp {{temp}}
+vds D_tn 0 dc {{vds_val}}
+vgs G_tn 0 dc 10
+Vbs B_tn 0 dc {{vbs_val}}
+
+.STEP TEMP {{temp}} {{temp}} {{temp}}
 
 xmn1 D_tn G_tn 0 B_tn {{device}} W = {{width}}u L = {{length}}u
 
 **** begin architecture code
+.DC {{sweeps}}
 
-.control
-set filetype=ascii
-set wr_singlescale
-set wr_vecnames
-dc {{sweeps}}
-
-** Get all voltages and currrent
-let vds = v(D_tn)
-let vgs = v(G_tn)
-let vbs = v(B_tn)
-let id = -i(Vds)
-
-wrdata {{result_path}} vds vgs vbs id
-.endc
+.print DC FORMAT=CSV file={{result_path}} v(D_tn) v(G_tn) v(B_tn) {-I(Vds)}
 
 ** library calling
 
@@ -47,4 +36,3 @@ wrdata {{result_path}} vds vgs vbs id
 **** end architecture code
 
 .end
-
