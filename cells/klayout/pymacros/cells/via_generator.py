@@ -101,13 +101,13 @@ def via_stack(
     # vias dimensions
 
     con_size = (0.22, 0.22)
-    con_enc = 0.07
+    con_enc = 0.08
 
-    con_spacing = (0.28, 0.28)
+    con_spacing = (0.29, 0.29)
 
     via_size = (0.22, 0.22)
-    via_spacing = (0.28, 0.28)
-    via_enc = (0.06, 0.06)
+    via_spacing = (0.29, 0.29)
+    via_enc = (0.07, 0.07)
     m1_area = 0.145
 
     if metal_level >= 1:
@@ -266,12 +266,12 @@ def draw_via_dev(
     y_range = y_max - y_min
 
     con_size = (0.22, 0.22)
-    con_enc = (0.07, 0.07)
+    con_enc = (0.08, 0.08)
 
-    con_spacing = (0.25, 0.25)
+    con_spacing = (0.26, 0.26)
 
     via_size = (0.26, 0.26)
-    via_spacing = (0.26, 0.26)
+    via_spacing = (0.27, 0.27)
 
     if x_range > (4 * con_size[0] + 3 * con_spacing[0]) and y_range > (
         2 * 4 * via_size[1] + 3 * via_spacing[1]
