@@ -124,10 +124,10 @@ def alter_interdig(
 
     c_inst = gf.Component()
 
-    m2_spacing: float = 0.28
+    m2_spacing: float = 0.29
     via_size: float = (0.26, 0.26)
-    via_enc: float = (0.06, 0.06)
-    via_spacing: float = (0.26, 0.26)
+    via_enc: float = (0.07, 0.07)
+    via_spacing: float = (0.27, 0.27)
 
     pat_o = []
     pat_e = []
@@ -382,10 +382,10 @@ def interdigit(
         [nt.append(x) for x in pat if x not in nt]
         nl = int(len(nt))
 
-        m2_spacing: float = 0.28
+        m2_spacing: float = 0.29
         via_size: float = (0.26, 0.26)
-        via_enc: float = (0.06, 0.06)
-        via_spacing: float = (0.26, 0.26)
+        via_enc: float = (0.07, 0.07)
+        via_spacing: float = (0.27, 0.27)
 
         m2_y = via_size[1] + 2 * via_enc[1]
         m2 = gf.components.rectangle(
@@ -626,12 +626,12 @@ def bulk_gr_gen(
 
     # c = gf.Component()
 
-    comp_pp_enc: float = 0.16
+    comp_pp_enc: float = 0.17
 
     con_size: float = 0.22
-    con_sp: float = 0.28
-    con_comp_enc: float = 0.07
-    dg_enc_cmp: float = 0.24
+    con_sp: float = 0.29
+    con_comp_enc: float = 0.08
+    dg_enc_cmp: float = 0.25
 
     c_temp = gf.Component("temp_store")
     rect_bulk_in = c_temp.add_ref(
@@ -812,11 +812,11 @@ def pcmpgr_gen(dn_rect, grw: float = 0.36) -> gf.Component:
 
     c = gf.Component()
 
-    comp_pp_enc: float = 0.16
+    comp_pp_enc: float = 0.17
     con_size: float = 0.22
-    con_sp: float = 0.28
-    con_comp_enc: float = 0.07
-    pcmpgr_enc_dn: float = 2.6
+    con_sp: float = 0.29
+    con_comp_enc: float = 0.08
+    pcmpgr_enc_dn: float = 2.7
 
     c_temp_gr = gf.Component("temp_store guard ring")
     rect_pcmpgr_in = c_temp_gr.add_ref(
@@ -967,11 +967,11 @@ def nfet_deep_nwell(
 
     c = gf.Component()
 
-    dn_enc_lvpwell: float = 2.5
-    lvpwell_enc_ncmp: float = 0.44
-    dg_enc_dn: float = 0.5
-    dg_enc_cmp: float = 0.24
-    dg_enc_poly: float = 0.4
+    dn_enc_lvpwell: float = 2.51
+    lvpwell_enc_ncmp: float = 0.45
+    dg_enc_dn: float = 0.51
+    dg_enc_cmp: float = 0.25
+    dg_enc_poly: float = 0.41
 
     if deepnwell == 1:
 
@@ -1254,31 +1254,31 @@ def draw_nfet(
 
     end_cap: float = 0.3
 
-    comp_spacing: float = 0.28 if volt == "3.3V" else 0.36
+    comp_spacing: float = 0.29 if volt == "3.3V" else 0.37
 
-    gate_np_enc: float = 0.23
-    comp_np_enc: float = 0.16
-    comp_pp_enc: float = 0.16
-    poly2_spacing: float = 0.24
+    gate_np_enc: float = 0.24
+    comp_np_enc: float = 0.17
+    comp_pp_enc: float = 0.17
+    poly2_spacing: float = 0.25
     pc_ext: float = 0.04
 
     con_size: float = 0.22
-    con_sp: float = 0.28
+    con_sp: float = 0.29
 
     if bulk == "Bulk Tie":
-        con_comp_enc: float = 0.1
+        con_comp_enc: float = 0.11
     else:
-        con_comp_enc: float = 0.07
+        con_comp_enc: float = 0.08
 
     con_pp_sp: float = 0.1 - con_comp_enc
     con_pl_enc: float = 0.07
     if volt == "3.3V":
-        pl_cmp_spacing: float = 0.18
+        pl_cmp_spacing: float = 0.19
     else:
-        pl_cmp_spacing: float = 0.3
+        pl_cmp_spacing: float = 0.31
     m1_area: float = 0.145
-    m1_sp: float = 0.3
-    pl_cmpcon_sp: float = 0.15
+    m1_sp: float = 0.31
+    pl_cmpcon_sp: float = 0.17
 
     sd_l_con = (
         ((sd_con_col) * con_size)
@@ -1869,29 +1869,29 @@ def draw_pfet(
 
     end_cap: float = 0.3
 
-    comp_spacing: float = 0.28 if volt == "3.3V" else 0.36
-    nw_enc_pcmp: float = 0.43 if volt == "3.3V" else 0.6
+    comp_spacing: float = 0.29 if volt == "3.3V" else 0.37
+    nw_enc_pcmp: float = 0.44 if volt == "3.3V" else 0.61
 
-    gate_pp_enc: float = 0.23
-    comp_np_enc: float = 0.16
-    comp_pp_enc: float = 0.16
-    poly2_spacing: float = 0.24
+    gate_pp_enc: float = 0.24
+    comp_np_enc: float = 0.17
+    comp_pp_enc: float = 0.17
+    poly2_spacing: float = 0.25
     pc_ext: float = 0.04
 
     con_size: float = 0.22
-    con_sp: float = 0.28
-    con_comp_enc: float = 0.07
-    con_pp_sp: float = 0.1 - con_comp_enc
+    con_sp: float = 0.27
+    con_comp_enc: float = 0.08
+    con_pp_sp: float = 0.12 - con_comp_enc
     if volt == "3.3V":
-        pl_cmp_spacing: float = 0.18
+        pl_cmp_spacing: float = 0.19
     else:
-        pl_cmp_spacing: float = 0.3
-    con_pl_enc: float = 0.07
-    dg_enc_cmp: float = 0.24
-    dg_enc_poly: float = 0.4
-    m1_sp: float = 0.3
+        pl_cmp_spacing: float = 0.31
+    con_pl_enc: float = 0.08
+    dg_enc_cmp: float = 0.25
+    dg_enc_poly: float = 0.41
+    m1_sp: float = 0.31
     m1_area: float = 0.145
-    pl_cmpcon_sp: float = 0.15
+    pl_cmpcon_sp: float = 0.16
 
     # sd_l_con = (
     #     ((sd_con_col) * con_size) + ((sd_con_col - 1) * con_sp) + 2 * con_comp_enc
@@ -2383,26 +2383,26 @@ def draw_nfet_06v0_nvt(
 
     # used layers and dimensions
 
-    end_cap: float = 0.22
+    end_cap: float = 0.23
 
-    comp_spacing: float = 0.36
-    poly2_comp_spacing: float = 0.3
+    comp_spacing: float = 0.37
+    poly2_comp_spacing: float = 0.31
 
-    gate_np_enc: float = 0.23
-    comp_np_enc: float = 0.16
-    comp_pp_enc: float = 0.16
-    poly2_spacing: float = 0.24
+    gate_np_enc: float = 0.24
+    comp_np_enc: float = 0.17
+    comp_pp_enc: float = 0.17
+    poly2_spacing: float = 0.25
     pc_ext: float = 0.04
 
     con_size: float = 0.22
-    con_sp: float = 0.28
-    con_comp_enc: float = 0.07
-    con_pp_sp: float = 0.1 - con_comp_enc
-    pl_cmp_spacing: float = 0.1
-    con_pl_enc: float = 0.07
-    pl_cmpcon_sp: float = 0.15
-    nvt_enc_cmp: float = 2
-    m1_sp: float = 0.3
+    con_sp: float = 0.29
+    con_comp_enc: float = 0.08
+    con_pp_sp: float = 0.12 - con_comp_enc
+    pl_cmp_spacing: float = 0.11
+    con_pl_enc: float = 0.08
+    pl_cmpcon_sp: float = 0.16
+    nvt_enc_cmp: float = 2.1
+    m1_sp: float = 0.31
     m1_area: float = 0.145
 
     sd_l_con = (

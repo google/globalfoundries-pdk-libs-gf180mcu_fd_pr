@@ -39154,11 +39154,19 @@ rb 1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2))
 + c_vcr2=9.748E-06
 + c_area='c_length*c_width'
 + c_peri='2*(c_length+c_width)'
-+ c_c0='(c_cox*c_area+c_capsw*c_peri)*(1+c_tc1*(temper+dtemp-c_tnom)+c_tc2*(temper+dtemp-c_tnom)*(temper+dtemp-c_tnom))'
-*/
+* + c_c0='(c_cox*c_area+c_capsw*c_peri)*(1+c_tc1*(temper+dtemp-c_tnom)+c_tc2*(temper+dtemp-c_tnom)*(temper+dtemp-c_tnom))'
++ c_c0='(c_cox*c_area+c_capsw*c_peri) * (1+mc_c_cox_1p5fF)'
+
 */ model for capacitance
-c_cap 1 2 c='c_c0*(1+ c_vcr1*v(1, 2)+c_vcr2*v(1,2)*v(1,2) )*(1+mc_c_cox_1p5fF)'
-**
+.MODEL cap_mim_1f5_model C 
++ cap=c_c0 
++ tc1=c_tc1 
++ tc2=c_tc2
++ tnom=c_tnom
+
+* c_cap 1 2 c='c_c0*(1+ c_vcr1*v(1, 2)+c_vcr2*v(1,2)*v(1,2) )*(1+mc_c_cox_1p5fF)'
+c_cap 1 2 cap_mim_1f5_model dtemp=dtemp
+
 .ends cap_mim_1f5
 */ -------------------------------------------------------------------------------------
 */ MIM Capacitor (1fF/um2) subcircuit model for GF's 0.18 Analog CMOS process
@@ -39174,11 +39182,19 @@ c_cap 1 2 c='c_c0*(1+ c_vcr1*v(1, 2)+c_vcr2*v(1,2)*v(1,2) )*(1+mc_c_cox_1p5fF)'
 + c_vcr2=1.268e-6
 + c_area='c_length*c_width'
 + c_peri='2*(c_length+c_width)'
-+ c_c0='(c_cox*c_area+c_capsw*c_peri)*(1+c_tc1*(temper+dtemp-c_tnom)+c_tc2*(temper+dtemp-c_tnom)*(temper+dtemp-c_tnom))'
-*/
+* + c_c0='(c_cox*c_area+c_capsw*c_peri)*(1+c_tc1*(temper+dtemp-c_tnom)+c_tc2*(temper+dtemp-c_tnom)*(temper+dtemp-c_tnom))'
++ c_c0='(c_cox*c_area+c_capsw*c_peri) * (1+mc_c_cox_1p0fF)'
+
 */ model for capacitance
-c_cap 1 2 c='c_c0*(1+ c_vcr1*v(1, 2)+c_vcr2*v(1,2)*v(1,2) )*(1+mc_c_cox_1p0fF)'
-**
+.MODEL cap_mim_1f0_model C 
++ cap=c_c0 
++ tc1=c_tc1 
++ tc2=c_tc2
++ tnom=c_tnom
+
+* c_cap 1 2 c='c_c0*(1+ c_vcr1*v(1, 2)+c_vcr2*v(1,2)*v(1,2) )*(1+mc_c_cox_1p0fF)'
+c_cap 1 2 cap_mim_1f0_model dtemp=dtemp
+
 .ends cap_mim_1f0
 */ -------------------------------------------------------------------------------------
 */ MIM Capacitor (2fF/um2) subcircuit model for GLOBALFOUNDRIES 0.18 Analog CMOS process M2-M3
@@ -39196,10 +39212,20 @@ c_cap 1 2 c='c_c0*(1+ c_vcr1*v(1, 2)+c_vcr2*v(1,2)*v(1,2) )*(1+mc_c_cox_1p0fF)'
 .param c_AREA='c_length*c_width'
 .param c_PERI='2*(c_length+c_width)'
 
-.param c_c0='(c_cox*c_AREA+c_capsw*c_PERI)*(1+c_tc1*(temper +dtemp -c_tnom)+c_tc2*(temper+dtemp-c_tnom)*(temper+dtemp-c_tnom))'
-*
-c_cap 1 2 c='c_c0*(1+c_vcr1*v(1,2)+c_vcr2*v(1,2)*v(1,2))*(1+mc_c_cox_2p0fF)'
+* .param c_c0='(c_cox*c_AREA+c_capsw*c_PERI)*(1+c_tc1*(temper +dtemp -c_tnom)+c_tc2*(temper+dtemp-c_tnom)*(temper+dtemp-c_tnom))'
+.param c_c0='(c_cox*c_area+c_capsw*c_peri) * (1+mc_c_cox_2p0fF)'
+
+*/ model for capacitance
+.MODEL cap_mim_2f0_model C 
++ cap=c_c0 
++ tc1=c_tc1 
++ tc2=c_tc2
++ tnom=c_tnom
+
+* c_cap 1 2 c='c_c0*(1+c_vcr1*v(1,2)+c_vcr2*v(1,2)*v(1,2))*(1+mc_c_cox_2p0fF)'
+c_cap 1 2 cap_mim_2f0_model dtemp=dtemp
 r_leak 1 2 r='1/(gleak*c_AREA)' tc1=c_tc1 tc2=c_tc2 dtemp=dtemp
+
 .ends cap_mim_2f0
 .ENDL cap_mim
 * ----------------------------------------------------------------------------------------------------
@@ -47301,8 +47327,8 @@ q0 c b e  pnp_10p00x00p42  dtemp=dtemp
 +tref    = 25              	level = 1
 +cjc     = '2.04e-014*cjca*(1 + mc_xcjc_vpnp*sw_stat_global)' 	cje     = '6.88e-015*cjea*(1 + mc_xcje_vpnp*sw_stat_global)' 	cjs     = 0               fc      = 0.5           
 +mjc     = 0.22711         	mje     = 0.14469         	mjs     = 0.5             vjc     = 0.43905       
-+vje     = 0.43905         	vjs     = 0.75            	xcjc    = 1               cbcp    = 0             
-+cbep    = 0               	ccsp    = 0               	itf     = 0.1             ptf     = 0             
++vje     = 0.43905         	vjs     = 0.75            	xcjc    = 1             
++itf     = 0.1             ptf     = 0             
 +tf      = 1e-010          	tr      = 0               	vtf     = 10              xtf     = 1             
 +af      = 1               	kf      = 0             
 +is      = '9e-019*isa*(1 + mc_xis_vpnp*sw_stat_global)*(1 + isa_mis_pnp_10p00x00p42)'    	rb      = '41*rba*(1 + mc_xrb_vpnp*sw_stat_global)'        	re      = '1*rea*(1 + mc_xre_vpnp*sw_stat_global)'         irb     = 0.1           
@@ -47336,8 +47362,7 @@ q0 c b e  pnp_05p00x00p42  dtemp=dtemp
 +cjs = 0                       vjs = 0.75                    	mjs = 0.5                     
 +tf = 1E-10                    xtf = 1                       	vtf = 10                      
 +itf = 0.1                     xcjc = 1                      	fc = 0.5                      
-+tr = 0                        ptf = 0                       	cbcp = 0                      
-+cbep = 0                      ccsp = 0                      
++tr = 0                        ptf = 0                     
 +xtb = 1E-4                    xti = 3                       	eg = 1.17                     
 +tbf1 = 6.1E-3                 tbf2 = -4.235165E-22          	tikf1 = -4.3E-3               
 +cte = 1E-3                    ctc = 2.8626E-3               	tvje = 1.9314E-3              
@@ -47366,8 +47391,7 @@ q0 c b e  pnp_10p00x10p00  dtemp=dtemp
 +cjs = 0                       vjs = 0.75                    	mjs = 0.5                     
 +tf = 1E-10                    xtf = 1                       	vtf = 10                      
 +itf = 0.1                     xcjc = 1                      	fc = 0.5                      
-+tr = 0                        ptf = 0                       	cbcp = 0                      
-+cbep = 0                      ccsp = 0                      
++tr = 0                        ptf = 0                      
 +xtb = 1E-4                    xti = 3                       	eg = 1.17                     
 +tbf1 = 4.26E-3                tbf2 = -1.4E-6                	tikf1 = -4.3E-3               
 +cte = 1E-3                    ctc = 2.8626E-3               	tvje = 1.9314E-3              
@@ -47396,8 +47420,7 @@ q0 c b e  pnp_05p00x05p00  dtemp=dtemp
 +cjs = 0                       vjs = 0.75                    	mjs = 0.5                     
 +tf = 1E-10                    xtf = 1                       	vtf = 10                      
 +itf = 0.1                     xcjc = 1                      	fc = 0.5                      
-+tr = 0                        ptf = 0                       	cbcp = 0                      
-+cbep = 0                      ccsp = 0                      
++tr = 0                        ptf = 0                     
 +xtb = 1E-4                    xti = 3                       	eg = 1.17                     
 +tbf1 = 4.54E-3                tbf2 = -9E-7                  	tikf1 = -4.3E-3               
 +cte = 1E-3                    ctc = 2.8626E-3               	tvje = 1.9314E-3              

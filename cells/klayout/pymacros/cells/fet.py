@@ -32,7 +32,7 @@ pfet_06v0_l = 0.55
 
 nfet_nat_l = 1.8
 nfet_nat_w = 0.8
-fet_grw = 0.36
+fet_grw = 0.38
 fet_ld = 0.52
 
 ldfet_l_min = 0.6
