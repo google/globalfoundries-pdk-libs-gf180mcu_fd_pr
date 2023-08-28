@@ -336,10 +336,10 @@
 rdrift d d2 '(rdrift1*nfet_10v0_asym_drdrift)*1.2e-6/(w/nf-wa)' tc1=trx1 tc2=trx2 m=nf
 rd2 d2 d1 'max(1e-2, (rd*nfet_10v0_asym_drdsw*(1+trth1*(temper+dtemp-25)+trth2*(temper+dtemp-25)*(temper+dtemp-25)))/(w/nf-wb)*(tanh(ra*(v(d,s)-rb*(l-lb)/(0.6e-6-lb)))))' m=nf
 m0 d1 g s b nfet_10v0_asym_core w=w l=l as=as ad=ad ps=ps pd=pd nf=nf nrd=nrd nrs=nrs sa=sa sb=sb sd=sd m=m
-c1_gd g d c='nfet_10v0_asym_dcgd*(cgds_fixed*w*lcgd_d+ exp(polar_d*min(max(2.63157-vthd,0),polard_min))*cgdl_d*w*(1+tanh(cgdv_d/(1+cgd_val*max(3.68421,0))*(2.63157+cgd_vthd*(1+cgdv_d2*5.78947368) -nfet_10v0_asym_dvth0))))'
-c1_gd2 g d1 c='nfet_10v0_asym_dcgd*(cgds_fixed*w*lcgd_d2 + cgdl_d2*w*(1+tanh( cgdv_d/(1+cgd_val*max(5.91836734,0))*(3.061224489+cgd_vthd*(1+cgdv_d2*5.102040816)-nfet_10v0_asym_dvth0 ) )) )'
-c2_gs g s c='nfet_10v0_asym_dcgs*(cgds_fixed*w*lcgs + cgsl_s*w*(1-tanh(cgs_slope*(0.2040816+cgs_vth)))*(1 +cgs_factor/(1+cgs_factor2*exp(10-cgs_vth1))*(1- exp(polar_s*min(max(-10-vthd,0),polars_min)))))'
-c3_gb g b '(cgb_min + cgb_amp/(1+(1/pow(max(1e-3, cgb_slope*(1.83673469-cgb_vth + nfet_10v0_asym_dvth0)), cgb_power))) ) *w '
+c1_gd g d c='nfet_10v0_asym_dcgd*1.89e-14'
+c1_gd2 g d1 c='nfet_10v0_asym_dcgd*2.6e-14'
+c2_gs g s c='nfet_10v0_asym_dcgs*1.1e-14'
+c3_gb g b '1.284e-9*w'
 
 .model nfet_10v0_asym_core.1 nmos
 ***** Flag Parameter ***
@@ -466,10 +466,10 @@ c3_gb g b '(cgb_min + cgb_amp/(1+(1/pow(max(1e-3, cgb_slope*(1.83673469-cgb_vth 
 rd1 d d2 '(rdrift*pfet_10v0_asym_drdrift)/(w/nf-wa)' tc1=trx1 tc2=trx2 m=nf
 rd2 d2 d1 'max(0.1, (rd*pfet_10v0_asym_drdsw*(1+trd1*(temper+dtemp-25))/(w/nf-wb)*(tanh(ra*(v(s,d)-rb*(l-lb)/(0.6e-6-lb))))))' m=nf
 m0 d1 g s b pfet_10v0_asym_core w=w l=l ad=ad pd=pd as=as ps=ps nf=nf nrd=nrd nrs=nrs sa=sa sb=sb sd=sd m=m
-c1_gd g d c='pfet_10v0_asym_dcgd*(cgds_fixed*w*lcgd_d+ exp(polar_d*min(max(2.63157-vthd,0),polard_min))*cgdl_d*w*(1+tanh(cgdv_d/(1+cgd_val*max(3.68421,0))*(2.63157+cgd_vthd*(1+cgdv_d2*5.78947368) - pfet_10v0_asym_dvth0))))'
-c1_gd2 g d1 c='pfet_10v0_asym_dcgd*(cgds_fixed*w*lcgd_d2 + cgdl_d2*w*(1+tanh( cgdv_d/(1+cgd_val*max(5.91836734,0))*(3.061224489+cgd_vthd*(1+cgdv_d2*5.102040816) - pfet_10v0_asym_dvth0   ) )) )'
-c2_gs g s c='pfet_10v0_asym_dcgs*(cgds_fixed*w*lcgs + cgsl_s*w*(1-tanh(cgs_slope*(0.2040816+cgs_vth)))*(1 +cgs_factor/(1+cgs_factor2*exp(10-cgs_vth1))*(1- exp(polar_s*min(max(-10-vthd,0),polars_min)))))'
-c3_gb g b '(cgb_min +  cgb_amp/(1+(1/pow(max(1e-3, cgb_slope*(1.83673469-cgb_vth + pfet_10v0_asym_dvth0)), cgb_power))) ) *w '
+c1_gd g d c='pfet_10v0_asym_dcgd*1.89e-14'
+c1_gd2 g d1 c='pfet_10v0_asym_dcgd*2.6e-14'
+c2_gs g s c='pfet_10v0_asym_dcgs*1.1e-14'
+c3_gb g b '1.284e-9*w'
 
 .model pfet_10v0_asym_core.1 pmos
 ***** Flag Parameter ***
